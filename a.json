@@ -1,0 +1,1088 @@
+{
+  "id": "3d13f34f-9e8e-1076-0a03-b8f44a075c79",
+  "name": "Tranxit Provider",
+  "description": "",
+  "order": [
+    "8a8bd1c6-f9a4-6b3c-f995-67cba209970d"
+  ],
+  "folders": [
+    {
+      "owner": "2559836",
+      "lastUpdatedBy": "2559836",
+      "lastRevision": 1998305029,
+      "folder": null,
+      "id": "ab7d41d8-1ebb-49f1-2bdf-063be7dda00c",
+      "name": "Profile",
+      "description": "",
+      "variables": null,
+      "auth": null,
+      "events": null,
+      "order": [
+        "27dc0682-946d-05c0-dce6-597f4665dddf",
+        "30256210-0e29-3a5f-5942-da8b5b769410",
+        "b8eefe04-2762-10f0-60e6-309f916b70e0",
+        "661e523b-029a-a883-9251-b9eca3cb882a",
+        "1a0ffbd8-2f89-d59c-9793-71b47a344a88",
+        "1eba97a9-5d7d-bd38-4735-bb0ca98e5b55"
+      ],
+      "folders_order": []
+    },
+    {
+      "owner": "2559836",
+      "lastUpdatedBy": "2559836",
+      "lastRevision": 1998305031,
+      "folder": null,
+      "id": "9c55eacd-a100-cbb8-5175-709087068608",
+      "name": "Provider Auth",
+      "description": "",
+      "variables": null,
+      "auth": null,
+      "events": null,
+      "order": [
+        "8bad0226-ba2a-440c-f0d6-651310876704",
+        "c87db6c1-ce76-0c39-e28f-180ca1ad9012"
+      ],
+      "folders_order": []
+    },
+    {
+      "owner": "2559836",
+      "lastUpdatedBy": "2559836",
+      "lastRevision": 1998305033,
+      "folder": null,
+      "id": "2ac01b9a-cd08-cf1c-ff5a-284c74d56e4e",
+      "name": "Requests",
+      "description": "",
+      "variables": null,
+      "auth": null,
+      "events": null,
+      "order": [
+        "95b0c0b7-aded-ad71-0538-adbc2c7ff0f4",
+        "3e7df2f6-9535-5e99-3966-f4aa4dd36605",
+        "b4cd969d-5491-2c2a-0157-ec96637c1e8b"
+      ],
+      "folders_order": []
+    },
+    {
+      "owner": "2559836",
+      "lastUpdatedBy": "2559836",
+      "lastRevision": 1998305034,
+      "folder": null,
+      "id": "434c9d94-5959-d6b5-bc5f-e51ffaeff17c",
+      "name": "Trip",
+      "description": "",
+      "variables": null,
+      "auth": null,
+      "events": null,
+      "order": [
+        "0d1b4627-7e7c-0da4-6500-66f06945deff",
+        "30718634-8934-bfc7-dd5a-df45a3186253",
+        "fda4fb42-bf31-92ae-e867-7ed505744fa5",
+        "bceba4a4-480e-2cf4-11fc-15cabf1c8940",
+        "79d7c16e-6afa-b911-f4e6-ae4df980624a",
+        "8382f84d-0b96-3f92-dc10-1deb8f463360"
+      ],
+      "folders_order": []
+    }
+  ],
+  "folders_order": [
+    "ab7d41d8-1ebb-49f1-2bdf-063be7dda00c",
+    "9c55eacd-a100-cbb8-5175-709087068608",
+    "2ac01b9a-cd08-cf1c-ff5a-284c74d56e4e",
+    "434c9d94-5959-d6b5-bc5f-e51ffaeff17c"
+  ],
+  "timestamp": 0,
+  "owner": "2559836",
+  "public": false,
+  "requests": [
+    {
+      "id": "0d1b4627-7e7c-0da4-6500-66f06945deff",
+      "headers": "X-Requested-With: XMLHttpRequest\nAuthorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjExMiwiaXNzIjoiaHR0cDovLzM1LjIyOS4xMjEuMjI3L2FwaS9wcm92aWRlci9vYXV0aC90b2tlbiIsImlhdCI6MTUzMDE4MTE3MSwiZXhwIjoxNTMwNTQxMTcxLCJuYmYiOjE1MzAxODExNzEsImp0aSI6ImFoUXhwREpiaHl2Qzl3R2YifQ.xpj8u55ikmDgzeTZiaWqQODp643o1m-Z3JgT8RTHceg\n",
+      "headerData": [
+        {
+          "key": "X-Requested-With",
+          "value": "XMLHttpRequest",
+          "description": "",
+          "enabled": true
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjExMiwiaXNzIjoiaHR0cDovLzM1LjIyOS4xMjEuMjI3L2FwaS9wcm92aWRlci9vYXV0aC90b2tlbiIsImlhdCI6MTUzMDE4MTE3MSwiZXhwIjoxNTMwNTQxMTcxLCJuYmYiOjE1MzAxODExNzEsImp0aSI6ImFoUXhwREpiaHl2Qzl3R2YifQ.xpj8u55ikmDgzeTZiaWqQODp643o1m-Z3JgT8RTHceg",
+          "description": "",
+          "enabled": true
+        }
+      ],
+      "url": "http:\/\/35.229.121.227\/api\/provider\/trip",
+      "folder": "434c9d94-5959-d6b5-bc5f-e51ffaeff17c",
+      "queryParams": [],
+      "preRequestScript": null,
+      "pathVariables": [],
+      "pathVariableData": [],
+      "method": "GET",
+      "data": [
+        {
+          "key": "request_id",
+          "value": "1",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "dataMode": "params",
+      "tests": null,
+      "currentHelper": "normal",
+      "helperAttributes": [],
+      "time": 1530254826806,
+      "name": "Status",
+      "description": "",
+      "collectionId": "3d13f34f-9e8e-1076-0a03-b8f44a075c79",
+      "responses": []
+    },
+    {
+      "folder": "ab7d41d8-1ebb-49f1-2bdf-063be7dda00c",
+      "id": "1a0ffbd8-2f89-d59c-9793-71b47a344a88",
+      "name": "Password",
+      "dataMode": "params",
+      "data": [
+        {
+          "key": "password",
+          "value": "password",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "password_confirmation",
+          "value": "password",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "password_old",
+          "value": "password",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "",
+          "value": "",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "auth": null,
+      "events": null,
+      "rawModeData": null,
+      "descriptionFormat": null,
+      "description": "",
+      "variables": null,
+      "headers": "X-Requested-With: XMLHttpRequest\nAuthorization: Bearer {{access_token}}\n",
+      "method": "POST",
+      "pathVariables": [],
+      "url": "http:\/\/{{url}}\/api\/provider\/profile\/password",
+      "preRequestScript": null,
+      "tests": null,
+      "currentHelper": null,
+      "helperAttributes": null,
+      "queryParams": [],
+      "headerData": [
+        {
+          "key": "X-Requested-With",
+          "value": "XMLHttpRequest"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{access_token}}"
+        }
+      ],
+      "pathVariableData": [],
+      "responses": [],
+      "collectionId": "3d13f34f-9e8e-1076-0a03-b8f44a075c79"
+    },
+    {
+      "folder": "ab7d41d8-1ebb-49f1-2bdf-063be7dda00c",
+      "id": "1eba97a9-5d7d-bd38-4735-bb0ca98e5b55",
+      "name": "Target",
+      "dataMode": "params",
+      "data": [],
+      "auth": null,
+      "events": null,
+      "rawModeData": null,
+      "descriptionFormat": null,
+      "description": "",
+      "variables": null,
+      "headers": "X-Requested-With: XMLHttpRequest\nAuthorization: Bearer {{provider_token}}\n",
+      "method": "POST",
+      "pathVariables": [],
+      "url": "{{url}}\/api\/provider\/profile\/target",
+      "preRequestScript": null,
+      "tests": null,
+      "currentHelper": null,
+      "helperAttributes": null,
+      "queryParams": [],
+      "headerData": [
+        {
+          "key": "X-Requested-With",
+          "value": "XMLHttpRequest"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{provider_token}}"
+        }
+      ],
+      "pathVariableData": [],
+      "responses": [],
+      "collectionId": "3d13f34f-9e8e-1076-0a03-b8f44a075c79"
+    },
+    {
+      "folder": "ab7d41d8-1ebb-49f1-2bdf-063be7dda00c",
+      "id": "27dc0682-946d-05c0-dce6-597f4665dddf",
+      "name": "Profile",
+      "dataMode": "params",
+      "data": [
+        {
+          "key": "first_name",
+          "value": "Sidharth",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "last_name",
+          "value": "Raveendran",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "email",
+          "value": "sid@appoets.com",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "mobile",
+          "value": "1234567890",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "password",
+          "value": "password",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "password_confirmation",
+          "value": "password",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "device_id",
+          "value": "udid",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "device_type",
+          "value": "android",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "device_token",
+          "value": "123456",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "auth": null,
+      "events": null,
+      "rawModeData": null,
+      "descriptionFormat": null,
+      "description": "",
+      "variables": null,
+      "headers": "X-Requested-With: XMLHttpRequest\nAuthorization: Bearer {{access_token}}\n",
+      "method": "GET",
+      "pathVariables": [],
+      "url": "http:\/\/{{url}}\/api\/provider\/profile",
+      "preRequestScript": null,
+      "tests": null,
+      "currentHelper": null,
+      "helperAttributes": null,
+      "queryParams": [],
+      "headerData": [
+        {
+          "key": "X-Requested-With",
+          "value": "XMLHttpRequest"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{access_token}}"
+        }
+      ],
+      "pathVariableData": [],
+      "responses": [],
+      "collectionId": "3d13f34f-9e8e-1076-0a03-b8f44a075c79"
+    },
+    {
+      "folder": "ab7d41d8-1ebb-49f1-2bdf-063be7dda00c",
+      "id": "30256210-0e29-3a5f-5942-da8b5b769410",
+      "name": "Profile Update",
+      "dataMode": "params",
+      "data": [
+        {
+          "key": "first_name",
+          "value": "Sid",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "last_name",
+          "value": "Rav",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "mobile",
+          "value": "123456",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "avatar",
+          "type": "file",
+          "enabled": true
+        }
+      ],
+      "auth": null,
+      "events": null,
+      "rawModeData": null,
+      "descriptionFormat": null,
+      "description": "",
+      "variables": null,
+      "headers": "X-Requested-With: XMLHttpRequest\nAuthorization: Bearer {{access_token}}\n",
+      "method": "POST",
+      "pathVariables": [],
+      "url": "http:\/\/{{url}}\/api\/provider\/profile",
+      "preRequestScript": null,
+      "tests": null,
+      "currentHelper": null,
+      "helperAttributes": null,
+      "queryParams": [],
+      "headerData": [
+        {
+          "key": "X-Requested-With",
+          "value": "XMLHttpRequest"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{access_token}}"
+        }
+      ],
+      "pathVariableData": [],
+      "responses": [],
+      "collectionId": "3d13f34f-9e8e-1076-0a03-b8f44a075c79"
+    },
+    {
+      "folder": "434c9d94-5959-d6b5-bc5f-e51ffaeff17c",
+      "id": "30718634-8934-bfc7-dd5a-df45a3186253",
+      "name": "Accept",
+      "dataMode": "params",
+      "data": [],
+      "auth": null,
+      "events": null,
+      "rawModeData": null,
+      "descriptionFormat": null,
+      "description": "",
+      "variables": null,
+      "headers": "X-Requested-With: XMLHttpRequest\nAuthorization: Bearer {{access_token}}\n",
+      "method": "POST",
+      "pathVariables": [],
+      "url": "http:\/\/{{url}}\/api\/provider\/trip\/{{id}}",
+      "preRequestScript": null,
+      "tests": null,
+      "currentHelper": null,
+      "helperAttributes": null,
+      "queryParams": [],
+      "headerData": [
+        {
+          "key": "X-Requested-With",
+          "value": "XMLHttpRequest"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{access_token}}"
+        }
+      ],
+      "pathVariableData": [],
+      "responses": [],
+      "collectionId": "3d13f34f-9e8e-1076-0a03-b8f44a075c79"
+    },
+    {
+      "folder": "2ac01b9a-cd08-cf1c-ff5a-284c74d56e4e",
+      "id": "3e7df2f6-9535-5e99-3966-f4aa4dd36605",
+      "name": "History",
+      "dataMode": "params",
+      "data": [
+        {
+          "key": "request_id",
+          "value": "1",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "auth": null,
+      "events": null,
+      "rawModeData": null,
+      "descriptionFormat": null,
+      "description": "",
+      "variables": null,
+      "headers": "X-Requested-With: XMLHttpRequest\nAuthorization: Bearer {{access_token}}\n",
+      "method": "GET",
+      "pathVariables": [],
+      "url": "http:\/\/{{url}}\/api\/provider\/requests\/history",
+      "preRequestScript": null,
+      "tests": null,
+      "currentHelper": null,
+      "helperAttributes": null,
+      "queryParams": [],
+      "headerData": [
+        {
+          "key": "X-Requested-With",
+          "value": "XMLHttpRequest"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{access_token}}"
+        }
+      ],
+      "pathVariableData": [],
+      "responses": [],
+      "collectionId": "3d13f34f-9e8e-1076-0a03-b8f44a075c79"
+    },
+    {
+      "folder": "ab7d41d8-1ebb-49f1-2bdf-063be7dda00c",
+      "id": "661e523b-029a-a883-9251-b9eca3cb882a",
+      "name": "Availability",
+      "dataMode": "params",
+      "data": [
+        {
+          "key": "service_status",
+          "value": "active",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "service_status",
+          "value": "offline",
+          "type": "text",
+          "enabled": false
+        }
+      ],
+      "auth": null,
+      "events": null,
+      "rawModeData": null,
+      "descriptionFormat": null,
+      "description": "",
+      "variables": null,
+      "headers": "X-Requested-With: XMLHttpRequest\nAuthorization: Bearer {{access_token}}\n",
+      "method": "POST",
+      "pathVariables": [],
+      "url": "http:\/\/{{url}}\/api\/provider\/profile\/available",
+      "preRequestScript": null,
+      "tests": null,
+      "currentHelper": null,
+      "helperAttributes": null,
+      "queryParams": [],
+      "headerData": [
+        {
+          "key": "X-Requested-With",
+          "value": "XMLHttpRequest"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{access_token}}"
+        }
+      ],
+      "pathVariableData": [],
+      "responses": [],
+      "collectionId": "3d13f34f-9e8e-1076-0a03-b8f44a075c79"
+    },
+    {
+      "folder": "434c9d94-5959-d6b5-bc5f-e51ffaeff17c",
+      "id": "79d7c16e-6afa-b911-f4e6-ae4df980624a",
+      "name": "Rate",
+      "dataMode": "params",
+      "data": [
+        {
+          "key": "rating",
+          "value": "5",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "comment",
+          "value": "Thank you!!",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "auth": null,
+      "events": null,
+      "rawModeData": null,
+      "descriptionFormat": null,
+      "description": "",
+      "variables": null,
+      "headers": "X-Requested-With: XMLHttpRequest\nAuthorization: Bearer {{access_token}}\n",
+      "method": "POST",
+      "pathVariables": [],
+      "url": "http:\/\/{{url}}\/api\/provider\/trip\/{{id}}\/rate",
+      "preRequestScript": null,
+      "tests": null,
+      "currentHelper": null,
+      "helperAttributes": null,
+      "queryParams": [],
+      "headerData": [
+        {
+          "key": "X-Requested-With",
+          "value": "XMLHttpRequest"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{access_token}}"
+        }
+      ],
+      "pathVariableData": [],
+      "responses": [],
+      "collectionId": "3d13f34f-9e8e-1076-0a03-b8f44a075c79"
+    },
+    {
+      "id": "8382f84d-0b96-3f92-dc10-1deb8f463360",
+      "headers": "X-Requested-With: XMLHttpRequest\nAuthorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjQwLCJpc3MiOiJodHRwOi8vY2FtcHVzdHV0ci5jb20vYXBpL3Byb3ZpZGVyL29hdXRoL3Rva2VuIiwiaWF0IjoxNTI5OTk2OTg1LCJleHAiOjE1MzAwMzI5ODUsIm5iZiI6MTUyOTk5Njk4NSwianRpIjoibUhHZHd0UDdvUGpENng2MCJ9.FhbTlY2-yAqEc8g2vRFhNk3sAosiKM8p5Sa9hSJok28\n",
+      "headerData": [
+        {
+          "key": "X-Requested-With",
+          "value": "XMLHttpRequest",
+          "description": "",
+          "enabled": true
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjQwLCJpc3MiOiJodHRwOi8vY2FtcHVzdHV0ci5jb20vYXBpL3Byb3ZpZGVyL29hdXRoL3Rva2VuIiwiaWF0IjoxNTI5OTk2OTg1LCJleHAiOjE1MzAwMzI5ODUsIm5iZiI6MTUyOTk5Njk4NSwianRpIjoibUhHZHd0UDdvUGpENng2MCJ9.FhbTlY2-yAqEc8g2vRFhNk3sAosiKM8p5Sa9hSJok28",
+          "description": "",
+          "enabled": true
+        }
+      ],
+      "url": "http:\/\/campustutr.com\/api\/provider\/share",
+      "folder": "434c9d94-5959-d6b5-bc5f-e51ffaeff17c",
+      "queryParams": [],
+      "preRequestScript": null,
+      "pathVariables": [],
+      "pathVariableData": [],
+      "method": "POST",
+      "data": [
+        {
+          "key": "mobile[0]",
+          "value": "+91 8870025080",
+          "type": "text",
+          "enabled": true,
+          "description": ""
+        },
+        {
+          "key": "mobile[1]",
+          "value": "+9197 91 428563",
+          "type": "text",
+          "enabled": true,
+          "description": ""
+        },
+        {
+          "key": "type",
+          "value": "provider",
+          "description": "",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "mobile[2]",
+          "value": "+91 7358226442",
+          "description": "",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "dataMode": "params",
+      "tests": null,
+      "currentHelper": "normal",
+      "helperAttributes": [],
+      "time": 1530254823113,
+      "name": "Messages",
+      "description": "",
+      "collectionId": "3d13f34f-9e8e-1076-0a03-b8f44a075c79",
+      "responses": []
+    },
+    {
+      "folder": null,
+      "id": "8a8bd1c6-f9a4-6b3c-f995-67cba209970d",
+      "name": "Get Services",
+      "dataMode": "params",
+      "data": [
+        {
+          "key": "grant_type",
+          "value": "refresh_token",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "refresh_token",
+          "value": "EZwqtTNmWA5zgoAGdz9w0ChyUeqsPgrPa8iclCbW7NL4lzTVAK4Ug2mG8h9MeV9pgEI9jTuLgScsv6shLdRCgUYAB7fw\/fxLhbJn7e47Pk6l76HQnFEbbZ6cPet+RMfHRLpw7Gik7RO3zEfI\/i7miQpVDLPK8fFXOoJXlpbuzOTa1rwn2qCfwErK0KfrvXT8MEvYmUjIV8977b3QaEDuYmv+HbaGCLrrrUXBCr0893dvxv+cwl\/yxN6\/Ui5rt8x\/6W5g942vcJCmzMQgE1rEqjWY9ZaTjOTEgX+4cho1qxrf87uK9dPtG11yw7Z2J\/HLSCQFtSHbesgqQbxeUekz6m+7JEGhptOIJ6saJc7Qx9lvVee2czfJW2aLQ82WAuIPxuHTc6YMIFBXiVddSTQLlYi3KY37ogbLqyWNq9PV1NWmG1WYAvOcJI8oqgFB2y8EuxyByw6pQEP7ydjLOsVbE43ALSTruMsIoisHBv77bocCSDaPTGwpRrOzmV3\/N4g7PbmTYbJco6Ng4Lq624R7MlauizIkdqIn1uVax8rKkb+Yp76jAXbXVaqnpzDUsJsJjxhylxB6gNoss8vXn+JQMDNf7qRKwjTXsQYbR9MUUZFGoXvLdWWSPzd05tU7bxXDWic28J7euvjIQErFlM8RiHVWn\/CfaXbQSWkZ6Zpi8yM=",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "client_id",
+          "value": "2",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "client_secret",
+          "value": "8KNi5gH3S5beCeyxHSJKkmFvVpl14aTNUJkVS4FU",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "scope",
+          "value": "",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "auth": null,
+      "events": null,
+      "rawModeData": null,
+      "descriptionFormat": null,
+      "description": "",
+      "variables": null,
+      "headers": "",
+      "method": "GET",
+      "pathVariables": [],
+      "url": "{{url}}\/api\/provider\/services",
+      "preRequestScript": null,
+      "tests": null,
+      "currentHelper": null,
+      "helperAttributes": null,
+      "queryParams": [],
+      "headerData": [],
+      "pathVariableData": [],
+      "responses": [],
+      "collectionId": "3d13f34f-9e8e-1076-0a03-b8f44a075c79"
+    },
+    {
+      "folder": "9c55eacd-a100-cbb8-5175-709087068608",
+      "id": "8bad0226-ba2a-440c-f0d6-651310876704",
+      "name": "Provider Login",
+      "dataMode": "params",
+      "data": [
+        {
+          "key": "email",
+          "value": "sheik@appoets.com",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "password",
+          "value": "Appoets123$",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "device_id",
+          "value": "device_id",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "device_type",
+          "value": "android",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "device_token",
+          "value": "device_token",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "auth": null,
+      "events": null,
+      "rawModeData": null,
+      "descriptionFormat": null,
+      "description": "",
+      "variables": null,
+      "headers": "X-Requested-With: XMLHttpRequest\n",
+      "method": "POST",
+      "pathVariables": [],
+      "url": "http:\/\/tooki-web-dev.us-east-2.elasticbeanstalk.com\/api\/provider\/oauth\/token",
+      "preRequestScript": null,
+      "tests": null,
+      "currentHelper": null,
+      "helperAttributes": null,
+      "queryParams": [],
+      "headerData": [
+        {
+          "key": "X-Requested-With",
+          "value": "XMLHttpRequest",
+          "description": "",
+          "enabled": true
+        }
+      ],
+      "pathVariableData": [],
+      "responses": [],
+      "collectionId": "3d13f34f-9e8e-1076-0a03-b8f44a075c79"
+    },
+    {
+      "id": "95b0c0b7-aded-ad71-0538-adbc2c7ff0f4",
+      "headers": "X-Requested-With: XMLHttpRequest\nAuthorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjE0NiwiaXNzIjoiaHR0cDovLzIwNi4xODkuMzEuMTE3L2FwaS9wcm92aWRlci9vYXV0aC90b2tlbiIsImlhdCI6MTUyOTkzNzUwMiwiZXhwIjoxNTMwMjk3NTAyLCJuYmYiOjE1Mjk5Mzc1MDIsImp0aSI6IkR3U010eDdUOXBiQ1RKdHoifQ.eZpwCZtQF7hJowMkIcr_9NXA3kKshCS4VyQs5W1r3rU\n",
+      "headerData": [
+        {
+          "key": "X-Requested-With",
+          "value": "XMLHttpRequest",
+          "description": "",
+          "enabled": true
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjE0NiwiaXNzIjoiaHR0cDovLzIwNi4xODkuMzEuMTE3L2FwaS9wcm92aWRlci9vYXV0aC90b2tlbiIsImlhdCI6MTUyOTkzNzUwMiwiZXhwIjoxNTMwMjk3NTAyLCJuYmYiOjE1Mjk5Mzc1MDIsImp0aSI6IkR3U010eDdUOXBiQ1RKdHoifQ.eZpwCZtQF7hJowMkIcr_9NXA3kKshCS4VyQs5W1r3rU",
+          "description": "",
+          "enabled": true
+        }
+      ],
+      "url": "http:\/\/206.189.31.117\/api\/provider\/requests\/history",
+      "folder": "2ac01b9a-cd08-cf1c-ff5a-284c74d56e4e",
+      "queryParams": [],
+      "preRequestScript": null,
+      "pathVariables": [],
+      "pathVariableData": [],
+      "method": "GET",
+      "data": [
+        {
+          "key": "request_id",
+          "value": "1",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "dataMode": "params",
+      "tests": null,
+      "currentHelper": "normal",
+      "helperAttributes": [],
+      "time": 1530254821114,
+      "name": "Upcoming",
+      "description": "",
+      "collectionId": "3d13f34f-9e8e-1076-0a03-b8f44a075c79",
+      "responses": []
+    },
+    {
+      "folder": "2ac01b9a-cd08-cf1c-ff5a-284c74d56e4e",
+      "id": "b4cd969d-5491-2c2a-0157-ec96637c1e8b",
+      "name": "History Show",
+      "dataMode": "params",
+      "data": [
+        {
+          "key": "request_id",
+          "value": "1",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "auth": null,
+      "events": null,
+      "rawModeData": null,
+      "descriptionFormat": null,
+      "description": "",
+      "variables": null,
+      "headers": "X-Requested-With: XMLHttpRequest\nAuthorization: Bearer {{access_token}}\n",
+      "method": "POST",
+      "pathVariables": [],
+      "url": "http:\/\/{{url}}\/api\/provider\/requests\/show",
+      "preRequestScript": null,
+      "tests": null,
+      "currentHelper": null,
+      "helperAttributes": null,
+      "queryParams": [],
+      "headerData": [
+        {
+          "key": "X-Requested-With",
+          "value": "XMLHttpRequest"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{access_token}}"
+        }
+      ],
+      "pathVariableData": [],
+      "responses": [],
+      "collectionId": "3d13f34f-9e8e-1076-0a03-b8f44a075c79"
+    },
+    {
+      "folder": "ab7d41d8-1ebb-49f1-2bdf-063be7dda00c",
+      "id": "b8eefe04-2762-10f0-60e6-309f916b70e0",
+      "name": "Location",
+      "dataMode": "params",
+      "data": [
+        {
+          "key": "latitude",
+          "value": "11.12312312",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "longitude",
+          "value": "79.123123123",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "auth": null,
+      "events": null,
+      "rawModeData": null,
+      "descriptionFormat": null,
+      "description": "",
+      "variables": null,
+      "headers": "X-Requested-With: XMLHttpRequest\nAuthorization: Bearer {{access_token}}\n",
+      "method": "POST",
+      "pathVariables": [],
+      "url": "http:\/\/{{url}}\/api\/provider\/profile\/location",
+      "preRequestScript": null,
+      "tests": null,
+      "currentHelper": null,
+      "helperAttributes": null,
+      "queryParams": [],
+      "headerData": [
+        {
+          "key": "X-Requested-With",
+          "value": "XMLHttpRequest"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer {{access_token}}"
+        }
+      ],
+      "pathVariableData": [],
+      "responses": [],
+      "collectionId": "3d13f34f-9e8e-1076-0a03-b8f44a075c79"
+    },
+    {
+      "folder": "434c9d94-5959-d6b5-bc5f-e51ffaeff17c",
+      "id": "bceba4a4-480e-2cf4-11fc-15cabf1c8940",
+      "name": "Update",
+      "dataMode": "params",
+      "data": [
+        {
+          "key": "status",
+          "value": "STARTED",
+          "type": "text",
+          "enabled": false
+        },
+        {
+          "key": "status",
+          "value": "ARRIVED",
+          "type": "text",
+          "enabled": false
+        },
+        {
+          "key": "status",
+          "value": "PICKEDUP",
+          "type": "text",
+          "enabled": false
+        },
+        {
+          "key": "status",
+          "value": "DROPPED",
+          "type": "text",
+          "enabled": false
+        },
+        {
+          "key": "status",
+          "value": "COMPLETED",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "_method",
+          "value": "PATCH",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "auth": null,
+      "events": null,
+      "rawModeData": null,
+      "descriptionFormat": null,
+      "description": "",
+      "variables": null,
+      "headers": "X-Requested-With: XMLHttpRequest\nAuthorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjE5LCJpc3MiOiJodHRwOi8vdG9va2ktd2ViLWRldi51cy1lYXN0LTIuZWxhc3RpY2JlYW5zdGFsay5jb20vYXBpL3Byb3ZpZGVyL29hdXRoL3Rva2VuIiwiaWF0IjoxNTI0MDM4Mjg3LCJleHAiOjE1MjQzOTgyODcsIm5iZiI6MTUyNDAzODI4NywianRpIjoiUjV0U0tTZGtWRUFGUWp4UCJ9.eIxWmgl9yTxpivubSQKGld7bvqY-KQcTElVTU_LhLjg\n",
+      "method": "POST",
+      "pathVariables": [],
+      "url": "http:\/\/tooki-web-dev.us-east-2.elasticbeanstalk.com\/api\/provider\/trip\/136",
+      "preRequestScript": null,
+      "tests": null,
+      "currentHelper": null,
+      "helperAttributes": null,
+      "queryParams": [],
+      "headerData": [
+        {
+          "key": "X-Requested-With",
+          "value": "XMLHttpRequest",
+          "description": "",
+          "enabled": true
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjE5LCJpc3MiOiJodHRwOi8vdG9va2ktd2ViLWRldi51cy1lYXN0LTIuZWxhc3RpY2JlYW5zdGFsay5jb20vYXBpL3Byb3ZpZGVyL29hdXRoL3Rva2VuIiwiaWF0IjoxNTI0MDM4Mjg3LCJleHAiOjE1MjQzOTgyODcsIm5iZiI6MTUyNDAzODI4NywianRpIjoiUjV0U0tTZGtWRUFGUWp4UCJ9.eIxWmgl9yTxpivubSQKGld7bvqY-KQcTElVTU_LhLjg",
+          "description": "",
+          "enabled": true
+        }
+      ],
+      "pathVariableData": [],
+      "responses": [],
+      "collectionId": "3d13f34f-9e8e-1076-0a03-b8f44a075c79"
+    },
+    {
+      "folder": "9c55eacd-a100-cbb8-5175-709087068608",
+      "id": "c87db6c1-ce76-0c39-e28f-180ca1ad9012",
+      "name": "Provider Register",
+      "dataMode": "params",
+      "data": [
+        {
+          "key": "first_name",
+          "value": "Sidharth",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "last_name",
+          "value": "Raveendran",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "email",
+          "value": "sid@appoets.com",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "mobile",
+          "value": "1234567890",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "password",
+          "value": "password",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "password_confirmation",
+          "value": "password",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "device_id",
+          "value": "udid",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "device_type",
+          "value": "android",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "device_token",
+          "value": "123456",
+          "type": "text",
+          "enabled": true
+        },
+        {
+          "key": "code",
+          "value": "1234",
+          "description": "",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "auth": null,
+      "events": null,
+      "rawModeData": null,
+      "descriptionFormat": null,
+      "description": "",
+      "variables": null,
+      "headers": "X-Requested-With: XMLHttpRequest\n",
+      "method": "POST",
+      "pathVariables": [],
+      "url": "{{url}}\/api\/provider\/register",
+      "preRequestScript": null,
+      "tests": null,
+      "currentHelper": null,
+      "helperAttributes": null,
+      "queryParams": [],
+      "headerData": [
+        {
+          "key": "X-Requested-With",
+          "value": "XMLHttpRequest",
+          "description": "",
+          "enabled": true
+        }
+      ],
+      "pathVariableData": [],
+      "responses": [],
+      "collectionId": "3d13f34f-9e8e-1076-0a03-b8f44a075c79"
+    },
+    {
+      "id": "fda4fb42-bf31-92ae-e867-7ed505744fa5",
+      "headers": "X-Requested-With: XMLHttpRequest\nAuthorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjE0NiwiaXNzIjoiaHR0cDovLzIwNi4xODkuMzEuMTE3L2FwaS9wcm92aWRlci9vYXV0aC90b2tlbiIsImlhdCI6MTUyOTY0OTIwMCwiZXhwIjoxNTMwMDA5MjAwLCJuYmYiOjE1Mjk2NDkyMDAsImp0aSI6IjRBUDlqVVBJVFAxdThvRmkifQ.FIcbCHFVbSvmiBZioG6x4OmIBAoBHQFAdlw0j_nRGUU\n",
+      "headerData": [
+        {
+          "key": "X-Requested-With",
+          "value": "XMLHttpRequest",
+          "description": "",
+          "enabled": true
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjE0NiwiaXNzIjoiaHR0cDovLzIwNi4xODkuMzEuMTE3L2FwaS9wcm92aWRlci9vYXV0aC90b2tlbiIsImlhdCI6MTUyOTY0OTIwMCwiZXhwIjoxNTMwMDA5MjAwLCJuYmYiOjE1Mjk2NDkyMDAsImp0aSI6IjRBUDlqVVBJVFAxdThvRmkifQ.FIcbCHFVbSvmiBZioG6x4OmIBAoBHQFAdlw0j_nRGUU",
+          "description": "",
+          "enabled": true
+        }
+      ],
+      "url": "http:\/\/campustutr.com\/api\/user\/demosub\/services",
+      "folder": "434c9d94-5959-d6b5-bc5f-e51ffaeff17c",
+      "queryParams": [],
+      "preRequestScript": null,
+      "pathVariables": [],
+      "pathVariableData": [],
+      "method": "POST",
+      "data": [
+        {
+          "key": "service_id",
+          "value": "1",
+          "description": "",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "dataMode": "params",
+      "tests": null,
+      "currentHelper": "normal",
+      "helperAttributes": [],
+      "time": 1530254824280,
+      "name": "Reject",
+      "description": "",
+      "collectionId": "3d13f34f-9e8e-1076-0a03-b8f44a075c79",
+      "responses": []
+    }
+  ]
+}
