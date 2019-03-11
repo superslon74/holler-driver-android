@@ -6,10 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 public class Connect {
     private static boolean myBoolean;
     private static List<ConnectionBooleanChangedListener> listeners = new ArrayList<ConnectionBooleanChangedListener>();

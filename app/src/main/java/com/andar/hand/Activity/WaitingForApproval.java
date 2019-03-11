@@ -28,11 +28,6 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
-
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 public class WaitingForApproval extends AppCompatActivity {
     Button logoutBtn;
     public Handler ha;

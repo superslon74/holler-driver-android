@@ -18,9 +18,6 @@ import android.support.v4.content.ContextCompat;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
 
 public class AppHelper {
 

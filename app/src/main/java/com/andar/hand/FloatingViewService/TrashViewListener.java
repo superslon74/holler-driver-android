@@ -16,11 +16,6 @@
 
 package com.andar.hand.FloatingViewService;
 
-
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 /**
  * TrashViewのイベントを扱うリスナです。
  * INFO:削除アイコンが追従する仕様のため、OPENアニメーションのアニメーション終了は通知されません。

@@ -49,10 +49,6 @@ import java.lang.ref.WeakReference;
 
 
 /**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
-/**
  * フローティングViewを表すクラスです。
  * http://stackoverflow.com/questions/18503050/how-to-create-draggabble-system-alert-in-android
  * FIXME:Nexus5＋YouTubeアプリの場合にナビゲーションバーよりも前面に出てきてしまう

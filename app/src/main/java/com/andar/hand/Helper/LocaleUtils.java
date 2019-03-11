@@ -10,9 +10,6 @@ import android.preference.PreferenceManager;
 
 import java.util.Locale;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
 
 public class LocaleUtils {
 

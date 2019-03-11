@@ -1,8 +1,5 @@
 package com.andar.hand.Services;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
 
 import android.app.Service;
 import android.content.Intent;

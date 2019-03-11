@@ -21,10 +21,6 @@ import com.andar.hand.Helper.User;
 import com.andar.hand.R;
 
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 public class ShowProfile extends AppCompatActivity {
 
     public Context context = ShowProfile.this;

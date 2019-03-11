@@ -18,10 +18,6 @@ package com.andar.hand.FloatingViewService;
 
 
 /**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
-/**
  * FloatingViewのリスナです。
  */
 public interface FloatingViewListener {

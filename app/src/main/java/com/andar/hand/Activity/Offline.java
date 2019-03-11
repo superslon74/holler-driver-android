@@ -41,10 +41,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 
 public class Offline extends Fragment {
 

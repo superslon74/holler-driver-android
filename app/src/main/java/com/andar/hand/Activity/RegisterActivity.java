@@ -66,11 +66,6 @@ import static com.andar.hand.AndarApplication.trimMessage;
 import com.facebook.accountkit.AccessToken;
 
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
-
 public class RegisterActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener {
 
     public Context context = RegisterActivity.this;

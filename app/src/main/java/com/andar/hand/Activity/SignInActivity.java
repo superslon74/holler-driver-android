@@ -9,11 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import com.andar.hand.R;
 
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
-
 public class SignInActivity extends AppCompatActivity {
 
 

@@ -9,10 +9,6 @@ import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 public interface ApiInterface {
 
     @FormUrlEncoded

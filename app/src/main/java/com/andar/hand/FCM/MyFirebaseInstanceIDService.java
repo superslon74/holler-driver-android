@@ -7,11 +7,6 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.andar.hand.Helper.SharedHelper;
 import com.andar.hand.Utilities.Utilities;
 
-
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     private static final String TAG = MyFirebaseInstanceIDService.class.getSimpleName();
     Utilities utils = new Utilities();

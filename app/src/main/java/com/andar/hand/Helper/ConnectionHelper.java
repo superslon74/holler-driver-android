@@ -5,11 +5,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
-
 public class ConnectionHelper {
 
     private Context context;

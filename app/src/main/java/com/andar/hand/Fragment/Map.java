@@ -134,9 +134,6 @@ import retrofit2.Callback;
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static com.andar.hand.AndarApplication.trimMessage;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
 
 public class Map extends Fragment implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, View.OnClickListener, GoogleMap.OnCameraMoveListener {

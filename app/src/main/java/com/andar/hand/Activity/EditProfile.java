@@ -61,12 +61,6 @@ import java.util.regex.Pattern;
 
 import static com.andar.hand.AndarApplication.trimMessage;
 
-
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
-
 public class EditProfile extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener {
 
     private static final String TAG = "EditProfile";

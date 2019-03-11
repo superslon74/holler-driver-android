@@ -18,11 +18,6 @@ import com.andar.hand.Fragment.OnGoingTrips;
 import com.andar.hand.Fragment.PastTrips;
 import com.andar.hand.R;
 
-
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 public class HistoryActivity extends AppCompatActivity {
 
     private ViewPager viewPager;

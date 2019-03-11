@@ -20,10 +20,6 @@ import android.graphics.Rect;
 
 
 /**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
-/**
  * スクリーンの変化を扱うリスナです。
  */
 interface ScreenChangedListener {

@@ -1,9 +1,5 @@
 package com.andar.hand.Helper;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 
 public class MyCommon {
     private static MyCommon ourInstance = new MyCommon();

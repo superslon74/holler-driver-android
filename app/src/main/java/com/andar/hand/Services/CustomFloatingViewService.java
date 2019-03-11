@@ -19,9 +19,6 @@ import com.andar.hand.FloatingViewService.FloatingViewListener;
 import com.andar.hand.FloatingViewService.FloatingViewManager;
 import com.andar.hand.R;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
 
 /**
  * FloatingViewのカスタマイズを行います。

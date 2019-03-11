@@ -27,10 +27,6 @@ import android.view.WindowManager;
 
 
 /**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
-/**
  * フルスクリーンを監視するViewです。
  * http://stackoverflow.com/questions/18551135/receiving-hidden-status-bar-entering-a-full-screen-activity-event-on-a-service/19201933#19201933
  */

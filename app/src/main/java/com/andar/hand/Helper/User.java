@@ -3,9 +3,6 @@ package com.andar.hand.Helper;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
 public class User implements Parcelable {
 
     private String firstName;

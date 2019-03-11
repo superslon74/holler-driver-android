@@ -1,8 +1,5 @@
 package com.andar.hand.Helper;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
 
 public class URLHelper {
     public static final String base = "https://api.holler.taxi/";

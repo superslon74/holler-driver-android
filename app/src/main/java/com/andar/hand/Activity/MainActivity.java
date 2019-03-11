@@ -80,10 +80,6 @@ import java.util.HashMap;
 import static com.andar.hand.AndarApplication.trimMessage;
 
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 public class MainActivity extends AppCompatActivity {
     // tags used to attach the fragments
     private static final String TAG_HOME = "home";

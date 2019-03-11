@@ -41,10 +41,6 @@ import java.util.Map;
 
 import static com.andar.hand.AndarApplication.trimMessage;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 public class ForgetPassword extends AppCompatActivity {
 
     public Context context = ForgetPassword.this;

@@ -44,10 +44,6 @@ import java.util.HashMap;
 import static com.andar.hand.AndarApplication.trimMessage;
 
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 public class Help extends Fragment implements View.OnClickListener {
 
     ImageView backImg;

@@ -52,10 +52,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 public class EarningsFragment extends Fragment {
 
     Boolean isInternet;

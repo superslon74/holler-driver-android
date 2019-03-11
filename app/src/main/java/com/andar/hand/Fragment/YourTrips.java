@@ -17,9 +17,6 @@ import android.widget.TextView;
 
 import com.andar.hand.R;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
 
 
 public class YourTrips extends Fragment {

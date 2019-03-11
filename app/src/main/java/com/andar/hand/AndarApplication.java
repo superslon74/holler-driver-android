@@ -21,9 +21,6 @@ import java.util.Iterator;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
 
 public class AndarApplication extends Application {
 

@@ -54,11 +54,6 @@ import java.util.Map;
 
 import static com.andar.hand.AndarApplication.trimMessage;
 
-
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 public class HistoryDetails extends AppCompatActivity {
     Activity activity;
     Context context;

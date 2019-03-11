@@ -33,11 +33,6 @@ import org.json.JSONObject;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 public class WelcomeScreenActivity extends AppCompatActivity {
 
     private ViewPager viewPager;

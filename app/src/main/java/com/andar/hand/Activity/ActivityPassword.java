@@ -42,10 +42,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 public class ActivityPassword extends AppCompatActivity {
 
     String TAG = "ActivityPassword";

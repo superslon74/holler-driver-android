@@ -18,9 +18,6 @@ import com.andar.hand.Helper.LocaleUtils;
 import com.andar.hand.Helper.SharedHelper;
 import com.andar.hand.R;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
 
 public class ActivitySettings extends AppCompatActivity {
 

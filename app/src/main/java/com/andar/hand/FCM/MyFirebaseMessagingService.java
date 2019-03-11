@@ -17,10 +17,6 @@ import com.andar.hand.Helper.SharedHelper;
 import com.andar.hand.R;
 import com.andar.hand.Utilities.Utilities;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 

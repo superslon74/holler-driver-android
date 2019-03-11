@@ -21,10 +21,6 @@ import com.andar.hand.Utilities.Utilities;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 public class ActivityEmail extends AppCompatActivity {
 
     ImageView backArrow;

@@ -6,9 +6,6 @@ import android.view.Window;
 
 import com.andar.hand.R;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
 
 public class CustomDialog extends ProgressDialog {
 

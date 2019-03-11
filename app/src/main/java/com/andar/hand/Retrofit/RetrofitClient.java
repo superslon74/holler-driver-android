@@ -4,9 +4,6 @@ import com.andar.hand.Models.AccessDetails;
 
 import retrofit2.Retrofit;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
 
 public class RetrofitClient {
     private static Retrofit retrofit = null;

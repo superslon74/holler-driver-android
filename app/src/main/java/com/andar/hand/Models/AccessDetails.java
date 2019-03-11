@@ -7,10 +7,6 @@ import android.graphics.drawable.Drawable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 public class AccessDetails {
 
 //    Make it "true" for demo. For installation/customization make it as "false"

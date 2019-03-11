@@ -55,9 +55,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
 
 public class OnGoingTrips extends Fragment {
 

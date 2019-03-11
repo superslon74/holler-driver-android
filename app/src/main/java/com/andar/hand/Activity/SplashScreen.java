@@ -45,11 +45,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 public class SplashScreen extends AppCompatActivity implements ForceUpdateChecker.OnUpdateNeededListener{
 
     String TAG = "SplashActivity";

@@ -35,11 +35,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
-
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 /**
  * FloatingViewを扱うクラスです。
  * TODO:動作がカクカクなので原因を探す

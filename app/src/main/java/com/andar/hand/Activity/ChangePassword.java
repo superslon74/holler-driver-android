@@ -38,9 +38,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
 
 public class ChangePassword extends AppCompatActivity {
     String TAG = "ChangePasswordActivity";

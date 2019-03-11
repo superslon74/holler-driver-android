@@ -88,9 +88,6 @@ import java.util.concurrent.TimeoutException;
 
 import static com.andar.hand.AndarApplication.trimMessage;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
 
 public class ActivitySocialLogin extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -318,23 +315,7 @@ public class ActivitySocialLogin extends AppCompatActivity implements GoogleApiC
                         displayMessage(""+getResources().getString(R.string.social_cancel));
                     }
                 });
-//                String toastMessage;
-//                if (loginResult.getError() != null) {
-//                    toastMessage = loginResult.getError().getErrorType().getMessage();
-//                    // showErrorActivity(loginResult.getError());
-//                } else if (loginResult.wasCancelled()) {
-//                    toastMessage = "Login Cancelled";
-//                } else {
-//                    if (loginResult.getAccessToken() != null) {
-//                        Log.e(TAG, "onActivityResult: Account Kit" + loginResult.getAccessToken() + "");
-//                        //SharedHelper.putKey(this,"account_kit",loginResult.getAccessToken().toString());
-//                        toastMessage = "Welcome to Tranxit...";
-//                    } else {
-//                        toastMessage = String.format(
-//                                "Welcome to Tranxit...",
-//                                loginResult.getAuthorizationCode().substring(0, 10));
-//                    }
-//                }
+
             }
         }
 

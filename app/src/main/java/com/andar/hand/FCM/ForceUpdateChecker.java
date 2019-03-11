@@ -8,10 +8,6 @@ import android.util.Log;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 public class ForceUpdateChecker {
 
     private static final String TAG = ForceUpdateChecker.class.getSimpleName();

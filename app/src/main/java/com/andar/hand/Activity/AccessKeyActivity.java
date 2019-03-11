@@ -20,9 +20,6 @@ import com.andar.hand.Utilities.Utilities;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
 
 public class AccessKeyActivity extends AppCompatActivity {
 

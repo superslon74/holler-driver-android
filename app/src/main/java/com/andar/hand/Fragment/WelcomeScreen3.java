@@ -10,9 +10,6 @@ import android.view.ViewGroup;
 
 import com.andar.hand.R;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
 
 public class WelcomeScreen3 extends Fragment{
 

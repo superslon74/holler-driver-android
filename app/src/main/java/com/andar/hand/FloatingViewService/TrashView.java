@@ -44,10 +44,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 
 /**
  * FloatingViewを消すためのViewです。

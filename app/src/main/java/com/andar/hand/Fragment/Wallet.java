@@ -16,10 +16,6 @@ import com.andar.hand.Helper.SharedHelper;
 import com.andar.hand.R;
 
 
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 
 public class Wallet extends Fragment {
 

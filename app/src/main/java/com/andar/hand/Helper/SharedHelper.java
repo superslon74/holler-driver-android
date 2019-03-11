@@ -3,11 +3,6 @@ package com.andar.hand.Helper;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 public class SharedHelper {
 
     public static SharedPreferences sharedPreferences;

@@ -68,11 +68,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
-
-/**
- * Created by Tranxit Technologies Pvt Ltd, Chennai
- */
-
 public class BeginScreen extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     private static final int REQ_SIGN_IN_REQUIRED = 100;
