@@ -168,7 +168,7 @@ public class BeginScreen extends AppCompatActivity implements GoogleApiClient.On
 
         try {
             @SuppressLint("PackageManagerGetSignatures") PackageInfo info = getPackageManager().getPackageInfo(
-                    "com.tranxitpro.provider",
+                    "com.andar.hand",
                     PackageManager.GET_SIGNATURES);
             for (Signature signature : info.signatures) {
                 MessageDigest md = MessageDigest.getInstance("SHA");

@@ -1,4 +1,3 @@
-//-----------------------------------com.tranxitpro.app.Models.AccessDetails.java-----------------------------------
 
 package com.andar.hand.Models;
 
@@ -24,7 +23,7 @@ public class AccessDetails {
     public static String password ;
 
 
-//    Tranxit Installation/Customization
+//    AndarApp Installation/Customization
 //    @SerializedName("username")
 //    @Expose
 //    public static String username = "schedule";

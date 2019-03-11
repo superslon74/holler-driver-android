@@ -678,11 +678,11 @@ public class RegisterActivity extends AppCompatActivity implements RadioGroup.On
                     if (loginResult.getAccessToken() != null) {
                         Log.e(TAG, "onActivityResult: Account Kit" + loginResult.getAccessToken().toString());
                         SharedHelper.putKey(this, "account_kit", loginResult.getAccessToken().toString());
-                        toastMessage = "Welcome to Tranxit...";
+                        toastMessage = "Welcome to Andar Hand...";
                     } else {
                         SharedHelper.putKey(this, "account_kit", "");
                         toastMessage = String.format(
-                                "Welcome to Tranxit...",
+                                "Welcome to Andar Hand...",
                                 loginResult.getAuthorizationCode().substring(0, 10));
                     }
                 }
