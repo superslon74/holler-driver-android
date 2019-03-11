@@ -26,7 +26,7 @@
 
 
         <com.andar.hand.Utilities.MyBoldTextView
-            android:text="@string/get_moving_with_tranxit"
+            android:text="@string/get_moving_with_andar"
             android:textSize="@dimen/_15sdp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

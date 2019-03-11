@@ -60,7 +60,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/_15sdp"
-                    android:text="@string/get_moving_with_tranxit"
+                    android:text="@string/get_moving_with_andar"
                     android:textColor="@color/black_text_color"
                     android:textSize="@dimen/_15sdp" />
 

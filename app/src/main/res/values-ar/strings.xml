@@ -51,7 +51,7 @@
     <string name="first_name">الاسم الاول</string>
     <string name="first_name_empty">الاسم الأول مطلوب.</string>
     <string name="first_name_no_number">الاسم الأول لا يقبل الأرقام</string>
-    <string name="get_moving_with_tranxit"> خدمات&appName;الحصول على التحرك مع </string>
+    <string name="get_moving_with_andar"> خدمات&appName;الحصول على التحرك مع </string>
     <string name="go_offline">الذهاب أوفلين</string>
     <string name="change_pwd_dialog">تم تحديث كلمة المرور بنجاح. يرجى تسجيل الدخول باستخدام كلمة المرور الجديدة.</string>
     <string name="done">فعله</string>
