@@ -4,6 +4,11 @@ import com.andar.hand.Models.AccessDetails;
 
 import retrofit2.Retrofit;
 
+/*
+* STRANGE CODE?
+* Creates two retrofit instances with same url
+* */
+
 
 public class RetrofitClient {
     private static Retrofit retrofit = null;

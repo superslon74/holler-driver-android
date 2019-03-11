@@ -9,20 +9,28 @@ import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
+/*
+* This interface describes methods only for trips
+* */
+
 public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("/api/provider/trip/{id}/calculate")
-    Call<ResponseBody> getLiveTracking(@Header("X-Requested-With") String xmlRequest, @Header("Authorization") String strToken,
+    Call<ResponseBody> getLiveTracking(@Header("X-Requested-With") String xmlRequest,
+                                       @Header("Authorization") String strToken,
                                        @Path("id") String id,
-                                       @Field("latitude") String latitude, @Field("longitude") String longitude);
+                                       @Field("latitude") String latitude,
+                                       @Field("longitude") String longitude);
 
 
     @POST("/api/provider/trip/{id}")
-    Call<ResponseBody> acceptAPI(@Path("id") String id, @Header("X-Requested-With") String xmlRequest,
+    Call<ResponseBody> acceptAPI(@Path("id") String id,
+                                 @Header("X-Requested-With") String xmlRequest,
                                  @Header("Authorization") String accesskey);
 
     @DELETE("/api/provider/trip/{id}")
-    Call<ResponseBody> rejectAPI(@Path("id") String id, @Header("X-Requested-With") String xmlRequest,
+    Call<ResponseBody> rejectAPI(@Path("id") String id,
+                                 @Header("X-Requested-With") String xmlRequest,
                                  @Header("Authorization") String accesskey);
 }

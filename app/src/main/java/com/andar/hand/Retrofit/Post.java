@@ -4,6 +4,11 @@ package com.andar.hand.Retrofit;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+/*
+* UNUSED?
+* Class describes blog article object
+* Looks like this class was used to test retrofit library
+*/
 
 public class Post {
 

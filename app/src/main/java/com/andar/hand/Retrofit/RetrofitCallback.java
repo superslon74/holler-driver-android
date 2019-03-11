@@ -3,6 +3,9 @@ package com.andar.hand.Retrofit;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
+/*
+* UNUSED?
+*/
 
 public interface RetrofitCallback {
     public void Success(Response<ResponseBody> response);
