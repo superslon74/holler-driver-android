@@ -1,7 +1,5 @@
 package com.tranxitpro.provider.Activity;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,7 +13,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,13 +31,13 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
+import com.tranxitpro.provider.AndarApplication;
 import com.tranxitpro.provider.Helper.ConnectionHelper;
 import com.tranxitpro.provider.Helper.CustomDialog;
 import com.tranxitpro.provider.Helper.SharedHelper;
 import com.tranxitpro.provider.Helper.URLHelper;
 import com.tranxitpro.provider.Helper.User;
 import com.tranxitpro.provider.Models.AccessDetails;
-import com.tranxitpro.provider.TranxitApplication;
 import com.tranxitpro.provider.R;
 import com.tranxitpro.provider.Utilities.Utilities;
 
@@ -55,7 +52,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import static com.tranxitpro.provider.TranxitApplication.trimMessage;
+import static com.tranxitpro.provider.AndarApplication.trimMessage;
 
 
 /**
@@ -496,7 +493,7 @@ public class HistoryDetails extends AppCompatActivity {
             }
         };
 
-        TranxitApplication.getInstance().addToRequestQueue(jsonArrayRequest);
+        AndarApplication.getInstance().addToRequestQueue(jsonArrayRequest);
     }
 
 
@@ -580,7 +577,7 @@ public class HistoryDetails extends AppCompatActivity {
             }
         };
 
-        TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+        AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
     }
 
 
@@ -678,7 +675,7 @@ public class HistoryDetails extends AppCompatActivity {
             }
         };
 
-        TranxitApplication.getInstance().addToRequestQueue(jsonArrayRequest);
+        AndarApplication.getInstance().addToRequestQueue(jsonArrayRequest);
     }
 
 

@@ -30,15 +30,13 @@ import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.tranxitpro.provider.Activity.AccessKeyActivity;
-import com.tranxitpro.provider.Activity.BeginScreen;
 import com.tranxitpro.provider.Activity.WelcomeScreenActivity;
 import com.tranxitpro.provider.Helper.ConnectionHelper;
 import com.tranxitpro.provider.Helper.CustomDialog;
 import com.tranxitpro.provider.Helper.SharedHelper;
 import com.tranxitpro.provider.Helper.URLHelper;
 import com.tranxitpro.provider.Models.AccessDetails;
-import com.tranxitpro.provider.TranxitApplication;
+import com.tranxitpro.provider.AndarApplication;
 import com.tranxitpro.provider.R;
 import com.tranxitpro.provider.Utilities.CircularProgressBar;
 
@@ -220,7 +218,7 @@ public class EarningsFragment extends Fragment {
                             GoToBeginActivity();
                         }else if(response.statusCode == 422){
 
-                            json = TranxitApplication.trimMessage(new String(response.data));
+                            json = AndarApplication.trimMessage(new String(response.data));
                             if(json !="" && json != null) {
                                 displayMessage(json);
                             }else{
@@ -258,7 +256,7 @@ public class EarningsFragment extends Fragment {
             }
         };
 
-        TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+        AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
 
     }
 

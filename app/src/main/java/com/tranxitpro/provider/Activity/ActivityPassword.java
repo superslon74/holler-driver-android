@@ -26,12 +26,12 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.tranxitpro.provider.AndarApplication;
 import com.tranxitpro.provider.Helper.ConnectionHelper;
 import com.tranxitpro.provider.Helper.CustomDialog;
 import com.tranxitpro.provider.Helper.SharedHelper;
 import com.tranxitpro.provider.Helper.URLHelper;
 import com.tranxitpro.provider.Models.AccessDetails;
-import com.tranxitpro.provider.TranxitApplication;
 import com.tranxitpro.provider.R;
 import com.tranxitpro.provider.Utilities.Utilities;
 
@@ -199,7 +199,7 @@ public class ActivityPassword extends AppCompatActivity {
                             } else if (response.statusCode == 401) {
                                 displayMessage(getString(R.string.invalid_credentials));
                             } else if (response.statusCode == 422) {
-                                json = TranxitApplication.trimMessage(new String(response.data));
+                                json = AndarApplication.trimMessage(new String(response.data));
                                 if (json != "" && json != null) {
                                     displayMessage(json);
                                 } else {
@@ -234,7 +234,7 @@ public class ActivityPassword extends AppCompatActivity {
                 }
             };
 
-            TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+            AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
 
         } else {
             displayMessage(getString(R.string.something_went_wrong_net));
@@ -307,7 +307,7 @@ public class ActivityPassword extends AppCompatActivity {
                                 SharedHelper.putKey(context, "loggedIn", getString(R.string.False));
                                 GoToBeginActivity();
                             } else if (response.statusCode == 422) {
-                                json = TranxitApplication.trimMessage(new String(response.data));
+                                json = AndarApplication.trimMessage(new String(response.data));
                                 if (json != "" && json != null) {
                                     displayMessage(json);
                                 } else {
@@ -344,7 +344,7 @@ public class ActivityPassword extends AppCompatActivity {
                 }
             };
 
-            TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+            AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
         } else {
             displayMessage(getString(R.string.something_went_wrong_net));
         }

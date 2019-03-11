@@ -6,9 +6,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -26,31 +23,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkError;
-import com.android.volley.NetworkResponse;
-import com.android.volley.NoConnectionError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.tranxitpro.provider.Fragment.OnGoingTrips;
-import com.tranxitpro.provider.Fragment.PastTrips;
-import com.tranxitpro.provider.Fragment.WelcomeScreen1;
-import com.tranxitpro.provider.Fragment.WelcomeScreen2;
-import com.tranxitpro.provider.Fragment.WelcomeScreen3;
 import com.tranxitpro.provider.Helper.SharedHelper;
 import com.tranxitpro.provider.Models.AccessDetails;
 import com.tranxitpro.provider.R;
-import com.tranxitpro.provider.TranxitApplication;
 import com.tranxitpro.provider.Utilities.Utilities;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -299,7 +278,7 @@ public class WelcomeScreenActivity extends AppCompatActivity {
 
         Log.e("REFACTORING", "This method should never be called");
 
-//        TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+//        AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
     }
 
     private void processResponse(final JSONObject response) {

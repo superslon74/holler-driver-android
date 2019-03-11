@@ -26,16 +26,14 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.bumptech.glide.Glide;
-import com.tranxitpro.provider.Activity.AccessKeyActivity;
-import com.tranxitpro.provider.Activity.BeginScreen;
 import com.tranxitpro.provider.Activity.HistoryDetails;
 import com.tranxitpro.provider.Activity.WelcomeScreenActivity;
+import com.tranxitpro.provider.AndarApplication;
 import com.tranxitpro.provider.Helper.ConnectionHelper;
 import com.tranxitpro.provider.Helper.CustomDialog;
 import com.tranxitpro.provider.Helper.SharedHelper;
 import com.tranxitpro.provider.Helper.URLHelper;
 import com.tranxitpro.provider.Models.AccessDetails;
-import com.tranxitpro.provider.TranxitApplication;
 import com.tranxitpro.provider.R;
 
 import org.json.JSONArray;
@@ -50,7 +48,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import static com.tranxitpro.provider.TranxitApplication.trimMessage;
+import static com.tranxitpro.provider.AndarApplication.trimMessage;
 
 
 /**
@@ -226,7 +224,7 @@ public class PastTrips extends Fragment {
             }
         };
 
-        TranxitApplication.getInstance().addToRequestQueue(jsonArrayRequest);
+        AndarApplication.getInstance().addToRequestQueue(jsonArrayRequest);
     }
 
 

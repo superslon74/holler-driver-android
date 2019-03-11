@@ -23,12 +23,12 @@ import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.tranxitpro.provider.AndarApplication;
 import com.tranxitpro.provider.Helper.ConnectionHelper;
 import com.tranxitpro.provider.Helper.CustomDialog;
 import com.tranxitpro.provider.Helper.SharedHelper;
 import com.tranxitpro.provider.Helper.URLHelper;
 import com.tranxitpro.provider.Models.AccessDetails;
-import com.tranxitpro.provider.TranxitApplication;
 import com.tranxitpro.provider.R;
 import com.tranxitpro.provider.Utilities.Utilities;
 
@@ -162,7 +162,7 @@ public class ChangePassword extends AppCompatActivity {
                         }else if(response.statusCode == 401){
                                 GoToBeginActivity();
                         }else if(response.statusCode == 422){
-                            json = TranxitApplication.trimMessage(new String(response.data));
+                            json = AndarApplication.trimMessage(new String(response.data));
                             if(json !="" && json != null) {
                                 displayMessage(json);
                             }else{
@@ -197,7 +197,7 @@ public class ChangePassword extends AppCompatActivity {
             }
         };
 
-        TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+        AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
 
     }
 

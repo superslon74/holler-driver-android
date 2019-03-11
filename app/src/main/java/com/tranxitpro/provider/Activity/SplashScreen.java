@@ -31,11 +31,10 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.tranxitpro.provider.BuildConfig;
 import com.tranxitpro.provider.FCM.ForceUpdateChecker;
 import com.tranxitpro.provider.Helper.ConnectionHelper;
-import com.tranxitpro.provider.Helper.CustomDialog;
 import com.tranxitpro.provider.Helper.SharedHelper;
 import com.tranxitpro.provider.Helper.URLHelper;
 import com.tranxitpro.provider.Models.AccessDetails;
-import com.tranxitpro.provider.TranxitApplication;
+import com.tranxitpro.provider.AndarApplication;
 import com.tranxitpro.provider.R;
 import com.tranxitpro.provider.Utilities.Utilities;
 
@@ -165,7 +164,7 @@ public class SplashScreen extends AppCompatActivity implements ForceUpdateChecke
                 }
             };
 
-            TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+            AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
 
         } else {
             displayMessage(getString(R.string.something_went_wrong_net));
@@ -216,7 +215,7 @@ public class SplashScreen extends AppCompatActivity implements ForceUpdateChecke
 //                        } else if (response.statusCode == 401) {
 //                            displayMessage(errorObj.optString("message"));
 //                        } else if (response.statusCode == 422) {
-//                            json = TranxitApplication.trimMessage(new String(response.data));
+//                            json = AndarApplication.trimMessage(new String(response.data));
 //                            if (json != "" && json != null) {
 //                                displayMessage(json);
 //                            } else {
@@ -251,7 +250,7 @@ public class SplashScreen extends AppCompatActivity implements ForceUpdateChecke
 //            }
 //        };
 //
-//        TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+//        AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
 //    }
 
     public void GetToken() {
@@ -352,7 +351,7 @@ public class SplashScreen extends AppCompatActivity implements ForceUpdateChecke
                             GoToBeginActivity();
                         } else if (response.statusCode == 422) {
 
-                            json = TranxitApplication.trimMessage(new String(response.data));
+                            json = AndarApplication.trimMessage(new String(response.data));
                             if (json != "" && json != null) {
                                 displayMessage(json);
                             } else {
@@ -385,7 +384,7 @@ public class SplashScreen extends AppCompatActivity implements ForceUpdateChecke
             }
         };
 
-        TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+        AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
 
     }
 

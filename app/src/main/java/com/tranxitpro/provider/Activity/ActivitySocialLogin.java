@@ -45,7 +45,6 @@ import com.facebook.accountkit.Account;
 import com.facebook.accountkit.AccountKit;
 import com.facebook.accountkit.AccountKitCallback;
 import com.facebook.accountkit.AccountKitError;
-import com.facebook.accountkit.AccountKitLoginResult;
 import com.facebook.accountkit.ui.AccountKitActivity;
 import com.facebook.accountkit.ui.AccountKitConfiguration;
 import com.facebook.accountkit.ui.LoginType;
@@ -67,13 +66,12 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
-import com.splunk.mint.Mint;
+import com.tranxitpro.provider.AndarApplication;
 import com.tranxitpro.provider.Helper.ConnectionHelper;
 import com.tranxitpro.provider.Helper.CustomDialog;
 import com.tranxitpro.provider.Helper.SharedHelper;
 import com.tranxitpro.provider.Helper.URLHelper;
 import com.tranxitpro.provider.Models.AccessDetails;
-import com.tranxitpro.provider.TranxitApplication;
 import com.tranxitpro.provider.R;
 import com.tranxitpro.provider.Utilities.Utilities;
 
@@ -88,7 +86,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
-import static com.tranxitpro.provider.TranxitApplication.trimMessage;
+import static com.tranxitpro.provider.AndarApplication.trimMessage;
 
 /**
  * Created by Tranxit Technologies Pvt Ltd, Chennai
@@ -644,7 +642,7 @@ public class ActivitySocialLogin extends AppCompatActivity implements GoogleApiC
                 }
             };
 
-            TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+            AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
         } else {
             displayMessage(getString(R.string.something_went_wrong_net));
         }

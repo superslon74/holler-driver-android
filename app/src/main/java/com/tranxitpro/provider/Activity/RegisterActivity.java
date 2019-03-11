@@ -44,12 +44,12 @@ import com.facebook.accountkit.ui.LoginType;
 import com.facebook.accountkit.ui.SkinManager;
 import com.facebook.accountkit.ui.UIManager;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.tranxitpro.provider.AndarApplication;
 import com.tranxitpro.provider.Helper.ConnectionHelper;
 import com.tranxitpro.provider.Helper.CustomDialog;
 import com.tranxitpro.provider.Helper.SharedHelper;
 import com.tranxitpro.provider.Helper.URLHelper;
 import com.tranxitpro.provider.Models.AccessDetails;
-import com.tranxitpro.provider.TranxitApplication;
 import com.tranxitpro.provider.R;
 import com.tranxitpro.provider.Utilities.Utilities;
 
@@ -61,8 +61,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.tranxitpro.provider.TranxitApplication.trimMessage;
-import com.facebook.accountkit.AccountKit;
+import static com.tranxitpro.provider.AndarApplication.trimMessage;
+
 import com.facebook.accountkit.AccessToken;
 
 
@@ -303,7 +303,7 @@ public class RegisterActivity extends AppCompatActivity implements RadioGroup.On
             }
         };
 
-        TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+        AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
     }
 
     private void registerAPI() {
@@ -413,7 +413,7 @@ public class RegisterActivity extends AppCompatActivity implements RadioGroup.On
                 return headers;
             }
         };
-        TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+        AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
     }
 
     public void signIn() {
@@ -497,7 +497,7 @@ public class RegisterActivity extends AppCompatActivity implements RadioGroup.On
                 }
             };
 
-            TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+            AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
         } else {
             displayMessage(getString(R.string.something_went_wrong_net));
         }
@@ -598,7 +598,7 @@ public class RegisterActivity extends AppCompatActivity implements RadioGroup.On
                 }
             };
 
-            TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+            AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
         } else {
             displayMessage(getString(R.string.something_went_wrong_net));
         }

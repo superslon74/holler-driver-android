@@ -44,10 +44,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -61,7 +59,6 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -88,15 +85,13 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
-import com.tranxitpro.provider.Activity.AccessKeyActivity;
-import com.tranxitpro.provider.Activity.BeginScreen;
 import com.tranxitpro.provider.Activity.MainActivity;
 import com.tranxitpro.provider.Activity.Offline;
 import com.tranxitpro.provider.Activity.ShowProfile;
 import com.tranxitpro.provider.Activity.WaitingForApproval;
 import com.tranxitpro.provider.Activity.WelcomeScreenActivity;
+import com.tranxitpro.provider.AndarApplication;
 import com.tranxitpro.provider.Helper.ConnectionHelper;
 import com.tranxitpro.provider.Helper.CustomDialog;
 import com.tranxitpro.provider.Helper.DataParser;
@@ -108,7 +103,6 @@ import com.tranxitpro.provider.Retrofit.ApiInterface;
 import com.tranxitpro.provider.Retrofit.RetrofitClient;
 import com.tranxitpro.provider.Services.CustomFloatingViewService;
 import com.tranxitpro.provider.Services.FloatingViewService;
-import com.tranxitpro.provider.TranxitApplication;
 import com.tranxitpro.provider.R;
 import com.tranxitpro.provider.Utilities.Utilities;
 
@@ -138,7 +132,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
-import static com.tranxitpro.provider.TranxitApplication.trimMessage;
+import static com.tranxitpro.provider.AndarApplication.trimMessage;
 
 /**
  * Created by Tranxit Technologies Pvt Ltd, Chennai
@@ -1495,7 +1489,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
                         return headers;
                     }
                 };
-                TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+                AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
             } else {
                 displayMessage(context.getResources().getString(R.string.oops_connect_your_internet));
             }
@@ -1802,7 +1796,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
                     return headers;
                 }
             };
-            TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+            AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
         } else {
             String url;
             JSONObject param = new JSONObject();
@@ -1871,7 +1865,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
                     return headers;
                 }
             };
-            TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+            AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
         }
     }
 
@@ -1955,7 +1949,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
             }
         };
 
-        TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+        AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
     }
 
     private void handleIncomingRequest(final String status, String id) {
@@ -2086,7 +2080,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
 //                return headers;
 //            }
 //        };
-//        TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+//        AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
     }
 
     public void errorHandler(VolleyError error) {
@@ -2108,7 +2102,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
                     SharedHelper.putKey(context, "loggedIn", context.getResources().getString(R.string.False));
                     GoToBeginActivity();
                 } else if (response.statusCode == 422) {
-                    json = TranxitApplication.trimMessage(new String(response.data));
+                    json = AndarApplication.trimMessage(new String(response.data));
                     if (json != "" && json != null) {
                         displayMessage(json);
                     } else {

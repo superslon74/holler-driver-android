@@ -29,7 +29,7 @@ import com.tranxitpro.provider.Helper.CustomDialog;
 import com.tranxitpro.provider.Helper.SharedHelper;
 import com.tranxitpro.provider.Helper.URLHelper;
 import com.tranxitpro.provider.Models.AccessDetails;
-import com.tranxitpro.provider.TranxitApplication;
+import com.tranxitpro.provider.AndarApplication;
 import com.tranxitpro.provider.R;
 import com.tranxitpro.provider.Utilities.Utilities;
 
@@ -39,7 +39,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.tranxitpro.provider.TranxitApplication.trimMessage;
+import static com.tranxitpro.provider.AndarApplication.trimMessage;
 
 /**
  * Created by Tranxit Technologies Pvt Ltd, Chennai
@@ -246,7 +246,7 @@ public class ForgetPassword extends AppCompatActivity {
             }
         };
 
-        TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+        AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
 
     }
 
@@ -350,7 +350,7 @@ public class ForgetPassword extends AppCompatActivity {
             }
         };
 
-        TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+        AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
 
     }
 

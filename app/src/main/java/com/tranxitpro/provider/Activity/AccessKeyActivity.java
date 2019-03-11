@@ -12,29 +12,13 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkError;
-import com.android.volley.NetworkResponse;
-import com.android.volley.NoConnectionError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.tranxitpro.provider.Helper.SharedHelper;
-import com.tranxitpro.provider.Helper.URLHelper;
 import com.tranxitpro.provider.Models.AccessDetails;
 import com.tranxitpro.provider.R;
-import com.tranxitpro.provider.TranxitApplication;
 import com.tranxitpro.provider.Utilities.Utilities;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.tranxitpro.provider.TranxitApplication.trimMessage;
 
 /**
  * Created by Tranxit Technologies Pvt Ltd, Chennai
@@ -87,7 +71,7 @@ public class AccessKeyActivity extends AppCompatActivity {
         loadingVisibility();
 
         Log.e("REFACTORING", "This method should never be called");
-//        TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+//        AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
     }
 
     private void processResponse(final JSONObject response) {

@@ -9,10 +9,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.Color;
 import android.location.LocationManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -70,8 +67,7 @@ import com.tranxitpro.provider.Fragment.SummaryFragment;
 import com.tranxitpro.provider.Helper.SharedHelper;
 import com.tranxitpro.provider.Helper.URLHelper;
 import com.tranxitpro.provider.Models.AccessDetails;
-import com.tranxitpro.provider.Services.FloatingViewService;
-import com.tranxitpro.provider.TranxitApplication;
+import com.tranxitpro.provider.AndarApplication;
 import com.tranxitpro.provider.Listeners.ConnectionBooleanChangedListener;
 import com.tranxitpro.provider.R;
 import com.tranxitpro.provider.Utilities.Utilities;
@@ -81,7 +77,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
-import static com.tranxitpro.provider.TranxitApplication.trimMessage;
+import static com.tranxitpro.provider.AndarApplication.trimMessage;
 
 
 /**
@@ -557,7 +553,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+        AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
     }
 
     private void signOut() {

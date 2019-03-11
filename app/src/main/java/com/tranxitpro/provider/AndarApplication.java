@@ -24,15 +24,15 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
  * Created by Tranxit Technologies Pvt Ltd, Chennai
  */
 
-public class TranxitApplication extends Application {
+public class AndarApplication extends Application {
 
-    public static final String TAG = TranxitApplication.class
+    public static final String TAG = AndarApplication.class
             .getSimpleName();
 
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
 
-    private static TranxitApplication mInstance;
+    private static AndarApplication mInstance;
 
 
     @Override
@@ -61,7 +61,7 @@ public class TranxitApplication extends Application {
         );
     }
 
-    public static synchronized TranxitApplication getInstance() {
+    public static synchronized AndarApplication getInstance() {
         return mInstance;
     }
 

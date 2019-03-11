@@ -49,12 +49,12 @@ import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.splunk.mint.Mint;
+import com.tranxitpro.provider.AndarApplication;
 import com.tranxitpro.provider.Helper.ConnectionHelper;
 import com.tranxitpro.provider.Helper.CustomDialog;
 import com.tranxitpro.provider.Helper.SharedHelper;
 import com.tranxitpro.provider.Helper.URLHelper;
 import com.tranxitpro.provider.Models.AccessDetails;
-import com.tranxitpro.provider.TranxitApplication;
 import com.tranxitpro.provider.R;
 import com.tranxitpro.provider.Utilities.Utilities;
 
@@ -409,7 +409,7 @@ public class BeginScreen extends AppCompatActivity implements GoogleApiClient.On
                                 SharedHelper.putKey(context, "loggedIn", getString(R.string.False));
 //                                GoToBeginActivity();
                             } else if (response.statusCode == 422) {
-                                json = TranxitApplication.trimMessage(new String(response.data));
+                                json = AndarApplication.trimMessage(new String(response.data));
                                 if (json != "" && json != null) {
                                     displayMessage(json);
                                 } else {
@@ -438,7 +438,7 @@ public class BeginScreen extends AppCompatActivity implements GoogleApiClient.On
                 }
             };
 
-            TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+            AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
         } else {
             displayMessage(getString(R.string.something_went_wrong_net));
         }

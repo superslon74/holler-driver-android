@@ -33,8 +33,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
-import com.tranxitpro.provider.Activity.AccessKeyActivity;
-import com.tranxitpro.provider.Activity.BeginScreen;
 import com.tranxitpro.provider.Activity.HistoryDetails;
 import com.tranxitpro.provider.Activity.WelcomeScreenActivity;
 import com.tranxitpro.provider.Helper.ConnectionHelper;
@@ -42,7 +40,7 @@ import com.tranxitpro.provider.Helper.CustomDialog;
 import com.tranxitpro.provider.Helper.SharedHelper;
 import com.tranxitpro.provider.Helper.URLHelper;
 import com.tranxitpro.provider.Models.AccessDetails;
-import com.tranxitpro.provider.TranxitApplication;
+import com.tranxitpro.provider.AndarApplication;
 import com.tranxitpro.provider.R;
 
 import org.json.JSONArray;
@@ -191,7 +189,7 @@ public class OnGoingTrips extends Fragment {
                             GoToBeginActivity();
                         } else if (response.statusCode == 422) {
 
-                            json = TranxitApplication.trimMessage(new String(response.data));
+                            json = AndarApplication.trimMessage(new String(response.data));
                             if (json != "" && json != null) {
                                 displayMessage(json);
                             } else {
@@ -230,7 +228,7 @@ public class OnGoingTrips extends Fragment {
             }
         };
 
-        TranxitApplication.getInstance().addToRequestQueue(jsonArrayRequest);
+        AndarApplication.getInstance().addToRequestQueue(jsonArrayRequest);
     }
 
     public void GoToBeginActivity() {
@@ -437,7 +435,7 @@ public class OnGoingTrips extends Fragment {
                             GoToBeginActivity();
                         } else if (response.statusCode == 422) {
 
-                            json = TranxitApplication.trimMessage(new String(response.data));
+                            json = AndarApplication.trimMessage(new String(response.data));
                             if (json != "" && json != null) {
                                 displayMessage(json);
                             } else {
@@ -473,7 +471,7 @@ public class OnGoingTrips extends Fragment {
             }
         };
 
-        TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+        AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
     }
 
     private String getMonth(String date) throws ParseException {

@@ -38,6 +38,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.squareup.picasso.Picasso;
+import com.tranxitpro.provider.AndarApplication;
 import com.tranxitpro.provider.Helper.AppHelper;
 import com.tranxitpro.provider.Helper.ConnectionHelper;
 import com.tranxitpro.provider.Helper.CustomDialog;
@@ -45,7 +46,6 @@ import com.tranxitpro.provider.Helper.SharedHelper;
 import com.tranxitpro.provider.Helper.URLHelper;
 import com.tranxitpro.provider.Helper.VolleyMultipartRequest;
 import com.tranxitpro.provider.Models.AccessDetails;
-import com.tranxitpro.provider.TranxitApplication;
 import com.tranxitpro.provider.R;
 import com.tranxitpro.provider.Utilities.Utilities;
 
@@ -59,7 +59,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.tranxitpro.provider.TranxitApplication.trimMessage;
+import static com.tranxitpro.provider.AndarApplication.trimMessage;
 
 
 /**
@@ -278,7 +278,7 @@ public class EditProfile extends AppCompatActivity implements RadioGroup.OnCheck
                 }
             };
 
-            TranxitApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+            AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
         } else {
             displayMessage(getString(R.string.something_went_wrong_net));
         }
@@ -486,7 +486,7 @@ public class EditProfile extends AppCompatActivity implements RadioGroup.OnCheck
                 return headers;
             }
         };
-        TranxitApplication.getInstance().addToRequestQueue(volleyMultipartRequest);
+        AndarApplication.getInstance().addToRequestQueue(volleyMultipartRequest);
     }
 
     private void updateProfileWithImage() {
@@ -613,7 +613,7 @@ public class EditProfile extends AppCompatActivity implements RadioGroup.OnCheck
                 return params;
             }
         };
-        TranxitApplication.getInstance().addToRequestQueue(volleyMultipartRequest);
+        AndarApplication.getInstance().addToRequestQueue(volleyMultipartRequest);
 
     }
 
