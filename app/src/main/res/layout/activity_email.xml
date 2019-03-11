@@ -16,7 +16,7 @@
             android:layout_height="24dp"
             android:src="@drawable/back_icon"/>
 
-        <com.tranxitpro.provider.Utilities.MyBoldTextView
+        <com.andar.hand.Utilities.MyBoldTextView
             android:text="@string/whats_your_mail_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp">
 
-            <com.tranxitpro.provider.Utilities.MyEditText
+            <com.andar.hand.Utilities.MyEditText
                 android:id="@+id/email"
                 android:inputType="textEmailAddress"
                 android:layout_width="match_parent"
@@ -59,7 +59,7 @@
             android:layout_marginStart="16dp"
             android:gravity="center_vertical">
 
-            <com.tranxitpro.provider.Utilities.MyTextView
+            <com.andar.hand.Utilities.MyTextView
                 android:id="@+id/register"
                 android:text="@string/i_need_to_create_an_account"
                 android:layout_width="wrap_content"
@@ -68,7 +68,7 @@
                 android:layout_marginTop="5dp"
                 android:textColor="@android:color/holo_blue_light" />
 
-            <com.tranxitpro.provider.Utilities.MyTextView
+            <com.andar.hand.Utilities.MyTextView
                 android:visibility="gone"
                 android:id="@+id/forgetPassword"
                 android:text="@string/i_forgot_my_password"

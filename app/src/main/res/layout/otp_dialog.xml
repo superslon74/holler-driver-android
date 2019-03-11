@@ -27,7 +27,7 @@
                 android:layout_marginTop="@dimen/_10sdp"
                 android:src="@drawable/otp" />
 
-            <com.tranxitpro.provider.Utilities.MyBoldTextView
+            <com.andar.hand.Utilities.MyBoldTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -55,7 +55,7 @@
                 android:layout_gravity="center" />
         </LinearLayout>
 
-        <com.tranxitpro.provider.Utilities.MyButton
+        <com.andar.hand.Utilities.MyButton
             android:id="@+id/submit_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

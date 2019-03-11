@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.tranxitpro.provider.Activity.ActivitySocialLogin">
+    tools:context="com.andar.hand.Activity.ActivitySocialLogin">
 
     <ImageView
         android:layout_width="@dimen/_18sdp"
@@ -13,7 +13,7 @@
         android:contentDescription="@string/app_name"
         android:src="@drawable/back_icon" />
 
-    <com.tranxitpro.provider.Utilities.MyBoldTextView
+    <com.andar.hand.Utilities.MyBoldTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_18sdp"

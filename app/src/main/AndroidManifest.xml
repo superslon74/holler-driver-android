@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.tranxitpro.provider">
+    package="com.andar.hand">
 
     <!--This permission used for WHAT?-->
     <permission
@@ -32,7 +32,7 @@
     <uses-feature android:name="android.hardware.camera" />
 
     <application
-        android:name=".AndarApplication"
+        android:name="com.andar.hand.AndarApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -56,7 +56,7 @@
             android:value="@string/ACCOUNT_KIT_CLIENT_TOKEN" />
 
         <activity
-            android:name=".Activity.SplashScreen"
+            android:name="com.andar.hand.Activity.SplashScreen"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -70,90 +70,90 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
         <activity
-            android:name=".Activity.BeginScreen"
+            android:name="com.andar.hand.Activity.BeginScreen"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".Activity.RegisterActivity"
+            android:name="com.andar.hand.Activity.RegisterActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".Activity.SignInActivity"
+            android:name="com.andar.hand.Activity.SignInActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".Activity.ActivityEmail"
+            android:name="com.andar.hand.Activity.ActivityEmail"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".Activity.ActivityPassword"
+            android:name="com.andar.hand.Activity.ActivityPassword"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".Activity.ShowProfile"
+            android:name="com.andar.hand.Activity.ShowProfile"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".Activity.MainActivity"
+            android:name="com.andar.hand.Activity.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".Activity.ForgetPassword"
+            android:name="com.andar.hand.Activity.ForgetPassword"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".Activity.EditProfile"
+            android:name="com.andar.hand.Activity.EditProfile"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".Activity.WaitingForApproval"
+            android:name="com.andar.hand.Activity.WaitingForApproval"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".Activity.HistoryDetails"
+            android:name="com.andar.hand.Activity.HistoryDetails"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".Activity.HistoryActivity"
+            android:name="com.andar.hand.Activity.HistoryActivity"
             android:label="@string/your_trips"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activity.WelcomeScreenActivity"
+            android:name="com.andar.hand.Activity.WelcomeScreenActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
-            android:name=".Activity.ActivitySettings"
+            android:name="com.andar.hand.Activity.ActivitySettings"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activity.ChangePassword"
+            android:name="com.andar.hand.Activity.ChangePassword"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".Activity.ActivitySocialLogin"
+            android:name="com.andar.hand.Activity.ActivitySocialLogin"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".Activity.AccessKeyActivity"
+            android:name="com.andar.hand.Activity.AccessKeyActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait" />
         <activity
@@ -162,22 +162,22 @@
 
 
         <!-- Firebase Notifications -->
-        <service android:name=".FCM.MyFirebaseMessagingService">
+        <service android:name="com.andar.hand.FCM.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".FCM.MyFirebaseInstanceIDService">
+        <service android:name="com.andar.hand.FCM.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
         <service
-            android:name=".Utilities.LocationTracking"
+            android:name="com.andar.hand.Utilities.LocationTracking"
             android:exported="false" />
 
         <service
-            android:name="com.tranxitpro.provider.Services.CustomFloatingViewService"
+            android:name="com.andar.hand.Services.CustomFloatingViewService"
             android:enabled="true"
             android:exported="false"/>
 

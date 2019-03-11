@@ -23,7 +23,7 @@
                 android:layout_height="24dp"
                 android:src="@drawable/back_icon" />
 
-            <com.tranxitpro.provider.Utilities.MyTextView
+            <com.andar.hand.Utilities.MyTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -31,7 +31,7 @@
                 android:textColor="@color/black_text_color"
                 android:textSize="@dimen/_16sdp" />
 
-            <com.tranxitpro.provider.Utilities.MyTextView
+            <com.andar.hand.Utilities.MyTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
@@ -43,7 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.tranxitpro.provider.Utilities.MyEditText
+                <com.andar.hand.Utilities.MyEditText
                     android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <com.tranxitpro.provider.Utilities.MyTextView
+            <com.andar.hand.Utilities.MyTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -73,7 +73,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <com.tranxitpro.provider.Utilities.MyEditText
+                    <com.andar.hand.Utilities.MyEditText
                         android:id="@+id/first_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_weight="1">
 
-                    <com.tranxitpro.provider.Utilities.MyEditText
+                    <com.andar.hand.Utilities.MyEditText
                         android:id="@+id/last_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -107,7 +107,7 @@
             </LinearLayout>
 
 
-            <com.tranxitpro.provider.Utilities.MyTextView
+            <com.andar.hand.Utilities.MyTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
@@ -160,7 +160,7 @@
             </RadioGroup>
 
 
-            <com.tranxitpro.provider.Utilities.MyTextView
+            <com.andar.hand.Utilities.MyTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -175,7 +175,7 @@
                 android:visibility="gone"
                 tools:ignore="RtlHardcoded">
 
-                <com.tranxitpro.provider.Utilities.MyEditText
+                <com.andar.hand.Utilities.MyEditText
                     android:id="@+id/mobile_no"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -185,7 +185,7 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <com.tranxitpro.provider.Utilities.MyTextView
+            <com.andar.hand.Utilities.MyTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -198,7 +198,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp">
 
-                <com.tranxitpro.provider.Utilities.MyEditText
+                <com.andar.hand.Utilities.MyEditText
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -210,7 +210,7 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <com.tranxitpro.provider.Utilities.MyTextView
+            <com.andar.hand.Utilities.MyTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -223,7 +223,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp">
 
-                <com.tranxitpro.provider.Utilities.MyEditText
+                <com.andar.hand.Utilities.MyEditText
                     android:id="@+id/confirm_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -235,7 +235,7 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <com.tranxitpro.provider.Utilities.MyTextView
+            <com.andar.hand.Utilities.MyTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"

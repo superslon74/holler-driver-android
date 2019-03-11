@@ -25,7 +25,7 @@
         android:orientation="vertical">
 
 
-        <com.tranxitpro.provider.Utilities.MyBoldTextView
+        <com.andar.hand.Utilities.MyBoldTextView
             android:text="@string/get_moving_with_tranxit"
             android:textSize="@dimen/_15sdp"
             android:layout_width="match_parent"
@@ -50,7 +50,7 @@
                 android:layout_margin= "10dp"
                 />
 
-            <com.tranxitpro.provider.Utilities.MyTextView
+            <com.andar.hand.Utilities.MyTextView
                 android:id="@+id/enter_ur_mailID"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -68,7 +68,7 @@
 
         </View>
 
-        <com.tranxitpro.provider.Utilities.MyTextView
+        <com.andar.hand.Utilities.MyTextView
             android:text="@string/or_connect_with_social_media"
             android:textColor="@android:color/holo_blue_light"
             android:layout_width="match_parent"

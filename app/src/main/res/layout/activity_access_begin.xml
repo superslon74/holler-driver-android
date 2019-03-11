@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layoutDirection="locale"
     android:orientation="vertical"
-    tools:context=".Activity.BeginScreen">
+    tools:context="com.andar.hand.Activity.BeginScreen">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -55,7 +55,7 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <com.tranxitpro.provider.Utilities.MyTextView
+                <com.andar.hand.Utilities.MyTextView
                     android:id="@+id/myTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
                             android:src="@drawable/ic_dummy_user"
                             android:tint="@color/colorPrimaryDark" />
 
-                        <com.tranxitpro.provider.Utilities.MyEditText
+                        <com.andar.hand.Utilities.MyEditText
                             android:id="@+id/txtUserName"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_40sdp"
@@ -122,7 +122,7 @@
                             android:src="@android:drawable/ic_lock_idle_lock"
                             android:tint="@color/colorPrimaryDark" />
 
-                        <com.tranxitpro.provider.Utilities.MyEditText
+                        <com.andar.hand.Utilities.MyEditText
                             android:id="@+id/txtAccessKey"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_40sdp"
@@ -185,7 +185,7 @@
 
             </FrameLayout>
 
-            <com.tranxitpro.provider.Utilities.MyBoldTextView
+            <com.andar.hand.Utilities.MyBoldTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|center"

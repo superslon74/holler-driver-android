@@ -22,7 +22,7 @@
                 android:layout_marginBottom="@dimen/_10sdp"
                 android:src="@drawable/welcome_sample" />
 
-            <com.tranxitpro.provider.Utilities.MyBoldTextView
+            <com.andar.hand.Utilities.MyBoldTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
@@ -33,7 +33,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <com.tranxitpro.provider.Utilities.MyBoldTextView
+            <com.andar.hand.Utilities.MyBoldTextView
                 android:id="@+id/txtFreshDesc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

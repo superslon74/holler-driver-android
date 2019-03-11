@@ -25,7 +25,7 @@
                 android:layout_gravity="center_vertical"
                 android:padding="5dp"/>
 
-            <com.tranxitpro.provider.Utilities.MyTextView
+            <com.andar.hand.Utilities.MyTextView
                 android:text="@string/your_trips"
                 android:textSize="18sp"
                 android:textColor="@android:color/white"

@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
 
-    <com.tranxitpro.provider.Utilities.MyTextView
+    <com.andar.hand.Utilities.MyTextView
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:background="@color/colorPrimary"
@@ -18,7 +18,7 @@
         android:textSize="@dimen/_13sdp" />
 
 
-    <com.tranxitpro.provider.Utilities.MyEditText
+    <com.andar.hand.Utilities.MyEditText
         android:id="@+id/reason_etxt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
         android:lines="3"
         android:textSize="@dimen/_11sdp" />
 
-    <com.tranxitpro.provider.Utilities.MyButton
+    <com.andar.hand.Utilities.MyButton
         android:id="@+id/submit_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
