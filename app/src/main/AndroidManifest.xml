@@ -165,7 +165,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait" />
 
-        //Facebook account kit
+
         <meta-data android:name="com.facebook.accountkit.ApplicationName"
             android:value="@string/app_name" />
         <meta-data android:name="com.facebook.sdk.ApplicationId"
