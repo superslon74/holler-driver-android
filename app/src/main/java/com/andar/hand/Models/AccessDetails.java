@@ -55,7 +55,7 @@ public class AccessDetails {
     public static Integer clientid;
     @SerializedName("serviceurl")
     @Expose
-    public static String serviceurl = "http://app.andarsolutions.com/";
+    public static String serviceurl = "https://api.holler.taxi";
     @SerializedName("is_active")
     @Expose
     public static Integer isActive;

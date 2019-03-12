@@ -82,7 +82,12 @@ public class SplashScreen extends AppCompatActivity implements ForceUpdateChecke
         handleCheckStatus.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (helper.isConnectingToInternet()) {
+                if (true){
+                    Intent uploadDocuments = new Intent(activity, DocumentsActivity.class);
+                    uploadDocuments.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(uploadDocuments);
+                    activity.finish();
+                }else if (helper.isConnectingToInternet()) {
                     if (SharedHelper.getKey(context, "loggedIn").equalsIgnoreCase(getString(R.string.True))) {
                         GetToken();
                         signIn();
@@ -100,17 +105,13 @@ public class SplashScreen extends AppCompatActivity implements ForceUpdateChecke
             }
         }, 5000);
 
-        Log.d("LALALA", "SPLASH");
-        Log.d("LALALA", SharedHelper.getKey(SplashScreen.this, "email"));
-        Log.d("LALALA", SharedHelper.getKey(SplashScreen.this, "password"));
+
 
     }
 
     private void signIn() {
-        Log.d("LALALA", "signing in step 1 from splash activity");
 
         if (isInternet) {
-            Log.d("LALALA", "signing in step 2 from splash activity");
 
             JSONObject object = new JSONObject();
             try {
@@ -120,24 +121,17 @@ public class SplashScreen extends AppCompatActivity implements ForceUpdateChecke
                 object.put("email", SharedHelper.getKey(context, "email"));
                 object.put("password", SharedHelper.getKey(context, "password"));
 
-                Log.d("LALALA", "signing in step 3 from splash activity");
-                Log.d("LALALA", SharedHelper.getKey(context, "email"));
-                Log.d("LALALA", SharedHelper.getKey(context, "password"));
+
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-            Log.d("LALALA", "signing in step 4 from splash activity");
-            Log.d("LALALA", AccessDetails.serviceurl + URLHelper.login);
 
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AccessDetails.serviceurl + URLHelper.login, object, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
 
                     SharedHelper.putKey(context, "access_token", response.optString("access_token"));
-                    Log.d("LALALA", "signing in step 5 from splash activity");
-                    Log.d("LALALA", response.optString("access_token"));
 
                     if (!response.optString("currency").equalsIgnoreCase("") && response.optString("currency") != null)
                         SharedHelper.putKey(context, "currency", response.optString("currency"));
@@ -166,87 +160,7 @@ public class SplashScreen extends AppCompatActivity implements ForceUpdateChecke
         }
 
     }
-//
-//    public void accessKeyAPI() {
-//        Log.d("LALALA","Access api at splash screen...");
-//
-//        JSONObject object = new JSONObject();
-//        try {
-//            if (AccessDetails.demo_build){
-//                object.put("username", SharedHelper.getKey(SplashScreen.this, "access_username"));
-//                object.put("accesskey",SharedHelper.getKey(SplashScreen.this, "access_password"));
-//            }else{
-//                object.put("username", AccessDetails.username);
-//                object.put("accesskey",AccessDetails.password);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AccessDetails.access_login, object, new Response.Listener<JSONObject>() {
-//            @Override
-//            public void onResponse(JSONObject response) {
-//                processResponse(response);
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.d("LALALA","Error response at splash screen...");
-//
-//                String json = null;
-//                String Message;
-//                NetworkResponse response = error.networkResponse;
-//                if (response != null && response.data != null) {
-//
-//                    try {
-//                        JSONObject errorObj = new JSONObject(new String(response.data));
-//
-//                        if (response.statusCode == 400 || response.statusCode == 405 || response.statusCode == 500) {
-//                            try {
-//                                displayMessage(errorObj.optString("message"));
-//                            } catch (Exception e) {
-//                                displayMessage(getString(R.string.something_went_wrong));
-//                            }
-//                        } else if (response.statusCode == 401) {
-//                            displayMessage(errorObj.optString("message"));
-//                        } else if (response.statusCode == 422) {
-//                            json = AndarApplication.trimMessage(new String(response.data));
-//                            if (json != "" && json != null) {
-//                                displayMessage(json);
-//                            } else {
-//                                displayMessage(getString(R.string.please_try_again));
-//                            }
-//                        } else if (response.statusCode == 503) {
-//                            displayMessage(getString(R.string.server_down));
-//                        } else {
-//                            displayMessage(getString(R.string.please_try_again));
-//                        }
-//
-//                    } catch (Exception e) {
-//                        displayMessage(getString(R.string.something_went_wrong));
-//                    }
-//
-//                } else {
-//                    if (error instanceof NoConnectionError) {
-//                        displayMessage(getString(R.string.oops_connect_your_internet));
-//                    } else if (error instanceof NetworkError) {
-//                        displayMessage(getString(R.string.oops_connect_your_internet));
-//                    } else if (error instanceof TimeoutError) {
-//                        displayMessage(getString(R.string.timed_out));
-//                    }
-//                }
-//            }
-//        }) {
-//            @Override
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-//                HashMap<String, String> headers = new HashMap<String, String>();
-//                headers.put("X-Requested-With", "XMLHttpRequest");
-//                return headers;
-//            }
-//        };
-//
-//        AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
-//    }
+
 
     public void GetToken() {
         try {
@@ -272,7 +186,6 @@ public class SplashScreen extends AppCompatActivity implements ForceUpdateChecke
             Log.d(TAG, "Failed to complete device UDID");
         }
     }
-
 
     public void getProfile() {
         retryCount++;
@@ -462,15 +375,12 @@ public class SplashScreen extends AppCompatActivity implements ForceUpdateChecke
 
     private void processResponse(final JSONObject response) {
         try {
-            Log.d("LALALA","Processing request at splash screen...");
             AccessDetails accessDetails = new AccessDetails();
             accessDetails.status = response.optBoolean("status");
 
-            Log.d("LALALA",""+response.optBoolean("status"));
 
             if (accessDetails.status) {
                 JSONArray jsonArrayData = response.optJSONArray("data");
-                Log.d("LALALA",jsonArrayData.toString());
 
 
                 JSONObject jsonObjectData = jsonArrayData.optJSONObject(0);
@@ -536,7 +446,6 @@ public class SplashScreen extends AppCompatActivity implements ForceUpdateChecke
                     if (SharedHelper.getKey(context, "loggedIn").equalsIgnoreCase(context.getResources().getString(R.string.True))) {
                         getProfile();
                     } else {
-                        Log.d("LALALA","Goto begin activity from splash screen...");
                         GoToBeginActivity();
                     }
                 } else {

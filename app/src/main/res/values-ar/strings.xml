@@ -221,4 +221,8 @@
     <string name="please_wait">أرجو الإنتظار...</string>
     <string name="password_mismatch">كلمة المرور غير متطابقة!</string>
 
+    <string name="upload_documents_title">Documents Uploading</string>
+    <string name="upload_button_text">Submit</string>
+
+
 </resources>
