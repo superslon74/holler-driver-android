@@ -190,7 +190,12 @@ public class SplashScreen extends AppCompatActivity implements ForceUpdateChecke
     public void getProfile() {
         retryCount++;
         JSONObject object = new JSONObject();
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, AccessDetails.serviceurl + URLHelper.USER_PROFILE_API+"?device_type=android&device_id="+device_UDID+"&device_token="+device_token, object, new Response.Listener<JSONObject>() {
+        String str = AccessDetails.serviceurl + URLHelper.USER_PROFILE_API+"?device_type=android&device_id="+device_UDID+"&device_token="+device_token;
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET,
+                str,
+                object,
+                new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 SharedHelper.putKey(context, "id", response.optString("id"));
@@ -287,7 +292,8 @@ public class SplashScreen extends AppCompatActivity implements ForceUpdateChecke
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("X-Requested-With", "XMLHttpRequest");
-                headers.put("Authorization", "Bearer " + SharedHelper.getKey(context, "access_token"));
+                String STR = SharedHelper.getKey(context, "access_token");
+                headers.put("Authorization", "Bearer " + STR);
                 return headers;
             }
         };

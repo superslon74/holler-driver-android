@@ -79,7 +79,8 @@ dependencies {
 //    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.daasuu:CountAnimationTextView:0.1.1'
     implementation 'com.facebook.android:account-kit-sdk:4.+'
-    implementation 'com.squareup.retrofit2:retrofit:2.0.2'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'me.philio:pinentryview:1.0.6'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }

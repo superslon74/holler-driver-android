@@ -39,8 +39,6 @@ public class DocumentsListItem extends Fragment {
     private static final String ARG_DOCUMENT = "document";
     private static final String ARG_TEMP_FILE_URI = "temp";
     private static final int CHOOSE_FILE_REQUEST_CODE = 5113;
-    private static final int REQUEST_READ_PERMISSIONS_CODE = 937;
-    private static final int REQUEST_CAMERA_PERMISSIONS_CODE = 6411;
 
     private DocumentsActivity.Document document;
 
@@ -84,29 +82,17 @@ public class DocumentsListItem extends Fragment {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkPermissions();
+                if(mListener.onCheckPermissions()){
+                    pickImage();
+                }else{
+                    mListener.onPermissionsNeeded();
+                }
             }
         });
 
         return view;
     }
 
-    private void checkPermissions() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ_PERMISSIONS_CODE);
-        }else if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSIONS_CODE);
-        }else{
-            pickImage();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        checkPermissions();
-    }
 
     private void pickImage() {
 
@@ -131,7 +117,6 @@ public class DocumentsListItem extends Fragment {
             ex.printStackTrace();
             chooserIntent = Intent.createChooser(new Intent(), "Select Image");
             chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
-
         }
 
         startActivityForResult(chooserIntent, CHOOSE_FILE_REQUEST_CODE);
@@ -144,10 +129,12 @@ public class DocumentsListItem extends Fragment {
 
         String imageUri;
 
-        if (resultCode == Activity.RESULT_OK && requestCode==CHOOSE_FILE_REQUEST_CODE){
-            if(data==null){
-                imageUri = "file://" + capturedPhoto.getAbsolutePath();
-            }else{
+        if (resultCode == Activity.RESULT_OK && requestCode == CHOOSE_FILE_REQUEST_CODE) {
+            if (data == null) {
+                if (capturedPhoto == null)
+                    capturedPhoto = new File(getArguments().getString(ARG_TEMP_FILE_URI));
+                imageUri = capturedPhoto.getAbsolutePath();
+            } else {
                 deleteTemporaryFile();
                 Uri selectedImage = data.getData();
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
@@ -156,60 +143,57 @@ public class DocumentsListItem extends Fragment {
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 String imgDecodableString = cursor.getString(columnIndex);
                 cursor.close();
-                imageUri = "file://"+imgDecodableString;
+                imageUri = imgDecodableString;
             }
 
             modifyDocumentWithNewLocalFile(imageUri);
 
 
-        }else{
+        } else {
             deleteTemporaryFile();
         }
 
     }
 
-    private void setupView(){
+    private void setupView() {
 
         documentNameView.setText(document.name);
-        if (document.remoteUrl==null && document.localUrl==null) {
+        if (document.remoteUrl == null && document.localUrl == null) {
             imageView.setImageResource(R.drawable.ic_add_a_photo_black_24dp);
             fileNameView.setText("Document required. Tap icon to select file..");
-        } else if(document.remoteUrl!=null){
+        } else if (document.remoteUrl != null) {
             Glide
                     .with(getActivity())
                     .load(document.remoteUrl)
                     .centerCrop()
                     .into(imageView);
-            fileNameView.setText("Uploaded to "+document.remoteUrl);
+            fileNameView.setText("Uploaded to " + document.remoteUrl);
 
             imageView.setMaxHeight(200);
-            imageView.setPadding(0,0,0,0);
+            imageView.setPadding(0, 0, 0, 0);
 
-        } else if(document.localUrl!=null){
+        } else if (document.localUrl != null) {
             Glide
                     .with(getActivity())
-                    .load(Uri.parse(document.localUrl))
+                    .load(Uri.parse("file://" + document.localUrl))
                     .centerCrop()
                     .into(imageView);
 
-            fileNameView.setText("Located at "+document.localUrl);
+            fileNameView.setText("Located at " + document.localUrl);
             imageView.setMaxHeight(200);
-            imageView.setPadding(0,0,0,0);
+            imageView.setPadding(0, 0, 0, 0);
         }
     }
 
-
-
-
-    private void modifyDocumentWithNewLocalFile(String uri){
-        document.remoteUrl=null;
-        document.localUrl=uri;
-        getArguments().putParcelable(ARG_DOCUMENT,document);
+    private void modifyDocumentWithNewLocalFile(String uri) {
+        document.remoteUrl = null;
+        document.localUrl = uri;
+        getArguments().putParcelable(ARG_DOCUMENT, document);
         setupView();
         mListener.onDocumentSelected(document);
     }
 
-    private void deleteTemporaryFile(){
+    private void deleteTemporaryFile() {
         capturedPhoto.delete();
     }
 
@@ -225,7 +209,7 @@ public class DocumentsListItem extends Fragment {
         );
 
         //put temp file location to arguments to prevent crash while device rotation
-        getArguments().putString(ARG_TEMP_FILE_URI,"file://" + image.getAbsolutePath());
+        getArguments().putString(ARG_TEMP_FILE_URI, image.getAbsolutePath());
         return image;
     }
 
@@ -237,11 +221,12 @@ public class DocumentsListItem extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         if (context instanceof OnDocumentViewInteractions) {
             mListener = (OnDocumentViewInteractions) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnDocumentViewInteractions");
         }
     }
 
@@ -253,6 +238,19 @@ public class DocumentsListItem extends Fragment {
 
 
     public interface OnDocumentViewInteractions {
+        /**
+         * Calls observer method with modified document
+         */
         void onDocumentSelected(DocumentsActivity.Document document);
+        /**
+         * Calls observer activity to check permissions
+         * @returns whether all permission are granted
+         */
+        boolean onCheckPermissions();
+
+        /**
+         * Calls observer activity when permission doesn't granted
+         */
+        void onPermissionsNeeded();
     }
 }

@@ -50,7 +50,7 @@
 
 
             <com.andar.hand.Utilities.MyButton
-                android:id="@+id/changePasswordBtn"
+                android:id="@+id/submitUploading"
                 android:text="@string/upload_button_text"
                 android:textColor="@android:color/white"
                 android:textSize="18sp"

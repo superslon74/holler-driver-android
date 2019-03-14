@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#9374D1</color>
-    <color name="colorPrimaryDark">#9374D1</color>
-    <color name="colorAccent">#F46595</color>
+    <color name="colorPrimary">#000000</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#2B2B2B</color>
 
     <!-- App customization -->
-    <color name="theme">#9374D1</color>
+    <color name="theme">#000000</color>
 
     <!-- Button Customization -->
     <color name="button_text_color">#ffffff</color>
@@ -13,11 +13,11 @@
     <color name="calendar_selected_date_text">#ffd1d2d4</color>
 
     <!-- Navigation drawer Customization-->
-    <color name="nav_header">#9374D1</color>
+    <color name="nav_header">#000000</color>
     <color name="nav_body">#ffffff</color>
     <color name="content_background">#ffffff</color>
     <color name="view">#9374D1</color>
-    <color name="menu_color">#9374D1</color>
+    <color name="menu_color">#000000</color>
     <color name="timer_text_color">#ffffff</color>
     <color name="view_light">#808080</color>
     <color name="black_text_color">#df000000</color>
