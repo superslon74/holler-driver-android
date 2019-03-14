@@ -160,7 +160,7 @@ public class RegisterActivity extends AppCompatActivity implements RadioGroup.On
                     displayMessage(getString(R.string.last_name_empty));
                 } else if (lastName.matches()) {
                     displayMessage(getString(R.string.last_name_no_number));
-                }  else if (password.getText().toString().equals("") || password.getText().toString().equalsIgnoreCase(getString(R.string.password_txt))) {
+                }  else if (password.getText().toString().equals("") ) {
                     displayMessage(getString(R.string.password_validation));
                 } else if(password.length() < 8 || password.length() > 16){
                     displayMessage(getString(R.string.password_validation2));
@@ -328,7 +328,11 @@ public class RegisterActivity extends AppCompatActivity implements RadioGroup.On
             e.printStackTrace();
         }
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,AccessDetails.serviceurl +  URLHelper.register, object, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.POST,
+                AccessDetails.serviceurl +  URLHelper.register,
+                object,
+                new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 if (customDialog != null && customDialog.isShowing())
@@ -355,7 +359,7 @@ public class RegisterActivity extends AppCompatActivity implements RadioGroup.On
 
                         if (response.statusCode == 400 || response.statusCode == 405 || response.statusCode == 500) {
                             try {
-                                displayMessage(errorObj.optString("error"));
+                                displayMessage(errorObj.optString("error")); //fAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAA
                             } catch (Exception e) {
                                 displayMessage(getString(R.string.something_went_wrong));
                             }

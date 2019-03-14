@@ -82,12 +82,11 @@ public class SplashScreen extends AppCompatActivity implements ForceUpdateChecke
         handleCheckStatus.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (true){
-                    Intent uploadDocuments = new Intent(activity, DocumentsActivity.class);
-                    uploadDocuments.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(uploadDocuments);
-                    activity.finish();
-                }else if (helper.isConnectingToInternet()) {
+//                Intent uploadDocuments = new Intent(activity, DocumentsActivity.class);
+//                uploadDocuments.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                startActivity(uploadDocuments);
+//                activity.finish()
+                if (helper.isConnectingToInternet()) {
                     if (SharedHelper.getKey(context, "loggedIn").equalsIgnoreCase(getString(R.string.True))) {
                         GetToken();
                         signIn();
@@ -229,8 +228,12 @@ public class SplashScreen extends AppCompatActivity implements ForceUpdateChecke
                 }
 
                 if (response.optString("status").equalsIgnoreCase("new")) {
-                    Intent intent = new Intent(activity, WaitingForApproval.class);
-                    activity.startActivity(intent);
+//                    Intent intent = new Intent(activity, WaitingForApproval.class);
+
+                    Intent uploadDocuments = new Intent(activity, DocumentsActivity.class);
+                    uploadDocuments.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                    activity.startActivity(uploadDocuments);
                 } else {
                     GoToMainActivity();
                 }

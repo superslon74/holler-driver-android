@@ -54,6 +54,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.andar.hand.Activity.DocumentsActivity;
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -1183,8 +1184,12 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
 
                         if (response.optString("account_status").equals("new") || response.optString("account_status").equals("onboarding")) {
                             ha.removeMessages(0);
-                            Intent intent = new Intent(activity, WaitingForApproval.class);
-                            activity.startActivity(intent);
+//                            Intent intent = new Intent(activity, WaitingForApproval.class);
+
+                            Intent uploadDocuments = new Intent(activity, DocumentsActivity.class);
+                            uploadDocuments.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                            activity.startActivity(uploadDocuments);
                             activity.finish();
                         } else {
 

@@ -3,6 +3,7 @@ package com.andar.hand.Activity;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Parcel;
@@ -27,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.andar.hand.Fragment.DocumentsListItem;
+import com.andar.hand.Helper.SharedHelper;
 import com.andar.hand.Helper.URLHelper;
 import com.andar.hand.R;
 import com.google.gson.Gson;
@@ -80,29 +82,19 @@ public class DocumentsActivity
 
     DocumentsServerApi serverApiClient;
 
+    private String authToken;
+    private String deviceType;
+    private String deviceId;
+    private String deviceToken;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_documents);
         documentsListView = (View) findViewById(R.id.documents_list);
 
-        ConnectionPool pool = new ConnectionPool(10, 10000, TimeUnit.MILLISECONDS);
-
-        OkHttpClient httpClient = new OkHttpClient
-                .Builder()
-                .cache(null)
-                .followRedirects(true)
-                .followSslRedirects(true)
-                .connectionPool(pool)
-                .build();
-
-        serverApiClient = new Retrofit
-                .Builder()
-                .client(httpClient)
-                .baseUrl(URLHelper.base)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create(DocumentsServerApi.class);
+        initUserData();
+        initServerAPIClient();
 
         onCheckPermissions();
         requestDocumentsList();
@@ -122,22 +114,47 @@ public class DocumentsActivity
             }
         });
 
-        //request documents list
-        //generate map
-        //add fragments for documents
-        //listen for upload btn clicked
-        //check documents
-        //send documents
     }
 
+    private void initUserData(){
+        authToken = "Bearer " + SharedHelper.getKey(this, "access_token");
+        try {
+            deviceId = android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+        } catch (Exception e) {
+            deviceId = "COULD NOT GET UDID";
+        }
+        deviceToken = SharedHelper.getKey(this, "device_token");
+        deviceType = "android";
+
+    }
+
+    private void initServerAPIClient(){
+        ConnectionPool pool = new ConnectionPool(10, 10000, TimeUnit.MILLISECONDS);
+
+        OkHttpClient httpClient = new OkHttpClient
+                .Builder()
+                .cache(null)
+                .followRedirects(true)
+                .followSslRedirects(true)
+                .connectionPool(pool)
+                .build();
+
+        serverApiClient = new Retrofit
+                .Builder()
+                .client(httpClient)
+                .baseUrl(URLHelper.base)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(DocumentsServerApi.class);
+    }
 
     private void requestDocumentsList() {
 
         Call<List<Document>> documentsListCall = serverApiClient.getDocuments(
-                "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjExMywiaXNzIjoiaHR0cHM6Ly9hcGkuaG9sbGVyLnRheGkvYXBpL3Byb3ZpZGVyL29hdXRoL3Rva2VuIiwiaWF0IjoxNTUyNDcyMTc0LCJleHAiOjE1NTI4MzIxNzQsIm5iZiI6MTU1MjQ3MjE3NCwianRpIjoiV2t1bHMxWVBSSzNMVHFrUyJ9.kGaydANTlBUgUCwOM9bBOXkmcp0QCaHp4RthrcF2glg",
-                "android",
-                "23b50be39712afaa",
-                "cqT1zB9UK10:APA91bGfTJEhf3PjJ-6u7NmkO8EzarpS2edaOChZp6d4arVla2lFf4jQW5ENku1SDU6hPuswUBS0YAVfBpBP9pw3jB2Y7mrVW_ZPq-Bm9YhASIyrHY5ukKjWA3DIIvuMWtqpajYHxHPt"
+                authToken,
+                deviceType,
+                deviceId,
+                deviceToken
         );
 
         documentsListCall.enqueue(new Callback<List<Document>>() {
@@ -188,31 +205,12 @@ public class DocumentsActivity
     public void onDocumentSelected(Document document) {
         documents.put(document.id,document);
 
-//        Call<Document> cd = generateDocumentUploadingCall(document);
-//        cd.enqueue(new Callback<Document>() {
-//            @Override
-//            public void onResponse(@NonNull Call<Document> call, @NonNull Response<Document> response) {
-//                if (response.isSuccessful()) {
-//                    Document uploadedDocument = response.body();
-//                    documents.put(uploadedDocument.id,uploadedDocument);
-//                } else {
-//                    String s = response.raw().toString();
-//                    Log.e("UnhandledApiErro", response.errorBody().toString());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(@NonNull Call<Document> call, @NonNull Throwable t) {
-//                Log.e("AZAZA", "API Error ", t);
-//            }
-//        });
     }
 
     private void uploadDocuments(final Stack<Document> toUpload){
 //        TODO: rewrite with javarx
         if(toUpload.size()==0){
-            Toast.makeText(this, "Uploading finished.",Toast.LENGTH_LONG).show();
-            displayList();
+            onDocumentsUploaded();
             return;
         }
 
@@ -239,16 +237,27 @@ public class DocumentsActivity
             }
         });
 
+    }
 
+    private void onDocumentsUploaded(){
+        Toast.makeText(this, "Uploading finished.",Toast.LENGTH_LONG).show();
+        displayList();
+
+        boolean allRequiredDocumentsLoaded = true;
+        if(allRequiredDocumentsLoaded) {
+            Intent intent = new Intent(this, WaitingForApproval.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private Call<Document> generateDocumentUploadingCall(Document document){
         Map<String, String> headers = new HashMap<>();
-        headers.put("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjExMywiaXNzIjoiaHR0cHM6Ly9hcGkuaG9sbGVyLnRheGkvYXBpL3Byb3ZpZGVyL29hdXRoL3Rva2VuIiwiaWF0IjoxNTUyNDcyMTc0LCJleHAiOjE1NTI4MzIxNzQsIm5iZiI6MTU1MjQ3MjE3NCwianRpIjoiV2t1bHMxWVBSSzNMVHFrUyJ9.kGaydANTlBUgUCwOM9bBOXkmcp0QCaHp4RthrcF2glg");
+        headers.put("Authorization", authToken);
 
-        RequestBody deviceType = RequestBody.create(MediaType.parse("text/plain"), "android");
-        RequestBody deviceId = RequestBody.create(MediaType.parse("text/plain"), "23b50be39712afaa");
-        RequestBody deviceToken = RequestBody.create(MediaType.parse("text/plain"), "cqT1zB9UK10:APA91bGfTJEhf3PjJ-6u7NmkO8EzarpS2edaOChZp6d4arVla2lFf4jQW5ENku1SDU6hPuswUBS0YAVfBpBP9pw3jB2Y7mrVW_ZPq-Bm9YhASIyrHY5ukKjWA3DIIvuMWtqpajYHxHPt");
+        RequestBody deviceType = RequestBody.create(MediaType.parse("text/plain"), this.deviceType);
+        RequestBody deviceId = RequestBody.create(MediaType.parse("text/plain"), this.deviceId);
+        RequestBody deviceToken = RequestBody.create(MediaType.parse("text/plain"), this.deviceToken);
 
         File photo = new File(document.localUrl);
         RequestBody requestFile = RequestBody.create(MediaType.parse("image/png"), photo);
@@ -290,7 +299,6 @@ public class DocumentsActivity
         }
 
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private boolean arePermissionsGranted() {
@@ -343,7 +351,6 @@ public class DocumentsActivity
             //all is good, continue flow
         }
     }
-
 
     public static class Document implements Parcelable {
 
