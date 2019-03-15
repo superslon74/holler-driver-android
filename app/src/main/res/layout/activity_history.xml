@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.andar.hand.Activity.HistoryActivity">
+    tools:context="com.holler.app.Activity.HistoryActivity">
 
     <LinearLayout
         android:id="@+id/lnrTitle"
@@ -21,7 +21,7 @@
             android:layout_margin="10dp"
             android:padding="5dp"/>
 
-        <com.andar.hand.Utilities.MyBoldTextView
+        <com.holler.app.Utilities.MyBoldTextView
             android:text="@string/your_trips"
             android:gravity="center_vertical"
             android:textSize="18sp"

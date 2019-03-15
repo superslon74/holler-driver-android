@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
 
-    <com.andar.hand.Utilities.MyTextView
+    <com.holler.app.Utilities.MyTextView
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:background="@color/colorPrimary"
@@ -18,7 +18,7 @@
         android:textSize="@dimen/_13sdp" />
 
 
-    <com.andar.hand.Utilities.MyEditText
+    <com.holler.app.Utilities.MyEditText
         android:id="@+id/reason_etxt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
         android:lines="3"
         android:textSize="@dimen/_11sdp" />
 
-    <com.andar.hand.Utilities.MyButton
+    <com.holler.app.Utilities.MyButton
         android:id="@+id/submit_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

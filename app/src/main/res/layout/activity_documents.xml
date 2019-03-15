@@ -19,7 +19,7 @@
             android:layout_margin="10dp"
             android:padding="5dp"/>
 
-        <com.andar.hand.Utilities.MyBoldTextView
+        <com.holler.app.Utilities.MyBoldTextView
             android:text="@string/upload_documents_title"
             android:gravity="center_vertical"
             android:textSize="18sp"
@@ -49,7 +49,7 @@
 
 
 
-            <com.andar.hand.Utilities.MyButton
+            <com.holler.app.Utilities.MyButton
                 android:id="@+id/submitUploading"
                 android:text="@string/upload_button_text"
                 android:textColor="@android:color/white"

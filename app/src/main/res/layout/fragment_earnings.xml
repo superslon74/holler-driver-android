@@ -28,7 +28,7 @@
                 android:padding="@dimen/_7sdp"
                 android:src="@drawable/back_icon" />
 
-            <com.andar.hand.Utilities.MyBoldTextView
+            <com.holler.app.Utilities.MyBoldTextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/_10sdp"
@@ -40,7 +40,7 @@
         </LinearLayout>
 
 
-        <com.andar.hand.Utilities.MyBoldTextView
+        <com.holler.app.Utilities.MyBoldTextView
             android:id="@+id/lblTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
                 android:layout_gravity="center"
                 android:orientation="vertical">
 
-                <com.andar.hand.Utilities.MyTextView
+                <com.holler.app.Utilities.MyTextView
                     android:id="@+id/lblTarget"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -84,7 +84,7 @@
 
             </LinearLayout>
 
-            <com.andar.hand.Utilities.CircularProgressBar
+            <com.holler.app.Utilities.CircularProgressBar
                 android:id="@+id/custom_progressBar"
                 android:layout_width="@dimen/_120sdp"
                 android:layout_height="@dimen/_120sdp"
@@ -113,7 +113,7 @@
                 android:paddingStart="@dimen/_10sdp"
                 android:paddingEnd="@dimen/_10sdp">
 
-                <com.andar.hand.Utilities.MyTextView
+                <com.holler.app.Utilities.MyTextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -123,7 +123,7 @@
                     android:textColor="@color/black_text_color"
                     android:textSize="@dimen/_14sdp" />
 
-                <com.andar.hand.Utilities.MyTextView
+                <com.holler.app.Utilities.MyTextView
                     android:id="@+id/lblEarnings"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -141,7 +141,7 @@
                 android:padding="@dimen/_5sdp"
                 android:orientation="horizontal">
 
-                <com.andar.hand.Utilities.MyButton
+                <com.holler.app.Utilities.MyButton
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_40sdp"
                     android:background="@color/colorAccent"
@@ -150,7 +150,7 @@
                     android:textColor="@color/button_text_color" />
 
 
-                <com.andar.hand.Utilities.MyButton
+                <com.holler.app.Utilities.MyButton
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_40sdp"
                     android:layout_weight="1"
@@ -159,7 +159,7 @@
                     android:textColor="@color/button_text_color" />
 
 
-                <com.andar.hand.Utilities.MyButton
+                <com.holler.app.Utilities.MyButton
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_40sdp"
                     android:layout_weight="1"
@@ -191,7 +191,7 @@
                     android:layout_centerHorizontal="true"
                     app:srcCompat="@drawable/calendar_clock" />
 
-                <com.andar.hand.Utilities.MyTextView
+                <com.holler.app.Utilities.MyTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/error_image"

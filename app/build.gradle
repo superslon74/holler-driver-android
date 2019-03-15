@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     buildToolsVersion "28.0.3"
     defaultConfig {
-        applicationId "com.andar.hand"
+        applicationId "com.holler.app"
         minSdkVersion 17
         targetSdkVersion 26
         versionCode 16

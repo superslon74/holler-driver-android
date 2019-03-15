@@ -18,7 +18,7 @@
             android:layout_gravity="center_vertical"
             android:padding="5dp"/>
 
-        <com.andar.hand.Utilities.MyBoldTextView
+        <com.holler.app.Utilities.MyBoldTextView
             android:text="@string/wallet"
             android:textSize="18sp"
             android:textColor="@android:color/white"
@@ -41,7 +41,7 @@
             android:layout_gravity="center_vertical|center_horizontal|center"
             android:layout_marginTop="50dp"/>
 
-        <com.andar.hand.Utilities.MyTextView
+        <com.holler.app.Utilities.MyTextView
             android:text="@string/your_wallet_amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
             android:textSize="18sp"
             />
 
-        <com.andar.hand.Utilities.MyTextView
+        <com.holler.app.Utilities.MyTextView
             android:id="@+id/walletAmt"
             android:text="@string/sample_amount"
             android:layout_width="match_parent"

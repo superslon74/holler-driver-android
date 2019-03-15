@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:orientation="vertical"
-    tools:context="com.andar.hand.Activity.MainActivity">
+    tools:context="com.holler.app.Activity.MainActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -59,7 +59,7 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <com.andar.hand.Utilities.MyTextView
+                <com.holler.app.Utilities.MyTextView
                     android:id="@+id/src_dest_txt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
                     android:text="@string/drop_address"
                     android:textSize="@dimen/_10sdp" />
 
-                <com.andar.hand.Utilities.ExpandableTextView
+                <com.holler.app.Utilities.ExpandableTextView
                     android:id="@+id/destination"
                     style="@style/Base.TextAppearance.AppCompat.Body1"
                     android:layout_width="match_parent"
@@ -164,7 +164,7 @@
                         android:orientation="vertical"
                         android:weightSum="100">
 
-                        <com.andar.hand.Utilities.MyTextView
+                        <com.holler.app.Utilities.MyTextView
                             android:id="@+id/txt02UserName"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
@@ -185,7 +185,7 @@
 
                     </LinearLayout>
 
-                    <com.andar.hand.Utilities.MyTextView
+                    <com.holler.app.Utilities.MyTextView
                         android:id="@+id/txt02ScheduledTime"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -208,7 +208,7 @@
                     android:orientation="horizontal"
                     android:weightSum="100">
 
-                    <com.andar.hand.Utilities.MyTextView
+                    <com.holler.app.Utilities.MyTextView
                         android:id="@+id/txt02From"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -216,14 +216,14 @@
                         android:gravity="center_vertical|start"
                         android:text="@string/sample" />
 
-                    <com.andar.hand.Utilities.MyTextView
+                    <com.holler.app.Utilities.MyTextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="10"
                         android:gravity="center"
                         android:text="-" />
 
-                    <com.andar.hand.Utilities.MyTextView
+                    <com.holler.app.Utilities.MyTextView
                         android:id="@+id/txt02To"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -367,7 +367,7 @@
                                 android:orientation="vertical"
                                 android:weightSum="100">
 
-                                <com.andar.hand.Utilities.MyTextView
+                                <com.holler.app.Utilities.MyTextView
                                     android:id="@+id/txt03UserName"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -413,7 +413,7 @@
                                     android:src="@drawable/callbutton"
                                     android:tint="@color/nav_header" />
 
-                                <com.andar.hand.Utilities.MyTextView
+                                <com.holler.app.Utilities.MyTextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="8dp"
@@ -426,7 +426,7 @@
 
                         </LinearLayout>
 
-                        <com.andar.hand.Utilities.MyTextView
+                        <com.holler.app.Utilities.MyTextView
                             android:id="@+id/lblDistanceTravelled"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -442,7 +442,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <com.andar.hand.Utilities.MyButton
+                            <com.holler.app.Utilities.MyButton
                                 android:id="@+id/btn_cancel_ride"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/button_height"
@@ -456,7 +456,7 @@
                                 android:textColor="@color/button_text_color" />
 
 
-                            <com.andar.hand.Utilities.MyButton
+                            <com.holler.app.Utilities.MyButton
                                 android:id="@+id/btn_01_status"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/button_height"
@@ -500,7 +500,7 @@
                     android:weightSum="50">
 
 
-                    <com.andar.hand.Utilities.MyTextView
+                    <com.holler.app.Utilities.MyTextView
                         android:id="@+id/invoice_txt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -524,14 +524,14 @@
                             android:orientation="horizontal"
                             android:weightSum="100">
 
-                            <com.andar.hand.Utilities.MyTextView
+                            <com.holler.app.Utilities.MyTextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="50"
                                 android:text="@string/base_price"
                                 android:textStyle="bold" />
 
-                            <com.andar.hand.Utilities.MyTextView
+                            <com.holler.app.Utilities.MyTextView
                                 android:id="@+id/txt04BasePrice"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -550,14 +550,14 @@
                             android:orientation="horizontal"
                             android:weightSum="100">
 
-                            <com.andar.hand.Utilities.MyTextView
+                            <com.holler.app.Utilities.MyTextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="50"
                                 android:text="@string/distance_price"
                                 android:textStyle="bold" />
 
-                            <com.andar.hand.Utilities.MyTextView
+                            <com.holler.app.Utilities.MyTextView
                                 android:id="@+id/txt04Distance"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -576,14 +576,14 @@
                             android:orientation="horizontal"
                             android:weightSum="100">
 
-                            <com.andar.hand.Utilities.MyTextView
+                            <com.holler.app.Utilities.MyTextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="50"
                                 android:text="@string/tax"
                                 android:textStyle="bold" />
 
-                            <com.andar.hand.Utilities.MyTextView
+                            <com.holler.app.Utilities.MyTextView
                                 android:id="@+id/txt04Tax"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -601,14 +601,14 @@
                             android:visibility="gone"
                             android:weightSum="100">
 
-                            <com.andar.hand.Utilities.MyTextView
+                            <com.holler.app.Utilities.MyTextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="50"
                                 android:text="@string/commission"
                                 android:textStyle="bold" />
 
-                            <com.andar.hand.Utilities.MyTextView
+                            <com.holler.app.Utilities.MyTextView
                                 android:id="@+id/txt04Commision"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -637,7 +637,7 @@
                         android:src="@drawable/placeholder_image" />
 
 
-                    <com.andar.hand.Utilities.MyTextView
+                    <com.holler.app.Utilities.MyTextView
                         android:id="@+id/txt04UserName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -665,7 +665,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <com.andar.hand.Utilities.MyTextView
+                        <com.holler.app.Utilities.MyTextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.5"
@@ -675,7 +675,7 @@
                             android:textSize="@dimen/text_size_medium"
                             android:textStyle="bold" />
 
-                        <com.andar.hand.Utilities.MyTextView
+                        <com.holler.app.Utilities.MyTextView
                             android:id="@+id/txt04Total"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -693,7 +693,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <com.andar.hand.Utilities.MyTextView
+                        <com.holler.app.Utilities.MyTextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.5"
@@ -704,7 +704,7 @@
                             android:textStyle="bold" />
 
 
-                        <com.andar.hand.Utilities.MyTextView
+                        <com.holler.app.Utilities.MyTextView
                             android:id="@+id/txt04AmountToPaid"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -736,7 +736,7 @@
                             android:layout_height="@dimen/_20sdp"
                             android:src="@drawable/visa_icon" />
 
-                        <com.andar.hand.Utilities.MyTextView
+                        <com.holler.app.Utilities.MyTextView
                             android:id="@+id/txt04PaymentMode"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -749,7 +749,7 @@
 
                 </LinearLayout>
 
-                <com.andar.hand.Utilities.MyButton
+                <com.holler.app.Utilities.MyButton
                     android:id="@+id/btn_confirm_payment"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/button_height"
@@ -788,7 +788,7 @@
                 android:orientation="vertical">
 
 
-                <com.andar.hand.Utilities.MyTextView
+                <com.holler.app.Utilities.MyTextView
                     android:id="@+id/lblProviderName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -826,7 +826,7 @@
                     android:stepSize="1" />
 
 
-                <com.andar.hand.Utilities.MyEditText
+                <com.holler.app.Utilities.MyEditText
                     android:id="@+id/edt05Comment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -843,7 +843,7 @@
 
             </LinearLayout>
 
-            <com.andar.hand.Utilities.MyButton
+            <com.holler.app.Utilities.MyButton
                 android:id="@+id/btn_rate_submit"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -866,7 +866,7 @@
             android:orientation="vertical"
             android:visibility="visible">
 
-            <com.andar.hand.Utilities.MyButton
+            <com.holler.app.Utilities.MyButton
                 android:id="@+id/btn_send_order"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/button_height"
@@ -880,7 +880,7 @@
                 android:text="@string/send_order"
                 android:textColor="@color/button_text_color" />
 
-            <com.andar.hand.Utilities.MyButton
+            <com.holler.app.Utilities.MyButton
                 android:id="@+id/btn_go_offline"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/button_height"
@@ -918,7 +918,7 @@
                     android:layout_gravity="center"
                     android:src="@drawable/sad" />
 
-                <com.andar.hand.Utilities.MyTextView
+                <com.holler.app.Utilities.MyTextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/_20sdp"
@@ -943,7 +943,7 @@
             android:weightSum="100">
 
 
-            <com.andar.hand.Utilities.MyTextView
+            <com.holler.app.Utilities.MyTextView
                 android:id="@+id/txt01Timer"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_40sdp"
@@ -991,7 +991,7 @@
                         android:orientation="vertical"
                         android:weightSum="100">
 
-                        <com.andar.hand.Utilities.MyTextView
+                        <com.holler.app.Utilities.MyTextView
                             android:id="@+id/txt01UserName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -1017,7 +1017,7 @@
 
                 </LinearLayout>
 
-                <com.andar.hand.Utilities.MyTextView
+                <com.holler.app.Utilities.MyTextView
                     android:id="@+id/txtSchedule"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -1027,7 +1027,7 @@
                     android:textSize="@dimen/_12sdp"
                     android:visibility="gone" />
 
-                <com.andar.hand.Utilities.MyTextView
+                <com.holler.app.Utilities.MyTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="@dimen/_8sdp"
@@ -1036,7 +1036,7 @@
                     android:textSize="@dimen/_13sdp"
                     android:textStyle="bold" />
 
-                <com.andar.hand.Utilities.MyTextView
+                <com.holler.app.Utilities.MyTextView
                     android:id="@+id/txtPickup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -1054,7 +1054,7 @@
                     android:orientation="horizontal"
                     android:weightSum="100">
 
-                    <com.andar.hand.Utilities.MyButton
+                    <com.holler.app.Utilities.MyButton
                         android:id="@+id/btn_02_reject"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/button_height"
@@ -1066,7 +1066,7 @@
                         android:text="@string/reject"
                         android:textColor="@color/button_text_color" />
 
-                    <com.andar.hand.Utilities.MyButton
+                    <com.holler.app.Utilities.MyButton
                         android:id="@+id/btn_02_accept"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/button_height"

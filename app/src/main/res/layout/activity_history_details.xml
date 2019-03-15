@@ -26,7 +26,7 @@
             android:padding="5dp"
             android:src="@drawable/back_icon" />
 
-        <com.andar.hand.Utilities.MyTextView
+        <com.holler.app.Utilities.MyTextView
             android:id="@+id/lblTitle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -88,7 +88,7 @@
                         android:layout_weight="1"
                         android:orientation="vertical">
 
-                        <com.andar.hand.Utilities.MyTextView
+                        <com.holler.app.Utilities.MyTextView
                             android:id="@+id/tripProviderName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
                         android:orientation="vertical">
 
 
-                        <com.andar.hand.Utilities.MyTextView
+                        <com.holler.app.Utilities.MyTextView
                             android:id="@+id/tripDate"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -193,7 +193,7 @@
                                 android:src="@drawable/round_shape"
                                 android:visibility="gone"/>
 
-                            <com.andar.hand.Utilities.MyTextView
+                            <com.holler.app.Utilities.MyTextView
                                 android:id="@+id/tripSource"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -216,7 +216,7 @@
                                 android:visibility="gone"
                                 android:src="@drawable/round_shape" />
 
-                            <com.andar.hand.Utilities.MyTextView
+                            <com.holler.app.Utilities.MyTextView
                                 android:id="@+id/tripDestination"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -241,7 +241,7 @@
                     android:layout_marginTop="5dp"
                     android:orientation="vertical">
 
-                    <com.andar.hand.Utilities.MyTextView
+                    <com.holler.app.Utilities.MyTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -250,7 +250,7 @@
                         android:textColor="@color/black_text_color"
                         android:textSize="16sp" />
 
-                    <com.andar.hand.Utilities.MyTextView
+                    <com.holler.app.Utilities.MyTextView
                         android:id="@+id/trip_id"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -265,7 +265,7 @@
                         android:layout_height="0.5dp"
                         android:background="#1a1a1a" />
 
-                    <com.andar.hand.Utilities.MyTextView
+                    <com.holler.app.Utilities.MyTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -290,7 +290,7 @@
                             android:scaleType="centerCrop"
                             android:src="@drawable/visa_icon" />
 
-                        <com.andar.hand.Utilities.MyTextView
+                        <com.holler.app.Utilities.MyTextView
                             android:id="@+id/paymentType"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
@@ -299,7 +299,7 @@
                             android:gravity="center_vertical|start"
                             android:textColor="@color/black_text_color" />
 
-                        <com.andar.hand.Utilities.MyTextView
+                        <com.holler.app.Utilities.MyTextView
                             android:id="@+id/tripAmount"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
@@ -327,14 +327,14 @@
                     android:layout_marginTop="5dp"
                     android:orientation="vertical">
 
-                    <com.andar.hand.Utilities.MyTextView
+                    <com.holler.app.Utilities.MyTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/comments"
                         android:textColor="@color/black_text_color"
                         android:textSize="16sp" />
 
-                    <com.andar.hand.Utilities.MyTextView
+                    <com.holler.app.Utilities.MyTextView
                         android:id="@+id/tripComments"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -350,7 +350,7 @@
     </ScrollView>
 
 
-        <com.andar.hand.Utilities.MyButton
+        <com.holler.app.Utilities.MyButton
             android:id="@+id/btnViewInvoice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -364,7 +364,7 @@
             android:textColor="@color/button_text_color" />
 
 
-        <com.andar.hand.Utilities.MyButton
+        <com.holler.app.Utilities.MyButton
         android:id="@+id/btnCancelRide"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -400,7 +400,7 @@
             android:orientation="vertical">
 
 
-            <com.andar.hand.Utilities.MyTextView
+            <com.holler.app.Utilities.MyTextView
                 android:id="@+id/invoice_txt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -417,7 +417,7 @@
                 android:layout_marginTop="@dimen/_5sdp"
                 android:orientation="horizontal">
 
-                <com.andar.hand.Utilities.MyBoldTextView
+                <com.holler.app.Utilities.MyBoldTextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -426,7 +426,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_13sdp" />
 
-                <com.andar.hand.Utilities.MyBoldTextView
+                <com.holler.app.Utilities.MyBoldTextView
                     android:id="@+id/lblBookingID"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -444,7 +444,7 @@
                 android:layout_marginTop="@dimen/_5sdp"
                 android:orientation="horizontal">
 
-                <com.andar.hand.Utilities.MyBoldTextView
+                <com.holler.app.Utilities.MyBoldTextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -453,7 +453,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_13sdp" />
 
-                <com.andar.hand.Utilities.MyBoldTextView
+                <com.holler.app.Utilities.MyBoldTextView
                     android:id="@+id/lblDistanceCovered"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -471,7 +471,7 @@
                 android:layout_marginTop="@dimen/_5sdp"
                 android:orientation="horizontal">
 
-                <com.andar.hand.Utilities.MyBoldTextView
+                <com.holler.app.Utilities.MyBoldTextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -480,7 +480,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_13sdp" />
 
-                <com.andar.hand.Utilities.MyBoldTextView
+                <com.holler.app.Utilities.MyBoldTextView
                     android:id="@+id/lblTimeTaken"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -498,7 +498,7 @@
                 android:layout_marginTop="@dimen/_5sdp"
                 android:orientation="horizontal">
 
-                <com.andar.hand.Utilities.MyBoldTextView
+                <com.holler.app.Utilities.MyBoldTextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -507,7 +507,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_13sdp" />
 
-                <com.andar.hand.Utilities.MyBoldTextView
+                <com.holler.app.Utilities.MyBoldTextView
                     android:id="@+id/lblBasePrice"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -525,7 +525,7 @@
                 android:layout_marginTop="@dimen/_5sdp"
                 android:orientation="horizontal">
 
-                <com.andar.hand.Utilities.MyBoldTextView
+                <com.holler.app.Utilities.MyBoldTextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -534,7 +534,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_13sdp" />
 
-                <com.andar.hand.Utilities.MyBoldTextView
+                <com.holler.app.Utilities.MyBoldTextView
                     android:id="@+id/lblDistancePrice"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -552,7 +552,7 @@
                 android:layout_marginTop="@dimen/_5sdp"
                 android:orientation="horizontal">
 
-                <com.andar.hand.Utilities.MyBoldTextView
+                <com.holler.app.Utilities.MyBoldTextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -561,7 +561,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_13sdp" />
 
-                <com.andar.hand.Utilities.MyBoldTextView
+                <com.holler.app.Utilities.MyBoldTextView
                     android:id="@+id/lblTaxPrice"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -580,7 +580,7 @@
                 android:visibility="gone"
                 android:orientation="horizontal">
 
-                <com.andar.hand.Utilities.MyBoldTextView
+                <com.holler.app.Utilities.MyBoldTextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -589,7 +589,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_13sdp" />
 
-                <com.andar.hand.Utilities.MyBoldTextView
+                <com.holler.app.Utilities.MyBoldTextView
                     android:id="@+id/lblDiscountPrice"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -608,7 +608,7 @@
                 android:layout_marginTop="@dimen/_5sdp"
                 android:orientation="horizontal">
 
-                <com.andar.hand.Utilities.MyBoldTextView
+                <com.holler.app.Utilities.MyBoldTextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -617,7 +617,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_13sdp" />
 
-                <com.andar.hand.Utilities.MyBoldTextView
+                <com.holler.app.Utilities.MyBoldTextView
                     android:id="@+id/lblWalletPrice"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -635,7 +635,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <com.andar.hand.Utilities.MyBoldTextView
+                <com.holler.app.Utilities.MyBoldTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
@@ -645,7 +645,7 @@
                     android:textSize="@dimen/text_size_medium"
                     android:textStyle="bold" />
 
-                <com.andar.hand.Utilities.MyBoldTextView
+                <com.holler.app.Utilities.MyBoldTextView
                     android:id="@+id/txt04Total"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -663,7 +663,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <com.andar.hand.Utilities.MyBoldTextView
+                <com.holler.app.Utilities.MyBoldTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
@@ -673,7 +673,7 @@
                     android:textSize="@dimen/text_size_medium"
                     android:textStyle="bold" />
 
-                <com.andar.hand.Utilities.MyBoldTextView
+                <com.holler.app.Utilities.MyBoldTextView
                     android:id="@+id/txt04AmountToPaid"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -685,7 +685,7 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <com.andar.hand.Utilities.MyButton
+            <com.holler.app.Utilities.MyButton
                 android:id="@+id/btnClose"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -24,7 +24,7 @@
         app:lottie_fileName="waiting_for_approval.json"
         app:lottie_loop="true" />
 
-    <com.andar.hand.Utilities.MyTextView
+    <com.holler.app.Utilities.MyTextView
         android:gravity="center_horizontal|center_vertical"
         android:textSize="@dimen/txt_WaitingForApproval"
         android:textColor="@android:color/black"

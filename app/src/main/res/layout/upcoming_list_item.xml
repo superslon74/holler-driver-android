@@ -56,7 +56,7 @@
                             android:layout_weight="1"
                             android:orientation="vertical">
 
-                            <com.andar.hand.Utilities.MyTextView
+                            <com.holler.app.Utilities.MyTextView
                                 android:id="@+id/tripDate"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -70,14 +70,14 @@
                                 android:layout_marginTop="@dimen/_3sdp"
                                 android:layout_height="wrap_content">
 
-                                <com.andar.hand.Utilities.MyTextView
+                                <com.holler.app.Utilities.MyTextView
                                     android:id="@+id/trip"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/booking_id_colon"
                                     android:textSize="13sp" />
 
-                                <com.andar.hand.Utilities.MyTextView
+                                <com.holler.app.Utilities.MyTextView
                                     android:id="@+id/tripid"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
 
                             </RelativeLayout>
 
-                            <com.andar.hand.Utilities.MyTextView
+                            <com.holler.app.Utilities.MyTextView
                                 android:id="@+id/car_name"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -100,7 +100,7 @@
                             android:gravity="center"
                             android:orientation="vertical">
 
-                            <com.andar.hand.Utilities.MyTextView
+                            <com.holler.app.Utilities.MyTextView
                                 android:id="@+id/tripAmount"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -108,7 +108,7 @@
                                 android:textColor="@color/black_text_color"
                                 android:textSize="14sp" />
 
-                            <com.andar.hand.Utilities.MyButton
+                            <com.holler.app.Utilities.MyButton
                                 android:id="@+id/btnCancel"
                                 android:layout_width="wrap_content"
                                 android:layout_height="@dimen/_25sdp"
@@ -135,14 +135,14 @@
                 android:paddingEnd="8dp"
                 android:visibility="gone">
 
-                <com.andar.hand.Utilities.MyTextView
+                <com.holler.app.Utilities.MyTextView
                     android:id="@+id/tripTime"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textSize="16sp" />
 
-                <com.andar.hand.Utilities.MyTextView
+                <com.holler.app.Utilities.MyTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

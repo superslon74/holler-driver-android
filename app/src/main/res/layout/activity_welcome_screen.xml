@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color"
-    tools:context="com.andar.hand.Activity.WelcomeScreenActivity">
+    tools:context="com.holler.app.Activity.WelcomeScreenActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -59,7 +59,7 @@
         android:layout_above="@+id/social_layout"
         android:orientation="horizontal">
 
-        <com.andar.hand.Utilities.MyButton
+        <com.holler.app.Utilities.MyButton
             android:id="@+id/sign_in_btn"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -71,7 +71,7 @@
             android:text="@string/sign_in"
             android:textColor="@color/text_color_white" />
 
-        <com.andar.hand.Utilities.MyButton
+        <com.holler.app.Utilities.MyButton
             android:id="@+id/sign_up_btn"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -94,7 +94,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.andar.hand.Utilities.MyTextView
+        <com.holler.app.Utilities.MyTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/_10sdp"

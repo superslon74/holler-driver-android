@@ -21,7 +21,7 @@
             android:padding="5dp"
             android:src="@drawable/back_drawable" />
 
-        <com.andar.hand.Utilities.MyBoldTextView
+        <com.holler.app.Utilities.MyBoldTextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.andar.hand.Utilities.MyBoldTextView
+        <com.holler.app.Utilities.MyBoldTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/_10sdp"
@@ -67,7 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-            <com.andar.hand.Utilities.MyBoldTextView
+            <com.holler.app.Utilities.MyBoldTextView
                 android:id="@+id/lblEnglish"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -102,7 +102,7 @@
                 android:layout_height="wrap_content" />
 
 
-            <com.andar.hand.Utilities.MyBoldTextView
+            <com.holler.app.Utilities.MyBoldTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/_5sdp"
