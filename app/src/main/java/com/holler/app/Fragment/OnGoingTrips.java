@@ -1,12 +1,20 @@
 package com.holler.app.Fragment;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,7 +41,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+import com.holler.app.Activity.DocumentsActivity;
 import com.holler.app.Activity.HistoryDetails;
+import com.holler.app.Activity.MainActivity;
 import com.holler.app.Activity.WelcomeScreenActivity;
 import com.holler.app.Helper.ConnectionHelper;
 import com.holler.app.Helper.CustomDialog;
@@ -42,6 +55,8 @@ import com.holler.app.Helper.URLHelper;
 import com.holler.app.Models.AccessDetails;
 import com.holler.app.AndarApplication;
 import com.holler.app.R;
+import com.holler.app.Services.NotificationPublisher;
+import com.holler.app.Services.UserStatusChecker;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,13 +67,28 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.ConnectionPool;
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.GET;
+import retrofit2.http.HeaderMap;
+import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.Query;
 
 
 public class OnGoingTrips extends Fragment {
 
-    Boolean isInternet;
     Activity activity;
     Context context;
     View rootView;
@@ -66,28 +96,54 @@ public class OnGoingTrips extends Fragment {
     RecyclerView recyclerView;
     RelativeLayout errorLayout;
     ConnectionHelper helper;
-    CustomDialog customDialog;
+    CustomDialog spinner;
 
     LinearLayout toolbar;
     ImageView backImg;
 
+    private OrderServerAPI serverApiClient;
 
     public OnGoingTrips() {
-        // Required empty public constructor
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //initializing retrofit client
+        ConnectionPool pool = new ConnectionPool(4, 10000, TimeUnit.MILLISECONDS);
+
+        OkHttpClient httpClient = new OkHttpClient
+                .Builder()
+                .cache(null)
+                .followRedirects(true)
+                .followSslRedirects(true)
+                .connectionPool(pool)
+                .build();
+
+        serverApiClient = new Retrofit
+                .Builder()
+                .client(httpClient)
+                .baseUrl(URLHelper.base)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(OrderServerAPI.class);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_on_going_trips, container, false);
-        findViewByIdAndInitialize();
 
+        rootView = inflater.inflate(R.layout.fragment_on_going_trips, container, false);
+
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
+        errorLayout = (RelativeLayout) rootView.findViewById(R.id.errorLayout);
+        errorLayout.setVisibility(View.GONE);
+
+        toolbar = (LinearLayout) rootView.findViewById(R.id.lnrTitle);
+        backImg = (ImageView) rootView.findViewById(R.id.backArrow);
+
+        helper = new ConnectionHelper(getActivity());
         if (helper.isConnectingToInternet()) {
             getUpcomingList();
         }
@@ -111,17 +167,6 @@ public class OnGoingTrips extends Fragment {
         return rootView;
     }
 
-    public void findViewByIdAndInitialize() {
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
-        errorLayout = (RelativeLayout) rootView.findViewById(R.id.errorLayout);
-        errorLayout.setVisibility(View.GONE);
-        helper = new ConnectionHelper(getActivity());
-        isInternet = helper.isConnectingToInternet();
-
-        toolbar = (LinearLayout) rootView.findViewById(R.id.lnrTitle);
-        backImg = (ImageView) rootView.findViewById(R.id.backArrow);
-    }
-
     @Override
     public void onResume() {
         if (upcomingsAdapter != null) {
@@ -132,108 +177,41 @@ public class OnGoingTrips extends Fragment {
 
     public void getUpcomingList() {
 
-        customDialog = new CustomDialog(context);
-        customDialog.setCancelable(false);
-        customDialog.show();
+        showSpinner();
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(AccessDetails.serviceurl + URLHelper.UPCOMING_TRIPS, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+        headers.put("Authorization", "Bearer " + SharedHelper.getKey(context, "access_token"));
 
-                Log.v("GetHistoryList", response.toString());
-                if (response != null) {
-                    upcomingsAdapter = new UpcomingsAdapter(response);
-                    //  recyclerView.setHasFixedSize(true);
-                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
-                    recyclerView.setLayoutManager(mLayoutManager);
-                    recyclerView.setItemAnimator(new DefaultItemAnimator());
-                    if (upcomingsAdapter != null && upcomingsAdapter.getItemCount() > 0) {
-                        recyclerView.setVisibility(View.VISIBLE);
-                        errorLayout.setVisibility(View.GONE);
-                        recyclerView.setAdapter(upcomingsAdapter);
-                    } else {
-                        errorLayout.setVisibility(View.VISIBLE);
-                        recyclerView.setVisibility(View.GONE);
-                    }
+        serverApiClient
+                .getScheduledOrders(headers)
+                .enqueue(new CallbackHandler<List<Order>>() {
+                    @Override
+                    public void onSuccessfulResponse(retrofit2.Response<List<Order>> response) {
+                        List<Order> orders = response.body();
+                        createScheduledNotificaation(orders);
 
-                } else {
-                    errorLayout.setVisibility(View.VISIBLE);
-                    recyclerView.setVisibility(View.GONE);
-                }
+                        upcomingsAdapter = new UpcomingsAdapter(orders);
 
-                customDialog.dismiss();
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                customDialog.dismiss();
-                String json = null;
-                String Message;
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    try {
-                        JSONObject errorObj = new JSONObject(new String(response.data));
-
-                        if (response.statusCode == 400 || response.statusCode == 405 || response.statusCode == 500) {
-                            try {
-                                displayMessage(errorObj.optString("message"));
-                            } catch (Exception e) {
-                                displayMessage(getString(R.string.something_went_wrong));
-                            }
-
-                        } else if (response.statusCode == 401) {
-                            GoToBeginActivity();
-                        } else if (response.statusCode == 422) {
-
-                            json = AndarApplication.trimMessage(new String(response.data));
-                            if (json != "" && json != null) {
-                                displayMessage(json);
-                            } else {
-                                displayMessage(getString(R.string.please_try_again));
-                            }
-                        } else if (response.statusCode == 503) {
-                            displayMessage(getString(R.string.server_down));
-
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+                        recyclerView.setItemAnimator(new DefaultItemAnimator());
+                        if (upcomingsAdapter != null && upcomingsAdapter.getItemCount() > 0) {
+                            recyclerView.setVisibility(View.VISIBLE);
+                            errorLayout.setVisibility(View.GONE);
+                            recyclerView.setAdapter(upcomingsAdapter);
                         } else {
-                            displayMessage(getString(R.string.please_try_again));
-
+                            errorLayout.setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.GONE);
                         }
-
-                    } catch (Exception e) {
-                        displayMessage(getString(R.string.something_went_wrong));
-
                     }
+                });
 
-                } else {
-                    if (error instanceof NoConnectionError) {
-                        displayMessage(getString(R.string.oops_connect_your_internet));
-                    } else if (error instanceof NetworkError) {
-                        displayMessage(getString(R.string.oops_connect_your_internet));
-                    } else if (error instanceof TimeoutError) {
-                        getUpcomingList();
-                    }
-                }
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("X-Requested-With", "XMLHttpRequest");
-                headers.put("Authorization", "Bearer " + SharedHelper.getKey(context, "access_token"));
-                return headers;
-            }
-        };
 
-        AndarApplication.getInstance().addToRequestQueue(jsonArrayRequest);
     }
 
     public void GoToBeginActivity() {
-        Intent mainIntent;
-
-            mainIntent = new Intent(activity, WelcomeScreenActivity.class);
-
-        mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent mainIntent = new Intent(activity, WelcomeScreenActivity.class);
+        mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(mainIntent);
         activity.finish();
     }
@@ -247,10 +225,10 @@ public class OnGoingTrips extends Fragment {
         try {
             Snackbar.make(getView(), toastString, Snackbar.LENGTH_SHORT)
                     .setAction("Action", null).show();
-        }catch(Exception e){
-            try{
-                Toast.makeText(context,""+toastString,Toast.LENGTH_SHORT).show();
-            }catch (Exception ee){
+        } catch (Exception e) {
+            try {
+                Toast.makeText(context, "" + toastString, Toast.LENGTH_SHORT).show();
+            } catch (Exception ee) {
                 ee.printStackTrace();
             }
         }
@@ -269,57 +247,132 @@ public class OnGoingTrips extends Fragment {
         this.activity = activity;
     }
 
+    private void createScheduledNotificaation(List<Order> orders) {
 
-    private class UpcomingsAdapter extends RecyclerView.Adapter<UpcomingsAdapter.MyViewHolder> {
-        JSONArray jsonArray;
-
-        public UpcomingsAdapter(JSONArray array) {
-            this.jsonArray = array;
-        }
-
-        public void append(JSONArray array) {
+        for(Order o : orders){
             try {
-                for (int i = 0; i < array.length(); i++) {
-                    this.jsonArray.put(array.get(i));
-                }
-            } catch (JSONException e) {
+                String text = "You have accepted scheduled ride on " + generateDateRepresentation(o.scheduledDate);
+                Date date = o.getScheduledDate();
+                scheduleNotification(context,ALARM_SET_UPDATE,WARNING_10_MIN,o.id,date,text);
+                scheduleNotification(context,ALARM_SET_UPDATE,WARNING_30_MIN,o.id,date,text);
+                scheduleNotification(context,ALARM_SET_UPDATE,WARNING_60_MIN,o.id,date,text);
+            }catch (Exception e){
+                Log.e("AZAZA", "Can't schedule notification..");
                 e.printStackTrace();
             }
         }
 
+
+    }
+
+    private static final int WARNING_10_MIN = 1;
+    private static final int WARNING_30_MIN = 2;
+    private static final int WARNING_60_MIN = 3;
+    private static final int ALARM_SET_UPDATE = 1;
+    private static final int ALARM_SET_CANCEL = 2;
+
+    private void scheduleNotification(Context context,
+                                      int setMode,
+                                      int warningMode,
+                                     String orderId,
+                                     Date scheduledDate,
+                                     String text)
+    {
+
+        Intent intent = new Intent(context, HistoryDetails.class);
+        intent.putExtra("post_value", orderId);
+        intent.putExtra("tag", "upcoming_trips");
+
+        long notificationId = Long.parseLong(orderId+""+warningMode);
+        long warningTime = 0;
+        String title = "WARNING";
+        switch (warningMode){
+            case WARNING_10_MIN: warningTime = 10*60*1000; title="10 MIN "+title; break;
+            case WARNING_30_MIN: warningTime = 30*60*1000; title="30 MIN "+title; break;
+            case WARNING_60_MIN: warningTime = 60*60*1000; title="1 HOUR "+title; break;
+        }
+
+        PendingIntent activity = PendingIntent.getActivity(
+                context,
+                (int)notificationId,
+                intent,
+                PendingIntent.FLAG_CANCEL_CURRENT);
+
+        Uri soundUri = Uri.parse("android.resource://" + getActivity().getPackageName() + "/" + R.raw.alert_tone);
+
+        Notification notification = new NotificationCompat.Builder(context, "Holler app")
+                .setContentTitle(title)
+                .setContentText(text)
+                .setAutoCancel(false)
+                .setSound(soundUri)
+                .setPriority(NotificationManager.IMPORTANCE_HIGH)
+                .setContentIntent(activity)
+                .setSmallIcon(R.mipmap.ic_launcher, 1)
+                .build();
+
+        Intent notificationIntent = new Intent(context, NotificationPublisher.class);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, notificationId);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                context,
+                (int)notificationId,
+                notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        long currentTime = SystemClock.elapsedRealtime();
+        long alarmTime =  currentTime + (scheduledDate.getTime() - new Date().getTime() - warningTime);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        switch (setMode){
+            case ALARM_SET_UPDATE:
+                if(currentTime<alarmTime)
+                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, alarmTime, pendingIntent);
+                break;
+            case ALARM_SET_CANCEL:
+                alarmManager.cancel(pendingIntent);
+                break;
+        }
+    }
+
+    private class UpcomingsAdapter extends RecyclerView.Adapter<UpcomingsAdapter.MyViewHolder> {
+        List<Order> orders;
+
+        public UpcomingsAdapter(List<Order> orders) {
+            this.orders = orders;
+        }
+
         @Override
         public UpcomingsAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext())
+            View itemView = LayoutInflater
+                    .from(parent.getContext())
                     .inflate(R.layout.upcoming_list_item, parent, false);
             return new UpcomingsAdapter.MyViewHolder(itemView);
         }
 
         @Override
         public void onBindViewHolder(UpcomingsAdapter.MyViewHolder holder, final int position) {
-            Glide.with(activity).load(jsonArray.optJSONObject(position).optString("static_map")).placeholder(R.drawable.placeholder).error(R.drawable.placeholder).into(holder.tripImg);
-            try {
-                if (!jsonArray.optJSONObject(position).optString("schedule_at", "").isEmpty()) {
-                    String form = jsonArray.optJSONObject(position).optString("schedule_at");
-                    try {
-                        holder.tripDate.setText(getDate(form) + "th " + getMonth(form) + " " + getYear(form) + "at " + getTime(form));
-                        holder.tripId.setText(jsonArray.optJSONObject(position).optString("booking_id"));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+            final Order currentOrder = orders.get(position);
+
+            Glide
+                    .with(activity)
+                    .load(currentOrder.staticMapUrl)
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.placeholder)
+                    .into(holder.tripImg);
+
+            if (currentOrder.isScheduled()) {
+                holder.tripDate.setText(generateDateRepresentation(currentOrder.scheduledDate));
+                holder.tripId.setText(currentOrder.bookedId);
             }
-            try {
-                JSONObject serviceObj = jsonArray.getJSONObject(position).optJSONObject("service_type");
-                if (serviceObj != null) {
-                    holder.car_name.setText(serviceObj.optString("name"));
-                    //holder.tripAmount.setText(SharedHelper.getKey(context, "currency")+serviceObj.optString("price"));
-                    Glide.with(activity).load(serviceObj.optString("image"))
-                            .placeholder(R.drawable.car_select).error(R.drawable.car_select).dontAnimate().into(holder.driver_image);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if (currentOrder.serviceType != null) {
+                holder.car_name.setText(currentOrder.serviceType.name);
+                Glide
+                        .with(activity)
+                        .load(currentOrder.serviceType.image)
+                        .placeholder(R.drawable.car_select)
+                        .error(R.drawable.car_select)
+                        .dontAnimate()
+                        .into(holder.driver_image);
             }
 
             holder.btnCancel.setOnClickListener(new View.OnClickListener() {
@@ -332,7 +385,7 @@ public class OnGoingTrips extends Fragment {
                             .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.dismiss();
-                                    cancelRequest(jsonArray.optJSONObject(position).optString("id"));
+                                    cancelRequest(currentOrder);
                                 }
                             })
                             .setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -349,10 +402,10 @@ public class OnGoingTrips extends Fragment {
 
         @Override
         public int getItemCount() {
-            return jsonArray.length();
+            return orders.size();
         }
 
-        public class MyViewHolder extends RecyclerView.ViewHolder {
+        private class MyViewHolder extends RecyclerView.ViewHolder {
 
             TextView tripTime, car_name;
             TextView tripDate, tripAmount, tripId;
@@ -374,132 +427,176 @@ public class OnGoingTrips extends Fragment {
                     @Override
                     public void onClick(View view) {
 
-                        if (helper.isConnectingToInternet()){
+                        if (helper.isConnectingToInternet()) {
                             Intent intent = new Intent(getActivity(), HistoryDetails.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            Log.e("Intent", "" + jsonArray.optJSONObject(getAdapterPosition()).toString());
-                            intent.putExtra("post_value", jsonArray.optJSONObject(getAdapterPosition()).toString());
+                            intent.putExtra("post_value", orders.get(getAdapterPosition()).id);
                             intent.putExtra("tag", "upcoming_trips");
                             startActivity(intent);
-                        }else {
-                            Toast.makeText(context,"Oops, Connect your internet",Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(context, "Oops, Connect your internet", Toast.LENGTH_LONG).show();
                         }
-
-
                     }
                 });
             }
         }
     }
 
-    public void cancelRequest(final String request_id) {
+    public void cancelRequest(final Order order) {
 
-        customDialog = new CustomDialog(context);
-        customDialog.setCancelable(false);
-        customDialog.show();
-        JSONObject object = new JSONObject();
-        try {
-            object.put("id", request_id);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AccessDetails.serviceurl + URLHelper.CANCEL_REQUEST_API, object, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.v("CancelRequestResponse", response.toString());
-                customDialog.dismiss();
-                getUpcomingList();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                customDialog.dismiss();
-                String json = null;
-                String Message;
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
+        showSpinner();
 
-                    try {
-                        JSONObject errorObj = new JSONObject(new String(response.data));
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+        headers.put("Authorization", "Bearer " + SharedHelper.getKey(context, "access_token"));
 
-                        if (response.statusCode == 400 || response.statusCode == 405 || response.statusCode == 500) {
-                            try {
-                                displayMessage(errorObj.optString("message"));
-                            } catch (Exception e) {
-                                displayMessage(getString(R.string.something_went_wrong));
-                            }
-                        } else if (response.statusCode == 401) {
-                            GoToBeginActivity();
-                        } else if (response.statusCode == 422) {
 
-                            json = AndarApplication.trimMessage(new String(response.data));
-                            if (json != "" && json != null) {
-                                displayMessage(json);
-                            } else {
-                                displayMessage(getString(R.string.please_try_again));
-                            }
-                        } else if (response.statusCode == 503) {
-                            displayMessage(getString(R.string.server_down));
-                        } else {
-                            displayMessage(getString(R.string.please_try_again));
+        serverApiClient
+                .cancelOrder(headers, order)
+                .enqueue(new CallbackHandler<JsonObject>() {
+                    @Override
+                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
+                        try{
+                            String title = "% min warning";
+                            String text = "You have accepted scheduled ride on " + generateDateRepresentation(order.scheduledDate);
+                            Date date = order.getScheduledDate();
+                            scheduleNotification(context,ALARM_SET_CANCEL,WARNING_10_MIN,order.id,date,text);
+                            scheduleNotification(context,ALARM_SET_CANCEL,WARNING_30_MIN,order.id,date,text);
+                            scheduleNotification(context,ALARM_SET_CANCEL,WARNING_60_MIN,order.id,date,text);
+                        }catch(Exception e){
+
                         }
 
-                    } catch (Exception e) {
-                        displayMessage(getString(R.string.something_went_wrong));
+                        getUpcomingList();
                     }
+                });
+    }
 
-                } else {
-                    if (error instanceof NoConnectionError) {
-                        displayMessage(getString(R.string.oops_connect_your_internet));
-                    } else if (error instanceof NetworkError) {
-                        displayMessage(getString(R.string.oops_connect_your_internet));
-                    } else if (error instanceof TimeoutError) {
-                        cancelRequest(request_id);
-                    }
-                }
+    private void showSpinner() {
+        if (spinner == null) {
+            spinner = new CustomDialog(context);
+            spinner.setCancelable(false);
+        }
+        spinner.show();
+    }
+
+    private void hideSpinner() {
+        spinner.dismiss();
+    }
+
+
+    private String generateDateRepresentation(String date) {
+        try {
+            Date d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse(date);
+            return new SimpleDateFormat("d'th' MMM yyyy 'at' hh.mm a", Locale.ENGLISH).format(d);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "Wrong date";
+        }
+    }
+
+    private abstract class CallbackHandler<T> implements Callback<T> {
+        @Override
+        public void onResponse(Call<T> call, retrofit2.Response<T> response) {
+            if (response.isSuccessful()) {
+                onSuccessfulResponse(response);
+            } else {
+                onUnsuccessfulResponse(response);
             }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("X-Requested-With", "XMLHttpRequest");
-                headers.put("Authorization", "Bearer " + SharedHelper.getKey(context, "access_token"));
-                return headers;
+            hideSpinner();
+        }
+
+        public abstract void onSuccessfulResponse(retrofit2.Response<T> response);
+
+        public void onUnsuccessfulResponse(retrofit2.Response<T> response) {
+            errorLayout.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+
+            switch (response.code()) {
+                case 401:
+                    GoToBeginActivity();
+                    break;
+                case 400:
+                case 405:
+                case 500:
+                    displayMessage(getString(R.string.something_went_wrong));
+                    break;
+                case 422:
+                    displayMessage(getString(R.string.please_try_again));
+                    break;
+                case 503:
+                    displayMessage(getString(R.string.server_down));
+                    break;
+
+                default:
+                    displayMessage(getString(R.string.please_try_again));
+                    break;
+
             }
-        };
+        }
 
-        AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+        @Override
+        public void onFailure(Call<T> call, Throwable t) {
+            if (t instanceof TimeoutError) {
+                getUpcomingList();
+            } else {
+                displayMessage(getString(R.string.oops_connect_your_internet));
+            }
+            hideSpinner();
+        }
     }
 
-    private String getMonth(String date) throws ParseException {
-        Date d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse(date);
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(d);
-        String monthName = new SimpleDateFormat("MMM").format(cal.getTime());
-        return monthName;
+    public static class Order {
+        @Expose
+        @SerializedName("id")
+        String id;
+        @Expose(serialize = false)
+        @SerializedName("static_map")
+        String staticMapUrl;
+        @Expose(serialize = false)
+        @SerializedName("schedule_at")
+        String scheduledDate;
+        @Expose(serialize = false)
+        @SerializedName("booking_id")
+        String bookedId;
+        @Expose(serialize = false)
+        @SerializedName("service_type")
+        ServiceType serviceType;
+
+        public boolean isScheduled() {
+            if (scheduledDate == null) return false;
+            return !scheduledDate.isEmpty();
+        }
+
+        public Date getScheduledDate() throws ParseException, NullPointerException {
+            if(scheduledDate == null) throw  new NullPointerException("Scheduled date is not defined");
+            Date d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse(this.scheduledDate);
+            return d;
+        }
+
+        private class ServiceType {
+            @Expose(serialize = false)
+            @SerializedName("name")
+            String name;
+            @Expose(serialize = false)
+            @SerializedName("image")
+            String image;
+        }
     }
 
-    private String getDate(String date) throws ParseException {
-        Date d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse(date);
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(d);
-        String dateName = new SimpleDateFormat("dd").format(cal.getTime());
-        return dateName;
+    public interface OrderServerAPI {
+
+        @GET("api/provider/requests/upcoming")
+        Call<List<Order>> getScheduledOrders(
+                @HeaderMap Map<String, String> headers);
+
+        @POST("api/provider/cancel")
+        Call<JsonObject> cancelOrder(
+                @HeaderMap Map<String, String> headers,
+                @Body Order id);
+
+
     }
 
-    private String getYear(String date) throws ParseException {
-        Date d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse(date);
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(d);
-        String yearName = new SimpleDateFormat("yyyy").format(cal.getTime());
-        return yearName;
-    }
 
-    private String getTime(String date) throws ParseException {
-        Date d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse(date);
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(d);
-        String timeName = new SimpleDateFormat("hh:mm a").format(cal.getTime());
-        return timeName;
-    }
 }

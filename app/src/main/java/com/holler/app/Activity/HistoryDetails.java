@@ -30,6 +30,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
+import com.holler.app.Fragment.OnGoingTrips;
 import com.squareup.picasso.Picasso;
 import com.holler.app.AndarApplication;
 import com.holler.app.Helper.ConnectionHelper;
@@ -76,7 +77,7 @@ public class HistoryDetails extends AppCompatActivity {
     RatingBar tripProviderRating;
     LinearLayout sourceAndDestinationLayout;
     View viewLayout;
-    public JSONObject jsonObject;
+//    public JSONObject jsonObject;
     ImageView backArrow;
     LinearLayout parentLayout, lnrComments, lnrInvoiceSub, lnrInvoice;
     String tag = "";
@@ -85,6 +86,7 @@ public class HistoryDetails extends AppCompatActivity {
     TextView lblBookingID, lblDistanceCovered, lblTimeTaken, lblBasePrice, lblDistancePrice, lblTaxPrice,lblDiscountPrice,lblWalletPrice;
     LinearLayout lnrBookingID,lnrDistanceTravelled, lnrTimeTaken, lnrBaseFare, lnrDistanceFare, lnrTax,lnrDiscount,lnrWallet;
 
+    private String orderId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,15 +95,14 @@ public class HistoryDetails extends AppCompatActivity {
         findViewByIdAndInitialize();
         try {
             Intent intent = getIntent();
-            String post_details = intent.getExtras().getString("post_value");
             tag = intent.getExtras().getString("tag");
-            jsonObject = new JSONObject(post_details);
+            orderId = intent.getExtras().getString("post_value");
         } catch (Exception e) {
-            jsonObject = null;
+            orderId = null;
             e.printStackTrace();
         }
 
-        if (jsonObject != null) {
+        if (orderId != null) {
 
             if (tag.equalsIgnoreCase("past_trips")) {
                 btnCancelRide.setVisibility(View.GONE);
@@ -320,7 +321,12 @@ public class HistoryDetails extends AppCompatActivity {
         customDialog.setCancelable(false);
         customDialog.show();
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(AccessDetails.serviceurl + URLHelper.GET_HISTORY_DETAILS_API + "?request_id=" + jsonObject.optString("id"), new Response.Listener<JSONArray>() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+                AccessDetails.serviceurl
+                        + URLHelper.GET_HISTORY_DETAILS_API
+                        + "?request_id="
+                        + orderId,
+                new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
 
@@ -499,8 +505,8 @@ public class HistoryDetails extends AppCompatActivity {
         customDialog.show();
         JSONObject object = new JSONObject();
         try {
-            object.put("id", jsonObject.optString("id"));
-            utils.print("", "request_id" + jsonObject.optString("id"));
+            object.put("id", orderId);
+            utils.print("", "request_id" + orderId);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -598,7 +604,12 @@ public class HistoryDetails extends AppCompatActivity {
         customDialog.setCancelable(false);
         customDialog.show();
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(AccessDetails.serviceurl + URLHelper.UPCOMING_TRIP_DETAILS + "?request_id=" + jsonObject.optString("id"), new Response.Listener<JSONArray>() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+                AccessDetails.serviceurl
+                        + URLHelper.UPCOMING_TRIP_DETAILS
+                        + "?request_id="
+                        + orderId,
+                new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 setDetails(response);

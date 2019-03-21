@@ -198,6 +198,9 @@
             android:name=".Services.CustomFloatingViewService"
             android:enabled="true"
             android:exported="false" />
+
+        <receiver android:name=".Services.NotificationPublisher" />
+
     </application>
 
 </manifest>
