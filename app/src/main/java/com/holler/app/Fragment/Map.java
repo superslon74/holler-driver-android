@@ -2447,13 +2447,13 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
     private void showCustomFloatingView(Context context, boolean isShowOverlayPermission) {
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
             final Intent intent = new Intent(context, CustomFloatingViewService.class);
-            ContextCompat.startForegroundService(context, intent);
+            getActivity().startService( intent);
             return;
         }
 
         if (Settings.canDrawOverlays(context)) {
             final Intent intent = new Intent(context, CustomFloatingViewService.class);
-            ContextCompat.startForegroundService(context, intent);
+            getActivity().startService( intent);
             return;
         }
 

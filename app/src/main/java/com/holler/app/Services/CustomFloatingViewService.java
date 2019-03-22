@@ -1,6 +1,7 @@
 package com.holler.app.Services;
 
 import android.app.Service;
+import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -24,7 +26,7 @@ import com.holler.app.R;
  * FloatingViewのカスタマイズを行います。
  * サンプルとしてクリック時にはメールアプリを起動します。
  */
-public class CustomFloatingViewService extends Service implements FloatingViewListener {
+public class CustomFloatingViewService extends Service implements FloatingViewListener, ComponentCallbacks2 {
 
     /**
      * 通知ID
@@ -46,9 +48,16 @@ public class CustomFloatingViewService extends Service implements FloatingViewLi
      */
     private FloatingViewManager mFloatingViewManager;
 
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+    }
+
     /**
      * {@inheritDoc}
      */
+
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // 既にManagerが存在していたら何もしない
@@ -95,6 +104,7 @@ public class CustomFloatingViewService extends Service implements FloatingViewLi
 
 //        startForeground(NOTIFICATION_ID, createNotification(this));
 
+        Log.e("AZAZA","REDELIVERED");
         return START_REDELIVER_INTENT;
     }
 

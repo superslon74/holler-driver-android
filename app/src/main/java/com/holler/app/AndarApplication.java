@@ -1,6 +1,7 @@
 package com.holler.app;
 
 import android.app.Application;
+import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.text.TextUtils;
@@ -22,7 +23,7 @@ import java.util.Iterator;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 
-public class AndarApplication extends Application {
+public class AndarApplication extends Application implements  ComponentCallbacks2 {
 
     public static final String TAG = AndarApplication.class
             .getSimpleName();
@@ -32,6 +33,10 @@ public class AndarApplication extends Application {
 
     private static AndarApplication mInstance;
 
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+    }
 
     @Override
     protected void attachBaseContext(Context base) {

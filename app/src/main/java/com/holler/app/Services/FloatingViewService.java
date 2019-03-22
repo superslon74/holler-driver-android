@@ -2,6 +2,7 @@ package com.holler.app.Services;
 
 
 import android.app.Service;
+import android.content.ComponentCallbacks2;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
@@ -16,7 +17,7 @@ import com.holler.app.Activity.MainActivity;
 import com.holler.app.R;
 import android.util.Log;
 
-public class FloatingViewService extends Service {
+public class FloatingViewService extends Service implements ComponentCallbacks2 {
     private WindowManager mWindowManager;
     private View mFloatingView;
 
@@ -26,6 +27,11 @@ public class FloatingViewService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
     }
 
     @Override
@@ -56,12 +62,12 @@ public class FloatingViewService extends Service {
         final View collapsed_iv = mFloatingView.findViewById(R.id.collapsed_iv);
         //Set the close button
         ImageView closeButtonCollapsed = (ImageView) mFloatingView.findViewById(R.id.close_btn);
-        closeButtonCollapsed.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                stopSelf();
-            }
-        });
+//        closeButtonCollapsed.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                stopSelf();
+//            }
+//        });
 
         //Drag and move floating view using user's touch action.
         mFloatingView.setOnTouchListener(new View.OnTouchListener() {
