@@ -302,7 +302,8 @@ public class PastTrips extends Fragment {
                         if (helper.isConnectingToInternet()){
                             Intent intent = new Intent(activity, HistoryDetails.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intent.putExtra("post_value", jsonArray.optJSONObject(getAdapterPosition()).toString());
+                            String id = jsonArray.optJSONObject(getAdapterPosition()).optString("id");
+                            intent.putExtra("post_value", id);
                             intent.putExtra("tag", "past_trips");
                             activity.startActivity(intent);
                         }else {
