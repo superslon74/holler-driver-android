@@ -101,8 +101,7 @@ import com.holler.app.Helper.User;
 import com.holler.app.Models.AccessDetails;
 import com.holler.app.Retrofit.ApiInterface;
 import com.holler.app.Retrofit.RetrofitClient;
-import com.holler.app.Services.CustomFloatingViewService;
-import com.holler.app.Services.FloatingViewService;
+//import com.holler.app.Services.FloatingViewService;
 import com.holler.app.R;
 import com.holler.app.Utilities.Utilities;
 
@@ -657,33 +656,33 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
 
         view.setFocusableInTouchMode(true);
         view.requestFocus();
-        view.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() != KeyEvent.ACTION_DOWN)
-                    return true;
-
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    if (doubleBackToExitPressedOnce) {
-                        getActivity().finish();
-                        return false;
-                    }
-
-                    doubleBackToExitPressedOnce = true;
-                    Toast.makeText(getActivity(), "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
-
-                    new Handler().postDelayed(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            doubleBackToExitPressedOnce = false;
-                        }
-                    }, 5000);
-                    return true;
-                }
-                return false;
-            }
-        });
+//        view.setOnKeyListener(new View.OnKeyListener() {
+//            @Override
+//            public boolean onKey(View v, int keyCode, KeyEvent event) {
+//                if (event.getAction() != KeyEvent.ACTION_DOWN)
+//                    return true;
+//
+//                if (keyCode == KeyEvent.KEYCODE_BACK) {
+//                    if (doubleBackToExitPressedOnce) {
+//                        getActivity().finish();
+//                        return false;
+//                    }
+//
+//                    doubleBackToExitPressedOnce = true;
+//                    Toast.makeText(getActivity(), "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+//
+//                    new Handler().postDelayed(new Runnable() {
+//
+//                        @Override
+//                        public void run() {
+//                            doubleBackToExitPressedOnce = false;
+//                        }
+//                    }, 5000);
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
 
         sos.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1138,7 +1137,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
             /* Battery status check */
             if (Utilities.getBatteryLevel(context)) {
                 if (showBatteryAlert) {
-                    Utilities.notify(context, activity);
+//                    Utilities.notify(context, activity);
                     showBatteryAlert = false;
                 }
             }
@@ -2385,18 +2384,18 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
     public void onResume() {
         super.onResume();
         try {
-            NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);
-            notificationManager.cancelAll();
-            ha.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    //call function
-                    checkStatus();
-                    ha.postDelayed(this, 3000);
-                }
-            }, 3000);
+//            NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);
+//            notificationManager.cancelAll();
+//            ha.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    //call function
+//                    checkStatus();
+//                    ha.postDelayed(this, 3000);
+//                }
+//            }, 3000);
 
-            context.stopService(new Intent(context, CustomFloatingViewService.class));
+//            context.stopService(new Intent(context, CustomFloatingViewService.class));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -2440,20 +2439,20 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
      * Set and initialize the view elements.
      */
     private void initializeView() {
-        context.startService(new Intent(context, FloatingViewService.class));
-        activity.finish();
+//        context.startService(new Intent(context, FloatingViewService.class));
+//        activity.finish();
     }
 
     private void showCustomFloatingView(Context context, boolean isShowOverlayPermission) {
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
-            final Intent intent = new Intent(context, CustomFloatingViewService.class);
-            getActivity().startService( intent);
+//            final Intent intent = new Intent(context, CustomFloatingViewService.class);
+//            getActivity().startService( intent);
             return;
         }
 
         if (Settings.canDrawOverlays(context)) {
-            final Intent intent = new Intent(context, CustomFloatingViewService.class);
-            getActivity().startService( intent);
+//            final Intent intent = new Intent(context, CustomFloatingViewService.class);
+//            getActivity().startService( intent);
             return;
         }
 

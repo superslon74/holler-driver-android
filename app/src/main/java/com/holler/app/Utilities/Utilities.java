@@ -219,10 +219,11 @@ public class Utilities {
                 PendingIntent.FLAG_ONE_SHOT);
 
 
-        android.support.v4.app.NotificationCompat.Builder notificationBuilder = new android.support.v4.app.NotificationCompat.Builder(context)
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context,"holler.app")
                 .setContentTitle(context.getResources().getString(R.string.app_name))
                 .setContentText(""+context.getResources().getString(R.string.battery))
                 .setAutoCancel(true)
+                .setChannelId("holler.app")
                 .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
                 .setContentIntent(pendingIntent);
 
@@ -234,7 +235,7 @@ public class Utilities {
         notificationManager.notify(0, notificationBuilder.build());
     }
 
-    private static int getNotificationIcon(android.support.v4.app.NotificationCompat.Builder notificationBuilder, Context context) {
+    private static int getNotificationIcon(NotificationCompat.Builder notificationBuilder, Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             notificationBuilder.setColor(ContextCompat.getColor(context ,R.color.colorPrimary));
             return R.drawable.notification_white;

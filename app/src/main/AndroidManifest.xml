@@ -197,12 +197,12 @@
             android:process=":external"
             />
         <service
-            android:name=".Services.CustomFloatingViewService"
+            android:name=".utils.FloatingViewService"
             android:enabled="true"
             android:exported="false"
             android:process=":external"/>
 
-        <receiver android:name=".Services.NotificationPublisher" />
+        <receiver android:name=".utils.Notificator$AlarmSignalReceiver" />
 
     </application>
 

@@ -1,6 +1,7 @@
 package com.holler.app.Activity;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -9,7 +10,10 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.Color;
 import android.location.LocationManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -58,6 +62,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.firebase.auth.FirebaseAuth;
+import com.holler.app.utils.CustomActivity;
 import com.squareup.picasso.Picasso;
 import com.holler.app.Bean.Connect;
 import com.holler.app.Fragment.EarningsFragment;
@@ -80,7 +85,7 @@ import java.util.HashMap;
 import static com.holler.app.AndarApplication.trimMessage;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends CustomActivity {
     // tags used to attach the fragments
     private static final String TAG_HOME = "home";
     private static final String TAG_YOURTRIPS = "yourtrips";
@@ -155,6 +160,42 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(activity, EditProfile.class));
             }
         });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(!checkFloatingButtonPermissions()){
+                requestFloatingViewPermission();
+            }
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private boolean checkFloatingButtonPermissions() {
+        return Settings.canDrawOverlays(this);
+    }
+
+    private void requestFloatingViewPermission(){
+        final Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:" + context.getPackageName()));
+
+        startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_LOCATION) {
+            if (resultCode == Activity.RESULT_CANCELED) {
+                Toast.makeText(context, "Request Cancelled", Toast.LENGTH_SHORT).show();
+            }
+        }else if (requestCode == CODE_DRAW_OVER_OTHER_APP_PERMISSION) {
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkFloatingButtonPermissions()){
+                Toast.makeText(context, "Permission granted", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(context, "Request canceled", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+
     }
 
     private void findViewById() {
@@ -247,7 +288,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_share:
                         drawer.closeDrawers();
-                        navigateToShareScreen(URLHelper.APP_URL+getPackageName()+"&hl=en");
+                        navigateToShareScreen(URLHelper.APP_URL + getPackageName() + "&hl=en");
                         return true;
                     case R.id.nav_logout:
                         showLogoutDialog();
@@ -341,14 +382,12 @@ public class MainActivity extends AppCompatActivity {
 //                        || CURRENT_TAG.equalsIgnoreCase(TAG_YOURTRIPS)){
 //
 //                }else{
-                    navItemIndex = 0;
-                    CURRENT_TAG = TAG_HOME;
-                    fragment = new Map();
-                    GoToFragment();
-                    return;
+                navItemIndex = 0;
+                CURRENT_TAG = TAG_HOME;
+                fragment = new Map();
+                GoToFragment();
+                return;
 //                }
-            } else {
-                System.exit(0);
             }
         }
         super.onBackPressed();
@@ -485,9 +524,9 @@ public class MainActivity extends AppCompatActivity {
                 Intent goToLogin;
 
 
-                    goToLogin = new Intent(activity, WelcomeScreenActivity.class);
+                goToLogin = new Intent(activity, WelcomeScreenActivity.class);
 
-                goToLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                goToLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(goToLogin);
                 finish();
             }
@@ -508,7 +547,7 @@ public class MainActivity extends AppCompatActivity {
                                 displayMessage(getString(R.string.something_went_wrong));
                             }
                         } else if (response.statusCode == 401) {
-                                /*refreshAccessToken();*/
+                            /*refreshAccessToken();*/
                         } else if (response.statusCode == 422) {
 
                             json = trimMessage(new String(response.data));
@@ -594,10 +633,10 @@ public class MainActivity extends AppCompatActivity {
         try {
             Snackbar.make(getCurrentFocus(), toastString, Snackbar.LENGTH_SHORT)
                     .setAction("Action", null).show();
-        }catch (Exception e){
-            try{
-                Toast.makeText(context,""+toastString,Toast.LENGTH_SHORT).show();
-            }catch (Exception ee){
+        } catch (Exception e) {
+            try {
+                Toast.makeText(context, "" + toastString, Toast.LENGTH_SHORT).show();
+            } catch (Exception ee) {
                 ee.printStackTrace();
             }
         }

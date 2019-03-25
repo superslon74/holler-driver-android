@@ -3,6 +3,7 @@ package com.holler.app;
 import android.app.Application;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
+import android.content.Intent;
 import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 import android.util.Log;
@@ -12,7 +13,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.holler.app.Utilities.FontsOverride;
-import com.holler.app.R;
+import com.holler.app.utils.FloatingViewService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,12 +49,7 @@ public class AndarApplication extends Application implements  ComponentCallbacks
     public void onCreate() {
         super.onCreate();
         mInstance = this;
-//        initCalligraphyConfig();
         FontsOverride.setDefaultFont(this, "MONOSPACE", "ClanPro-NarrBook.otf");
-//        FontsOverride.setDefaultFont(this, "DEFAULT", "ClanPro-Book.otf");
-//        FontsOverride.setDefaultFont(this, "MONOSPACE", "ClanPro-Book.otf");
-//        FontsOverride.setDefaultFont(this, "SERIF", "ClanPro-Book.otf");
-//        FontsOverride.setDefaultFont(this, "SANS_SERIF", "ClanPro-Book.otf");
     }
 
     private void initCalligraphyConfig() {

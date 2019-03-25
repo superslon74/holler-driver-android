@@ -57,6 +57,7 @@ import com.holler.app.AndarApplication;
 import com.holler.app.R;
 import com.holler.app.Services.NotificationPublisher;
 import com.holler.app.Services.UserStatusChecker;
+import com.holler.app.utils.Notificator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -253,9 +254,9 @@ public class OnGoingTrips extends Fragment {
             try {
                 String text = "You have accepted scheduled ride on " + generateDateRepresentation(o.scheduledDate);
                 Date date = o.getScheduledDate();
-                scheduleNotification(context,ALARM_SET_UPDATE,WARNING_10_MIN,o.id,date,text);
-                scheduleNotification(context,ALARM_SET_UPDATE,WARNING_30_MIN,o.id,date,text);
-                scheduleNotification(context,ALARM_SET_UPDATE,WARNING_60_MIN,o.id,date,text);
+                scheduleNotification(context,Notificator.WARNING_10_MIN,o.id,date);
+                scheduleNotification(context,Notificator.WARNING_30_MIN,o.id,date);
+                scheduleNotification(context,Notificator.WARNING_60_MIN,o.id,date);
             }catch (Exception e){
                 Log.e("AZAZA", "Can't schedule notification..");
                 e.printStackTrace();
@@ -265,73 +266,26 @@ public class OnGoingTrips extends Fragment {
 
     }
 
-    private static final int WARNING_10_MIN = 1;
-    private static final int WARNING_30_MIN = 2;
-    private static final int WARNING_60_MIN = 3;
-    private static final int ALARM_SET_UPDATE = 1;
-    private static final int ALARM_SET_CANCEL = 2;
 
     private void scheduleNotification(Context context,
-                                      int setMode,
                                       int warningMode,
                                      String orderId,
-                                     Date scheduledDate,
-                                     String text)
+                                     Date scheduledDate)
     {
+//        TODO: move it to begin screen
 
-        Intent intent = new Intent(context, HistoryDetails.class);
-        intent.putExtra("post_value", orderId);
-        intent.putExtra("tag", "upcoming_trips");
+        Bundle arguments = new Bundle();
+        arguments.putString("post_value", orderId);
+        arguments.putString("tag", "upcoming_trips");
 
-        long notificationId = Long.parseLong(orderId+""+warningMode);
-        long warningTime = 0;
-        String title = "WARNING";
-        switch (warningMode){
-            case WARNING_10_MIN: warningTime = 10*60*1000; title="10 MIN "+title; break;
-            case WARNING_30_MIN: warningTime = 30*60*1000; title="30 MIN "+title; break;
-            case WARNING_60_MIN: warningTime = 60*60*1000; title="1 HOUR "+title; break;
-        }
+        int notificationId = (int)(Long.parseLong(orderId+""+warningMode));
 
-        PendingIntent activity = PendingIntent.getActivity(
-                context,
-                (int)notificationId,
-                intent,
-                PendingIntent.FLAG_CANCEL_CURRENT);
 
-        Uri soundUri = Uri.parse("android.resource://" + getActivity().getPackageName() + "/" + R.raw.alert_tone);
+        new Notificator(context)
+                .buildPendingIntent(HistoryDetails.class, arguments, notificationId)
+                .buildNotification(Notificator.generateTextBasedOnWarningMode(warningMode))
+                .scheduleNotification(warningMode, notificationId, scheduledDate);
 
-        Notification notification = new NotificationCompat.Builder(context, "Holler app")
-                .setContentTitle(title)
-                .setContentText(text)
-                .setAutoCancel(false)
-                .setSound(soundUri)
-                .setPriority(NotificationManager.IMPORTANCE_HIGH)
-                .setContentIntent(activity)
-                .setSmallIcon(R.mipmap.ic_launcher, 1)
-                .build();
-
-        Intent notificationIntent = new Intent(context, NotificationPublisher.class);
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, notificationId);
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                context,
-                (int)notificationId,
-                notificationIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-
-        long currentTime = SystemClock.elapsedRealtime();
-        long alarmTime =  currentTime + (scheduledDate.getTime() - new Date().getTime() - warningTime);
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-        switch (setMode){
-            case ALARM_SET_UPDATE:
-                if(currentTime<alarmTime)
-                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, alarmTime, pendingIntent);
-                break;
-            case ALARM_SET_CANCEL:
-                alarmManager.cancel(pendingIntent);
-                break;
-        }
     }
 
     private class UpcomingsAdapter extends RecyclerView.Adapter<UpcomingsAdapter.MyViewHolder> {
@@ -456,16 +410,17 @@ public class OnGoingTrips extends Fragment {
                 .enqueue(new CallbackHandler<JsonObject>() {
                     @Override
                     public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
-                        try{
-                            String title = "% min warning";
-                            String text = "You have accepted scheduled ride on " + generateDateRepresentation(order.scheduledDate);
-                            Date date = order.getScheduledDate();
-                            scheduleNotification(context,ALARM_SET_CANCEL,WARNING_10_MIN,order.id,date,text);
-                            scheduleNotification(context,ALARM_SET_CANCEL,WARNING_30_MIN,order.id,date,text);
-                            scheduleNotification(context,ALARM_SET_CANCEL,WARNING_60_MIN,order.id,date,text);
-                        }catch(Exception e){
-
-                        }
+//                        TODO: unschedule notification
+//                        try{
+//                            String title = "% min warning";
+//                            String text = "You have accepted scheduled ride on " + generateDateRepresentation(order.scheduledDate);
+//                            Date date = order.getScheduledDate();
+//                            scheduleNotification(context,ALARM_SET_CANCEL,WARNING_10_MIN,order.id,date,text);
+//                            scheduleNotification(context,ALARM_SET_CANCEL,WARNING_30_MIN,order.id,date,text);
+//                            scheduleNotification(context,ALARM_SET_CANCEL,WARNING_60_MIN,order.id,date,text);
+//                        }catch(Exception e){
+//
+//                        }
 
                         getUpcomingList();
                     }
