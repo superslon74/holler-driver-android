@@ -18,7 +18,7 @@
 
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_120sdp"
+                android:layout_height="306dp"
                 android:layout_marginBottom="@dimen/_10sdp"
                 android:src="@drawable/earn_sample" />
 
