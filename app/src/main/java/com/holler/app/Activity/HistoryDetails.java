@@ -30,7 +30,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
+import com.google.gson.JsonObject;
 import com.holler.app.Fragment.OnGoingTrips;
+import com.holler.app.server.OrderServerApi;
 import com.squareup.picasso.Picasso;
 import com.holler.app.AndarApplication;
 import com.holler.app.Helper.ConnectionHelper;
@@ -52,6 +54,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import okhttp3.ResponseBody;
 
 import static com.holler.app.AndarApplication.trimMessage;
 
@@ -81,28 +85,29 @@ public class HistoryDetails extends AppCompatActivity {
     ImageView backArrow;
     LinearLayout parentLayout, lnrComments, lnrInvoiceSub, lnrInvoice;
     String tag = "";
-    Button btnCancelRide, btnClose, btnViewInvoice;
+    Button btnCancelRide, btnClose, btnViewInvoice, btnStartRide;
     Utilities utils = new Utilities();
     TextView lblBookingID, lblDistanceCovered, lblTimeTaken, lblBasePrice, lblDistancePrice, lblTaxPrice,lblDiscountPrice,lblWalletPrice;
     LinearLayout lnrBookingID,lnrDistanceTravelled, lnrTimeTaken, lnrBaseFare, lnrDistanceFare, lnrTax,lnrDiscount,lnrWallet;
 
-    private String orderId;
+    private OrderServerApi.Order order;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history_details);
         findViewByIdAndInitialize();
+        order = new OrderServerApi.Order();
         try {
             Intent intent = getIntent();
             tag = intent.getExtras().getString("tag");
-            orderId = intent.getExtras().getString("post_value");
+            order.id = intent.getExtras().getString("post_value");
         } catch (Exception e) {
-            orderId = null;
+            order.id = null;
             e.printStackTrace();
         }
 
-        if (orderId != null) {
+        if (order.id != null) {
 
             if (tag.equalsIgnoreCase("past_trips")) {
                 btnCancelRide.setVisibility(View.GONE);
@@ -110,12 +115,14 @@ public class HistoryDetails extends AppCompatActivity {
                 getRequestDetails();
                 lblTitle.setText("Past Trips");
                 btnViewInvoice.setVisibility(View.VISIBLE);
+                btnStartRide.setVisibility(View.GONE);
             } else {
                 btnCancelRide.setVisibility(View.VISIBLE);
                 lnrComments.setVisibility(View.GONE);
                 getUpcomingDetails();
                 lblTitle.setText("Upcoming Trips");
                 btnViewInvoice.setVisibility(View.GONE);
+                btnStartRide.setVisibility(View.VISIBLE);
             }
         }
         backArrow.setOnClickListener(new View.OnClickListener() {
@@ -154,6 +161,7 @@ public class HistoryDetails extends AppCompatActivity {
         btnCancelRide = (Button) findViewById(R.id.btnCancelRide);
         btnClose = (Button) findViewById(R.id.btnClose);
         btnViewInvoice = (Button) findViewById(R.id.btnViewInvoice);
+        btnStartRide = (Button) findViewById(R.id.startRideBtn);
         lnrComments = (LinearLayout) findViewById(R.id.lnrComments);
         lnrInvoice = (LinearLayout) findViewById(R.id.lnrInvoice);
         lnrInvoiceSub = (LinearLayout) findViewById(R.id.lnrInvoiceSub);
@@ -198,6 +206,13 @@ public class HistoryDetails extends AppCompatActivity {
             }
         });
 
+        btnStartRide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startRide();
+            }
+        });
+
         lnrInvoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -236,6 +251,38 @@ public class HistoryDetails extends AppCompatActivity {
         });
     }
 
+    private void startRide(){
+        showSpinner();
+
+        Map<String,String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+        headers.put("Authorization", "Bearer " + SharedHelper.getKey(context, "access_token"));
+
+        OrderServerApi serverClientApi = OrderServerApi.ApiCreator.createInstance();
+        serverClientApi
+                .startTrip(headers, order.id)
+                .enqueue(new OrderServerApi.CallbackErrorHandler<ResponseBody>(activity) {
+                    @Override
+                    public void onSuccessfulResponse(retrofit2.Response<ResponseBody> response) {
+                        Intent intent = new Intent(HistoryDetails.this,MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onFinishHandling() {
+                        hideSpinner();
+
+                    }
+
+                    @Override
+                    public void onTimeoutRequest() {
+                        startRide();
+                    }
+
+                });
+    }
+
 
     private void setDetails(JSONArray response) {
         if (response != null && response.length() > 0) {
@@ -253,7 +300,8 @@ public class HistoryDetails extends AppCompatActivity {
                 form = response.optJSONObject(0).optString("schedule_at");
             }
             try {
-                tripDate.setText(getDate(form) + "th " + getMonth(form) + " " + getYear(form) + "\n" + getTime(form));
+                order.scheduledDate = form;
+                        tripDate.setText(getDate(form) + "th " + getMonth(form) + " " + getYear(form) + "\n" + getTime(form));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -325,7 +373,7 @@ public class HistoryDetails extends AppCompatActivity {
                 AccessDetails.serviceurl
                         + URLHelper.GET_HISTORY_DETAILS_API
                         + "?request_id="
-                        + orderId,
+                        + order.id,
                 new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
@@ -366,6 +414,7 @@ public class HistoryDetails extends AppCompatActivity {
                         form = response.optJSONObject(0).optString("schedule_at");
                     }
                     try {
+                        order.scheduledDate = form;
                         tripDate.setText(getDate(form) + "th " + getMonth(form) + " " + getYear(form) + "\n" + getTime(form));
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -498,92 +547,56 @@ public class HistoryDetails extends AppCompatActivity {
     }
 
 
-    public void cancelRequest() {
-
+    private void showSpinner(){
         customDialog = new CustomDialog(context);
         customDialog.setCancelable(false);
         customDialog.show();
-        JSONObject object = new JSONObject();
-        try {
-            object.put("id", orderId);
-            utils.print("", "request_id" + orderId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AccessDetails.serviceurl + URLHelper.CANCEL_REQUEST_API, object, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                utils.print("CancelRequestResponse", response.toString());
-                customDialog.dismiss();
-                finish();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                customDialog.dismiss();
-                String json = null;
-                String Message;
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
+    }
 
-                    try {
-                        JSONObject errorObj = new JSONObject(new String(response.data));
+    private void hideSpinner(){
+        customDialog.dismiss();
+    }
 
-                        if (response.statusCode == 400 || response.statusCode == 405 || response.statusCode == 500) {
-                            try {
-                                displayMessage(errorObj.optString("message"));
-                            } catch (Exception e) {
-                                displayMessage(getString(R.string.something_went_wrong));
-                                e.printStackTrace();
-                            }
-                        } else if (response.statusCode == 401) {
-                            GoToBeginActivity();
-                        } else if (response.statusCode == 422) {
+    public void cancelRequest() {
 
-                            json = trimMessage(new String(response.data));
-                            if (json != "" && json != null) {
-                                displayMessage(json);
-                            } else {
-                                displayMessage(getString(R.string.please_try_again));
-                            }
-                        } else if (response.statusCode == 503) {
-                            displayMessage(getString(R.string.server_down));
-                        } else {
-                            displayMessage(getString(R.string.please_try_again));
-                        }
+        showSpinner();
 
-                    } catch (Exception e) {
-                        displayMessage(getString(R.string.something_went_wrong));
-                        e.printStackTrace();
+        Map<String,String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+        headers.put("Authorization", "Bearer " + SharedHelper.getKey(context, "access_token"));
+
+        OrderServerApi serverClientApi = OrderServerApi.ApiCreator.createInstance();
+        serverClientApi
+                .cancelOrder(headers, order)
+                .enqueue(new OrderServerApi.CancelOrderCallbackHandler<JsonObject>(activity,order) {
+                    @Override
+                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
+                        super.onSuccessfulResponse(response);
                     }
 
-                } else {
-                    if (error instanceof NoConnectionError) {
-                        displayMessage(getString(R.string.oops_connect_your_internet));
-                    } else if (error instanceof NetworkError) {
-                        displayMessage(getString(R.string.oops_connect_your_internet));
-                    } else if (error instanceof TimeoutError) {
+                    @Override
+                    public void onFinishHandling() {
+                        hideSpinner();
+                        Intent intent = new Intent(HistoryDetails.this,HistoryActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onTimeoutRequest() {
                         cancelRequest();
                     }
-                }
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("X-Requested-With", "XMLHttpRequest");
-                headers.put("Authorization", "Bearer " + SharedHelper.getKey(context, "access_token"));
-                utils.print("", "Access_Token" + SharedHelper.getKey(context, "access_token"));
-                return headers;
-            }
-        };
 
-        AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+                });
     }
 
 
     public void displayMessage(String toastString) {
-        Snackbar.make(findViewById(R.id.parentLayout), toastString, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+        Snackbar.make(
+                findViewById(R.id.parentLayout),
+                toastString,
+                Snackbar.LENGTH_SHORT
+        ).setAction("Action", null).show();
 
     }
 
@@ -608,7 +621,7 @@ public class HistoryDetails extends AppCompatActivity {
                 AccessDetails.serviceurl
                         + URLHelper.UPCOMING_TRIP_DETAILS
                         + "?request_id="
-                        + orderId,
+                        + order.id,
                 new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {

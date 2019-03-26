@@ -59,7 +59,7 @@ public class Notificator {
         Intent launchAppIntent = new Intent(context,activityClass);
         if(arguments!=null)
         for(String argumentKey : arguments.keySet()){
-            launchAppIntent.putExtra(argumentKey,(Parcelable) arguments.get(argumentKey));
+            launchAppIntent.putExtra(argumentKey, (String)arguments.get(argumentKey));
         }
         launchAppIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
@@ -114,33 +114,17 @@ public class Notificator {
         return builder;
     }
 
-    public static NotificationText generateTextBasedOnWarningMode(int warningMode){
-        String title = "";
-        String text = "";
-        switch (warningMode){
-            case WARNING_10_MIN: title="10 MIN WARNING"; break;
-            case WARNING_30_MIN: title="30 MIN WARNING";  break;
-            case WARNING_60_MIN: title="1 HOUR WARNING"; break;
-        }
-        text = "You have accepted scheduled ride on tomorrow";
+    public static NotificationText generateTextBasedOnWarningMode(){
+        String title = "1 HOUR WARNING";
+        String text = "You have accepted scheduled ride";
 
         return new NotificationText(title,text);
     }
 
-    public static final int WARNING_10_MIN = 1;
-    public static final int WARNING_30_MIN = 2;
-    public static final int WARNING_60_MIN = 3;
-
-    public void scheduleNotification(int warningMode, int notificationId, Date scheduledDate){
+    public void scheduleNotification(int notificationId, Date scheduledDate){
 
         long warningTime = 0;
-        String title = "WARNING";
-        switch (warningMode){
-            case WARNING_10_MIN: warningTime = 10*60*1000; break;
-            case WARNING_30_MIN: warningTime = 30*60*1000; break;
-            case WARNING_60_MIN: warningTime = 60*60*1000; break;
-        }
-
+        warningTime = 60*60*1000;
 
         Intent alarmIntent = new Intent(context, AlarmSignalReceiver.class);
         alarmIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, notificationId);
@@ -155,6 +139,27 @@ public class Notificator {
         long alarmTime =  currentTime + (scheduledDate.getTime() - new Date().getTime() - warningTime);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, alarmTime, pendingIntent);
+
+    }
+
+    public void unscheduleNotification(int notificationId, Date scheduledDate){
+
+        long warningTime = 0;
+        warningTime = 60*60*1000;
+
+        Intent alarmIntent = new Intent(context, AlarmSignalReceiver.class);
+        alarmIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, notificationId);
+        alarmIntent.putExtra(NotificationPublisher.NOTIFICATION, notificationBuilder.build());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                context,
+                notificationId,
+                alarmIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        long currentTime = SystemClock.elapsedRealtime();
+        long alarmTime =  currentTime + (scheduledDate.getTime() - new Date().getTime() - warningTime);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
 
     }
 

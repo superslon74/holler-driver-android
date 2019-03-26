@@ -57,6 +57,11 @@ import com.holler.app.AndarApplication;
 import com.holler.app.R;
 import com.holler.app.Services.NotificationPublisher;
 import com.holler.app.Services.UserStatusChecker;
+import com.holler.app.server.OrderServerApi;
+import com.holler.app.server.OrderServerApi.ApiCreator;
+import com.holler.app.server.OrderServerApi.Order;
+import com.holler.app.server.OrderServerApi.CallbackErrorHandler;
+import com.holler.app.server.OrderServerApi.CancelOrderCallbackHandler;
 import com.holler.app.utils.Notificator;
 
 import org.json.JSONArray;
@@ -102,7 +107,7 @@ public class OnGoingTrips extends Fragment {
     LinearLayout toolbar;
     ImageView backImg;
 
-    private OrderServerAPI serverApiClient;
+    private OrderServerApi serverApiClient;
 
     public OnGoingTrips() {
     }
@@ -111,24 +116,7 @@ public class OnGoingTrips extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //initializing retrofit client
-        ConnectionPool pool = new ConnectionPool(4, 10000, TimeUnit.MILLISECONDS);
-
-        OkHttpClient httpClient = new OkHttpClient
-                .Builder()
-                .cache(null)
-                .followRedirects(true)
-                .followSslRedirects(true)
-                .connectionPool(pool)
-                .build();
-
-        serverApiClient = new Retrofit
-                .Builder()
-                .client(httpClient)
-                .baseUrl(URLHelper.base)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create(OrderServerAPI.class);
-
+        serverApiClient = ApiCreator.createInstance();
     }
 
     @Override
@@ -186,7 +174,7 @@ public class OnGoingTrips extends Fragment {
 
         serverApiClient
                 .getScheduledOrders(headers)
-                .enqueue(new CallbackHandler<List<Order>>() {
+                .enqueue(new CallbackErrorHandler<List<Order>>(getActivity()) {
                     @Override
                     public void onSuccessfulResponse(retrofit2.Response<List<Order>> response) {
                         List<Order> orders = response.body();
@@ -204,6 +192,23 @@ public class OnGoingTrips extends Fragment {
                             errorLayout.setVisibility(View.VISIBLE);
                             recyclerView.setVisibility(View.GONE);
                         }
+                    }
+
+                    @Override
+                    public void onTimeoutRequest() {
+                        getUpcomingList();
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Order>> call, Throwable t) {
+                        errorLayout.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
+                        super.onFailure(call,t);
+                    }
+
+                    @Override
+                    public void onFinishHandling() {
+                        hideSpinner();
                     }
                 });
 
@@ -254,9 +259,7 @@ public class OnGoingTrips extends Fragment {
             try {
                 String text = "You have accepted scheduled ride on " + generateDateRepresentation(o.scheduledDate);
                 Date date = o.getScheduledDate();
-                scheduleNotification(context,Notificator.WARNING_10_MIN,o.id,date);
-                scheduleNotification(context,Notificator.WARNING_30_MIN,o.id,date);
-                scheduleNotification(context,Notificator.WARNING_60_MIN,o.id,date);
+                scheduleNotification(context,o.id,date);
             }catch (Exception e){
                 Log.e("AZAZA", "Can't schedule notification..");
                 e.printStackTrace();
@@ -268,7 +271,6 @@ public class OnGoingTrips extends Fragment {
 
 
     private void scheduleNotification(Context context,
-                                      int warningMode,
                                      String orderId,
                                      Date scheduledDate)
     {
@@ -278,13 +280,13 @@ public class OnGoingTrips extends Fragment {
         arguments.putString("post_value", orderId);
         arguments.putString("tag", "upcoming_trips");
 
-        int notificationId = (int)(Long.parseLong(orderId+""+warningMode));
+        int notificationId = (int)(Long.parseLong(orderId));
 
 
         new Notificator(context)
                 .buildPendingIntent(HistoryDetails.class, arguments, notificationId)
-                .buildNotification(Notificator.generateTextBasedOnWarningMode(warningMode))
-                .scheduleNotification(warningMode, notificationId, scheduledDate);
+                .buildNotification(Notificator.generateTextBasedOnWarningMode())
+                .scheduleNotification(notificationId, scheduledDate);
 
     }
 
@@ -407,22 +409,27 @@ public class OnGoingTrips extends Fragment {
 
         serverApiClient
                 .cancelOrder(headers, order)
-                .enqueue(new CallbackHandler<JsonObject>() {
+                .enqueue(new CancelOrderCallbackHandler<JsonObject>(getActivity(), order) {
                     @Override
                     public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
-//                        TODO: unschedule notification
-//                        try{
-//                            String title = "% min warning";
-//                            String text = "You have accepted scheduled ride on " + generateDateRepresentation(order.scheduledDate);
-//                            Date date = order.getScheduledDate();
-//                            scheduleNotification(context,ALARM_SET_CANCEL,WARNING_10_MIN,order.id,date,text);
-//                            scheduleNotification(context,ALARM_SET_CANCEL,WARNING_30_MIN,order.id,date,text);
-//                            scheduleNotification(context,ALARM_SET_CANCEL,WARNING_60_MIN,order.id,date,text);
-//                        }catch(Exception e){
-//
-//                        }
-
+                        super.onSuccessfulResponse(response);
                         getUpcomingList();
+                    }
+                    @Override
+                    public void onTimeoutRequest() {
+                        getUpcomingList();
+                    }
+
+                    @Override
+                    public void onFailure(Call<JsonObject> call, Throwable t) {
+                        errorLayout.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
+                        super.onFailure(call,t);
+                    }
+
+                    @Override
+                    public void onFinishHandling() {
+                        hideSpinner();
                     }
                 });
     }
@@ -450,108 +457,9 @@ public class OnGoingTrips extends Fragment {
         }
     }
 
-    private abstract class CallbackHandler<T> implements Callback<T> {
-        @Override
-        public void onResponse(Call<T> call, retrofit2.Response<T> response) {
-            if (response.isSuccessful()) {
-                onSuccessfulResponse(response);
-            } else {
-                onUnsuccessfulResponse(response);
-            }
-            hideSpinner();
-        }
-
-        public abstract void onSuccessfulResponse(retrofit2.Response<T> response);
-
-        public void onUnsuccessfulResponse(retrofit2.Response<T> response) {
-            errorLayout.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-
-            switch (response.code()) {
-                case 401:
-                    GoToBeginActivity();
-                    break;
-                case 400:
-                case 405:
-                case 500:
-                    displayMessage(getString(R.string.something_went_wrong));
-                    break;
-                case 422:
-                    displayMessage(getString(R.string.please_try_again));
-                    break;
-                case 503:
-                    displayMessage(getString(R.string.server_down));
-                    break;
-
-                default:
-                    displayMessage(getString(R.string.please_try_again));
-                    break;
-
-            }
-        }
-
-        @Override
-        public void onFailure(Call<T> call, Throwable t) {
-            if (t instanceof TimeoutError) {
-                getUpcomingList();
-            } else {
-                displayMessage(getString(R.string.oops_connect_your_internet));
-            }
-            hideSpinner();
-        }
-    }
-
-    public static class Order {
-        @Expose
-        @SerializedName("id")
-        String id;
-        @Expose(serialize = false)
-        @SerializedName("static_map")
-        String staticMapUrl;
-        @Expose(serialize = false)
-        @SerializedName("schedule_at")
-        String scheduledDate;
-        @Expose(serialize = false)
-        @SerializedName("booking_id")
-        String bookedId;
-        @Expose(serialize = false)
-        @SerializedName("service_type")
-        ServiceType serviceType;
-
-        public boolean isScheduled() {
-            if (scheduledDate == null) return false;
-            return !scheduledDate.isEmpty();
-        }
-
-        public Date getScheduledDate() throws ParseException, NullPointerException {
-            if(scheduledDate == null) throw  new NullPointerException("Scheduled date is not defined");
-            Date d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse(this.scheduledDate);
-            return d;
-        }
-
-        private class ServiceType {
-            @Expose(serialize = false)
-            @SerializedName("name")
-            String name;
-            @Expose(serialize = false)
-            @SerializedName("image")
-            String image;
-        }
-    }
-
-    public interface OrderServerAPI {
-
-        @GET("api/provider/requests/upcoming")
-        Call<List<Order>> getScheduledOrders(
-                @HeaderMap Map<String, String> headers);
-
-        @POST("api/provider/cancel")
-        Call<JsonObject> cancelOrder(
-                @HeaderMap Map<String, String> headers,
-                @Body Order id);
 
 
-    }
+
 
 
 }

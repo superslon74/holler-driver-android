@@ -54,6 +54,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonObject;
 import com.holler.app.Activity.DocumentsActivity;
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -86,6 +87,8 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.holler.app.server.OrderServerApi;
+import com.holler.app.utils.FloatingViewService;
 import com.squareup.picasso.Picasso;
 import com.holler.app.Activity.MainActivity;
 import com.holler.app.Activity.Offline;
@@ -147,6 +150,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
     String CurrentStatus = " ";
     String PreviousStatus = " ";
     String request_id = " ";
+    OrderServerApi.Order incomingOrder = new OrderServerApi.Order();
     int method;
     Activity activity;
     Context context;
@@ -320,9 +324,9 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
         btn_01_status.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (CurrentStatus.equalsIgnoreCase("PICKEDUP")){
+                if (CurrentStatus.equalsIgnoreCase("PICKEDUP")) {
                     showOTPDialog();
-                }else{
+                } else {
                     update(CurrentStatus, request_id);
                 }
             }
@@ -345,8 +349,11 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
             @Override
             public void onClick(View v) {
 
-                CreatingOrderTask t = new CreatingOrderTask();
-                t.execute("HI");
+//                final Intent intent = new Intent(getActivity(), FloatingViewService.class);
+//                getActivity().startService(intent);
+//
+//                CreatingOrderTask t = new CreatingOrderTask();
+//                t.execute("HI");
             }
         });
 
@@ -905,7 +912,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
 
             if (!success) {
                 Log.e("Map:Style", "Style parsing failed.");
-            } else if(success){
+            } else if (success) {
                 Log.e("Map:Style", "Style Applied.");
             }
         } catch (Resources.NotFoundException e) {
@@ -1151,7 +1158,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
                     }
                 }
 
-                String url = AccessDetails.serviceurl +  "/api/provider/trip?latitude=" + crt_lat + "&longitude=" + crt_lng;
+                String url = AccessDetails.serviceurl + "/api/provider/trip?latitude=" + crt_lat + "&longitude=" + crt_lng;
 
                 utils.print("Destination Current Lat", "" + crt_lat);
                 utils.print("Destination Current Lng", "" + crt_lng);
@@ -1169,7 +1176,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
                                 if (jsonObject.optString("picture").startsWith("http"))
                                     user.setImg(jsonObject.optString("picture"));
                                 else
-                                    user.setImg(AccessDetails.serviceurl +  "/storage/" + jsonObject.optString("picture"));
+                                    user.setImg(AccessDetails.serviceurl + "/storage/" + jsonObject.optString("picture"));
                                 user.setRating(jsonObject.optString("rating"));
                                 user.setMobile(jsonObject.optString("mobile"));
                                 bookingId = response.optJSONArray("requests").getJSONObject(0).optJSONObject("request").optString("booking_id");
@@ -1206,6 +1213,15 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
                                         d_address = statusResponse.optString("d_address");
                                         strOTP = statusResponse.optString("otp");
                                         request_id = response.optJSONArray("requests").getJSONObject(0).optString("request_id");
+                                        incomingOrder.id = request_id;
+                                        incomingOrder.scheduledDate = response
+                                                .optJSONArray("requests")
+                                                .getJSONObject(0)
+                                                .getJSONObject("request")
+                                                .optString("schedule_at", "");
+                                        String str = incomingOrder.scheduledDate;
+                                        String str1 = request_id;
+
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
@@ -1574,7 +1590,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
                     if (user.optString("picture").startsWith("http"))
                         Picasso.with(context).load(user.getString("picture")).placeholder(R.drawable.ic_dummy_user).error(R.drawable.ic_dummy_user).into(img01User);
                     else
-                        Picasso.with(context).load(AccessDetails.serviceurl +  "/storage/" + user.getString("picture")).placeholder(R.drawable.ic_dummy_user).error(R.drawable.ic_dummy_user).into(img01User);
+                        Picasso.with(context).load(AccessDetails.serviceurl + "/storage/" + user.getString("picture")).placeholder(R.drawable.ic_dummy_user).error(R.drawable.ic_dummy_user).into(img01User);
                 } else {
                     img01User.setImageResource(R.drawable.ic_dummy_user);
                 }
@@ -1584,6 +1600,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
                     public void onClick(View v) {
                         Intent intent = new Intent(context, ShowProfile.class);
                         intent.putExtra("user", userProfile);
+
                         startActivity(intent);
                     }
                 });
@@ -1621,7 +1638,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
                     if (user.optString("picture").startsWith("http"))
                         Picasso.with(context).load(user.getString("picture")).placeholder(R.drawable.ic_dummy_user).error(R.drawable.ic_dummy_user).into(img03User);
                     else
-                        Picasso.with(context).load(AccessDetails.serviceurl +  "/storage/" + user.getString("picture")).placeholder(R.drawable.ic_dummy_user).error(R.drawable.ic_dummy_user).into(img03User);
+                        Picasso.with(context).load(AccessDetails.serviceurl + "/storage/" + user.getString("picture")).placeholder(R.drawable.ic_dummy_user).error(R.drawable.ic_dummy_user).into(img03User);
                 } else {
                     img03User.setImageResource(R.drawable.ic_dummy_user);
                 }
@@ -1734,7 +1751,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
                     if (user.optString("picture").startsWith("http"))
                         Picasso.with(context).load(user.getString("picture")).placeholder(R.drawable.ic_dummy_user).error(R.drawable.ic_dummy_user).into(img05User);
                     else
-                        Picasso.with(context).load(AccessDetails.serviceurl +  "/storage/" + user.getString("picture")).placeholder(R.drawable.ic_dummy_user).error(R.drawable.ic_dummy_user).into(img05User);
+                        Picasso.with(context).load(AccessDetails.serviceurl + "/storage/" + user.getString("picture")).placeholder(R.drawable.ic_dummy_user).error(R.drawable.ic_dummy_user).into(img05User);
                 } else {
                     img05User.setImageResource(R.drawable.ic_dummy_user);
                 }
@@ -1757,9 +1774,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
     }
 
     private void update(final String status, String id) {
-        customDialog = new CustomDialog(activity);
-        customDialog.setCancelable(false);
-        customDialog.show();
+        showSpinner();
         if (status.equals("ONLINE")) {
 
             JSONObject param = new JSONObject();
@@ -1768,10 +1783,10 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,AccessDetails.serviceurl +  URLHelper.UPDATE_AVAILABILITY_API, param, new Response.Listener<JSONObject>() {
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AccessDetails.serviceurl + URLHelper.UPDATE_AVAILABILITY_API, param, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    customDialog.dismiss();
+                    hideSpinner();
                     if (response != null) {
                         if (response.optJSONObject("service").optString("status").equalsIgnoreCase("offline")) {
                             goOffline();
@@ -1783,7 +1798,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    customDialog.dismiss();
+                    hideSpinner();
                     utils.print("Error", error.toString());
                     errorHandler(error);
                 }
@@ -1810,7 +1825,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
                 }
                 utils.print("Input", param.toString());
             } else {
-                url = AccessDetails.serviceurl +  "/api/provider/trip/" + id;
+                url = AccessDetails.serviceurl + "/api/provider/trip/" + id;
                 try {
                     param.put("_method", "PATCH");
                     param.put("status", status);
@@ -1827,7 +1842,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
             final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, param, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    customDialog.dismiss();
+                    hideSpinner();
                     if (response.optJSONObject("requests") != null) {
                         utils.print("request", response.optJSONObject("requests").toString());
                     }
@@ -1848,7 +1863,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    customDialog.dismiss();
+                    hideSpinner();
                     utils.print("Error", error.toString());
                     if (status.equals("RATE")) {
                         lnrGoOffline.setVisibility(View.VISIBLE);
@@ -1869,218 +1884,153 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
         }
     }
 
-    public void cancelRequest(String id, String reason) {
-
-        customDialog = new CustomDialog(context);
+    private void showSpinner() {
+        if (customDialog == null) {
+            customDialog = new CustomDialog(context);
+        }
         customDialog.setCancelable(false);
         customDialog.show();
-        JSONObject object = new JSONObject();
-        try {
-            object.put("id", id);
-            object.put("cancel_reason", reason);
-            Log.e("", "request_id" + id);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AccessDetails.serviceurl + URLHelper.CANCEL_REQUEST_API, object, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                customDialog.dismiss();
-                utils.print("CancelRequestResponse", response.toString());
-                Toast.makeText(context, "" + context.getResources().getString(R.string.request_cancel), Toast.LENGTH_SHORT).show();
-                mapClear();
-                clearVisibility();
-                lnrGoOffline.setVisibility(View.VISIBLE);
-                destinationLayer.setVisibility(View.GONE);
-                CurrentStatus = "ONLINE";
-                PreviousStatus = "NULL";
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                customDialog.dismiss();
-                String json = null;
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-
-                    try {
-                        JSONObject errorObj = new JSONObject(new String(response.data));
-
-                        if (response.statusCode == 400 || response.statusCode == 405 || response.statusCode == 500) {
-                            try {
-                                displayMessage(errorObj.optString("message"));
-                            } catch (Exception e) {
-                                displayMessage(context.getResources().getString(R.string.something_went_wrong));
-                                e.printStackTrace();
-                            }
-                        } else if (response.statusCode == 401) {
-                            GoToBeginActivity();
-                        } else if (response.statusCode == 422) {
-
-                            json = trimMessage(new String(response.data));
-                            if (json != "" && json != null) {
-                                displayMessage(json);
-                            } else {
-                                displayMessage(context.getResources().getString(R.string.please_try_again));
-                            }
-                        } else if (response.statusCode == 503) {
-                            displayMessage(context.getResources().getString(R.string.server_down));
-                        } else {
-                            displayMessage(context.getResources().getString(R.string.please_try_again));
-                        }
-
-                    } catch (Exception e) {
-                        displayMessage(context.getResources().getString(R.string.something_went_wrong));
-                        e.printStackTrace();
-                    }
-
-                } else {
-                    displayMessage(context.getResources().getString(R.string.please_try_again));
-                }
-            }
-        }) {
-            @Override
-            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("X-Requested-With", "XMLHttpRequest");
-                headers.put("Authorization", "Bearer " + SharedHelper.getKey(context, "access_token"));
-                Log.e("", "Access_Token" + SharedHelper.getKey(context, "access_token"));
-                return headers;
-            }
-        };
-
-        AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
     }
 
-    private void handleIncomingRequest(final String status, String id) {
-        if (!((Activity) context).isFinishing()) {
-            customDialog = new CustomDialog(activity);
-            customDialog.setCancelable(false);
-            customDialog.show();
-        }
-        String url = AccessDetails.serviceurl + "/api/provider/trip/" + id;
+    private void hideSpinner() {
+        customDialog.dismiss();
+    }
 
-        if (status.equals("Accept")) {
-            method = Request.Method.POST;
-        } else {
-            method = Request.Method.DELETE;
-        }
+    public void cancelRequest(final String id, final String reason) {
 
-        ApiInterface mApiInterface = RetrofitClient.getAcceptRejectClient().create(ApiInterface.class);
+        showSpinner();
 
-        Call<ResponseBody> call;
+        OrderServerApi.Order order = new OrderServerApi.Order();
+        order.id = id;
+        order.cancelReason = reason;
 
-        if (status.equals("Accept")) {
-            call = mApiInterface.acceptAPI(id, "XMLHttpRequest", "Bearer " + token);
-        } else {
-            call = mApiInterface.rejectAPI(id, "XMLHttpRequest", "Bearer " + token);
-        }
+        java.util.Map<String, String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+        headers.put("Authorization", "Bearer " + SharedHelper.getKey(context, "access_token"));
 
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-                Log.e("sUCESS", "SUCESS" + response.body());
-                customDialog.dismiss();
-                if (response.body() != null) {
-                    try {
-                        if (response.isSuccessful()){
-                            String bodyString = new String(response.body().bytes());
-                            Log.e("sUCESS", "bodyString" + bodyString);
-                            if (status.equals("Accept")) {
-                                Toast.makeText(context, context.getResources().getString(R.string.request_accept), Toast.LENGTH_SHORT).show();
-                            } else {
-                                if (!timerCompleted) {
-                                    Toast.makeText(context, "" + context.getResources().getString(R.string.request_reject), Toast.LENGTH_SHORT).show();
-                                } else {
-                                    try {
-                                        txt01Timer.setText("0");
-                                        mapClear();
-                                        clearVisibility();
-                                        if (mMap != null) {
-                                            mMap.clear();
-                                        }
-                                        if (mPlayer != null && mPlayer.isPlaying()) {
-                                            mPlayer.stop();
-                                            mPlayer = null;
-                                        }
-                                        ll_01_contentLayer_accept_or_reject_now.setVisibility(View.GONE);
-                                        CurrentStatus = "ONLINE";
-                                        PreviousStatus = "NULL";
-                                        lnrGoOffline.setVisibility(View.VISIBLE);
-                                        destinationLayer.setVisibility(View.GONE);
-                                        timerCompleted = true;
-                                        handleIncomingRequest("Reject", request_id);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        }else{
-
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
+        OrderServerApi serverClientApi = OrderServerApi.ApiCreator.createInstance();
+        serverClientApi
+                .cancelOrder(headers, order)
+                .enqueue(new OrderServerApi.CancelOrderCallbackHandler<JsonObject>(activity, order) {
+                    @Override
+                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
+                        super.onSuccessfulResponse(response);
+                        Toast.makeText(context, "" + context.getResources().getString(R.string.request_cancel), Toast.LENGTH_SHORT).show();
+                        mapClear();
+                        clearVisibility();
+                        lnrGoOffline.setVisibility(View.VISIBLE);
+                        destinationLayer.setVisibility(View.GONE);
+                        CurrentStatus = "ONLINE";
+                        PreviousStatus = "NULL";
                     }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                customDialog.dismiss();
-            }
-        });
-//        final JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(method, url, null, new Response.Listener<JSONArray>() {
-//            @Override
-//            public void onResponse(JSONArray response) {
-//                customDialog.dismiss();
-//                if (status.equals("Accept")) {
-//                    Toast.makeText(context, context.getResources().getString(R.string.request_accept), Toast.LENGTH_SHORT).show();
-//                } else {
-//                    if (!timerCompleted) {
-//                        Toast.makeText(context, "" + context.getResources().getString(R.string.request_reject), Toast.LENGTH_SHORT).show();
-//                    } else {
-////                            Toast.makeText(context, ""+context.getResources().getString(R.string.request_time_out), Toast.LENGTH_SHORT).show();
-//                        //Toast.makeText(context, "" + context.getResources().getString(R.string.request_time_out), Toast.LENGTH_SHORT).show();
-//                        try {
-//                            txt01Timer.setText("0");
-//                            mapClear();
-//                            clearVisibility();
-//                            if (mMap != null) {
-//                                mMap.clear();
-//                            }
-//                            if (mPlayer != null && mPlayer.isPlaying()) {
-//                                mPlayer.stop();
-//                                mPlayer = null;
-//                            }
-//                            ll_01_contentLayer_accept_or_reject_now.setVisibility(View.GONE);
-//                            CurrentStatus = "ONLINE";
-//                            PreviousStatus = "NULL";
-//                            lnrGoOffline.setVisibility(View.VISIBLE);
-//                            destinationLayer.setVisibility(View.GONE);
-//                            timerCompleted = true;
-//                            handleIncomingRequest("Reject", request_id);
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                customDialog.dismiss();
-//                utils.print("Error", error.toString());
-//            }
-//        }) {
-//            @Override
-//            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
-//                HashMap<String, String> headers = new HashMap<>();
-//                headers.put("X-Requested-With", "XMLHttpRequest");
-//                headers.put("Authorization", "Bearer " + token);
-//                return headers;
-//            }
-//        };
-//        AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+                    @Override
+                    public void onFinishHandling() {
+                        hideSpinner();
+                    }
+
+                    @Override
+                    public void onTimeoutRequest() {
+                        cancelRequest(id, reason);
+                    }
+
+                });
+    }
+
+
+    private void handleIncomingRequest(final String status, final String id) {
+        if (!((Activity) context).isFinishing()) {
+            showSpinner();
+        }
+
+        OrderServerApi.Order order = new OrderServerApi.Order();
+        order.id = id;
+        if (id == incomingOrder.id) {
+            order.scheduledDate = incomingOrder.scheduledDate;
+        }
+
+        java.util.Map<String, String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+        headers.put("Authorization", "Bearer " + SharedHelper.getKey(context, "access_token"));
+
+        OrderServerApi serverClientApi = OrderServerApi.ApiCreator.createInstance();
+
+        Call<ResponseBody> serverCall;
+        OrderServerApi.CallbackErrorHandler<ResponseBody> handler;
+
+        switch (status) {
+            case "Accept":
+                serverCall = serverClientApi.acceptOrder(headers, order.id);
+                handler = new OrderServerApi.AcceptOrderCallbackHandler<ResponseBody>(activity, order) {
+                    @Override
+                    public void onSuccessfulResponse(retrofit2.Response<ResponseBody> response) {
+                        super.onSuccessfulResponse(response);
+                        Toast.makeText(context, context.getResources().getString(R.string.request_accept), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFinishHandling() {
+                        super.onFinishHandling();
+                        hideSpinner();
+                    }
+
+                    @Override
+                    public void onTimeoutRequest() {
+                        super.onTimeoutRequest();
+                        handleIncomingRequest("Reject", request_id);
+                    }
+
+                };
+                break;
+            default:
+                serverCall = serverClientApi.rejectOrder(headers, order.id);
+                handler = new OrderServerApi.CallbackErrorHandler<ResponseBody>(activity) {
+                    @Override
+                    public void onSuccessfulResponse(retrofit2.Response<ResponseBody> response) {
+                        if (!timerCompleted) {
+                            Toast.makeText(context, "" + context.getResources().getString(R.string.request_reject), Toast.LENGTH_SHORT).show();
+                        } else {
+                            try {
+                                txt01Timer.setText("0");
+                                mapClear();
+                                clearVisibility();
+                                if (mMap != null) {
+                                    mMap.clear();
+                                }
+                                if (mPlayer != null && mPlayer.isPlaying()) {
+                                    mPlayer.stop();
+                                    mPlayer = null;
+                                }
+                                ll_01_contentLayer_accept_or_reject_now.setVisibility(View.GONE);
+                                CurrentStatus = "ONLINE";
+                                PreviousStatus = "NULL";
+                                lnrGoOffline.setVisibility(View.VISIBLE);
+                                destinationLayer.setVisibility(View.GONE);
+                                timerCompleted = true;
+//                                handleIncomingRequest("Reject", request_id);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFinishHandling() {
+                        super.onFinishHandling();
+                        hideSpinner();
+                    }
+
+                    @Override
+                    public void onTimeoutRequest() {
+                        super.onTimeoutRequest();
+                        handleIncomingRequest("Reject", request_id);
+                    }
+                };
+                break;
+        }
+
+        serverCall.enqueue(handler);
+
     }
 
     public void errorHandler(VolleyError error) {
@@ -2135,7 +2085,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
         Intent mainIntent;
 
 
-            mainIntent = new Intent(activity, WelcomeScreenActivity.class);
+        mainIntent = new Intent(activity, WelcomeScreenActivity.class);
 
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(mainIntent);
@@ -2300,10 +2250,10 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (strOTP.equalsIgnoreCase(pinView.getText().toString())){
+                if (strOTP.equalsIgnoreCase(pinView.getText().toString())) {
                     otpDialog.dismiss();
                     update(CurrentStatus, request_id);
-                }else{
+                } else {
                     // OTP wrong
                     Toast.makeText(context, "Wrong OTP!", Toast.LENGTH_SHORT).show();
                 }
@@ -2463,7 +2413,6 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
     }
 
 
-
     // Fetches data from url passed
     private class FetchUrl extends AsyncTask<String, Void, String> {
 
@@ -2495,11 +2444,11 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
         }
     }
 
-    private class CreatingOrderTask extends AsyncTask<String,Void,String>{
+    private class CreatingOrderTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... strings) {
-            Log.d("LALALA",strings.toString());
+            Log.d("LALALA", strings.toString());
             JSONObject requestData = new JSONObject();
             try {
                 requestData.put("s_latitude", "46.9515");
@@ -2514,14 +2463,14 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
                 requestData.put("schedule_time", "");
                 requestData.put("payment_mode", "CASH");
                 requestData.put("use_wallet", "0");
-            }catch (Exception e){
-                Log.e("LALALA","error while formig request data");
+            } catch (Exception e) {
+                Log.e("LALALA", "error while formig request data");
             }
             sendRequest(requestData);
             return null;
         }
 
-        private boolean sendRequest(JSONObject requestData){
+        private boolean sendRequest(JSONObject requestData) {
             String data = "";
             HttpURLConnection urlConnection = null;
 
@@ -2530,8 +2479,8 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
 
                 String auth = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6Ijg4YWI1ODE2YjIyNzEwMmZiNTM4NGE0MjE5MjJlZjlkNTI1YmIyYzJmYjI0NTA5NDhhNTFlOGQ4NDU3ZjUyZjdlODJkNGFiZjNjMWY5MjE1In0.eyJhdWQiOiIyIiwianRpIjoiODhhYjU4MTZiMjI3MTAyZmI1Mzg0YTQyMTkyMmVmOWQ1MjViYjJjMmZiMjQ1MDk0OGE1MWU4ZDg0NTdmNTJmN2U4MmQ0YWJmM2MxZjkyMTUiLCJpYXQiOjE1NDM0MTU0ODIsIm5iZiI6MTU0MzQxNTQ4MiwiZXhwIjoxNTQ0NzExNDgyLCJzdWIiOiIxMTQiLCJzY29wZXMiOlsiKiJdfQ.fnO2zHjPjoz1KOwk0Pl_FSLWxr7f8tfl77cH3kw9LlyX1xlKnifyq8O61yuzWb-azulSd_FJL2VWngmtqPVOs9uUjy4St3uL2dy2ESvcromazHQ9n8JqNO987XXrKoggq7ZWDJv2jmNCUFdGV1PrlPHJYAIjJwKjjUOrDZx30EDIiyIGBz5C1o2iUG643n12Kk3BeqfIr4zofrhtrMZ_qwlmiEu4GwMWjC6SV59z_wMtk83lVRxk3xgnbrOhCQaeD8Ve80OdThPhy07UzHDChRDBWW_9abd22FKxHgYvYiFhFYqfSc1l5Ssh-mgm6X1LZOtaJBgfC4WWhKnKwB5_O4vzAF9OlwPMpRth3mWf0Giw3ZmrnLVMNdkDNilcP7Hh47gEPqBo48ty00rxue2-rnYxtwdLTvvVzixrVSITahYv0rk_wd9G3iC5DV9tVANH1NL_A63p3XFFVCBHnfJPFOKryGNeJA9bDSWqc5Y7oUUXE6myEElkHHVf6DTAQ-1FhTPNjy5FrUAySazL2sis797IUXpH3xKCSR9cyD0dPMVo77CKsPd_E904nHu1kAZ8MHXk3NSFAwqeO9aw7uB3kgi8rXMLLZ5ICcc4-zse4PNu_AGGjrJ_-NxmPIXvn6kR1ksyt51IWOlSulV4wInRSkLbLLKVMOSrn1_FFdAhDWo";
 
-                urlConnection.setRequestProperty ("Authorization", auth);
-                urlConnection.setRequestProperty ("X-Requested-With", "XMLHttpRequest");
+                urlConnection.setRequestProperty("Authorization", auth);
+                urlConnection.setRequestProperty("X-Requested-With", "XMLHttpRequest");
                 urlConnection.setRequestMethod("POST");
                 urlConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
                 urlConnection.setRequestProperty("Accept", "application/json");
@@ -2547,7 +2496,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
 
                 String l;
                 while ((l = br.readLine()) != null) {
-                    result+=l;
+                    result += l;
                 }
 
                 Log.d("LALALA", "data received");
@@ -2565,7 +2514,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
         @Override
         protected void onPostExecute(String result) {
 //            super.onPostExecute(result);
-            Log.d("LALALA","FUFUFUFUFUFUFUFUFUFUF");
+            Log.d("LALALA", "FUFUFUFUFUFUFUFUFUFUF");
         }
     }
 
