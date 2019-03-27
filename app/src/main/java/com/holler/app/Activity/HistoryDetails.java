@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -81,14 +82,14 @@ public class HistoryDetails extends AppCompatActivity {
     RatingBar tripProviderRating;
     LinearLayout sourceAndDestinationLayout;
     View viewLayout;
-//    public JSONObject jsonObject;
+    //    public JSONObject jsonObject;
     ImageView backArrow;
     LinearLayout parentLayout, lnrComments, lnrInvoiceSub, lnrInvoice;
     String tag = "";
     Button btnCancelRide, btnClose, btnViewInvoice, btnStartRide;
     Utilities utils = new Utilities();
-    TextView lblBookingID, lblDistanceCovered, lblTimeTaken, lblBasePrice, lblDistancePrice, lblTaxPrice,lblDiscountPrice,lblWalletPrice;
-    LinearLayout lnrBookingID,lnrDistanceTravelled, lnrTimeTaken, lnrBaseFare, lnrDistanceFare, lnrTax,lnrDiscount,lnrWallet;
+    TextView lblBookingID, lblDistanceCovered, lblTimeTaken, lblBasePrice, lblDistancePrice, lblTaxPrice, lblDiscountPrice, lblWalletPrice;
+    LinearLayout lnrBookingID, lnrDistanceTravelled, lnrTimeTaken, lnrBaseFare, lnrDistanceFare, lnrTax, lnrDiscount, lnrWallet;
 
     private OrderServerApi.Order order;
 
@@ -251,10 +252,10 @@ public class HistoryDetails extends AppCompatActivity {
         });
     }
 
-    private void startRide(){
+    private void startRide() {
         showSpinner();
 
-        Map<String,String> headers = new HashMap<>();
+        Map<String, String> headers = new HashMap<>();
         headers.put("X-Requested-With", "XMLHttpRequest");
         headers.put("Authorization", "Bearer " + SharedHelper.getKey(context, "access_token"));
 
@@ -264,7 +265,7 @@ public class HistoryDetails extends AppCompatActivity {
                 .enqueue(new OrderServerApi.CallbackErrorHandler<ResponseBody>(activity) {
                     @Override
                     public void onSuccessfulResponse(retrofit2.Response<ResponseBody> response) {
-                        Intent intent = new Intent(HistoryDetails.this,MainActivity.class);
+                        Intent intent = new Intent(HistoryDetails.this, MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                     }
@@ -286,7 +287,8 @@ public class HistoryDetails extends AppCompatActivity {
 
     private void setDetails(JSONArray response) {
         if (response != null && response.length() > 0) {
-            Glide.with(activity).load(response.optJSONObject(0).optString("static_map")).placeholder(R.drawable.placeholder).error(R.drawable.placeholder).into(tripImg);
+            String imgUrl = response.optJSONObject(0).optString("static_map");
+            Glide.with(activity).load(imgUrl).placeholder(R.drawable.placeholder).error(R.drawable.placeholder).into(tripImg);
             if (!response.optJSONObject(0).optString("payment").equalsIgnoreCase("null")) {
                 Log.e("History Details", "onResponse: Currency" + SharedHelper.getKey(context, "currency"));
                 //tripAmount.setText(SharedHelper.getKey(context, "currency") + "" + response.optJSONObject(0).optJSONObject("payment").optString("total"));
@@ -301,7 +303,7 @@ public class HistoryDetails extends AppCompatActivity {
             }
             try {
                 order.scheduledDate = form;
-                        tripDate.setText(getDate(form) + "th " + getMonth(form) + " " + getYear(form) + "\n" + getTime(form));
+                tripDate.setText(getDate(form) + "th " + getMonth(form) + " " + getYear(form) + "\n" + getTime(form));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -315,7 +317,7 @@ public class HistoryDetails extends AppCompatActivity {
             if (response.optJSONObject(0).optJSONObject("user").optString("picture").startsWith("http"))
                 Picasso.with(activity).load(response.optJSONObject(0).optJSONObject("user").optString("picture")).placeholder(R.drawable.ic_dummy_user).error(R.drawable.ic_dummy_user).into(tripProviderImg);
             else
-                Picasso.with(activity).load(AccessDetails.serviceurl +  "/storage/" + response.optJSONObject(0).optJSONObject("user").optString("picture")).placeholder(R.drawable.ic_dummy_user).error(R.drawable.ic_dummy_user).into(tripProviderImg);
+                Picasso.with(activity).load(AccessDetails.serviceurl + "/storage/" + response.optJSONObject(0).optJSONObject("user").optString("picture")).placeholder(R.drawable.ic_dummy_user).error(R.drawable.ic_dummy_user).into(tripProviderImg);
             final JSONArray res = response;
             tripProviderImg.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -352,13 +354,7 @@ public class HistoryDetails extends AppCompatActivity {
                 tripComments.setText(getString(R.string.no_comments));
             }*/
             tripProviderName.setText(response.optJSONObject(0).optJSONObject("user").optString("first_name") + " " + response.optJSONObject(0).optJSONObject("user").optString("last_name"));
-            if (response.optJSONObject(0).optString("s_address") == null || response.optJSONObject(0).optString("d_address") == null || response.optJSONObject(0).optString("d_address").equals("") || response.optJSONObject(0).optString("s_address").equals("")) {
-                sourceAndDestinationLayout.setVisibility(View.GONE);
-                viewLayout.setVisibility(View.GONE);
-            } else {
-                tripSource.setText(response.optJSONObject(0).optString("s_address"));
-                tripDestination.setText(response.optJSONObject(0).optString("d_address"));
-            }
+            setAddress(response);
             parentLayout.setVisibility(View.VISIBLE);
         }
     }
@@ -375,111 +371,126 @@ public class HistoryDetails extends AppCompatActivity {
                         + "?request_id="
                         + order.id,
                 new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            utils.print("Get Trip details", response.toString());
+                            if (response != null && response.length() > 0) {
+                                String imgUrl = response.optJSONObject(0).optString("static_map");
+                                Glide.with(activity)
+                                        .load(imgUrl)
+                                        .placeholder(R.drawable.placeholder)
+                                        .error(R.drawable.placeholder)
+                                        .into(tripImg);
+                                if (!response.optJSONObject(0).optString("payment").equalsIgnoreCase("null")) {
+                                    Log.e("History Details", "onResponse: Currency" + SharedHelper.getKey(context, "currency"));
+                                    tripAmount.setText(SharedHelper.getKey(context, "currency") + "" + response.optJSONObject(0).optJSONObject("payment").optString("total"));
+                                } else {
+                                    tripAmount.setText(SharedHelper.getKey(context, "currency") + "" + "0");
+                                }
 
-                utils.print("Get Trip details", response.toString());
-                if (response != null && response.length() > 0) {
-                    Glide.with(activity).load(response.optJSONObject(0).optString("static_map")).placeholder(R.drawable.placeholder).error(R.drawable.placeholder).into(tripImg);
-                    if (!response.optJSONObject(0).optString("payment").equalsIgnoreCase("null")) {
-                        Log.e("History Details", "onResponse: Currency" + SharedHelper.getKey(context, "currency"));
-                        tripAmount.setText(SharedHelper.getKey(context, "currency") + "" + response.optJSONObject(0).optJSONObject("payment").optString("total"));
-                    } else {
-                        tripAmount.setText(SharedHelper.getKey(context, "currency") + "" + "0");
-                    }
+                                lblBasePrice.setText(SharedHelper.getKey(context, "currency") + response.optJSONObject(0).optJSONObject("payment").optInt("fixed"));
+                                lblDistancePrice.setText(SharedHelper.getKey(context, "currency") + response.optJSONObject(0).optJSONObject("payment").optInt("distance"));
+                                lblTaxPrice.setText(SharedHelper.getKey(context, "currency") + response.optJSONObject(0).optInt("tax"));
+                                lblBookingID.setText("" + response.optJSONObject(0).optString("booking_id"));
+                                lblDistanceCovered.setText(response.optJSONObject(0).optInt("distance") + " KM");
+                                lblTimeTaken.setText(response.optJSONObject(0).optString("travel_time") + " mins");
+                                lblDiscountPrice.setText(SharedHelper.getKey(context, "currency") + response.optJSONObject(0).optJSONObject("payment").optInt("discount"));
+                                lblWalletPrice.setText(SharedHelper.getKey(context, "currency") + response.optJSONObject(0).optJSONObject("payment").optInt("wallet"));
 
-                    lblBasePrice.setText(SharedHelper.getKey(context, "currency")  + response.optJSONObject(0).optJSONObject("payment").optInt("fixed"));
-                    lblDistancePrice.setText(SharedHelper.getKey(context, "currency")  + response.optJSONObject(0).optJSONObject("payment").optInt("distance"));
-                    lblTaxPrice.setText(SharedHelper.getKey(context, "currency")  + response.optJSONObject(0).optInt("tax"));
-                    lblBookingID.setText(""+response.optJSONObject(0).optString("booking_id"));
-                    lblDistanceCovered.setText(response.optJSONObject(0).optInt("distance") + " KM");
-                    lblTimeTaken.setText(response.optJSONObject(0).optString("travel_time") + " mins");
-                    lblDiscountPrice.setText(SharedHelper.getKey(context, "currency")  + response.optJSONObject(0).optJSONObject("payment").optInt("discount"));
-                    lblWalletPrice.setText(SharedHelper.getKey(context, "currency")  + response.optJSONObject(0).optJSONObject("payment").optInt("wallet"));
+                                if (!response.optJSONObject(0).optJSONObject("payment").optString("wallet").equalsIgnoreCase("0") && response.optJSONObject(0).optJSONObject("payment").optString("wallet") != null) {
+                                    lnrWallet.setVisibility(View.VISIBLE);
+                                }
 
-                    if (!response.optJSONObject(0).optJSONObject("payment").optString("wallet").equalsIgnoreCase("0") && response.optJSONObject(0).optJSONObject("payment").optString("wallet")!=null ){
-                        lnrWallet.setVisibility(View.VISIBLE);
-                    }
+                                if (!response.optJSONObject(0).optJSONObject("payment").optString("discount").equalsIgnoreCase("0") && response.optJSONObject(0).optJSONObject("payment").optString("discount") != null) {
+                                    lnrDiscount.setVisibility(View.VISIBLE);
+                                }
 
-                    if (!response.optJSONObject(0).optJSONObject("payment").optString("discount").equalsIgnoreCase("0") && response.optJSONObject(0).optJSONObject("payment").optString("discount")!=null ){
-                        lnrDiscount.setVisibility(View.VISIBLE);
-                    }
+                                txt04Total.setText(SharedHelper.getKey(context, "currency") + "" + response.optJSONObject(0).optJSONObject("payment").optInt("total"));
+                                txt04AmountToPaid.setText(SharedHelper.getKey(context, "currency") + "" + response.optJSONObject(0).optJSONObject("payment").optInt("payable"));
+                                String form;
+                                if (tag.equalsIgnoreCase("past_trips")) {
+                                    form = response.optJSONObject(0).optString("assigned_at");
+                                } else {
+                                    form = response.optJSONObject(0).optString("schedule_at");
+                                }
+                                try {
+                                    order.scheduledDate = form;
+                                    tripDate.setText(getDate(form) + "th " + getMonth(form) + " " + getYear(form) + "\n" + getTime(form));
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                                paymentType.setText(response.optJSONObject(0).optString("payment_mode"));
+                                if (response.optJSONObject(0).optString("payment_mode").equalsIgnoreCase("CASH")) {
+                                    paymentTypeImg.setImageResource(R.drawable.money1);
+                                } else {
+                                    paymentTypeImg.setImageResource(R.drawable.visa_icon);
+                                }
 
-                    txt04Total.setText(SharedHelper.getKey(context, "currency") + "" + response.optJSONObject(0).optJSONObject("payment").optInt("total"));
-                    txt04AmountToPaid.setText(SharedHelper.getKey(context, "currency") + "" + response.optJSONObject(0).optJSONObject("payment").optInt("payable"));
-                    String form;
-                    if (tag.equalsIgnoreCase("past_trips")) {
-                        form = response.optJSONObject(0).optString("assigned_at");
-                    } else {
-                        form = response.optJSONObject(0).optString("schedule_at");
-                    }
-                    try {
-                        order.scheduledDate = form;
-                        tripDate.setText(getDate(form) + "th " + getMonth(form) + " " + getYear(form) + "\n" + getTime(form));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    paymentType.setText(response.optJSONObject(0).optString("payment_mode"));
-                    if (response.optJSONObject(0).optString("payment_mode").equalsIgnoreCase("CASH")) {
-                        paymentTypeImg.setImageResource(R.drawable.money1);
-                    } else {
-                        paymentTypeImg.setImageResource(R.drawable.visa_icon);
-                    }
-                    if (response.optJSONObject(0).optJSONObject("user").optString("picture").startsWith("http"))
-                        Picasso.with(activity).load(response.optJSONObject(0).optJSONObject("user").optString("picture")).placeholder(R.drawable.ic_dummy_user).error(R.drawable.ic_dummy_user).into(tripProviderImg);
-                    else
-                        Picasso.with(activity).load(AccessDetails.serviceurl +  "/storage/" + response.optJSONObject(0).optJSONObject("user").optString("picture")).placeholder(R.drawable.ic_dummy_user).error(R.drawable.ic_dummy_user).into(tripProviderImg);
-                    final JSONArray res = response;
-                    tripProviderImg.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            JSONObject jsonObject = res.optJSONObject(0).optJSONObject("user");
+                                if (response.optJSONObject(0).optJSONObject("user").optString("picture").startsWith("http"))
+                                    Picasso.with(activity)
+                                            .load(response.optJSONObject(0).optJSONObject("user").optString("picture"))
+                                            .placeholder(R.drawable.ic_dummy_user)
+                                            .error(R.drawable.ic_dummy_user)
+                                            .into(tripProviderImg);
+                                else
+                                    Picasso.with(activity).load(AccessDetails.serviceurl + "/storage/" + response.optJSONObject(0).optJSONObject("user").optString("picture")).placeholder(R.drawable.ic_dummy_user).error(R.drawable.ic_dummy_user).into(tripProviderImg);
 
-                            User user = new User();
-                            user.setFirstName(jsonObject.optString("first_name"));
-                            user.setLastName(jsonObject.optString("last_name"));
-                            user.setEmail(jsonObject.optString("email"));
-                            if (jsonObject.optString("picture").startsWith("http"))
-                                user.setImg(jsonObject.optString("picture"));
-                            else
-                                user.setImg(AccessDetails.serviceurl +  "/storage/" + jsonObject.optString("picture"));
-                            user.setRating(jsonObject.optString("rating"));
-                            user.setMobile(jsonObject.optString("mobile"));
-                            Intent intent = new Intent(context, ShowProfile.class);
-                            intent.putExtra("user", user);
-                            startActivity(intent);
+
+                                final JSONArray res = response;
+                                tripProviderImg.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        JSONObject jsonObject = res.optJSONObject(0).optJSONObject("user");
+
+                                        User user = new User();
+                                        user.setFirstName(jsonObject.optString("first_name"));
+                                        user.setLastName(jsonObject.optString("last_name"));
+                                        user.setEmail(jsonObject.optString("email"));
+                                        if (jsonObject.optString("picture").startsWith("http"))
+                                            user.setImg(jsonObject.optString("picture"));
+                                        else
+                                            user.setImg(AccessDetails.serviceurl + "/storage/" + jsonObject.optString("picture"));
+                                        user.setRating(jsonObject.optString("rating"));
+                                        user.setMobile(jsonObject.optString("mobile"));
+                                        Intent intent = new Intent(context, ShowProfile.class);
+                                        intent.putExtra("user", user);
+                                        startActivity(intent);
+                                    }
+                                });
+
+                                tripId.setText(response.optJSONObject(0).optString("booking_id"));
+
+                                if (response.optJSONObject(0).optJSONObject("user").optString("rating") != null &&
+                                        !response.optJSONObject(0).optJSONObject("user").optString("rating").equalsIgnoreCase(""))
+                                    tripProviderRating.setRating(Float.parseFloat(response.optJSONObject(0).optJSONObject("user").optString("rating")));
+                                else {
+                                    tripProviderRating.setRating(0);
+                                }
+
+                                if (!response.optJSONObject(0).optString("rating").equalsIgnoreCase("null") &&
+                                        !response.optJSONObject(0).optJSONObject("rating").optString("user_comment").equalsIgnoreCase("")) {
+                                    tripComments.setText(response.optJSONObject(0).optJSONObject("rating").optString("user_comment"));
+                                } else {
+                                    tripComments.setText(getString(R.string.no_comments));
+                                }
+                                tripProviderName.setText(response.optJSONObject(0).optJSONObject("user").optString("first_name") + " " + response.optJSONObject(0).optJSONObject("user").optString("last_name"));
+
+                                setAddress(response);
+
+                                parentLayout.setVisibility(View.VISIBLE);
+                            }
+                        } catch (Exception e) {
+                            Log.e("AZAZA", e.getMessage());
+                            e.printStackTrace();
+                            Toast.makeText(activity, "Bad data received", Toast.LENGTH_SHORT).show();
+                            onBackPressed();
+                        } finally {
+                            customDialog.dismiss();
                         }
-                    });
 
-                    tripId.setText(response.optJSONObject(0).optString("booking_id"));
-
-                    if (response.optJSONObject(0).optJSONObject("user").optString("rating") != null &&
-                            !response.optJSONObject(0).optJSONObject("user").optString("rating").equalsIgnoreCase(""))
-                        tripProviderRating.setRating(Float.parseFloat(response.optJSONObject(0).optJSONObject("user").optString("rating")));
-                    else {
-                        tripProviderRating.setRating(0);
                     }
-
-                    if (!response.optJSONObject(0).optString("rating").equalsIgnoreCase("null") &&
-                            !response.optJSONObject(0).optJSONObject("rating").optString("user_comment").equalsIgnoreCase("")) {
-                        tripComments.setText(response.optJSONObject(0).optJSONObject("rating").optString("user_comment"));
-                    } else {
-                        tripComments.setText(getString(R.string.no_comments));
-                    }
-                    tripProviderName.setText(response.optJSONObject(0).optJSONObject("user").optString("first_name") + " " + response.optJSONObject(0).optJSONObject("user").optString("last_name"));
-                    if (response.optJSONObject(0).optString("s_address") == null || response.optJSONObject(0).optString("d_address") == null || response.optJSONObject(0).optString("d_address").equals("") || response.optJSONObject(0).optString("s_address").equals("")) {
-                        sourceAndDestinationLayout.setVisibility(View.GONE);
-                        viewLayout.setVisibility(View.GONE);
-                    } else {
-                        tripSource.setText(response.optJSONObject(0).optString("s_address"));
-                        tripDestination.setText(response.optJSONObject(0).optString("d_address"));
-                    }
-                    parentLayout.setVisibility(View.VISIBLE);
-                }
-                customDialog.dismiss();
-
-            }
-        }, new Response.ErrorListener() {
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 customDialog.dismiss();
@@ -546,14 +557,28 @@ public class HistoryDetails extends AppCompatActivity {
         AndarApplication.getInstance().addToRequestQueue(jsonArrayRequest);
     }
 
+    private void setAddress(JSONArray response){
+        String notSet = "";
+        String sAddress = response.optJSONObject(0).optString("s_address",notSet);
+        String dAddress = response.optJSONObject(0).optString("d_address",notSet);
 
-    private void showSpinner(){
+        if (notSet.endsWith(sAddress) && notSet.endsWith(dAddress)) {
+            sourceAndDestinationLayout.setVisibility(View.GONE);
+            viewLayout.setVisibility(View.GONE);
+        } else {
+            tripSource.setText(sAddress);
+            tripDestination.setText(dAddress);
+        }
+    }
+
+
+    private void showSpinner() {
         customDialog = new CustomDialog(context);
         customDialog.setCancelable(false);
         customDialog.show();
     }
 
-    private void hideSpinner(){
+    private void hideSpinner() {
         customDialog.dismiss();
     }
 
@@ -561,14 +586,14 @@ public class HistoryDetails extends AppCompatActivity {
 
         showSpinner();
 
-        Map<String,String> headers = new HashMap<>();
+        Map<String, String> headers = new HashMap<>();
         headers.put("X-Requested-With", "XMLHttpRequest");
         headers.put("Authorization", "Bearer " + SharedHelper.getKey(context, "access_token"));
 
         OrderServerApi serverClientApi = OrderServerApi.ApiCreator.createInstance();
         serverClientApi
                 .cancelOrder(headers, order)
-                .enqueue(new OrderServerApi.CancelOrderCallbackHandler<JsonObject>(activity,order) {
+                .enqueue(new OrderServerApi.CancelOrderCallbackHandler<JsonObject>(activity, order) {
                     @Override
                     public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
                         super.onSuccessfulResponse(response);
@@ -577,7 +602,7 @@ public class HistoryDetails extends AppCompatActivity {
                     @Override
                     public void onFinishHandling() {
                         hideSpinner();
-                        Intent intent = new Intent(HistoryDetails.this,HistoryActivity.class);
+                        Intent intent = new Intent(HistoryDetails.this, HistoryActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                     }
@@ -604,9 +629,9 @@ public class HistoryDetails extends AppCompatActivity {
         SharedHelper.putKey(activity, "loggedIn", getString(R.string.False));
         Intent mainIntent;
 
-            mainIntent = new Intent(activity, WelcomeScreenActivity.class);
+        mainIntent = new Intent(activity, WelcomeScreenActivity.class);
 
-        mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+        mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(mainIntent);
         activity.finish();
     }
@@ -623,15 +648,15 @@ public class HistoryDetails extends AppCompatActivity {
                         + "?request_id="
                         + order.id,
                 new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                setDetails(response);
-                utils.print("Get Upcoming Details", response.toString());
-                customDialog.dismiss();
-                parentLayout.setVisibility(View.VISIBLE);
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        setDetails(response);
+                        utils.print("Get Upcoming Details", response.toString());
+                        customDialog.dismiss();
+                        parentLayout.setVisibility(View.VISIBLE);
 
-            }
-        }, new Response.ErrorListener() {
+                    }
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 customDialog.dismiss();

@@ -60,7 +60,7 @@ public class Utilities {
         Pattern pattern;
         Matcher matcher;
 
-        String PASSWORD_PATTERN = "(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d]).{8,}";
+        String PASSWORD_PATTERN = "(?=.*[a-z])(?=.*[\\d]).{8,16}";
 
         pattern = Pattern.compile(PASSWORD_PATTERN);
         matcher = pattern.matcher(password);

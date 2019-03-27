@@ -248,7 +248,12 @@ public class PastTrips extends Fragment {
 
         @Override
         public void onBindViewHolder(PostAdapter.MyViewHolder holder, int position) {
-            Glide.with(activity).load(jsonArray.optJSONObject(position).optString("static_map")).placeholder(R.drawable.placeholder).error(R.drawable.placeholder).into(holder.tripImg);
+            String imgUrl = jsonArray.optJSONObject(position).optString("static_map");
+            Glide.with(activity)
+                    .load(imgUrl)
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.placeholder)
+                    .into(holder.tripImg);
             int displayAmount = 0;
             if (jsonArray.optJSONObject(position).optJSONObject("payment") != null) {
                 int basePrice = jsonArray.optJSONObject(position).optJSONObject("payment").optInt("fixed");

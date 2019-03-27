@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,7 +92,7 @@ public class DocumentsListItem extends Fragment {
 
         Intent pickIntent = new Intent(Intent.ACTION_PICK);
         pickIntent.setType("image/*");
-        String[] mimeTypes = {"image/jpeg", "image/png"};
+        String[] mimeTypes = {"image/jpeg", "image/jpg", "image/png"};
         pickIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
 
         Intent chooserIntent;
@@ -98,14 +100,17 @@ public class DocumentsListItem extends Fragment {
         try {
             Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             capturedPhoto = createTemporaryFile();
-            captureIntent.putExtra(
-                    MediaStore.EXTRA_OUTPUT,
-                    FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", capturedPhoto));
+            Uri photoUri = FileProvider.getUriForFile(
+                    getActivity(),
+                     "com.holler.app.FileProvider",
+                    capturedPhoto);
+
+            captureIntent.putExtra(MediaStore.EXTRA_OUTPUT,photoUri);
 
             chooserIntent = Intent.createChooser(new Intent(), "Select Image");
             chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent, captureIntent});
 
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             chooserIntent = Intent.createChooser(new Intent(), "Select Image");
             chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
@@ -159,7 +164,7 @@ public class DocumentsListItem extends Fragment {
                     .load(document.remoteUrl)
                     .centerCrop()
                     .into(imageView);
-            fileNameView.setText("Uploaded to " + document.remoteUrl);
+            fileNameView.setText("Uploaded");
 
             imageView.setMaxHeight(200);
             imageView.setPadding(0, 0, 0, 0);
@@ -171,7 +176,7 @@ public class DocumentsListItem extends Fragment {
                     .centerCrop()
                     .into(imageView);
 
-            fileNameView.setText("Located at " + document.localUrl);
+            fileNameView.setText("Ready to upload");
             imageView.setMaxHeight(200);
             imageView.setPadding(0, 0, 0, 0);
         }
@@ -186,19 +191,36 @@ public class DocumentsListItem extends Fragment {
     }
 
     private void deleteTemporaryFile() {
-        capturedPhoto.delete();
+
+        try {
+            capturedPhoto.delete();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private File createTemporaryFile() throws IOException {
+    private File createTemporaryFile() throws Exception {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DCIM), "Camera");
+        File externalStorageDir = getActivity().getFilesDir();
+        File appDir = new File(externalStorageDir,"HollerImages");
+        File filesDir = getActivity().getFilesDir();
         File image = File.createTempFile(
                 imageFileName,
                 ".jpg",
-                storageDir
+                externalStorageDir
         );
+
+//        image.mkdirs();
+
+        MediaScannerConnection.scanFile(getActivity(),
+                new String[] { image.toString() }, null,
+                new MediaScannerConnection.OnScanCompletedListener() {
+                    public void onScanCompleted(String path, Uri uri) {
+                        Log.i("ExternalStorage", "Scanned " + path + ":");
+                        Log.i("ExternalStorage", "-> uri=" + uri);
+                    }
+                });
 
         //put temp file location to arguments to prevent crash while device rotation
         getArguments().putString(ARG_TEMP_FILE_URI, image.getAbsolutePath());

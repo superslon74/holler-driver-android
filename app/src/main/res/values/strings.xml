@@ -240,8 +240,7 @@
     <string name="help_title">&appNameCaps; Help</string>
     <string name="new_password_validation">New password should not be same as old password.</string>
     <string name="password_validation1">Password must contains minimum 8 characters, maximum 16 characters</string>
-    <string name="password_validation2">Password must contains minimum 8 characters, maximum 16 characters and atleast 1 Uppercase,
-         1 Lowercase, 1 Number and 1 Special Character</string>
+    <string name="password_validation2">Password must contains minimum 8 characters, maximum 16 characters, at least 1 letter, and 1 number</string>
     <string name="today_completed">Today Completed Target</string>
 
     <string name="sign_in">Sign in</string>
@@ -283,6 +282,6 @@
     <string name="upload_button_text">Submit</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!--<string name="hello_blank_fragment">Hello blank fragment</string>-->
 
 </resources>

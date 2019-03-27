@@ -148,6 +148,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
     public String myLat = "";
     public String myLng = "";
     String CurrentStatus = " ";
+    boolean isOTPRequired = false;
     String PreviousStatus = " ";
     String request_id = " ";
     OrderServerApi.Order incomingOrder = new OrderServerApi.Order();
@@ -324,7 +325,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
         btn_01_status.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (CurrentStatus.equalsIgnoreCase("PICKEDUP")) {
+                if (CurrentStatus.equalsIgnoreCase("PICKEDUP") && isOTPRequired) {
                     showOTPDialog();
                 } else {
                     update(CurrentStatus, request_id);
@@ -1295,6 +1296,11 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
                                                             statusResponse.optString("s_longitude")));
                                                 topSrcDestTxtLbl.setText(context.getResources().getString(R.string.pick_up));
                                             } else if (statusResponse.optString("status").equals("ARRIVED")) {
+                                                String needOtp = statusResponse.optString("otp_required", "0");
+                                                switch (needOtp){
+                                                    case "0": isOTPRequired = false; break;
+                                                    default: isOTPRequired = true; break;
+                                                }
                                                 setValuesTo_ll_03_contentLayer_service_flow(statusResponses);
                                                 ll_03_contentLayer_service_flow.setVisibility(View.VISIBLE);
                                                 btn_01_status.setText(context.getResources().getString(R.string.tap_when_pickedup));

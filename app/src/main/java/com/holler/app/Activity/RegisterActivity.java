@@ -348,6 +348,13 @@ public class RegisterActivity extends AppCompatActivity implements RadioGroup.On
             public void onErrorResponse(VolleyError error) {
                 if (customDialog != null && customDialog.isShowing())
                     customDialog.dismiss();
+
+                int statusCode = error.networkResponse.statusCode;
+                if(statusCode == 403){
+                    Toast.makeText(RegisterActivity.this, "Phone number already in use", Toast.LENGTH_LONG).show();
+                    GoToBeginActivity();
+                }
+
                 String json = null;
                 String Message;
                 NetworkResponse response = error.networkResponse;

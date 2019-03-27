@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.holler.app.Fragment.DocumentsListItem;
+import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Helper.URLHelper;
 import com.holler.app.R;
@@ -60,6 +61,7 @@ public class DocumentsActivity
     private static final int REQUEST_PERMISSIONS_CODE = 6411;
 
     private View documentsListView;
+    private CustomDialog spinner;
 
     private Map<String, Document> documents;
 
@@ -150,7 +152,13 @@ public class DocumentsActivity
             public void onResponse(@NonNull Call<List<Document>> call, @NonNull Response<List<Document>> response) {
                 if (response.isSuccessful()) {
                     documents = generateDocumentsMap(response.body());
-                    displayList();
+                    if(checkAllDocumentsUploaded()){
+                        Intent intent = new Intent(DocumentsActivity.this, WaitingForApproval.class);
+                        startActivity(intent);
+                        finish();
+                    }else{
+                        displayList();
+                    }
                 } else {
                     Log.e("UnhandledApiErro", response.errorBody().toString());
                 }
@@ -162,6 +170,14 @@ public class DocumentsActivity
             }
         });
 
+    }
+
+    private boolean checkAllDocumentsUploaded(){
+        for(String dId : documents.keySet()){
+            Document d = documents.get(dId);
+            if(d.remoteUrl==null) return false;
+        }
+        return true;
     }
 
     private Map<String, Document> generateDocumentsMap(List<Document> responce) {
@@ -195,8 +211,21 @@ public class DocumentsActivity
 
     }
 
+    private void showSpinner() {
+        if (spinner == null) {
+             spinner = new CustomDialog(this);
+        }
+        spinner.setCancelable(false);
+        spinner.show();
+    }
+
+    private void hideSpinner() {
+        spinner.dismiss();
+    }
+
     private void uploadDocuments(final Stack<Document> toUpload){
 //        TODO: rewrite with javarx
+        showSpinner();
         if(toUpload.size()==0){
             onDocumentsUploaded();
             return;
@@ -228,14 +257,18 @@ public class DocumentsActivity
     }
 
     private void onDocumentsUploaded(){
+        hideSpinner();
+
         Toast.makeText(this, "Uploading finished.",Toast.LENGTH_LONG).show();
         displayList();
 
-        boolean allRequiredDocumentsLoaded = true;
-        if(allRequiredDocumentsLoaded) {
+
+        if(checkAllDocumentsUploaded()) {
             Intent intent = new Intent(this, WaitingForApproval.class);
             startActivity(intent);
             finish();
+        }else{
+            Toast.makeText(this, "Documents required", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -248,7 +281,7 @@ public class DocumentsActivity
         RequestBody deviceToken = RequestBody.create(MediaType.parse("text/plain"), this.deviceToken);
 
         File photo = new File(document.localUrl);
-        RequestBody requestFile = RequestBody.create(MediaType.parse("image/png"), photo);
+        RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), photo);
         String filename = photo.getName();
         MultipartBody.Part fileData = MultipartBody.Part.createFormData("document", filename, requestFile);
 
