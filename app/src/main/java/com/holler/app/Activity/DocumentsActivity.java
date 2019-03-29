@@ -26,6 +26,7 @@ import com.holler.app.Helper.URLHelper;
 import com.holler.app.R;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.holler.app.utils.CustomActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public class DocumentsActivity
-        extends AppCompatActivity
+        extends CustomActivity
         implements DocumentsListItem.OnDocumentViewInteractions {
 
     private static final int REQUEST_PERMISSIONS_CODE = 6411;
@@ -65,10 +66,6 @@ public class DocumentsActivity
 
     private Map<String, Document> documents;
 
-    private String[] permissions = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.CAMERA,
-    };
 
     DocumentsServerApi serverApiClient;
 
@@ -86,7 +83,7 @@ public class DocumentsActivity
         initUserData();
         initServerAPIClient();
 
-        onCheckPermissions();
+//        onCheckPermissions();
         requestDocumentsList();
 
         View submitButton = (View) findViewById(R.id.submitUploading);
@@ -297,81 +294,10 @@ public class DocumentsActivity
         return sendingDocumentCall;
     }
 
-    @Override
-    public boolean onCheckPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (arePermissionsGranted()) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return true;
-        }
-    }
 
-    @Override
-    public void onPermissionsNeeded() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Toast.makeText(this, "This feature doesn't working without requested permissions..", Toast.LENGTH_LONG).show();
-            requestMultiplePermissions();
-        } else {
-            Toast.makeText(this, "App needs access to camera and storage", Toast.LENGTH_LONG).show();
-        }
 
-    }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private boolean arePermissionsGranted() {
-        for (String permission : permissions) {
-            if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED)
-                return false;
-        }
-        return true;
-    }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private void requestMultiplePermissions() {
-        List<String> remainingPermissions = new ArrayList<>();
-        for (String permission : permissions) {
-            if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
-                remainingPermissions.add(permission);
-            }
-        }
-        requestPermissions(remainingPermissions.toArray(new String[remainingPermissions.size()]), REQUEST_PERMISSIONS_CODE);
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_PERMISSIONS_CODE) {
-            for (int i = 0; i < grantResults.length; i++) {
-                if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                    if (shouldShowRequestPermissionRationale(permissions[i])) {
-                        new AlertDialog.Builder(this)
-                                .setMessage("These permissions needed to send select documents on your device.")
-                                .setPositiveButton("Allow", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        requestMultiplePermissions();
-                                    }
-                                })
-                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                })
-                                .create()
-                                .show();
-                    }
-                    return;
-                }
-            }
-            //all is good, continue flow
-        }
-    }
 
     public static class Document implements Parcelable {
 

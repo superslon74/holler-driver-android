@@ -37,6 +37,7 @@ import com.holler.app.Models.AccessDetails;
 import com.holler.app.AndarApplication;
 import com.holler.app.R;
 import com.holler.app.Utilities.Utilities;
+import com.holler.app.utils.CustomActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,7 +46,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SplashScreen extends AppCompatActivity implements ForceUpdateChecker.OnUpdateNeededListener{
+public class SplashScreen extends CustomActivity implements ForceUpdateChecker.OnUpdateNeededListener{
 
     String TAG = "SplashActivity";
     public Activity activity;

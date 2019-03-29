@@ -352,7 +352,11 @@ public class RegisterActivity extends AppCompatActivity implements RadioGroup.On
                 int statusCode = error.networkResponse.statusCode;
                 if(statusCode == 403){
                     Toast.makeText(RegisterActivity.this, "Phone number already in use", Toast.LENGTH_LONG).show();
-                    GoToBeginActivity();
+                    SharedHelper.putKey(activity, "loggedIn", getString(R.string.False));
+                    Intent mainIntent = new Intent(activity, WelcomeScreenActivity.class);
+                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(mainIntent);
+                    activity.finish();
                 }
 
                 String json = null;

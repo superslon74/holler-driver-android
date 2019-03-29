@@ -27,13 +27,14 @@ import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Models.AccessDetails;
 import com.holler.app.R;
 import com.holler.app.Utilities.Utilities;
+import com.holler.app.utils.CustomActivity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class WelcomeScreenActivity extends AppCompatActivity {
+public class WelcomeScreenActivity extends CustomActivity {
 
     private ViewPager viewPager;
     private MyViewPagerAdapter myViewPagerAdapter;

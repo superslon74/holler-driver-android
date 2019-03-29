@@ -1,5 +1,6 @@
 package com.holler.app.Activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -26,7 +27,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -161,11 +161,25 @@ public class MainActivity extends CustomActivity {
             }
         });
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if(!checkFloatingButtonPermissions()){
-                requestFloatingViewPermission();
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            if(!checkFloatingButtonPermissions()){
+//                requestFloatingViewPermission();
+//            }
+//        }
+        final CustomActivity activity = this;
+        String permission = Manifest.permission.SYSTEM_ALERT_WINDOW;
+        RequestPermissionHandler handler = new RequestPermissionHandler() {
+            @Override
+            public void onPermissionGranted() {
+                Toast.makeText(activity,"Floating view allowed",Toast.LENGTH_LONG).show();
             }
-        }
+
+            @Override
+            public void onPermissionDenied() {
+                Toast.makeText(activity,"Floating view not allowed",Toast.LENGTH_LONG).show();
+            }
+        };
+        checkPermissionAsynchronously(permission,handler);
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -173,29 +187,24 @@ public class MainActivity extends CustomActivity {
         return Settings.canDrawOverlays(this);
     }
 
-    private void requestFloatingViewPermission(){
-        final Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:" + context.getPackageName()));
 
-        startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION);
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_LOCATION) {
-            if (resultCode == Activity.RESULT_CANCELED) {
-                Toast.makeText(context, "Request Cancelled", Toast.LENGTH_SHORT).show();
-            }
-        }else if (requestCode == CODE_DRAW_OVER_OTHER_APP_PERMISSION) {
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkFloatingButtonPermissions()){
-                Toast.makeText(context, "Permission granted", Toast.LENGTH_SHORT).show();
-            }else{
-                Toast.makeText(context, "Request canceled", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-
+//        if (requestCode == REQUEST_LOCATION) {
+//            if (resultCode == Activity.RESULT_CANCELED) {
+//                Toast.makeText(context, "Request Cancelled", Toast.LENGTH_SHORT).show();
+//            }
+//        }else if (requestCode == CODE_DRAW_OVER_OTHER_APP_PERMISSION) {
+//            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkFloatingButtonPermissions()){
+//                Toast.makeText(context, "Permission granted", Toast.LENGTH_SHORT).show();
+//            }else{
+//                Toast.makeText(context, "Request canceled", Toast.LENGTH_SHORT).show();
+//            }
+//        } else {
+//            super.onActivityResult(requestCode, resultCode, data);
+//        }
+        super.onActivityResult(requestCode,resultCode,data);
     }
 
     private void findViewById() {

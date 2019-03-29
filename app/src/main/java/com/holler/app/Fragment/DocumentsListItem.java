@@ -1,5 +1,6 @@
 package com.holler.app.Fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +23,7 @@ import com.holler.app.Activity.DocumentsActivity;
 import com.holler.app.BuildConfig;
 import com.holler.app.R;
 import com.bumptech.glide.Glide;
+import com.holler.app.utils.CustomActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -76,15 +78,45 @@ public class DocumentsListItem extends Fragment {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mListener.onCheckPermissions()){
-                    pickImage();
-                }else{
-                    mListener.onPermissionsNeeded();
-                }
+               checkCameraPermission();
             }
         });
 
         return view;
+    }
+
+    private void checkCameraPermission(){
+        final CustomActivity activity = (CustomActivity) getActivity();
+        String permission = Manifest.permission.CAMERA;
+        CustomActivity.RequestPermissionHandler handler = new CustomActivity.RequestPermissionHandler() {
+            @Override
+            public void onPermissionGranted() {
+                checkStoragePermission();
+            }
+
+            @Override
+            public void onPermissionDenied() {
+                checkCameraPermission();
+            }
+        };
+        activity.checkPermissionAsynchronously(permission,handler);
+    }
+
+    private void checkStoragePermission(){
+        final CustomActivity activity = (CustomActivity) getActivity();
+        String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+        CustomActivity.RequestPermissionHandler handler = new CustomActivity.RequestPermissionHandler() {
+            @Override
+            public void onPermissionGranted() {
+                pickImage();
+            }
+
+            @Override
+            public void onPermissionDenied() {
+                checkCameraPermission();
+            }
+        };
+        activity.checkPermissionAsynchronously(permission,handler);
     }
 
 
@@ -116,8 +148,14 @@ public class DocumentsListItem extends Fragment {
             chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
         }
 
-        startActivityForResult(chooserIntent, CHOOSE_FILE_REQUEST_CODE);
-
+        final Fragment self = this;
+        final CustomActivity activity = (CustomActivity)getActivity();
+        activity.startActivityForResult(chooserIntent, CHOOSE_FILE_REQUEST_CODE, new CustomActivity.OnActivityResultListener() {
+            @Override
+            public void onActivityResult(int requestCode, int resultCode, Intent data) {
+                self.onActivityResult(requestCode,resultCode,data);
+            }
+        });
     }
 
     @Override
@@ -256,15 +294,6 @@ public class DocumentsListItem extends Fragment {
          * Calls observer method with modified document
          */
         void onDocumentSelected(DocumentsActivity.Document document);
-        /**
-         * Calls observer activity to check permissions
-         * @returns whether all permission are granted
-         */
-        boolean onCheckPermissions();
 
-        /**
-         * Calls observer activity when permission doesn't granted
-         */
-        void onPermissionsNeeded();
     }
 }

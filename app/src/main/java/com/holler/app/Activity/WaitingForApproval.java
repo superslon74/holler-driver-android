@@ -31,12 +31,13 @@ import com.holler.app.Models.AccessDetails;
 import com.holler.app.AndarApplication;
 import com.holler.app.R;
 import com.holler.app.Services.UserStatusChecker;
+import com.holler.app.utils.CustomActivity;
 
 import org.json.JSONObject;
 
 import java.util.HashMap;
 
-public class WaitingForApproval extends AppCompatActivity {
+public class WaitingForApproval extends CustomActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

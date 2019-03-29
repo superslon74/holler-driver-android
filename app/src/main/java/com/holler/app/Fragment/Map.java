@@ -88,6 +88,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.holler.app.server.OrderServerApi;
+import com.holler.app.utils.CustomActivity;
+import com.holler.app.utils.CustomActivity.RequestPermissionHandler;
+import com.holler.app.utils.CustomActivity.RefactoringException;
 import com.holler.app.utils.FloatingViewService;
 import com.squareup.picasso.Picasso;
 import com.holler.app.Activity.MainActivity;
@@ -314,7 +317,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
         //permission to access location
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // Android M Permission check
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            initializeMapOnPermissionGranted();
         } else {
             setUpMapIfNeeded();
             MapsInitializer.initialize(activity);
@@ -442,16 +445,12 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
             public void onClick(View view) {
                 String mobile = SharedHelper.getKey(context, "provider_mobile_no");
                 if (mobile != null && !mobile.equalsIgnoreCase("null") && mobile.length() > 0) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 2);
-                    } else {
-                        Intent intent = new Intent(Intent.ACTION_CALL);
-                        intent.setData(Uri.parse("tel:" + SharedHelper.getKey(context, "provider_mobile_no")));
-                        startActivity(intent);
-                    }
+                    makeCallOnPermissionGranted();
                 } else {
                     displayMessage(context.getResources().getString(R.string.user_no_mobile));
                 }
+
+
             }
         });
 
@@ -759,65 +758,84 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
         }
     }
 
+    private void initializeMapOnPermissionGranted(){
+        final CustomActivity activity = (CustomActivity) getActivity();
+        String permission = Manifest.permission.ACCESS_FINE_LOCATION;
+        RequestPermissionHandler handler = new RequestPermissionHandler() {
+            @Override
+            public void onPermissionGranted() {
+                if (mGoogleApiClient == null) {
+                    buildGoogleApiClient();
+                }
+                setUpMapIfNeeded();
+                MapsInitializer.initialize(activity);
+            }
+
+            @Override
+            public void onPermissionDenied() {
+                initializeMapOnPermissionGranted();
+            }
+        };
+        activity.checkPermissionAsynchronously(permission,handler);
+    }
+
+    private void makeCallOnPermissionGranted(){
+        final CustomActivity activity = (CustomActivity) getActivity();
+        String permission = Manifest.permission.CALL_PHONE;
+        RequestPermissionHandler handler = new RequestPermissionHandler() {
+            @Override
+            public void onPermissionGranted() {
+                Intent intent = new Intent(Intent.ACTION_CALL);
+                intent.setData(Uri.parse("tel:" + SharedHelper.getKey(context, "provider_mobile_no")));
+                startActivity(intent);
+            }
+
+            @Override
+            public void onPermissionDenied() {
+                makeCallOnPermissionGranted();
+            }
+        };
+        activity.checkPermissionAsynchronously(permission,handler);
+    }
+
+    private void makeHelpCallOnPermissionGranted(){
+        final CustomActivity activity = (CustomActivity) getActivity();
+        String permission = Manifest.permission.CALL_PHONE;
+        RequestPermissionHandler handler = new RequestPermissionHandler() {
+            @Override
+            public void onPermissionGranted() {
+                Intent intent = new Intent(Intent.ACTION_CALL);
+                intent.setData(Uri.parse("tel:" + SharedHelper.getKey(context, "sos")));
+                startActivity(intent);
+            }
+
+            @Override
+            public void onPermissionDenied() {
+                makeHelpCallOnPermissionGranted();
+            }
+        };
+        activity.checkPermissionAsynchronously(permission,handler);
+    }
+
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case 1:
-                if (grantResults.length > 0) {
-                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        // Permission Granted
-//                        //Toast.makeText(SignInActivity.this, "PERMISSION_GRANTED", Toast.LENGTH_SHORT).show();
-                        setUpMapIfNeeded();
-                        MapsInitializer.initialize(activity);
-
-                        if (ContextCompat.checkSelfPermission(context,
-                                Manifest.permission.ACCESS_FINE_LOCATION)
-                                == PackageManager.PERMISSION_GRANTED) {
-
-                            if (mGoogleApiClient == null) {
-                                buildGoogleApiClient();
-                            }
-                            setUpMapIfNeeded();
-                            MapsInitializer.initialize(activity);
-
-                        }
-                    } else {
-                        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-                    }
-                }
+                Exception e1 = new RefactoringException("should invoke initializeMapOnPermissionGranted() instead");
+                e1.printStackTrace();
                 break;
             case 2:
-                try {
-                    if (grantResults.length > 0) {
-                        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                            // Permission Granted
-                            Intent intent = new Intent(Intent.ACTION_CALL);
-                            intent.setData(Uri.parse("tel:" + SharedHelper.getKey(context, "provider_mobile_no")));
-                            startActivity(intent);
-                        } else {
-                            requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 2);
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                Exception e2 = new RefactoringException("should invoke makeCallOnPermissionGranted() instead");
+                e2.printStackTrace();
                 break;
             case 3:
-                if (grantResults.length > 0) {
-                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        // Permission Granted
-                        Intent intent = new Intent(Intent.ACTION_CALL);
-                        intent.setData(Uri.parse("tel:" + SharedHelper.getKey(context, "sos")));
-                        startActivity(intent);
-                    } else {
-                        requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 3);
-                    }
-                }
+                Exception e3 = new RefactoringException("should invoke makeHelpCallOnPermissionGranted() instead");
+                e3.printStackTrace();
                 break;
             default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void setUpMapIfNeeded() {
@@ -959,18 +977,14 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(getActivity(),
-                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                        1);
+                                initializeMapOnPermissionGranted();
                             }
                         })
                         .create()
                         .show();
             } else {
                 // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        1);
+                initializeMapOnPermissionGranted();
             }
         }
     }
@@ -2305,13 +2319,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
                 dialog.dismiss();
                 String mobile = SharedHelper.getKey(context, "sos");
                 if (mobile != null && !mobile.equalsIgnoreCase("null") && mobile.length() > 0) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 3);
-                    } else {
-                        Intent intent = new Intent(Intent.ACTION_CALL);
-                        intent.setData(Uri.parse("tel:" + mobile));
-                        startActivity(intent);
-                    }
+                    makeHelpCallOnPermissionGranted();
                 } else {
                     displayMessage(context.getResources().getString(R.string.user_no_mobile));
                 }
@@ -2413,8 +2421,23 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
         }
 
         if (isShowOverlayPermission) {
-            final Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + context.getPackageName()));
-            startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION);
+            final CustomActivity activity = (CustomActivity) getActivity();
+            String permission = Manifest.permission.SYSTEM_ALERT_WINDOW;
+            RequestPermissionHandler handler = new RequestPermissionHandler() {
+                @Override
+                public void onPermissionGranted() {
+//                    Toast.makeText(activity,"")
+                    Toast.makeText(activity,"Floating view allowed", Toast.LENGTH_LONG).show();
+
+                }
+
+                @Override
+                public void onPermissionDenied() {
+                    Toast.makeText(activity,"Floating view not allowed", Toast.LENGTH_LONG).show();
+                }
+            };
+
+            activity.checkPermissionAsynchronously(permission,handler);
         }
     }
 
