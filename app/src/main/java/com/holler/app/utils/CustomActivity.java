@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class CustomActivity extends AppCompatActivity {
 
-    private static int runningActivitiesCount = 0;
+    private static volatile int runningActivitiesCount = 0;
 
     @Override
     protected void onPause() {
@@ -112,9 +112,9 @@ public class CustomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // for home listen
-        InnerRecevier innerReceiver = new InnerRecevier();
-        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-        registerReceiver(innerReceiver, intentFilter);
+//        InnerRecevier innerReceiver = new InnerRecevier();
+//        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+//        registerReceiver(innerReceiver, intentFilter);
     }
 
 

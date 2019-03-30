@@ -109,7 +109,6 @@ public class ChangePassword extends CustomActivity {
         isInternet = helper.isConnectingToInternet();
     }
 
-
     private void changePassword() {
 
         customDialog = new CustomDialog(context);
@@ -198,7 +197,6 @@ public class ChangePassword extends CustomActivity {
         AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
 
     }
-
 
     @Override
     public void onBackPressed() {
