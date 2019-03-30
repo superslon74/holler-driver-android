@@ -34,6 +34,7 @@ import com.holler.app.Helper.URLHelper;
 import com.holler.app.Models.AccessDetails;
 import com.holler.app.R;
 import com.holler.app.Utilities.Utilities;
+import com.holler.app.utils.CustomActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,7 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class ActivityPassword extends AppCompatActivity {
+public class ActivityPassword extends CustomActivity {
 
     String TAG = "ActivityPassword";
     public Context context;
@@ -412,28 +413,8 @@ public class ActivityPassword extends AppCompatActivity {
 
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
     public void onBackPressed() {
-        Log.d("LALALA","fuuuuuuuuuck");
+        super.onBackPressed();
         SharedHelper.putKey(context, "password", "");
         Intent mainIntent = new Intent(activity, ActivityEmail.class);
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

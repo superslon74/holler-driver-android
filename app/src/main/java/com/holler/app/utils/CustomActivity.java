@@ -17,6 +17,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 
+import com.holler.app.Activity.MainActivity;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -101,7 +103,9 @@ public class CustomActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        moveTaskToBack(true);
+        if(CustomActivity.this instanceof MainActivity){
+            moveTaskToBack(true);
+        }
 
     }
 

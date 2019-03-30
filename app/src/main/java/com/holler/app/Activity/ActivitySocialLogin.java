@@ -64,6 +64,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.JsonObject;
+import com.holler.app.utils.CustomActivity;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.holler.app.AndarApplication;
@@ -89,7 +90,7 @@ import java.util.concurrent.TimeoutException;
 import static com.holler.app.AndarApplication.trimMessage;
 
 
-public class ActivitySocialLogin extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class ActivitySocialLogin extends CustomActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     private static final int REQ_SIGN_IN_REQUIRED = 100;
     /*----------Facebook Login---------------*/
@@ -338,10 +339,6 @@ public class ActivitySocialLogin extends AppCompatActivity implements GoogleApiC
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
 
     public void phoneLogin() {
         Log.e(TAG, "onActivityResult: phone Login Account Kit" + AccountKit.getCurrentAccessToken() + "");

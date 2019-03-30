@@ -17,11 +17,12 @@ import android.widget.Toast;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.R;
 import com.holler.app.Utilities.Utilities;
+import com.holler.app.utils.CustomActivity;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ActivityEmail extends AppCompatActivity {
+public class ActivityEmail extends CustomActivity {
 
     ImageView backArrow;
     FloatingActionButton nextICON;
@@ -127,28 +128,11 @@ public class ActivityEmail extends AppCompatActivity {
         return matcher.matches();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         SharedHelper.putKey(ActivityEmail.this, "email", "");
         Intent mainIntent = new Intent(ActivityEmail.this, WelcomeScreenActivity.class);
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);

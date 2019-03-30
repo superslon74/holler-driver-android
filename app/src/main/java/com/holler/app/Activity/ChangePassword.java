@@ -31,6 +31,7 @@ import com.holler.app.Helper.URLHelper;
 import com.holler.app.Models.AccessDetails;
 import com.holler.app.R;
 import com.holler.app.Utilities.Utilities;
+import com.holler.app.utils.CustomActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,7 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class ChangePassword extends AppCompatActivity {
+public class ChangePassword extends CustomActivity {
     String TAG = "ChangePasswordActivity";
     public Context context = ChangePassword.this;
     public Activity activity = ChangePassword.this;

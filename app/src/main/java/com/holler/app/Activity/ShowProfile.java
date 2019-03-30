@@ -13,6 +13,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.holler.app.utils.CustomActivity;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 import com.holler.app.Helper.ConnectionHelper;
@@ -21,7 +22,7 @@ import com.holler.app.Helper.User;
 import com.holler.app.R;
 
 
-public class ShowProfile extends AppCompatActivity {
+public class ShowProfile extends CustomActivity {
 
     public Context context = ShowProfile.this;
     public Activity activity = ShowProfile.this;
@@ -90,21 +91,6 @@ public class ShowProfile extends AppCompatActivity {
         else
             ratingProvider.setRating(1);
         Picasso.with(context).load(user.getImg()).memoryPolicy(MemoryPolicy.NO_CACHE).placeholder(R.drawable.ic_dummy_user).error(R.drawable.ic_dummy_user).into(profile_Image);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
     }
 
     public void displayMessage(String toastString) {

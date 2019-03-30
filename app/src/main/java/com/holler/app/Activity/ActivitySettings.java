@@ -17,9 +17,10 @@ import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.LocaleUtils;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.R;
+import com.holler.app.utils.CustomActivity;
 
 
-public class ActivitySettings extends AppCompatActivity {
+public class ActivitySettings extends CustomActivity {
 
     private RadioButton radioEnglish, radioArabic;
 

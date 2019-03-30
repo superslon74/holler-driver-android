@@ -64,9 +64,10 @@ import java.util.regex.Pattern;
 import static com.holler.app.AndarApplication.trimMessage;
 
 import com.facebook.accountkit.AccessToken;
+import com.holler.app.utils.CustomActivity;
 
 
-public class RegisterActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener {
+public class RegisterActivity extends CustomActivity implements RadioGroup.OnCheckedChangeListener {
 
     public Context context = RegisterActivity.this;
     public Activity activity = RegisterActivity.this;
@@ -764,21 +765,6 @@ public class RegisterActivity extends AppCompatActivity implements RadioGroup.On
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(mainIntent);
         activity.finish();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
     }
 
     @Override

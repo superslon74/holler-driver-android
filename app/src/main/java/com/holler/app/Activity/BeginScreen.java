@@ -46,6 +46,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.gson.JsonObject;
+import com.holler.app.utils.CustomActivity;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.splunk.mint.Mint;
@@ -68,7 +69,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BeginScreen extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class BeginScreen extends CustomActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     private static final int REQ_SIGN_IN_REQUIRED = 100;
     TextView enter_ur_mailID, connectSocial;

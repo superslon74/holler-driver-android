@@ -34,6 +34,7 @@ import com.bumptech.glide.Glide;
 import com.google.gson.JsonObject;
 import com.holler.app.Fragment.OnGoingTrips;
 import com.holler.app.server.OrderServerApi;
+import com.holler.app.utils.CustomActivity;
 import com.squareup.picasso.Picasso;
 import com.holler.app.AndarApplication;
 import com.holler.app.Helper.ConnectionHelper;
@@ -60,7 +61,7 @@ import okhttp3.ResponseBody;
 
 import static com.holler.app.AndarApplication.trimMessage;
 
-public class HistoryDetails extends AppCompatActivity {
+public class HistoryDetails extends CustomActivity {
     Activity activity;
     Context context;
     Boolean isInternet;

@@ -32,6 +32,7 @@ import com.holler.app.Models.AccessDetails;
 import com.holler.app.AndarApplication;
 import com.holler.app.R;
 import com.holler.app.Utilities.Utilities;
+import com.holler.app.utils.CustomActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,7 +42,7 @@ import java.util.Map;
 
 import static com.holler.app.AndarApplication.trimMessage;
 
-public class ForgetPassword extends AppCompatActivity {
+public class ForgetPassword extends CustomActivity {
 
     public Context context = ForgetPassword.this;
     ImageView nextICON, backArrow;
@@ -373,27 +374,6 @@ public class ForgetPassword extends AppCompatActivity {
         Log.e("displayMessage", "" + toastString);
         Snackbar.make(getCurrentFocus(), toastString, Snackbar.LENGTH_SHORT)
                 .setAction("Action", null).show();
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
     }
 
     @Override

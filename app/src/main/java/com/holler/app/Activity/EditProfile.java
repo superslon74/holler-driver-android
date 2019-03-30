@@ -37,6 +37,7 @@ import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.holler.app.utils.CustomActivity;
 import com.squareup.picasso.Picasso;
 import com.holler.app.AndarApplication;
 import com.holler.app.Helper.AppHelper;
@@ -61,7 +62,7 @@ import java.util.regex.Pattern;
 
 import static com.holler.app.AndarApplication.trimMessage;
 
-public class EditProfile extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener {
+public class EditProfile extends CustomActivity implements RadioGroup.OnCheckedChangeListener {
 
     private static final String TAG = "EditProfile";
     public Context context = EditProfile.this;
@@ -706,21 +707,6 @@ public class EditProfile extends AppCompatActivity implements RadioGroup.OnCheck
                 ee.printStackTrace();
             }
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
     }
 
     @Override

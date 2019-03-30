@@ -17,8 +17,9 @@ import android.widget.TextView;
 import com.holler.app.Fragment.OnGoingTrips;
 import com.holler.app.Fragment.PastTrips;
 import com.holler.app.R;
+import com.holler.app.utils.CustomActivity;
 
-public class HistoryActivity extends AppCompatActivity {
+public class HistoryActivity extends CustomActivity {
 
     private ViewPager viewPager;
     private TabLayout tabLayout;
