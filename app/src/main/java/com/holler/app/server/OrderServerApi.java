@@ -182,7 +182,7 @@ public interface OrderServerApi {
     }
 
     abstract class CallbackErrorHandler<T> implements Callback<T> {
-        Activity activity;
+        protected Activity activity;
 
         public CallbackErrorHandler(Activity activity) {
             this.activity = activity;
@@ -248,7 +248,7 @@ public interface OrderServerApi {
             onFinishHandling();
         }
 
-        private void displayMessage(String message){
+        protected void displayMessage(String message){
             Snackbar.make(
                     activity.findViewById(R.id.parentLayout),
                     message,

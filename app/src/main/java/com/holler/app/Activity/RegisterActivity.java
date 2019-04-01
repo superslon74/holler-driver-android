@@ -44,6 +44,9 @@ import com.facebook.accountkit.ui.LoginType;
 import com.facebook.accountkit.ui.SkinManager;
 import com.facebook.accountkit.ui.UIManager;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.holler.app.AndarApplication;
 import com.holler.app.Helper.ConnectionHelper;
 import com.holler.app.Helper.CustomDialog;
@@ -55,16 +58,31 @@ import com.holler.app.Utilities.Utilities;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.holler.app.AndarApplication.trimMessage;
 
 import com.facebook.accountkit.AccessToken;
+import com.holler.app.server.OrderServerApi;
 import com.holler.app.utils.CustomActivity;
+
+
+import okhttp3.ConnectionPool;
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.HeaderMap;
+import retrofit2.http.POST;
 
 
 public class RegisterActivity extends CustomActivity implements RadioGroup.OnCheckedChangeListener {
@@ -106,6 +124,8 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
             return null;
         }
     };
+
+    private UserServerApi serverApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,6 +210,7 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
             }
         });
 
+        serverApiClient = UserServerApi.ApiCreator.createInstance();
 
     }
 
@@ -220,399 +241,192 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
     }
 
 
+
     public void checkMailAlreadyExit(){
-        customDialog = new CustomDialog(RegisterActivity.this);
-        customDialog.setCancelable(false);
-        if (customDialog != null)
-            customDialog.show();
-        JSONObject object = new JSONObject();
-        try {
-            object.put("email", email.getText().toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        showSpinner();
 
-        Log.d("azaza",email.getText().toString());
-        Log.d("azaza",AccessDetails.serviceurl + URLHelper.CHECK_MAIL_ALREADY_REGISTERED);
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+        UserServerApi.User user = new UserServerApi.User();
+        user.email = email.getText().toString();
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.POST,
-                AccessDetails.serviceurl + URLHelper.CHECK_MAIL_ALREADY_REGISTERED,
-                object,
-                new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                if ((customDialog != null) && (customDialog.isShowing()))
-                    customDialog.dismiss();
-                phoneLogin();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if ((customDialog != null) && (customDialog.isShowing()))
-                    customDialog.dismiss();
-                String json = null;
-                NetworkResponse response = error.networkResponse;
+        serverApiClient
+                .checkEmailExists(headers,user)
+                .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(RegisterActivity.this) {
+                    @Override
+                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
+                        phoneLogin();
+                        hideSpinner();
+                    }
 
-                if (response != null && response.data != null) {
-                    utils.print("MyTest", "" + error);
-                    utils.print("MyTestError", "" + error.networkResponse);
-                    utils.print("MyTestError1", "" + response.statusCode);
-                    try {
-                        if (response.statusCode == 422) {
-
-                            json = trimMessage(new String(response.data));
-                            if (json != "" && json != null) {
-                                if (json.startsWith("The email has already been taken")) {
-                                    displayMessage(getString(R.string.email_exist));
-                                }else{
-                                    displayMessage(getString(R.string.something_went_wrong));
-                                }
-                                //displayMessage(json);
-                            } else {
-                                displayMessage(getString(R.string.please_try_again));
-                            }
-
-                        } else {
-                            displayMessage(getString(R.string.please_try_again));
+                    @Override
+                    public void onUnsuccessfulResponse(retrofit2.Response<JsonObject> response) {
+                        if(response.code() == 422){
+                            displayMessage(super.activity.getString(R.string.email_exist));
+                            return;
                         }
-
-                    } catch (Exception e) {
-                        displayMessage(getString(R.string.something_went_wrong));
+                        super.onUnsuccessfulResponse(response);
                     }
-                } else {
-                    if (error instanceof NoConnectionError) {
-                        displayMessage(getString(R.string.oops_connect_your_internet));
-                    } else if (error instanceof NetworkError) {
-                        displayMessage(getString(R.string.oops_connect_your_internet));
-                    } else if (error instanceof TimeoutError) {
-                        checkMailAlreadyExit();
-                    }
-                }
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("X-Requested-With", "XMLHttpRequest");
-                return headers;
-            }
-        };
 
-        AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+                    @Override
+                    public void onFinishHandling() {
+                        super.onFinishHandling();
+                        hideSpinner();
+                    }
+                });
+
     }
 
     private void registerAPI() {
 
-        customDialog = new CustomDialog(context);
-        customDialog.setCancelable(false);
-        if (customDialog != null)
-            customDialog.show();
-        JSONObject object = new JSONObject();
-        try {
-            object.put("device_type", "android");
-            object.put("device_id", device_UDID);
-            object.put("device_token", device_token);
-            object.put("login_by", "manual");
-            object.put("first_name", first_name.getText().toString());
-            object.put("last_name", last_name.getText().toString());
-            object.put("email", email.getText().toString());
-            object.put("password", password.getText().toString());
-            object.put("gender", gender);
-            object.put("password_confirmation", password.getText().toString());
-            object.put("mobile", SharedHelper.getKey(RegisterActivity.this, "mobile"));
-//            object.put("picture","");
-//            object.put("social_unique_id","");
-            utils.print("InputToRegisterAPI", "" + object);
+        showSpinner();
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+        final UserServerApi.User user = new UserServerApi.User();
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.POST,
-                AccessDetails.serviceurl +  URLHelper.register,
-                object,
-                new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                if (customDialog != null && customDialog.isShowing())
-                    customDialog.dismiss();
-                utils.print("SignInResponse", response.toString());
-                SharedHelper.putKey(RegisterActivity.this, "email", email.getText().toString());
-                SharedHelper.putKey(RegisterActivity.this, "password", password.getText().toString());
-                signIn();
-            }
+        user.deviceType = "android";
+        user.deviceId = device_UDID;
+        user.deviceToken = device_token;
+        user.loggedBy = "manual";
+        user.firstName = first_name.getText().toString();
+        user.lastName = last_name.getText().toString();
+        user.gender = gender;
+        user.mobile = SharedHelper.getKey(RegisterActivity.this, "mobile");
 
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (customDialog != null && customDialog.isShowing())
-                    customDialog.dismiss();
+        user.email = email.getText().toString();
+        user.password = password.getText().toString();
+        user.passwordConfirmation = password.getText().toString();
 
-                int statusCode = error.networkResponse.statusCode;
-                if(statusCode == 403){
-                    Toast.makeText(RegisterActivity.this, "Phone number already in use", Toast.LENGTH_LONG).show();
-                    SharedHelper.putKey(activity, "loggedIn", getString(R.string.False));
-                    Intent mainIntent = new Intent(activity, WelcomeScreenActivity.class);
-                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(mainIntent);
-                    activity.finish();
-                }
+        serverApiClient
+                .register(headers,user)
+                .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(RegisterActivity.this) {
+                    @Override
+                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
+                        SharedHelper.putKey(RegisterActivity.this, "email", email.getText().toString());
+                        SharedHelper.putKey(RegisterActivity.this, "password", password.getText().toString());
+                        signIn(user);
+                        hideSpinner();
+                    }
 
-                String json = null;
-                String Message;
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    utils.print("MyTestError1", "" + response.statusCode);
-                    try {
-                        JSONObject errorObj = new JSONObject(new String(response.data));
-                        utils.print("ErrorInRegisterAPI", "" + errorObj.toString());
-
-                        if (response.statusCode == 400 || response.statusCode == 405 || response.statusCode == 500) {
-                            try {
-                                displayMessage(errorObj.optString("error")); //fAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAA
-                            } catch (Exception e) {
-                                displayMessage(getString(R.string.something_went_wrong));
-                            }
-                        } else if (response.statusCode == 401) {
-                            try {
-                                if (errorObj.optString("message").equalsIgnoreCase("invalid_token")) {
-                                    //Call Refresh token
-                                } else {
-                                    displayMessage(errorObj.optString("message"));
-                                }
-                            } catch (Exception e) {
-                                displayMessage(getString(R.string.something_went_wrong));
-                            }
-
-                        } else if (response.statusCode == 422) {
-                            json = trimMessage(new String(response.data));
-                            if (json != "" && json != null) {
-                                if (json.startsWith("The email has already been taken")) {
-                                    displayMessage(getString(R.string.email_exist));
-                                }else{
-                                    displayMessage(getString(R.string.something_went_wrong));
-                                }
-                                //displayMessage(json);
-                            } else {
-                                displayMessage(getString(R.string.please_try_again));
-                            }
-
-                        } else {
-                            displayMessage(getString(R.string.please_try_again));
+                    @Override
+                    public void onUnsuccessfulResponse(retrofit2.Response<JsonObject> response) {
+                        switch (response.code()){
+                            case 403:
+                                Toast.makeText(RegisterActivity.this, "Phone number already in use", Toast.LENGTH_LONG).show();
+                                SharedHelper.putKey(activity, "loggedIn", getString(R.string.False));
+                                Intent mainIntent = new Intent(activity, WelcomeScreenActivity.class);
+                                mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(mainIntent);
+                                activity.finish();
+                                break;
+                            case 401: super.displayMessage(getString(R.string.something_went_wrong)); break;
+                            case 422: super.displayMessage(getString(R.string.email_exist)); break;
+                            default: super.onUnsuccessfulResponse(response);
                         }
 
-                    } catch (Exception e) {
-                        displayMessage(getString(R.string.something_went_wrong));
                     }
-                } else {
-                    if (error instanceof NoConnectionError) {
-                        displayMessage(getString(R.string.oops_connect_your_internet));
-                    } else if (error instanceof NetworkError) {
-                        displayMessage(getString(R.string.oops_connect_your_internet));
-                    } else if (error instanceof TimeoutError) {
-                        registerAPI();
+
+
+                    @Override
+                    public void onFinishHandling() {
+                        super.onFinishHandling();
+                        hideSpinner();
                     }
-                }
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("X-Requested-With", "XMLHttpRequest");
-                return headers;
-            }
-        };
-        AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+                });
     }
 
-    public void signIn() {
-        if (isInternet) {
-            customDialog = new CustomDialog(RegisterActivity.this);
-            customDialog.setCancelable(false);
-            if (customDialog != null)
-                customDialog.show();
-            JSONObject object = new JSONObject();
-            try {
-                object.put("device_type", "android");
-                object.put("device_id", device_UDID);
-                object.put("device_token", device_token);
-                object.put("email", SharedHelper.getKey(RegisterActivity.this, "email"));
-                object.put("password", SharedHelper.getKey(RegisterActivity.this, "password"));
-                utils.print("InputToLoginAPI", "" + object);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+    public void signIn(final UserServerApi.User user) {
+        showSpinner();
 
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AccessDetails.serviceurl + URLHelper.login, object, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    if (customDialog != null && customDialog.isShowing())
-                        customDialog.dismiss();
-                    utils.print("SignUpResponse", response.toString());
-                    SharedHelper.putKey(context, "access_token", response.optString("access_token"));
-                    if (!response.optString("currency").equalsIgnoreCase("") && response.optString("currency") != null)
-                        SharedHelper.putKey(context, "currency", response.optString("currency"));
-                    else
-                        SharedHelper.putKey(context, "currency", "$");
-                    getProfile();
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    if (customDialog != null && customDialog.isShowing())
-                        customDialog.dismiss();
-                    String json = null;
-                    NetworkResponse response = error.networkResponse;
-                    if (response != null && response.data != null) {
-                        try {
-                            JSONObject errorObj = new JSONObject(new String(response.data));
-                            utils.print("ErrorInLoginAPI", "" + errorObj.toString());
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
 
-                            if (response.statusCode == 400 || response.statusCode == 405 || response.statusCode == 500 || response.statusCode == 401) {
-                                displayMessage(getString(R.string.something_went_wrong));
-                            } else if (response.statusCode == 422) {
-                                json = trimMessage(new String(response.data));
-                                if (json != "" && json != null) {
-                                    displayMessage(json);
-                                } else {
-                                    displayMessage(getString(R.string.please_try_again));
-                                }
-
-                            } else {
-                                displayMessage(getString(R.string.please_try_again));
-                            }
-
-                        } catch (Exception e) {
-                            displayMessage(getString(R.string.something_went_wrong));
+        serverApiClient
+                .signIn(headers,user)
+                .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(RegisterActivity.this) {
+                    @Override
+                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
+                        String accessToken = response.body().get("access_token").getAsString();
+                        String currency = response.body().get("currency").getAsString();
+                        if(currency==null || currency.isEmpty()){
+                            currency = "$";
                         }
+                        SharedHelper.putKey(context, "currency", currency);
+                        SharedHelper.putKey(context, "access_token", accessToken);
 
-
-                    } else {
-                        if (error instanceof NoConnectionError) {
-                            displayMessage(getString(R.string.oops_connect_your_internet));
-                        } else if (error instanceof NetworkError) {
-                            displayMessage(getString(R.string.oops_connect_your_internet));
-                        } else if (error instanceof TimeoutError) {
-                            signIn();
-                        }
+                        getProfile(user);
+                        hideSpinner();
                     }
-                }
-            }) {
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    HashMap<String, String> headers = new HashMap<String, String>();
-                    headers.put("X-Requested-With", "XMLHttpRequest");
-                    return headers;
-                }
-            };
 
-            AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
-        } else {
-            displayMessage(getString(R.string.something_went_wrong_net));
-        }
+                    @Override
+                    public void onFinishHandling() {
+                        super.onFinishHandling();
+                        hideSpinner();
+                    }
+                });
 
     }
 
-    public void getProfile() {
-        if (isInternet) {
-            customDialog = new CustomDialog(RegisterActivity.this);
-            customDialog.setCancelable(false);
-            if (customDialog != null)
-                customDialog.show();
-            JSONObject object = new JSONObject();
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, AccessDetails.serviceurl + URLHelper.USER_PROFILE_API, object, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    if (customDialog != null && customDialog.isShowing())
-                        customDialog.dismiss();
-                    utils.print("GetProfile", response.toString());
-                    SharedHelper.putKey(RegisterActivity.this, "id", response.optString("id"));
-                    SharedHelper.putKey(RegisterActivity.this, "first_name", response.optString("first_name"));
-                    SharedHelper.putKey(RegisterActivity.this, "last_name", response.optString("last_name"));
-                    SharedHelper.putKey(RegisterActivity.this, "email", response.optString("email"));
-                    if (response.optString("avatar").startsWith("http"))
-                        SharedHelper.putKey(context, "picture", response.optString("avatar"));
-                    else
-                        SharedHelper.putKey(context, "picture", AccessDetails.serviceurl +  "/storage/" + response.optString("avatar"));
-                    SharedHelper.putKey(RegisterActivity.this, "gender", "" + response.optString("gender"));
-                    SharedHelper.putKey(RegisterActivity.this, "mobile", response.optString("mobile"));
-                    SharedHelper.putKey(context, "approval_status", response.optString("status"));
-                    if(!response.optString("currency").equalsIgnoreCase("") && response.optString("currency") != null)
-                        SharedHelper.putKey(context, "currency",response.optString("currency"));
-                    else
-                        SharedHelper.putKey(context, "currency","$");
-                    SharedHelper.putKey(context, "sos", response.optString("sos"));
-                    SharedHelper.putKey(RegisterActivity.this, "loggedIn", getString(R.string.True));
+    public void getProfile(UserServerApi.User user) {
+        showSpinner();
 
-                    if (response.optJSONObject("service") != null) {
-                        JSONObject service = response.optJSONObject("service");
-                        JSONObject serviceType = service.optJSONObject("service_type");
-                        SharedHelper.putKey(context, "service", serviceType.optString("name"));
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+        serverApiClient
+                .profile(headers,user)
+                .enqueue(new OrderServerApi.CallbackErrorHandler<UserServerApi.User>(RegisterActivity.this) {
+                    @Override
+                    public void onSuccessfulResponse(retrofit2.Response<UserServerApi.User> response) {
+                        UserServerApi.User newUser = response.body();
+
+                        SharedHelper.putKey(RegisterActivity.this, "id", newUser.id);
+                        SharedHelper.putKey(RegisterActivity.this, "first_name", newUser.firstName);
+                        SharedHelper.putKey(RegisterActivity.this, "last_name", newUser.lastName);
+                        SharedHelper.putKey(RegisterActivity.this, "email", newUser.email);
+                        if (newUser.avatar!=null && newUser.avatar.startsWith("http"))
+                            SharedHelper.putKey(context, "picture", newUser.avatar);
+                        else
+                            SharedHelper.putKey(context, "picture", AccessDetails.serviceurl +  "/storage/" + newUser.avatar);
+
+                        SharedHelper.putKey(RegisterActivity.this, "gender", "" + newUser.gender);
+                        SharedHelper.putKey(RegisterActivity.this, "mobile", newUser.mobile);
+                        SharedHelper.putKey(context, "approval_status", newUser.status);
+                        SharedHelper.putKey(context, "currency",newUser.getCurrency());
+
+
+                        SharedHelper.putKey(context, "sos", newUser.sos);
+                        SharedHelper.putKey(RegisterActivity.this, "loggedIn", getString(R.string.True));
+
+                        if (newUser.service != null) {
+                            SharedHelper.putKey(context, "service", newUser.service.name);
+                        }
+                        SharedHelper.putKey(RegisterActivity.this, "login_by", "manual");
+
+                        hideSpinner();
+                        GoToMainActivity();
                     }
-                    SharedHelper.putKey(RegisterActivity.this, "login_by", "manual");
-                    GoToMainActivity();
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    if (customDialog != null && customDialog.isShowing())
-                        customDialog.dismiss();
-                    String json = null;
-                    String Message;
-                    NetworkResponse response = error.networkResponse;
-                    if (response != null && response.data != null) {
-                        try {
-                            JSONObject errorObj = new JSONObject(new String(response.data));
 
-                            if (response.statusCode == 400 || response.statusCode == 405 || response.statusCode == 500) {
-                                displayMessage(getString(R.string.something_went_wrong));
-                            } else if (response.statusCode == 401) {
+                    @Override
+                    public void onUnsuccessfulResponse(retrofit2.Response<UserServerApi.User> response) {
+                        switch (response.code()){
+                            case 401:
                                 SharedHelper.putKey(context, "loggedIn", getString(R.string.False));
-                                GoToBeginActivity();
-                            } else if (response.statusCode == 422) {
-
-                                json = trimMessage(new String(response.data));
-                                if (json != "" && json != null) {
-                                    displayMessage(json);
-                                } else {
-                                    displayMessage(getString(R.string.please_try_again));
-                                }
-
-                            } else {
-                                displayMessage(getString(R.string.please_try_again));
-                            }
-
-                        } catch (Exception e) {
-                            displayMessage(getString(R.string.something_went_wrong));
+                                super.displayMessage(getString(R.string.something_went_wrong));
+                                break;
+                            case 422: super.displayMessage(getString(R.string.email_exist)); break;
+                            default: super.onUnsuccessfulResponse(response);
                         }
 
-
-                    } else {
-                        if (error instanceof NoConnectionError) {
-                            displayMessage(getString(R.string.oops_connect_your_internet));
-                        } else if (error instanceof NetworkError) {
-                            displayMessage(getString(R.string.oops_connect_your_internet));
-                        } else if (error instanceof TimeoutError) {
-                            getProfile();
-                        }
                     }
-                }
-            }) {
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    HashMap<String, String> headers = new HashMap<String, String>();
-                    headers.put("X-Requested-With", "XMLHttpRequest");
-                    headers.put("Authorization", "Bearer " + SharedHelper.getKey(RegisterActivity.this, "access_token"));
-                    return headers;
-                }
-            };
 
-            AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
-        } else {
-            displayMessage(getString(R.string.something_went_wrong_net));
-        }
+                    @Override
+                    public void onFinishHandling() {
+                        super.onFinishHandling();
+                        hideSpinner();
+                    }
+                });
     }
 
     public void phoneLogin() {
@@ -742,7 +556,8 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
         utils.print("displayMessage", "" + toastString);
         try{
 
-            Snackbar snackbar =  Snackbar.make(getCurrentFocus(), toastString ,Snackbar.LENGTH_LONG).setDuration(Snackbar.LENGTH_LONG);
+            Snackbar snackbar =  Snackbar.make(activity.getCurrentFocus(), toastString ,Snackbar.LENGTH_LONG)
+                    .setDuration(Snackbar.LENGTH_LONG);
             View snackbarView = snackbar.getView();
             TextView tv= (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
             tv.setMaxLines(3);
@@ -801,4 +616,173 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
                 break;
         }
     }
+
+
+    private void showSpinner() {
+        if(customDialog==null)
+            customDialog = new CustomDialog(context);
+        customDialog.setCancelable(false);
+        customDialog.show();
+    }
+
+    private void hideSpinner() {
+        customDialog.dismiss();
+    }
+
+
+    interface UserServerApi{
+
+        @POST("api/provider/verify")
+        Call<JsonObject> checkEmailExists(@HeaderMap Map<String, String> headers, @Body User user);
+
+        @POST("api/provider/register")
+        Call<JsonObject> register(@HeaderMap Map<String, String> headers, @Body User user);
+
+        @POST("api/provider/oauth/token")
+        Call<JsonObject> signIn(@HeaderMap Map<String, String> headers, @Body User user);
+
+        @GET("api/provider/profile")
+        Call<User> profile(@HeaderMap Map<String, String> headers, @Body User user);
+
+        class User{
+            @Expose
+            @SerializedName("id")
+            String id;
+            @Expose
+            @SerializedName("device_type")
+            String deviceType;
+            @Expose
+            @SerializedName("device_id")
+            String deviceId;
+            @Expose
+            @SerializedName("device_token")
+            String deviceToken;
+            @Expose
+            @SerializedName("login_by")
+            String loggedBy;
+            @Expose
+            @SerializedName("first_name")
+            String firstName;
+            @Expose
+            @SerializedName("lastName")
+            String lastName;
+            @Expose
+            @SerializedName("gender")
+            String gender;
+            @Expose
+            @SerializedName("mobile")
+            String mobile;
+            @Expose
+            @SerializedName("avatar")
+            String avatar;
+
+            @Expose
+            @SerializedName("status")
+            String status;
+            @Expose
+            @SerializedName("currency")
+            String currency;
+            @Expose
+            @SerializedName("sos")
+            String sos;
+            @Expose
+            @SerializedName("service")
+            ServiceType service;
+
+
+            @Expose
+            @SerializedName("email")
+            String email;
+            @Expose
+            @SerializedName("password")
+            String password;
+            @Expose
+            @SerializedName("password_confirmation")
+            String passwordConfirmation;
+
+            class ServiceType{
+                @Expose
+                @SerializedName("service_type")
+                String type;
+                @Expose
+                @SerializedName("name")
+                String name;
+            }
+
+            public String getCurrency(){
+                if(currency!=null && !currency.isEmpty()) return currency;
+                return "$";
+            }
+
+
+        }
+
+
+        class ApiCreator{
+            public static UserServerApi createInstance(){
+                ConnectionPool pool = new ConnectionPool(4, 10000, TimeUnit.MILLISECONDS);
+
+                OkHttpClient httpClient = new OkHttpClient
+                        .Builder()
+                        .cache(null)
+                        .followRedirects(true)
+                        .followSslRedirects(true)
+                        .connectionPool(pool)
+                        .build();
+
+                return new Retrofit
+                        .Builder()
+                        .client(httpClient)
+                        .baseUrl(URLHelper.base)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build()
+                        .create(UserServerApi.class);
+            }
+        }
+
+    }
+
+    /**
+     * Tests above
+     */
+    private final CountDownLatch latch = new CountDownLatch(1);
+
+    @Test
+    public void testVerifyEmail() throws InterruptedException{
+
+
+        UserServerApi serverApiClient = UserServerApi.ApiCreator.createInstance();
+
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+//        headers.put("Authorization", "Bearer " + SharedHelper.getKey(context, "access_token"));
+        UserServerApi.User user = new UserServerApi.User();
+        user.email = "alex@gmail.com";
+
+        serverApiClient
+                .checkEmailExists(headers,user)
+                .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(RegisterActivity.this) {
+                    @Override
+                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
+                        Log.d("AZAZA",""+response.toString());
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onUnsuccessfulResponse(retrofit2.Response<JsonObject> response) {
+                        super.onUnsuccessfulResponse(response);
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onFinishHandling() {
+                        super.onFinishHandling();
+                        latch.countDown();
+                    }
+                });
+
+        latch.await();
+    }
+
+
 }

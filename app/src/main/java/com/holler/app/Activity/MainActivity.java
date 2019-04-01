@@ -369,7 +369,16 @@ public class MainActivity extends CustomActivity {
 //                .into(imgProfile);
         //Assign current profile values to the edittext
         //Glide.with(activity).load(SharedHelper.getKey(context,"picture")).placeholder(R.drawable.ic_dummy_user).error(R.drawable.ic_dummy_user).into(imgProfile);
-        Picasso.with(context).load(SharedHelper.getKey(context, "picture")).placeholder(R.drawable.ic_dummy_user).error(R.drawable.ic_dummy_user).into(imgProfile);
+        try {
+            Picasso
+                    .with(context)
+                    .load(SharedHelper.getKey(context, "picture"))
+                    .placeholder(R.drawable.ic_dummy_user)
+                    .error(R.drawable.ic_dummy_user)
+                    .into(imgProfile);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 
