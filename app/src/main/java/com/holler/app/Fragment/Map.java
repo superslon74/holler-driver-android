@@ -87,6 +87,7 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.holler.app.Activity.RegisterActivity;
 import com.holler.app.server.OrderServerApi;
 import com.holler.app.utils.CustomActivity;
 import com.holler.app.utils.CustomActivity.RequestPermissionHandler;
@@ -353,6 +354,8 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
             @Override
             public void onClick(View v) {
 
+                createAndSendOrder();
+
 //                final Intent intent = new Intent(getActivity(), FloatingViewService.class);
 //                getActivity().startService(intent);
 //
@@ -487,6 +490,40 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
         });
         statusCheck();
         return view;
+    }
+
+    private void createAndSendOrder(){
+        showSpinner();
+        OrderServerApi serverApiClient = OrderServerApi.ApiCreator.createInstance();
+
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+        headers.put("Authorization", "Bearer " + SharedHelper.getKey(getActivity(), "access_token"));
+
+        OrderServerApi.Order order = new OrderServerApi.Order();
+        order.startLatitude = crt_lat;
+        order.startLongitude = crt_lng;
+
+        serverApiClient
+                .createOrder(headers,order)
+                .enqueue(new OrderServerApi.CallbackErrorHandler<ResponseBody>(getActivity()) {
+                    @Override
+                    public void onSuccessfulResponse(retrofit2.Response<ResponseBody> response) {
+                        Log.d("AZAZA","order successfully created");
+                    }
+
+                    @Override
+                    public void onUnsuccessfulResponse(retrofit2.Response<ResponseBody> response) {
+                        super.onUnsuccessfulResponse(response);
+                    }
+
+                    @Override
+                    public void onFinishHandling() {
+                        super.onFinishHandling();
+                        hideSpinner();
+                    }
+                });
+
     }
 
 

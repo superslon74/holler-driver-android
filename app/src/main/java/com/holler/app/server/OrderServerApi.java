@@ -72,6 +72,11 @@ public interface OrderServerApi {
             @HeaderMap Map<String, String> headers,
             @Path("id") String id);
 
+    @POST("/api/provider/trip/{id}/started")
+    Call<ResponseBody> createOrder(
+            @HeaderMap Map<String, String> headers,
+            @Body Order order);
+
     class ApiCreator{
         public static OrderServerApi createInstance(){
             ConnectionPool pool = new ConnectionPool(4, 10000, TimeUnit.MILLISECONDS);
@@ -276,6 +281,17 @@ public interface OrderServerApi {
         @Expose(serialize = false)
         @SerializedName("service_type")
         public ServiceType serviceType;
+
+        @Expose(deserialize = false)
+        @SerializedName("s_latitude")
+        public String startLatitude;
+        @Expose(deserialize = false)
+        @SerializedName("s_longitude")
+        public String startLongitude;
+
+
+
+
 
         public boolean isScheduled() {
             if (scheduledDate == null) return false;
