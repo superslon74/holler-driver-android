@@ -878,6 +878,7 @@
                 android:paddingEnd="@dimen/button_padding"
                 android:paddingStart="@dimen/button_padding"
                 android:text="@string/send_order"
+                android:visibility="gone"
                 android:textColor="@color/button_text_color" />
 
             <com.holler.app.Utilities.MyButton
