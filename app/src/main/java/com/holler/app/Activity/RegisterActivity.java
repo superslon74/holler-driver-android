@@ -28,7 +28,6 @@ import com.android.volley.NetworkError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
-import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -77,6 +76,7 @@ import com.holler.app.utils.CustomActivity;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
@@ -306,11 +306,12 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
                         SharedHelper.putKey(RegisterActivity.this, "email", email.getText().toString());
                         SharedHelper.putKey(RegisterActivity.this, "password", password.getText().toString());
                         signIn(user);
-                        hideSpinner();
+//                        hideSpinner();
                     }
 
                     @Override
                     public void onUnsuccessfulResponse(retrofit2.Response<JsonObject> response) {
+                        hideSpinner();
                         switch (response.code()){
                             case 403:
                                 Toast.makeText(RegisterActivity.this, "Phone number already in use", Toast.LENGTH_LONG).show();
@@ -331,7 +332,7 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
                     @Override
                     public void onFinishHandling() {
                         super.onFinishHandling();
-                        hideSpinner();
+//                        hideSpinner();
                     }
                 });
     }
@@ -355,27 +356,34 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
                         SharedHelper.putKey(context, "currency", currency);
                         SharedHelper.putKey(context, "access_token", accessToken);
 
-                        getProfile(user);
+                        getProfile();
+//                        hideSpinner();
+                    }
+
+                    @Override
+                    public void onUnsuccessfulResponse(Response<JsonObject> response) {
+                        super.onUnsuccessfulResponse(response);
                         hideSpinner();
                     }
 
                     @Override
                     public void onFinishHandling() {
                         super.onFinishHandling();
-                        hideSpinner();
+//                        hideSpinner();
                     }
                 });
 
     }
 
-    public void getProfile(UserServerApi.User user) {
+    public void getProfile() {
         showSpinner();
 
         HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("X-Requested-With", "XMLHttpRequest");
+        headers.put("Authorization", "Bearer " + SharedHelper.getKey(RegisterActivity.this, "access_token"));
 
         serverApiClient
-                .profile(headers,user)
+                .profile(headers)
                 .enqueue(new OrderServerApi.CallbackErrorHandler<UserServerApi.User>(RegisterActivity.this) {
                     @Override
                     public void onSuccessfulResponse(retrofit2.Response<UserServerApi.User> response) {
@@ -404,7 +412,7 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
                         }
                         SharedHelper.putKey(RegisterActivity.this, "login_by", "manual");
 
-                        hideSpinner();
+//                        hideSpinner();
                         GoToMainActivity();
                     }
 
@@ -418,7 +426,6 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
                             case 422: super.displayMessage(getString(R.string.email_exist)); break;
                             default: super.onUnsuccessfulResponse(response);
                         }
-
                     }
 
                     @Override
@@ -642,7 +649,7 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
         Call<JsonObject> signIn(@HeaderMap Map<String, String> headers, @Body User user);
 
         @GET("api/provider/profile")
-        Call<User> profile(@HeaderMap Map<String, String> headers, @Body User user);
+        Call<User> profile(@HeaderMap Map<String, String> headers);
 
         class User{
             @Expose
@@ -664,7 +671,7 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
             @SerializedName("first_name")
             String firstName;
             @Expose
-            @SerializedName("lastName")
+            @SerializedName("last_name")
             String lastName;
             @Expose
             @SerializedName("gender")
@@ -689,7 +696,6 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
             @SerializedName("service")
             ServiceType service;
 
-
             @Expose
             @SerializedName("email")
             String email;
@@ -713,14 +719,12 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
                 if(currency!=null && !currency.isEmpty()) return currency;
                 return "$";
             }
-
-
         }
 
 
         class ApiCreator{
             public static UserServerApi createInstance(){
-                ConnectionPool pool = new ConnectionPool(4, 10000, TimeUnit.MILLISECONDS);
+                ConnectionPool pool = new ConnectionPool(5, 10000, TimeUnit.MILLISECONDS);
 
                 OkHttpClient httpClient = new OkHttpClient
                         .Builder()
@@ -746,6 +750,53 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
      * Tests above
      */
     private final CountDownLatch latch = new CountDownLatch(1);
+
+    @Test
+    public void testRegisterUser() throws InterruptedException{
+
+        UserServerApi serverApiClient = UserServerApi.ApiCreator.createInstance();
+
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+//        headers.put("Authorization", "Bearer " + SharedHelper.getKey(context, "access_token"));
+        UserServerApi.User user = new UserServerApi.User();
+        user.email = "alex@gmail.com";
+        user.deviceId = "23b50be39712afaa";
+        user.deviceToken = "c6l63MYuExg:APA91bGYOJj69phx9I_3VMwiXt_bpE_1GyQi-LqtIgvKgWX75gDWBrU5qjr0k3g35JcnFizTr5zEq6YAnsCOrNmZWIq4-ukij8udYH5H-h5zGvlyND-8UOLTBIl9CZcIZCVlNkf8ikMb";
+        user.deviceType = "android";
+        user.firstName = "A";
+        user.lastName = "B";
+        user.gender = "male";
+        user.loggedBy = "manual";
+        user.mobile = "+380688574090";
+        user.password = "1aaaaaaa";
+        user.passwordConfirmation = "1aaaaaaa";
+
+
+        serverApiClient
+                .register(headers,user)
+                .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(RegisterActivity.this) {
+                    @Override
+                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
+                        Log.d("AZAZA",""+response.toString());
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onUnsuccessfulResponse(retrofit2.Response<JsonObject> response) {
+                        super.onUnsuccessfulResponse(response);
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onFinishHandling() {
+                        super.onFinishHandling();
+                        latch.countDown();
+                    }
+                });
+
+        latch.await();
+    }
 
     @Test
     public void testVerifyEmail() throws InterruptedException{

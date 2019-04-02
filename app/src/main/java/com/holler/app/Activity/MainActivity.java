@@ -127,6 +127,14 @@ public class MainActivity extends CustomActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String userLoggedIn = SharedHelper.getKey(MainActivity.this, "loggedIn");
+        if("false".endsWith(userLoggedIn)){
+            Intent goToLogin = new Intent(MainActivity.this, WelcomeScreenActivity.class);
+            goToLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(goToLogin);
+            finish();
+        }
+
         activity = this;
         context = getApplicationContext();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -171,7 +179,7 @@ public class MainActivity extends CustomActivity {
         RequestPermissionHandler handler = new RequestPermissionHandler() {
             @Override
             public void onPermissionGranted() {
-                Toast.makeText(activity,"Floating view allowed",Toast.LENGTH_LONG).show();
+//                Toast.makeText(activity,"Floating view allowed",Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -180,6 +188,8 @@ public class MainActivity extends CustomActivity {
             }
         };
         checkPermissionAsynchronously(permission,handler);
+
+
     }
 
     @TargetApi(Build.VERSION_CODES.M)

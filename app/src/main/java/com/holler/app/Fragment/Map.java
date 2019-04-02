@@ -2129,7 +2129,9 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
             mPlayer.stop();
             mPlayer = null;
         }
-        ha.removeCallbacksAndMessages(null);
+        if (ha != null) {
+            ha.removeCallbacksAndMessages(null);
+        }
         super.onDestroy();
     }
 
@@ -2427,7 +2429,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
                 @Override
                 public void onPermissionGranted() {
 //                    Toast.makeText(activity,"")
-                    Toast.makeText(activity,"Floating view allowed", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(activity,"Floating view allowed", Toast.LENGTH_LONG).show();
 
                 }
 
