@@ -12,6 +12,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.util.Log;
@@ -454,10 +455,32 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
                         LoginType.PHONE,
                         AccountKitActivity.ResponseType.TOKEN); // or .ResponseType.TOKEN
         configurationBuilder.setUIManager(uiManager);
+        String code = getCountryZipCode();
         intent.putExtra(
                 AccountKitActivity.ACCOUNT_KIT_ACTIVITY_CONFIGURATION,
-                configurationBuilder.setInitialPhoneNumber(new PhoneNumber("", mobile_no.getText().toString(), "")).build());
+                configurationBuilder
+                        .setInitialPhoneNumber(new PhoneNumber("+"+code, mobile_no.getText().toString(), ""))
+                        .build()
+        );
         startActivityForResult(intent, APP_REQUEST_CODE);
+    }
+
+    public String getCountryZipCode(){
+        String countryId="";
+        String countryCode="";
+
+        TelephonyManager manager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+
+        countryId= manager.getSimCountryIso().toUpperCase();
+        String[] codesArray=this.getResources().getStringArray(R.array.CountryCodes);
+        for(String codes : codesArray){
+            String[] keyValye=codes.split(",");
+            if(keyValye[1].trim().equals(countryId.trim())){
+                countryCode=keyValye[0];
+                break;
+            }
+        }
+        return countryCode;
     }
 
     @Override
