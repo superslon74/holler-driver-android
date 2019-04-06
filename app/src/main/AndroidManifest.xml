@@ -34,18 +34,19 @@
 
     <application
         android:name=".AndarApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
-        tools:ignore="GoogleAppIndexingWarning, InnerclassSeparator">
+        tools:ignore="GoogleAppIndexingWarning, InnerclassSeparator"
+        tools:replace="android:allowBackup">
         <service
             android:name=".Services.UserStatusChecker"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true"/>
 
         <activity
             android:name=".Activity.DocumentsActivity"
