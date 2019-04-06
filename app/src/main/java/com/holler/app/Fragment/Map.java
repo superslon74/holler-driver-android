@@ -1831,6 +1831,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
     }
 
     private void update(final String status, String id) {
+        Utilities.hideKeyboard(getActivity());
         showSpinner();
         if (status.equals("ONLINE")) {
 
