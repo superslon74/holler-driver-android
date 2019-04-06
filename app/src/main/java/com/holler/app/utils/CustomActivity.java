@@ -36,24 +36,31 @@ public class CustomActivity extends AppCompatActivity {
         super.onStop();
         synchronized (CustomActivity.class){
             runningActivitiesCount--;
+            toggleFloatingViewService(isRunning());
         }
-        if (!isRunning())
-            startFloatingViewService();
     }
 
     private boolean isRunning() {
         return runningActivitiesCount > 0;
     }
 
-    private void startFloatingViewService(){
+    private void toggleFloatingViewService(boolean isActivityRunning){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (Settings.canDrawOverlays(CustomActivity.this)){
                 final Intent intent = new Intent(this, FloatingViewService.class);
-                startService(intent);
+                if ((!isActivityRunning)) {
+                    startService(intent);
+                } else {
+                    stopService(intent);
+                }
             }
         }else{
             final Intent intent = new Intent(this, FloatingViewService.class);
-            startService(intent);
+            if ((!isActivityRunning)) {
+                startService(intent);
+            } else {
+                stopService(intent);
+            }
         }
     }
 
@@ -70,11 +77,9 @@ public class CustomActivity extends AppCompatActivity {
         super.onStart();
         synchronized (CustomActivity.class){
             runningActivitiesCount++;
+            toggleFloatingViewService(isRunning());
         }
-        if(isRunning()){
-            final Intent intent = new Intent(this, FloatingViewService.class);
-            stopService(intent);
-        }
+
     }
 
 
@@ -96,6 +101,7 @@ public class CustomActivity extends AppCompatActivity {
         if(requestCode!=-1) {
             synchronized (CustomActivity.class) {
                 runningActivitiesCount++;
+                toggleFloatingViewService(isRunning());
             }
         }
     }
@@ -213,6 +219,7 @@ public class CustomActivity extends AppCompatActivity {
         }
         synchronized (CustomActivity.class){
             runningActivitiesCount--;
+            toggleFloatingViewService(isRunning());
         }
         RequestPermissionHandler handler = permissionHandlers.get(requestCode);
         String requestedPermission = "";
