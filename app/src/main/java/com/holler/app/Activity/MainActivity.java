@@ -174,20 +174,7 @@ public class MainActivity extends CustomActivity {
 //                requestFloatingViewPermission();
 //            }
 //        }
-        final CustomActivity activity = this;
-        String permission = Manifest.permission.SYSTEM_ALERT_WINDOW;
-        RequestPermissionHandler handler = new RequestPermissionHandler() {
-            @Override
-            public void onPermissionGranted() {
-//                Toast.makeText(activity,"Floating view allowed",Toast.LENGTH_LONG).show();
-            }
 
-            @Override
-            public void onPermissionDenied() {
-                Toast.makeText(activity,"Floating view not allowed",Toast.LENGTH_LONG).show();
-            }
-        };
-        checkPermissionAsynchronously(permission,handler);
 
 
     }

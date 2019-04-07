@@ -13,6 +13,12 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.holler.app.Utilities.FontsOverride;
+import com.holler.app.di.AppComponent;
+import com.holler.app.di.AppModule;
+import com.holler.app.di.DaggerAppComponent;
+import com.holler.app.di.DeviceInfoModule;
+import com.holler.app.di.RetrofitModule;
+import com.holler.app.di.SharedPreferencesModule;
 import com.holler.app.utils.FloatingViewService;
 
 import org.json.JSONArray;
@@ -25,6 +31,30 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 
 public class AndarApplication extends Application implements  ComponentCallbacks2 {
+
+//    TODO: hard inject component
+    private AppComponent component;
+
+    public AppComponent component(){
+        return component;
+    }
+
+    public static AndarApplication get(Context context){
+        return (AndarApplication) context.getApplicationContext();
+    }
+
+    private void setupDependencyGraph(){
+        component = DaggerAppComponent
+                .builder()
+                .appModule(new AppModule(this))
+                .retrofitModule(new RetrofitModule())
+                .sharedPreferencesModule(new SharedPreferencesModule())
+                .deviceInfoModule(new DeviceInfoModule())
+                .build();
+        component.inject(this);
+    }
+
+    /******************************************************************************************/
 
     public static final String TAG = AndarApplication.class
             .getSimpleName();
@@ -48,8 +78,11 @@ public class AndarApplication extends Application implements  ComponentCallbacks
     @Override
     public void onCreate() {
         super.onCreate();
+        setupDependencyGraph();
+        /**********************/
         mInstance = this;
         FontsOverride.setDefaultFont(this, "MONOSPACE", "ClanPro-NarrBook.otf");
+
     }
 
     private void initCalligraphyConfig() {

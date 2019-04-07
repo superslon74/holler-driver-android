@@ -2461,23 +2461,23 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
         }
 
         if (isShowOverlayPermission) {
-            final CustomActivity activity = (CustomActivity) getActivity();
-            String permission = Manifest.permission.SYSTEM_ALERT_WINDOW;
-            RequestPermissionHandler handler = new RequestPermissionHandler() {
-                @Override
-                public void onPermissionGranted() {
-//                    Toast.makeText(activity,"")
-//                    Toast.makeText(activity,"Floating view allowed", Toast.LENGTH_LONG).show();
-
-                }
-
-                @Override
-                public void onPermissionDenied() {
-                    Toast.makeText(activity,"Floating view not allowed", Toast.LENGTH_LONG).show();
-                }
-            };
-
-            activity.checkPermissionAsynchronously(permission,handler);
+//            final CustomActivity activity = (CustomActivity) getActivity();
+//            String permission = Manifest.permission.SYSTEM_ALERT_WINDOW;
+//            RequestPermissionHandler handler = new RequestPermissionHandler() {
+//                @Override
+//                public void onPermissionGranted() {
+////                    Toast.makeText(activity,"")
+////                    Toast.makeText(activity,"Floating view allowed", Toast.LENGTH_LONG).show();
+//
+//                }
+//
+//                @Override
+//                public void onPermissionDenied() {
+//                    Toast.makeText(activity,"Floating view not allowed", Toast.LENGTH_LONG).show();
+//                }
+//            };
+//
+//            activity.checkPermissionAsynchronously(permission,handler);
         }
     }
 

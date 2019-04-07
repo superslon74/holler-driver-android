@@ -1,5 +1,6 @@
 package com.holler.app.Activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -27,6 +28,7 @@ import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.holler.app.BuildConfig;
 import com.holler.app.FCM.ForceUpdateChecker;
@@ -37,6 +39,11 @@ import com.holler.app.Models.AccessDetails;
 import com.holler.app.AndarApplication;
 import com.holler.app.R;
 import com.holler.app.Utilities.Utilities;
+import com.holler.app.di.AppComponent;
+import com.holler.app.di.DaggerSplashScreenComponent;
+import com.holler.app.di.Presenter;
+import com.holler.app.di.SplashScreenModule;
+import com.holler.app.di.SplashScreenPresenter;
 import com.holler.app.utils.CustomActivity;
 
 import org.json.JSONArray;
@@ -46,13 +53,35 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SplashScreen extends CustomActivity implements ForceUpdateChecker.OnUpdateNeededListener{
+import javax.inject.Inject;
 
+
+public class SplashScreen
+        extends CustomActivity
+        implements ForceUpdateChecker.OnUpdateNeededListener, SplashScreenPresenter.View {
+
+    @Inject
+    Presenter presenter;
+
+    private void setupComponent(){
+        AppComponent appComponent = (AppComponent) AndarApplication.get(this).component();
+        DaggerSplashScreenComponent.builder()
+                .appComponent(appComponent)
+                .splashScreenModule(new SplashScreenModule(this))
+                .build()
+                .inject(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.onResume();
+    }
+
+    /*****************************************************************************/
     String TAG = "SplashActivity";
-    public Activity activity;
     public Context context;
     ConnectionHelper helper;
-    Boolean isInternet;
     Handler handleCheckStatus;
     int retryCount = 0;
     AlertDialog alert;
@@ -62,8 +91,9 @@ public class SplashScreen extends CustomActivity implements ForceUpdateChecker.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activity = SplashScreen.this;
-        context = SplashScreen.this;
+
+        setupComponent();
+
         setContentView(R.layout.activity_splash);
         ForceUpdateChecker.with(this).onUpdateNeeded(this).check();
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -72,7 +102,6 @@ public class SplashScreen extends CustomActivity implements ForceUpdateChecker.O
         helper = new ConnectionHelper(context);
         lblVersion = (TextView) findViewById(R.id.lblVersion);
         lblVersion.setText(getResources().getString(R.string.version) +" "+ BuildConfig.VERSION_NAME+" ("+BuildConfig.VERSION_CODE+")");
-        isInternet = helper.isConnectingToInternet();
         handleCheckStatus = new Handler();
 
         if (Build.VERSION.SDK_INT > 9) {
@@ -106,12 +135,11 @@ public class SplashScreen extends CustomActivity implements ForceUpdateChecker.O
         }, 5000);
 
 
-
     }
 
     private void signIn() {
 
-        if (isInternet) {
+        if (true) {
 
             JSONObject object = new JSONObject();
             try {
@@ -235,10 +263,10 @@ public class SplashScreen extends CustomActivity implements ForceUpdateChecker.O
                 if (response.optString("status").equalsIgnoreCase("new")) {
 //                    Intent intent = new Intent(activity, WaitingForApproval.class);
 
-                    Intent uploadDocuments = new Intent(activity, DocumentsActivity.class);
+                    Intent uploadDocuments = new Intent(SplashScreen.this, DocumentsActivity.class);
                     uploadDocuments.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                    activity.startActivity(uploadDocuments);
+                    SplashScreen.this.startActivity(uploadDocuments);
                 } else {
                     GoToMainActivity();
                 }
@@ -310,23 +338,18 @@ public class SplashScreen extends CustomActivity implements ForceUpdateChecker.O
 
     }
 
+
+
     public void GoToMainActivity() {
-        Intent mainIntent = new Intent(activity, MainActivity.class);
-        mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(mainIntent);
-        activity.finish();
+       shouldGoToMainActivity = true;
     }
 
     public void GoToBeginActivity(){
-        Intent mainIntent = new Intent(activity, WelcomeScreenActivity.class);
-        mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(mainIntent);
-        activity.finish();
+        shouldGoToBeginActivity = true;
     }
 
 
     public void displayMessage(String toastString) {
-        Toast.makeText(activity, toastString, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -377,7 +400,8 @@ public class SplashScreen extends CustomActivity implements ForceUpdateChecker.O
                             public void onClick(DialogInterface dialog, int which) {
                                 finish();
                             }
-                        }).create();
+                        })
+                .create();
         dialog.show();
     }
 
@@ -388,4 +412,79 @@ public class SplashScreen extends CustomActivity implements ForceUpdateChecker.O
     }
 
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkOverlayPermission();
+
+    }
+
+    private void checkOverlayPermission(){
+        final CustomActivity activity = this;
+        String overlayPermission = Manifest.permission.SYSTEM_ALERT_WINDOW;
+        RequestPermissionHandler overlay = new RequestPermissionHandler() {
+            @Override
+            public void onPermissionGranted() {
+                checkLocationPermission();
+            }
+
+            @Override
+            public void onPermissionDenied() {
+                Toast.makeText(activity,"Floating view not allowed",Toast.LENGTH_LONG).show();
+                checkOverlayPermission();
+            }
+        };
+        activity.checkPermissionAsynchronously(overlayPermission,overlay);
+    }
+
+    private void checkLocationPermission(){
+        final CustomActivity activity = this;
+        String locationPermission = Manifest.permission.ACCESS_FINE_LOCATION;
+        RequestPermissionHandler location = new RequestPermissionHandler() {
+            @Override
+            public void onPermissionGranted() {
+                onAllPermissionsGranted();
+            }
+
+            @Override
+            public void onPermissionDenied() {
+                checkLocationPermission();
+            }
+        };
+        activity.checkPermissionAsynchronously(locationPermission,location);
+    }
+
+//    TODO: shitcode here
+    private boolean shouldGoToMainActivity = false;
+    private boolean shouldGoToBeginActivity = false;
+    private void onAllPermissionsGranted(){
+        if(shouldGoToMainActivity){
+            Intent mainIntent = new Intent(SplashScreen.this, MainActivity.class);
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(mainIntent);
+            finish();
+        }else if(shouldGoToBeginActivity){
+            Intent mainIntent = new Intent(SplashScreen.this, WelcomeScreenActivity.class);
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(mainIntent);
+            finish();
+        }
+
+
+    }
+
+    @Override
+    public void showProgress() {
+
+    }
+
+    @Override
+    public void hideProgress() {
+
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(SplashScreen.this, message, Toast.LENGTH_SHORT).show();
+    }
 }

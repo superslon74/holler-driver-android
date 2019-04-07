@@ -70,6 +70,7 @@ import java.util.regex.Pattern;
 import static com.holler.app.AndarApplication.trimMessage;
 
 import com.facebook.accountkit.AccessToken;
+import com.holler.app.di.User;
 import com.holler.app.server.OrderServerApi;
 import com.holler.app.utils.CustomActivity;
 
@@ -248,7 +249,7 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
 
         HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("X-Requested-With", "XMLHttpRequest");
-        UserServerApi.User user = new UserServerApi.User();
+        User user = new User();
         user.email = email.getText().toString();
 
         serverApiClient
@@ -284,7 +285,7 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
 
         HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("X-Requested-With", "XMLHttpRequest");
-        final UserServerApi.User user = new UserServerApi.User();
+        final User user = new User();
 
         user.deviceType = "android";
         user.deviceId = device_UDID;
@@ -338,7 +339,7 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
                 });
     }
 
-    public void signIn(final UserServerApi.User user) {
+    public void signIn(final User user) {
         showSpinner();
 
         HashMap<String, String> headers = new HashMap<String, String>();
@@ -385,10 +386,10 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
 
         serverApiClient
                 .profile(headers)
-                .enqueue(new OrderServerApi.CallbackErrorHandler<UserServerApi.User>(RegisterActivity.this) {
+                .enqueue(new OrderServerApi.CallbackErrorHandler<User>(RegisterActivity.this) {
                     @Override
-                    public void onSuccessfulResponse(retrofit2.Response<UserServerApi.User> response) {
-                        UserServerApi.User newUser = response.body();
+                    public void onSuccessfulResponse(retrofit2.Response<User> response) {
+                        User newUser = response.body();
 
                         SharedHelper.putKey(RegisterActivity.this, "id", newUser.id);
                         SharedHelper.putKey(RegisterActivity.this, "first_name", newUser.firstName);
@@ -418,7 +419,7 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
                     }
 
                     @Override
-                    public void onUnsuccessfulResponse(retrofit2.Response<UserServerApi.User> response) {
+                    public void onUnsuccessfulResponse(retrofit2.Response<User> response) {
                         switch (response.code()){
                             case 401:
                                 SharedHelper.putKey(context, "loggedIn", getString(R.string.False));
@@ -661,7 +662,6 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
 
 
     interface UserServerApi{
-
         @POST("api/provider/verify")
         Call<JsonObject> checkEmailExists(@HeaderMap Map<String, String> headers, @Body User user);
 
@@ -673,76 +673,6 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
 
         @GET("api/provider/profile")
         Call<User> profile(@HeaderMap Map<String, String> headers);
-
-        class User{
-            @Expose
-            @SerializedName("id")
-            String id;
-            @Expose
-            @SerializedName("device_type")
-            String deviceType;
-            @Expose
-            @SerializedName("device_id")
-            String deviceId;
-            @Expose
-            @SerializedName("device_token")
-            String deviceToken;
-            @Expose
-            @SerializedName("login_by")
-            String loggedBy;
-            @Expose
-            @SerializedName("first_name")
-            String firstName;
-            @Expose
-            @SerializedName("last_name")
-            String lastName;
-            @Expose
-            @SerializedName("gender")
-            String gender;
-            @Expose
-            @SerializedName("mobile")
-            String mobile;
-            @Expose
-            @SerializedName("avatar")
-            String avatar;
-
-            @Expose
-            @SerializedName("status")
-            String status;
-            @Expose
-            @SerializedName("currency")
-            String currency;
-            @Expose
-            @SerializedName("sos")
-            String sos;
-            @Expose
-            @SerializedName("service")
-            ServiceType service;
-
-            @Expose
-            @SerializedName("email")
-            String email;
-            @Expose
-            @SerializedName("password")
-            String password;
-            @Expose
-            @SerializedName("password_confirmation")
-            String passwordConfirmation;
-
-            class ServiceType{
-                @Expose
-                @SerializedName("service_type")
-                String type;
-                @Expose
-                @SerializedName("name")
-                String name;
-            }
-
-            public String getCurrency(){
-                if(currency!=null && !currency.isEmpty()) return currency;
-                return "$";
-            }
-        }
 
 
         class ApiCreator{
@@ -772,91 +702,91 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
     /**
      * Tests above
      */
-    private final CountDownLatch latch = new CountDownLatch(1);
-
-    @Test
-    public void testRegisterUser() throws InterruptedException{
-
-        UserServerApi serverApiClient = UserServerApi.ApiCreator.createInstance();
-
-        HashMap<String, String> headers = new HashMap<String, String>();
-        headers.put("X-Requested-With", "XMLHttpRequest");
-//        headers.put("Authorization", "Bearer " + SharedHelper.getKey(context, "access_token"));
-        UserServerApi.User user = new UserServerApi.User();
-        user.email = "alex@gmail.com";
-        user.deviceId = "23b50be39712afaa";
-        user.deviceToken = "c6l63MYuExg:APA91bGYOJj69phx9I_3VMwiXt_bpE_1GyQi-LqtIgvKgWX75gDWBrU5qjr0k3g35JcnFizTr5zEq6YAnsCOrNmZWIq4-ukij8udYH5H-h5zGvlyND-8UOLTBIl9CZcIZCVlNkf8ikMb";
-        user.deviceType = "android";
-        user.firstName = "A";
-        user.lastName = "B";
-        user.gender = "male";
-        user.loggedBy = "manual";
-        user.mobile = "+380688574090";
-        user.password = "1aaaaaaa";
-        user.passwordConfirmation = "1aaaaaaa";
-
-
-        serverApiClient
-                .register(headers,user)
-                .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(RegisterActivity.this) {
-                    @Override
-                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
-                        Log.d("AZAZA",""+response.toString());
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onUnsuccessfulResponse(retrofit2.Response<JsonObject> response) {
-                        super.onUnsuccessfulResponse(response);
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onFinishHandling() {
-                        super.onFinishHandling();
-                        latch.countDown();
-                    }
-                });
-
-        latch.await();
-    }
-
-    @Test
-    public void testVerifyEmail() throws InterruptedException{
-
-
-        UserServerApi serverApiClient = UserServerApi.ApiCreator.createInstance();
-
-        HashMap<String, String> headers = new HashMap<String, String>();
-        headers.put("X-Requested-With", "XMLHttpRequest");
-//        headers.put("Authorization", "Bearer " + SharedHelper.getKey(context, "access_token"));
-        UserServerApi.User user = new UserServerApi.User();
-        user.email = "alex@gmail.com";
-
-        serverApiClient
-                .checkEmailExists(headers,user)
-                .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(RegisterActivity.this) {
-                    @Override
-                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
-                        Log.d("AZAZA",""+response.toString());
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onUnsuccessfulResponse(retrofit2.Response<JsonObject> response) {
-                        super.onUnsuccessfulResponse(response);
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onFinishHandling() {
-                        super.onFinishHandling();
-                        latch.countDown();
-                    }
-                });
-
-        latch.await();
-    }
+//    private final CountDownLatch latch = new CountDownLatch(1);
+//
+//    @Test
+//    public void testRegisterUser() throws InterruptedException{
+//
+//        UserServerApi serverApiClient = UserServerApi.ApiCreator.createInstance();
+//
+//        HashMap<String, String> headers = new HashMap<String, String>();
+//        headers.put("X-Requested-With", "XMLHttpRequest");
+////        headers.put("Authorization", "Bearer " + SharedHelper.getKey(context, "access_token"));
+//        User user = new User();
+//        user.email = "alex@gmail.com";
+//        user.deviceId = "23b50be39712afaa";
+//        user.deviceToken = "c6l63MYuExg:APA91bGYOJj69phx9I_3VMwiXt_bpE_1GyQi-LqtIgvKgWX75gDWBrU5qjr0k3g35JcnFizTr5zEq6YAnsCOrNmZWIq4-ukij8udYH5H-h5zGvlyND-8UOLTBIl9CZcIZCVlNkf8ikMb";
+//        user.deviceType = "android";
+//        user.firstName = "A";
+//        user.lastName = "B";
+//        user.gender = "male";
+//        user.loggedBy = "manual";
+//        user.mobile = "+380688574090";
+//        user.password = "1aaaaaaa";
+//        user.passwordConfirmation = "1aaaaaaa";
+//
+//
+//        serverApiClient
+//                .register(headers,user)
+//                .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(RegisterActivity.this) {
+//                    @Override
+//                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
+//                        Log.d("AZAZA",""+response.toString());
+//                        latch.countDown();
+//                    }
+//
+//                    @Override
+//                    public void onUnsuccessfulResponse(retrofit2.Response<JsonObject> response) {
+//                        super.onUnsuccessfulResponse(response);
+//                        latch.countDown();
+//                    }
+//
+//                    @Override
+//                    public void onFinishHandling() {
+//                        super.onFinishHandling();
+//                        latch.countDown();
+//                    }
+//                });
+//
+//        latch.await();
+//    }
+//
+//    @Test
+//    public void testVerifyEmail() throws InterruptedException{
+//
+//
+//        UserServerApi serverApiClient = UserServerApi.ApiCreator.createInstance();
+//
+//        HashMap<String, String> headers = new HashMap<String, String>();
+//        headers.put("X-Requested-With", "XMLHttpRequest");
+////        headers.put("Authorization", "Bearer " + SharedHelper.getKey(context, "access_token"));
+//        User user = new User();
+//        user.email = "alex@gmail.com";
+//
+//        serverApiClient
+//                .checkEmailExists(headers,user)
+//                .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(RegisterActivity.this) {
+//                    @Override
+//                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
+//                        Log.d("AZAZA",""+response.toString());
+//                        latch.countDown();
+//                    }
+//
+//                    @Override
+//                    public void onUnsuccessfulResponse(retrofit2.Response<JsonObject> response) {
+//                        super.onUnsuccessfulResponse(response);
+//                        latch.countDown();
+//                    }
+//
+//                    @Override
+//                    public void onFinishHandling() {
+//                        super.onFinishHandling();
+//                        latch.countDown();
+//                    }
+//                });
+//
+//        latch.await();
+//    }
 
 
 }
