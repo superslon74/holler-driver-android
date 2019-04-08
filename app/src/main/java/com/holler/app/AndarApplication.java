@@ -19,6 +19,7 @@ import com.holler.app.di.DaggerAppComponent;
 import com.holler.app.di.DeviceInfoModule;
 import com.holler.app.di.RetrofitModule;
 import com.holler.app.di.SharedPreferencesModule;
+import com.holler.app.di.UserStorageModule;
 import com.holler.app.utils.FloatingViewService;
 
 import org.json.JSONArray;
@@ -50,6 +51,7 @@ public class AndarApplication extends Application implements  ComponentCallbacks
                 .retrofitModule(new RetrofitModule())
                 .sharedPreferencesModule(new SharedPreferencesModule())
                 .deviceInfoModule(new DeviceInfoModule())
+                .userStorageModule(new UserStorageModule())
                 .build();
         component.inject(this);
     }

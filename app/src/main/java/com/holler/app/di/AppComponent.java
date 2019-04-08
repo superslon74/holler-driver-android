@@ -11,7 +11,8 @@ import dagger.Component;
         AppModule.class,
         RetrofitModule.class,
         DeviceInfoModule.class,
-        SharedPreferencesModule.class
+        SharedPreferencesModule.class,
+        UserStorageModule.class
 })
 public interface AppComponent {
     void inject(AndarApplication app);
@@ -19,6 +20,7 @@ public interface AppComponent {
     RetrofitModule.ServerAPI getRetrofitClient();
     DeviceInfoModule.DeviceInfo getDeviceInfoObject();
     SharedPreferencesModule.SharedPreferencesHelper getSharedPreferencesHalper();
+    UserStorageModule.UserStorage getUserStorage();
 
 
 }

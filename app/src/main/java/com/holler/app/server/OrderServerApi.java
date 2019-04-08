@@ -14,6 +14,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.holler.app.Activity.HistoryDetails;
 import com.holler.app.Activity.WelcomeScreenActivity;
+import com.holler.app.AndarApplication;
 import com.holler.app.Fragment.OnGoingTrips;
 import com.holler.app.Helper.URLHelper;
 import com.holler.app.R;
@@ -77,8 +78,8 @@ public interface OrderServerApi {
             @HeaderMap Map<String, String> headers,
             @Body Order order);
 
-    class ApiCreator{
-        public static OrderServerApi createInstance(){
+    class ApiCreator {
+        public static OrderServerApi createInstance() {
             ConnectionPool pool = new ConnectionPool(4, 10000, TimeUnit.MILLISECONDS);
 
             OkHttpClient httpClient = new OkHttpClient
@@ -99,7 +100,7 @@ public interface OrderServerApi {
         }
     }
 
-    abstract class CancelOrderCallbackHandler<T> extends CallbackErrorHandler<T>{
+    abstract class CancelOrderCallbackHandler<T> extends CallbackErrorHandler<T> {
 
         private Order order;
 
@@ -111,16 +112,16 @@ public interface OrderServerApi {
         @Override
         public void onSuccessfulResponse(Response<T> response) {
 //            TODO: unshedule notifications
-            if(this.order!=null){
-                if(order.isScheduled()){
+            if (this.order != null) {
+                if (order.isScheduled()) {
                     String id = order.id;
                     Date scheduledDate;
                     try {
                         scheduledDate = order.getScheduledDate();
-                    }catch (ParseException e){
+                    } catch (ParseException e) {
                         Log.e("AZAZA", "Cant unschedule notification, order parse error");
                         return;
-                    }catch (NullPointerException e){
+                    } catch (NullPointerException e) {
                         Log.e("AZAZA", "Cant unschedule notification, order scheduledDate is null");
                         return;
                     }
@@ -129,20 +130,20 @@ public interface OrderServerApi {
                     arguments.putString("post_value", id);
                     arguments.putString("tag", "upcoming_trips");
 
-                    int notificationId = (int)(Long.parseLong(order.id));
+                    int notificationId = (int) (Long.parseLong(order.id));
 
                     new Notificator(activity)
                             .buildPendingIntent(HistoryDetails.class, arguments, notificationId)
                             .buildNotification(Notificator.generateTextBasedOnWarningMode())
                             .unscheduleNotification(notificationId, scheduledDate);
                 }
-            }else{
+            } else {
                 Log.e("AZAZA", "Cant unschedule notification order is not defined");
             }
         }
     }
 
-    abstract class AcceptOrderCallbackHandler<T> extends CallbackErrorHandler<T>{
+    abstract class AcceptOrderCallbackHandler<T> extends CallbackErrorHandler<T> {
 
         private Order order;
 
@@ -154,16 +155,16 @@ public interface OrderServerApi {
         @Override
         public void onSuccessfulResponse(Response<T> response) {
 //            TODO: shedule notifications
-            if(this.order!=null){
-                if(order.isScheduled()){
+            if (this.order != null) {
+                if (order.isScheduled()) {
                     String id = order.id;
                     Date scheduledDate;
                     try {
                         scheduledDate = order.getScheduledDate();
-                    }catch (ParseException e){
+                    } catch (ParseException e) {
                         Log.e("AZAZA", "Cant schedule notification, order parse error");
                         return;
-                    }catch (NullPointerException e){
+                    } catch (NullPointerException e) {
                         Log.e("AZAZA", "Cant schedule notification, order scheduledDate is null");
                         return;
                     }
@@ -172,14 +173,14 @@ public interface OrderServerApi {
                     arguments.putString("post_value", id);
                     arguments.putString("tag", "upcoming_trips");
 
-                    int notificationId = (int)(Long.parseLong(order.id));
+                    int notificationId = (int) (Long.parseLong(order.id));
 
                     new Notificator(activity)
                             .buildPendingIntent(HistoryDetails.class, arguments, notificationId)
                             .buildNotification(Notificator.generateTextBasedOnWarningMode())
                             .scheduleNotification(notificationId, scheduledDate);
                 }
-            }else{
+            } else {
                 Log.e("AZAZA", "Cant schedule notification order is not defined");
             }
 
@@ -204,12 +205,11 @@ public interface OrderServerApi {
             onFinishHandling();
         }
 
-        public void onFinishHandling(){
-//            hideSpinner();
+        public void onFinishHandling() {
 
         }
 
-        public void onTimeoutRequest(){
+        public void onTimeoutRequest() {
 
         }
 
@@ -219,25 +219,28 @@ public interface OrderServerApi {
 
             switch (response.code()) {
                 case 401:
-                    Intent mainIntent = new Intent(activity, WelcomeScreenActivity.class);
-                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    activity.startActivity(mainIntent);
-                    activity.finish();
+                    if(activity!=null){
+                        Intent mainIntent = new Intent(activity, WelcomeScreenActivity.class);
+                        mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        activity.startActivity(mainIntent);
+                        activity.finish();
+                    }
+                    displayMessage("Authentication error");
                     break;
                 case 400:
                 case 405:
                 case 500:
-                    displayMessage(activity.getString(R.string.something_went_wrong));
+                    displayMessage(AndarApplication.getInstance().getString(R.string.something_went_wrong));
                     break;
                 case 422:
-                    displayMessage(activity.getString(R.string.please_try_again));
+                    displayMessage(AndarApplication.getInstance().getString(R.string.please_try_again));
                     break;
                 case 503:
-                    displayMessage(activity.getString(R.string.server_down));
+                    displayMessage(AndarApplication.getInstance().getString(R.string.server_down));
                     break;
 
                 default:
-                    displayMessage(activity.getString(R.string.please_try_again));
+                    displayMessage(AndarApplication.getInstance().getString(R.string.please_try_again));
                     break;
 
             }
@@ -245,20 +248,28 @@ public interface OrderServerApi {
 
         @Override
         public void onFailure(Call<T> call, Throwable t) {
+            Log.e("AZAZA", "error ",t);
             if (t instanceof TimeoutError) {
                 onTimeoutRequest();
             } else {
-                displayMessage(activity.getString(R.string.oops_connect_your_internet));
+                displayMessage(AndarApplication.getInstance().getString(R.string.oops_connect_your_internet));
             }
             onFinishHandling();
         }
 
-        protected void displayMessage(String message){
-            Snackbar.make(
-                    activity.findViewById(R.id.parentLayout),
-                    message,
-                    Snackbar.LENGTH_SHORT
-            ).setAction("Action", null).show();
+        public void onDisplayMessage(String message) {
+
+        }
+
+        protected void displayMessage(String message) {
+            if (activity == null)
+                onDisplayMessage(message);
+            else
+                Snackbar.make(
+                        activity.findViewById(R.id.parentLayout),
+                        message,
+                        Snackbar.LENGTH_SHORT
+                ).setAction("Action", null).show();
         }
     }
 
@@ -290,16 +301,14 @@ public interface OrderServerApi {
         public String startLongitude;
 
 
-
-
-
         public boolean isScheduled() {
             if (scheduledDate == null) return false;
             return !scheduledDate.isEmpty();
         }
 
         public Date getScheduledDate() throws ParseException, NullPointerException {
-            if(scheduledDate == null) throw  new NullPointerException("Scheduled date is not defined");
+            if (scheduledDate == null)
+                throw new NullPointerException("Scheduled date is not defined");
             Date d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse(this.scheduledDate);
             return d;
         }

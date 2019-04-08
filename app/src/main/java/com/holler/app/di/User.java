@@ -58,13 +58,17 @@ public class User{
     @SerializedName("password_confirmation")
     public String passwordConfirmation;
 
-    public class ServiceType{
-        @Expose
-        @SerializedName("service_type")
-        public String type;
-        @Expose
-        @SerializedName("name")
-        public String name;
+
+    public void setServiceName(String name){
+        if(service == null)
+            service = new ServiceType();
+        service.name = name;
+    }
+
+    public String getServiceName(){
+        if(service == null)
+            return null;
+        return service.name;
     }
 
     public String getCurrency(){

@@ -19,8 +19,9 @@ public class SplashScreenModule {
     @Provides
     public Presenter providePresenter(SplashScreenPresenter.View splashScreenView,
                                       RetrofitModule.ServerAPI serverAPI,
-                                      DeviceInfoModule.DeviceInfo deviceInfo){
+                                      DeviceInfoModule.DeviceInfo deviceInfo,
+                                      UserStorageModule.UserStorage userStorage){
 
-        return new SplashScreenPresenter(splashScreenView,serverAPI, deviceInfo);
+        return new SplashScreenPresenter(splashScreenView,serverAPI, deviceInfo, userStorage);
     }
 }

@@ -410,7 +410,7 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
                         SharedHelper.putKey(RegisterActivity.this, "loggedIn", getString(R.string.True));
 
                         if (newUser.service != null) {
-                            SharedHelper.putKey(context, "service", newUser.service.name);
+                            SharedHelper.putKey(context, "service", newUser.getServiceName());
                         }
                         SharedHelper.putKey(RegisterActivity.this, "login_by", "manual");
 
