@@ -43,6 +43,8 @@ public class SplashScreenPresenter implements Presenter {
 
     }
 
+    private static int signInRetryCount = 3;
+
     private void updateAccessToken(){
         HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("X-Requested-With", "XMLHttpRequest");
@@ -66,8 +68,13 @@ public class SplashScreenPresenter implements Presenter {
                     @Override
                     public void onUnsuccessfulResponse(Response<JsonObject> response) {
                         super.onUnsuccessfulResponse(response);
-                        userStorage.setLoggedIn("false");
-                        view.gotoActivity(WelcomeScreenActivity.class);
+                        if(signInRetryCount>0){
+                            signInRetryCount--;
+                            updateAccessToken();
+                        }else{
+                            userStorage.setLoggedIn("false");
+                            view.gotoActivity(WelcomeScreenActivity.class);
+                        }
                     }
 
                     @Override

@@ -217,6 +217,7 @@ public interface OrderServerApi {
 
         public void onUnsuccessfulResponse(retrofit2.Response<T> response) {
 
+            Log.e("AZAZA","Error response" + response.errorBody());
             switch (response.code()) {
                 case 401:
                     if(activity!=null){

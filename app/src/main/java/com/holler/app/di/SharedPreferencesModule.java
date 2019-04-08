@@ -16,11 +16,11 @@ public class SharedPreferencesModule {
 
     @Singleton
     @Provides
-    public SharedPreferencesHelper provideSharedPreferencesHelper(Context context){
+    public SharedPreferencesHelper provideSharedPreferencesHelper(Context context) {
         return new SharedPreferencesHelper(context);
     }
 
-    public class SharedPreferencesHelper{
+    public class SharedPreferencesHelper {
 
         public SharedPreferences preferences;
         public SharedPreferences.Editor editor;
@@ -30,13 +30,15 @@ public class SharedPreferencesModule {
             this.editor = preferences.edit();
         }
 
-        public String get(String key){
-            return preferences.getString(key,STRING_DEFAULT_VALUE);
+        public String get(String key) {
+            return preferences.getString(key, STRING_DEFAULT_VALUE);
         }
 
-        public void put(String key, String value){
-            editor.putString(key,value);
-            editor.apply();
+        public void put(String key, String value) {
+            if (value != null && !"".equals(value)) {
+                editor.putString(key, value);
+                editor.apply();
+            }
         }
     }
 
