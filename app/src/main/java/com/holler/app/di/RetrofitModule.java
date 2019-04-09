@@ -1,6 +1,8 @@
 package com.holler.app.di;
 
 import com.google.gson.JsonObject;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.holler.app.Activity.DocumentsActivity;
 import com.holler.app.Activity.RegisterActivity;
 import com.holler.app.Helper.URLHelper;
@@ -21,7 +23,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.HeaderMap;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 @Module
@@ -53,7 +57,9 @@ public class RetrofitModule {
     }
 
 //    TODO: extend this interface with other server interfaces
-    interface ServerAPI {
+    public interface ServerAPI {
+        String HEADER_KEY_AUTHORIZATION = "Authorization";
+
         @POST("api/provider/verify")
         Call<JsonObject> checkEmailExists(@HeaderMap Map<String, String> headers, @Body User user);
 
@@ -65,5 +71,7 @@ public class RetrofitModule {
 
         @GET("api/provider/profile")
         Call<User> profile(@HeaderMap Map<String, String> headers);
+
+
     }
 }

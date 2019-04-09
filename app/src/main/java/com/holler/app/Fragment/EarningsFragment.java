@@ -1,5 +1,6 @@
 package com.holler.app.Fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,6 +14,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +41,7 @@ import com.holler.app.Models.AccessDetails;
 import com.holler.app.AndarApplication;
 import com.holler.app.R;
 import com.holler.app.Utilities.CircularProgressBar;
+import com.holler.app.utils.CustomActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -416,7 +419,18 @@ public class EarningsFragment extends Fragment {
                 .setPositiveButton(getString(R.string.connect_to_wifi), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         alert.dismiss();
-                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                        CustomActivity activity = (CustomActivity) getActivity();
+                        activity.checkPermissionAsynchronously(Manifest.permission.INTERNET, new CustomActivity.RequestPermissionHandler() {
+                            @Override
+                            public void onPermissionGranted() {
+                                Log.d("AZAZA","wifi enabled ");
+                            }
+
+                            @Override
+                            public void onPermissionDenied() {
+                                showDialog();
+                            }
+                        });
                     }
                 })
                 .setNegativeButton(getString(R.string.quit), new DialogInterface.OnClickListener() {

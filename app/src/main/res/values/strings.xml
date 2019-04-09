@@ -1,4 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?><!DOCTYPE resources [<!ENTITY appName "Andar Hand"><!ENTITY appNamealone "Andar"><!ENTITY appNameCaps "ANDAR"><!ENTITY ride "ride"><!ENTITY rides "rides"><!ENTITY ridescap "RIDES"><!ENTITY service "Service">]>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources[
+    <!ENTITY appName "Holler">
+    <!ENTITY appNamealone "Holler">
+    <!ENTITY appNameCaps "HOLLER">
+    <!ENTITY ride "ride">
+    <!ENTITY rides "rides">
+    <!ENTITY ridescap "RIDES">
+    <!ENTITY service "Service">]>
 <resources>
 
     <string name="app_name">&appName;</string>
@@ -245,15 +253,15 @@
 
     <string name="sign_in">Sign in</string>
     <string name="signup">Sign up</string>
-    <string name="fresh">W e l c o m e</string>
-    <string name="search">D r i v e</string>
-    <string name="bookmark">E a r n</string>
+    <string name="fresh">Welcome to Holler!</string>
+    <string name="search">Find customers hailing\nnear you</string>
+    <string name="bookmark">Notify other drivers\nwhen you spot customers</string>
 
     <string name="introducing">Introducing</string>
-    <string name="fresh_description">Services to take rides from the</string>
+    <string name="fresh_description">Holler notifies taxi drivers when customers are hailing taxis near them.</string>
     <string name="app_users">app users.</string>
-    <string name="search_description">Be your own boss, set your own schedule. Get the latest driving features all in one spot.</string>
-    <string name="bookmark_description">Get well paid to help out strangers get to where they need to go. Withdraw your earnings every week/monthly.</string>
+    <string name="search_description">Holler is all about drivers helping drivers (and customers!). When nearby taxi drivers spot customers they can\'t pick up, you will get notified!</string>
+    <string name="bookmark_description">If you notice hailing costumers on the street but cannot pick them up, press the Holler button and free drivers nearby will get a notification.</string>
     <string name="version">Powered by Andar. V</string>
     <string name="user_busy">Your &ride; was cancelled by the user. Please contact us for support</string>
 

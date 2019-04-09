@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.android.volley.TimeoutError;
 import com.google.gson.JsonObject;
@@ -73,7 +74,7 @@ public interface OrderServerApi {
             @HeaderMap Map<String, String> headers,
             @Path("id") String id);
 
-    @POST("/api/provider/trip/{id}/started")
+    @POST("/api/provider/trip/send_request")
     Call<ResponseBody> createOrder(
             @HeaderMap Map<String, String> headers,
             @Body Order order);
@@ -266,11 +267,15 @@ public interface OrderServerApi {
             if (activity == null)
                 onDisplayMessage(message);
             else
-                Snackbar.make(
-                        activity.findViewById(R.id.parentLayout),
-                        message,
-                        Snackbar.LENGTH_SHORT
-                ).setAction("Action", null).show();
+                try {
+                    Snackbar.make(
+                            activity.findViewById(R.id.parentLayout),
+                            message,
+                            Snackbar.LENGTH_SHORT
+                    ).setAction("Action", null).show();
+                }catch (Exception e){
+                    Toast.makeText(activity, message, Toast.LENGTH_LONG).show();
+                }
         }
     }
 

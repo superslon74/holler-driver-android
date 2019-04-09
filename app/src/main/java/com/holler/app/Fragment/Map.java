@@ -273,6 +273,8 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
     private String feedBackComment;
     private String strOTP = "";
 
+    private boolean isUserExists = false;
+
     public Map() {
 
     }
@@ -510,6 +512,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
                     @Override
                     public void onSuccessfulResponse(retrofit2.Response<ResponseBody> response) {
                         Log.d("AZAZA","order successfully created");
+                        Toast.makeText(getActivity(),"Location sent",Toast.LENGTH_LONG).show();
                     }
 
                     @Override
@@ -1225,6 +1228,9 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
                         try {
                             if (response.optJSONArray("requests").length() > 0) {
                                 JSONObject jsonObject = response.optJSONArray("requests").getJSONObject(0).optJSONObject("request").optJSONObject("user");
+                                address = response.optJSONArray("requests").getJSONObject(0).optJSONObject("request").optString("s_address");
+                                SharedHelper.putKey(context, "is_track", response.optJSONArray("requests").getJSONObject(0).optJSONObject("request").optString("is_track"));
+
                                 user.setFirstName(jsonObject.optString("first_name"));
                                 user.setLastName(jsonObject.optString("last_name"));
                                 user.setEmail(jsonObject.optString("email"));
@@ -1235,10 +1241,12 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
                                 user.setRating(jsonObject.optString("rating"));
                                 user.setMobile(jsonObject.optString("mobile"));
                                 bookingId = response.optJSONArray("requests").getJSONObject(0).optJSONObject("request").optString("booking_id");
-                                address = response.optJSONArray("requests").getJSONObject(0).optJSONObject("request").optString("s_address");
-                                SharedHelper.putKey(context, "is_track", response.optJSONArray("requests").getJSONObject(0).optJSONObject("request").optString("is_track"));
+                                isUserExists = true;
                             }
                         } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (NullPointerException e){
+                            isUserExists = false;
                             e.printStackTrace();
                         }
 
@@ -1374,6 +1382,8 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
                                                             statusResponse.optString("d_longitude")));
                                                 topSrcDestTxtLbl.setText(context.getResources().getString(R.string.drop_at));
                                             } else if (statusResponse.optString("status").equals("PICKEDUP")) {
+
+
                                                 setValuesTo_ll_03_contentLayer_service_flow(statusResponses);
                                                 ll_03_contentLayer_service_flow.setVisibility(View.VISIBLE);
                                                 btn_01_status.setText(context.getResources().getString(R.string.tap_when_dropped));
@@ -1833,7 +1843,14 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
         feedBackComment = edt05Comment.getText().toString();
     }
 
-    private void update(final String status, String id) {
+    private void update(String newStatus, String id) {
+        final String status;
+        if("ARRIVED" .equals(newStatus) &&  !isUserExists){
+            status = "COMPLETED";
+            CurrentStatus = "COMPLETED";
+        }else{
+            status = newStatus;
+        }
         Utilities.hideKeyboard(getActivity());
         showSpinner();
         if (status.equals("ONLINE")) {

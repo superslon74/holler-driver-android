@@ -74,7 +74,7 @@ public class AccessDetails {
     public static int isValid;
     @SerializedName("site_title")
     @Expose
-    public static String siteTitle = "Andar Hand";
+    public static String siteTitle = "Holler";
     @SerializedName("site_logo")
     @Expose
     public static String siteLogo;
