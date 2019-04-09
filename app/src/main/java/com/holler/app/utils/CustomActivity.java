@@ -254,6 +254,8 @@ public class CustomActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1450)return;
+
 //        TODO: shitcode here
         if (listener != null) {
             listener.onActivityResult(requestCode, resultCode, data);

@@ -568,7 +568,10 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
         builder.setAlwaysShow(true);
 
         PendingResult<LocationSettingsResult> result =
-                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
+                LocationServices
+                        .SettingsApi
+                        .checkLocationSettings(mGoogleApiClient, builder.build());
+
         result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
             @Override
             public void onResult(LocationSettingsResult result) {

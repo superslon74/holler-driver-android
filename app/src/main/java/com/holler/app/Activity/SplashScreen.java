@@ -64,8 +64,8 @@ public class SplashScreen
         chain
                 .next(new RequestPermissionChain(activity,Manifest.permission.SYSTEM_ALERT_WINDOW))
                 .next(new RequestPermissionChain(activity,Manifest.permission.ACCESS_FINE_LOCATION))
-                .next(new RequestPermissionChain(activity,Manifest.permission.INTERNET))
-                .next(new RequestPermissionChain(activity,Manifest.permission.LOCATION_HARDWARE));
+                .next(new RequestPermissionChain(activity,Manifest.permission.INTERNET));
+//                .next(new RequestPermissionChain(activity,Manifest.permission.LOCATION_HARDWARE));
 
         chain.call();
     }
