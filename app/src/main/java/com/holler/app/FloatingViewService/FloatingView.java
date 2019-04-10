@@ -35,6 +35,7 @@ import android.view.Gravity;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.TouchDelegate;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
@@ -536,6 +537,7 @@ class FloatingView extends FrameLayout implements ViewTreeObserver.OnPreDrawList
      */
     @Override
     public boolean dispatchTouchEvent(@NonNull MotionEvent event) {
+        super.dispatchTouchEvent(event);
         // Viewが表示されていなければ何もしない
         if (getVisibility() != View.VISIBLE) {
             return true;
@@ -618,7 +620,8 @@ class FloatingView extends FrameLayout implements ViewTreeObserver.OnPreDrawList
             if (action == MotionEvent.ACTION_UP && !tmpIsLongPressed && !mIsMoveAccept) {
                 final int size = getChildCount();
                 for (int i = 0; i < size; i++) {
-                    getChildAt(i).performClick();
+//                    getChildAt(i).performClick();
+                    getChildAt(i).dispatchTouchEvent(event);
                 }
             } else {
                 // Make a move after checking whether it is finished or not

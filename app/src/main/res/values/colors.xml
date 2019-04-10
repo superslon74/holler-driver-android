@@ -3,6 +3,8 @@
     <color name="colorPrimary">#000000</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#2B2B2B</color>
+    <color name="yellowDark">#faa507</color>
+    <color name="yellowLight">#f9d107</color>
 
     <!-- App customization -->
     <color name="theme">#000000</color>

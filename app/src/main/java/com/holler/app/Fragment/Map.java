@@ -141,8 +141,15 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 import static com.holler.app.AndarApplication.trimMessage;
 
 
-public class Map extends Fragment implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, View.OnClickListener, GoogleMap.OnCameraMoveListener {
+public class Map
+        extends Fragment
+        implements
+        OnMapReadyCallback,
+        LocationListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        View.OnClickListener,
+        GoogleMap.OnCameraMoveListener {
 
     public static final int REQUEST_LOCATION = 1450;
     private static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 2084;
@@ -568,7 +575,8 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest);
 
-        builder.setAlwaysShow(true);
+        builder.setAlwaysShow(false);
+
 
         PendingResult<LocationSettingsResult> result =
                 LocationServices
