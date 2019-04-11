@@ -1,10 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#000000</color>
-    <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#2B2B2B</color>
+    <!--new theme colors-->
     <color name="yellowDark">#faa507</color>
     <color name="yellowLight">#f9d107</color>
+
+    <color name="blueDark">#2770b5</color>
+    <color name="blueLight">#37b3ba</color>
+
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+
+    <color name="greyGreen">#cee5e4</color>
+
+
+
+
+    <!--old theme-->
+    <color name="colorPrimary">@color/blueDark</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">@color/blueLight</color>
+
+
+
+
 
     <!-- App customization -->
     <color name="theme">#000000</color>
@@ -42,15 +60,15 @@
     <color name="edittext_border">#B7B7B7</color>
 
     <array name="array_dot_active">
-        <item>@color/grey</item>
-        <item>@color/grey</item>
-        <item>@color/grey</item>
+        <item>@color/blueLight</item>
+        <item>@color/blueLight</item>
+        <item>@color/blueLight</item>
     </array>
 
     <array name="array_dot_inactive">
-        <item>@color/light_grey</item>
-        <item>@color/light_grey</item>
-        <item>@color/light_grey</item>
+        <item>@color/greyGreen</item>
+        <item>@color/greyGreen</item>
+        <item>@color/greyGreen</item>
     </array>
 
 </resources>

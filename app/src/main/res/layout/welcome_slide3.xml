@@ -1,52 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color"
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        style="@style/MA_Page_Padding"
 
-        <LinearLayout
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/ma_text_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_25sdp"
-                android:layout_marginRight="@dimen/_25sdp"
-                android:layout_marginBottom="-30dp"
-
-                android:src="@drawable/earn_sample" />
-
-
-            <com.holler.app.Utilities.MyBoldTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:gravity="center"
-                android:text="@string/bookmark"
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimary"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <com.holler.app.Utilities.MyBoldTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/activity_vertical_margin"
-                android:gravity="center"
-                android:lineSpacingMultiplier="1.2"
-                android:text="@string/bookmark_description"
-                android:textSize="16dp" />
-        </LinearLayout>
-
+            android:src="@drawable/earn_sample" />
 
     </LinearLayout>
 
-</LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ma_text_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="25dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            style="@style/MA_Header_Text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/mas_header_notify" />
+
+        <TextView
+            style="@style/MA_Description_Text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/mas_description_notify" />
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

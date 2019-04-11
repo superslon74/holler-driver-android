@@ -184,6 +184,11 @@ public class FloatingViewService extends Service implements FloatingViewListener
                         super.onFinishHandling();
                         hideSpinnerAndUnlockButton();
                     }
+
+                    @Override
+                    public void onDisplayMessage(String message) {
+                        Toast.makeText(AndarApplication.getInstance(),"Error, please try again.",Toast.LENGTH_LONG).show();
+                    }
                 });
 
     }

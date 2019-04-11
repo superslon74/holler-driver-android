@@ -537,7 +537,11 @@ class FloatingView extends FrameLayout implements ViewTreeObserver.OnPreDrawList
      */
     @Override
     public boolean dispatchTouchEvent(@NonNull MotionEvent event) {
-        super.dispatchTouchEvent(event);
+
+        if(!mIsMoveAccept){
+            super.dispatchTouchEvent(event);
+        }
+
         // Viewが表示されていなければ何もしない
         if (getVisibility() != View.VISIBLE) {
             return true;
@@ -614,7 +618,6 @@ class FloatingView extends FrameLayout implements ViewTreeObserver.OnPreDrawList
             mAnimationHandler.removeMessages(FloatingAnimationHandler.ANIMATION_IN_TOUCH);
             // 拡大率をもとに戻す
             setScale(SCALE_NORMAL);
-
 
             // When ACTION_UP is done (when not pressed or moved)
             if (action == MotionEvent.ACTION_UP && !tmpIsLongPressed && !mIsMoveAccept) {

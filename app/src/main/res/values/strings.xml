@@ -9,6 +9,10 @@
     <!ENTITY service "Service">]>
 <resources>
 
+
+
+    <!--OLD VALUES-->
+
     <string name="app_name">&appName;</string>
 
     <!--Google map-->

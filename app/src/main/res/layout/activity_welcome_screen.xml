@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,104 +8,122 @@
     android:background="@color/background_color"
     tools:context="com.holler.app.Activity.WelcomeScreenActivity">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/buttonLayout"
-        android:background="@drawable/splash_drawable_right"
-        android:orientation="vertical"
-        android:weightSum="1">
 
+    <android.support.constraint.ConstraintLayout
+        android:paddingTop="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
 
-        <!-- Dots Layout-->
-
-        <LinearLayout
-            android:id="@+id/layoutDots"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="0dp"
             android:layout_alignParentBottom="true"
-            android:gravity="center"
-            android:orientation="horizontal"></LinearLayout>
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="0dp"
+            android:background="@color/colorPrimary"
+            app:layout_constraintBottom_toTopOf="@+id/tabDots"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Skip Button-->
-
-        <TextView
-            android:textAllCaps="true"
-            android:id="@+id/skip"
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabDots"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="26dp"
-            android:gravity="end"
-            android:visibility="gone"
-            android:text="Skip"
-            android:textColor="@color/theme"
-            android:textSize="16dp" />
+            app:tabBackground="@drawable/slider_dots"
+            app:tabGravity="center"
+            app:tabIndicatorHeight="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
 
+        <!--<LinearLayout-->
+            <!--android:id="@+id/layoutDots"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="30dp"-->
+            <!--android:layout_marginBottom="8dp"-->
+            <!--android:gravity="center"-->
+            <!--android:orientation="horizontal"-->
+            <!--app:layout_constraintBottom_toBottomOf="parent"/>-->
 
-    </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
 
-    <LinearLayout
-        android:background="@color/background_color"
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/buttonLayout"
+        style="@style/MA_Page_Padding"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:layout_above="@+id/social_layout"
-        android:orientation="horizontal">
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/social_layout">
 
-        <com.holler.app.Utilities.MyButton
+
+        <Button
             android:id="@+id/sign_in_btn"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="1dp"
-            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:background="@color/colorAccent"
-            android:text="@string/sign_in"
-            android:textColor="@color/text_color_white" />
+            style="@style/MA_Button"
+            android:layout_marginRight="5dp"
+            android:clickable="true"
 
-        <com.holler.app.Utilities.MyButton
+            android:text="@string/mas_button_login"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:focusable="true" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <Button
             android:id="@+id/sign_up_btn"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="1dp"
-            android:layout_weight="1"
-            android:textColor="@color/text_color_white"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
-            android:text="@string/signup" />
+            style="@style/MA_Button"
+            android:layout_marginLeft="5dp"
+            android:clickable="true"
 
+            android:text="@string/mas_button_register"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toTopOf="parent"
+            android:focusable="true" />
 
-    </LinearLayout>
-
+    </android.support.constraint.ConstraintLayout>
 
     <LinearLayout
         android:id="@+id/social_layout"
         android:layout_width="match_parent"
-        android:layout_alignParentBottom="true"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginBottom="50dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <com.holler.app.Utilities.MyTextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_10sdp"
-            android:gravity="center"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:text="@string/or_connect_with_social_media"
-            android:textColor="@color/wallet_holo_blue_light"
-            android:textSize="@dimen/_14sdp"
-            android:visibility="visible" />
+            android:textColor="@color/colorPrimary"
+            android:text="@string/mas_link_social"
+            android:gravity="center" />
+
 
     </LinearLayout>
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
