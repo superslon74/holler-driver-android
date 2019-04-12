@@ -37,8 +37,6 @@ import java.util.ArrayList;
 
 /**
  * FloatingViewを扱うクラスです。
- * TODO:動作がカクカクなので原因を探す
- * TODO:移動を追従する複数表示サポートは第2弾で対応
  */
 public class FloatingViewManager implements ScreenChangedListener, View.OnTouchListener, TrashViewListener {
 
@@ -171,7 +169,6 @@ public class FloatingViewManager implements ScreenChangedListener, View.OnTouchL
 
     /**
      * Windowに貼り付けられたFloatingViewのリスト
-     * TODO:第2弾のFloatingViewの複数表示で意味を発揮する予定
      */
     private final ArrayList<FloatingView> mFloatingViewList;
 

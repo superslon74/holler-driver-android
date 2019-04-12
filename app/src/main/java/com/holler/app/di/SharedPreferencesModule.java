@@ -1,5 +1,6 @@
 package com.holler.app.di;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -10,7 +11,7 @@ import dagger.Provides;
 
 @Module
 public class SharedPreferencesModule {
-    private static final String CACHE_STORAGE_NAME = "Cache";
+    public static final String CACHE_STORAGE_NAME = "com.holler.app.Cache";
     private static final String STRING_DEFAULT_VALUE = "";
 
 
@@ -23,21 +24,22 @@ public class SharedPreferencesModule {
     public class SharedPreferencesHelper {
 
         public SharedPreferences preferences;
-        public SharedPreferences.Editor editor;
 
         public SharedPreferencesHelper(Context context) {
             this.preferences = context.getSharedPreferences(CACHE_STORAGE_NAME, Context.MODE_PRIVATE);
-            this.editor = preferences.edit();
         }
 
         public String get(String key) {
             return preferences.getString(key, STRING_DEFAULT_VALUE);
         }
 
+        @SuppressLint("ApplySharedPref")
         public void put(String key, String value) {
             if (value != null && !"".equals(value)) {
-                editor.putString(key, value);
-                editor.apply();
+                preferences
+                        .edit()
+                        .putString(key, value)
+                        .commit();
             }
         }
     }

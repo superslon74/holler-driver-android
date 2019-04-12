@@ -103,8 +103,9 @@ public class FloatingViewService extends Service implements FloatingViewListener
 
         final FloatingViewManager.Options options = new FloatingViewManager.Options();
         SharedPreferences storedPosition = getSharedPreferences("floating_view", Context.MODE_PRIVATE);
-        options.floatingViewX = storedPosition.getInt(ARG_POSITION_X, 0);
-        options.floatingViewY = storedPosition.getInt(ARG_POSITION_Y, 0);
+        options.moveDirection = FloatingViewManager.MOVE_DIRECTION_NEAREST;
+        options.floatingViewX = storedPosition.getInt(ARG_POSITION_X, 500);
+        options.floatingViewY = storedPosition.getInt(ARG_POSITION_Y, 400);
 
         mFloatingViewManager.addViewToWindow(mFloatingView, options);
     }
@@ -149,10 +150,10 @@ public class FloatingViewService extends Service implements FloatingViewListener
 
         OrderServerApi.Order order = new OrderServerApi.Order();
 
-        Location location = new GPSTracker(this).getLocation();
+        GPSTracker gpsTracker = new GPSTracker();
 
-        order.startLatitude = ""+location.getLatitude();
-        order.startLongitude = ""+location.getLongitude();
+        order.startLatitude = ""+gpsTracker.getLatitude();
+        order.startLongitude = ""+gpsTracker.getLongitude();
 
         serverApiClient
                 .createOrder(headers, order)

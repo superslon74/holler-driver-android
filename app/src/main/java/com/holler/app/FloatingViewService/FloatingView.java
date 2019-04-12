@@ -52,7 +52,6 @@ import java.lang.ref.WeakReference;
 /**
  * フローティングViewを表すクラスです。
  * http://stackoverflow.com/questions/18503050/how-to-create-draggabble-system-alert-in-android
- * FIXME:Nexus5＋YouTubeアプリの場合にナビゲーションバーよりも前面に出てきてしまう
  */
 class FloatingView extends FrameLayout implements ViewTreeObserver.OnPreDrawListener {
 
@@ -571,7 +570,7 @@ class FloatingView extends FrameLayout implements ViewTreeObserver.OnPreDrawList
             mLocalTouchX = event.getX();
             mLocalTouchY = event.getY();
             mIsMoveAccept = false;
-            setScale(SCALE_PRESSED);
+//            setScale(SCALE_PRESSED);
             // タッチトラッキングアニメーションの開始
             mAnimationHandler.updateTouchPosition(getXByTouch(), getYByTouch());
             mAnimationHandler.removeMessages(FloatingAnimationHandler.ANIMATION_IN_TOUCH);
@@ -617,7 +616,7 @@ class FloatingView extends FrameLayout implements ViewTreeObserver.OnPreDrawList
             // アニメーションの削除
             mAnimationHandler.removeMessages(FloatingAnimationHandler.ANIMATION_IN_TOUCH);
             // 拡大率をもとに戻す
-            setScale(SCALE_NORMAL);
+//            setScale(SCALE_NORMAL);
 
             // When ACTION_UP is done (when not pressed or moved)
             if (action == MotionEvent.ACTION_UP && !tmpIsLongPressed && !mIsMoveAccept) {
@@ -726,7 +725,6 @@ class FloatingView extends FrameLayout implements ViewTreeObserver.OnPreDrawList
         goalPositionY = Math.min(Math.max(mPositionLimitRect.top, goalPositionY), mPositionLimitRect.bottom);
         // アニメーションを行う場合
         if (withAnimation) {
-            // TODO:Y座標もアニメーションさせる
 
             //to move only y-coord
             if (goalPositionX == currentX) {

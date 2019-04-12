@@ -56,7 +56,6 @@ public class RetrofitModule {
         return retrofitClient;
     }
 
-//    TODO: extend this interface with other server interfaces
     public interface ServerAPI {
         String HEADER_KEY_AUTHORIZATION = "Authorization";
 

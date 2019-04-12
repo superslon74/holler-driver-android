@@ -54,6 +54,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.MapFragment;
 import com.google.gson.JsonObject;
 import com.holler.app.Activity.DocumentsActivity;
 import com.android.volley.AuthFailureError;
@@ -1254,6 +1255,8 @@ public class Map
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } catch (NullPointerException e){
+                            txt01UserName.setText("Holler");
+                            Map.this.user = new User();
                             isUserExists = false;
                             e.printStackTrace();
                         }

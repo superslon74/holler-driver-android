@@ -155,6 +155,7 @@ public class Help extends Fragment implements View.OnClickListener {
         }
     }
 
+    @Deprecated
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

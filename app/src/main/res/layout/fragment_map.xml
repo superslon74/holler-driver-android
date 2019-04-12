@@ -171,7 +171,7 @@
                             android:layout_gravity="bottom"
                             android:layout_weight="50"
                             android:gravity="bottom"
-                            android:text="@string/user"
+                            android:text="USER 4"
                             android:textSize="@dimen/text_size_medium" />
 
                         <RatingBar
@@ -373,7 +373,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="bottom"
                                     android:gravity="bottom"
-                                    android:text="@string/user"
+                                    android:text="USER 1"
                                     android:textSize="16sp" />
 
                                 <RatingBar
@@ -642,7 +642,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="@string/user"
+                        android:text="USER 2"
                         android:layout_marginTop="@dimen/_5sdp"
                         android:textSize="16sp" />
 
@@ -998,7 +998,7 @@
                             android:layout_gravity="top"
                             android:layout_weight="50"
                             android:gravity="start|center"
-                            android:text="@string/user"
+                            android:text="Holler"
                             android:textSize="@dimen/_14sdp" />
 
 

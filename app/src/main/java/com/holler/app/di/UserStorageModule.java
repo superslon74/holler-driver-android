@@ -73,7 +73,6 @@ public class UserStorageModule {
 
             user.setServiceName(storage.get(FIELD_SERVICE_NAME));
 
-
             return user;
         }
 

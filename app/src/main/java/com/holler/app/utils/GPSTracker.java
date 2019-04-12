@@ -16,9 +16,13 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.holler.app.AndarApplication;
+
+import javax.inject.Inject;
 
 public class GPSTracker extends Service implements LocationListener {
-    private final Context mContext;
     // flag for GPS status
     boolean isGPSEnabled = false;
     // flag for network status
@@ -34,21 +38,24 @@ public class GPSTracker extends Service implements LocationListener {
 
     protected LocationManager locationManager;
 
-    public GPSTracker(Context context) {
-        this.mContext = context;
+    @Inject
+    public Context context;
 
+    public GPSTracker() {
+        AndarApplication.getInstance().component().inject(this);
+        getLocation();
     }
 
     @SuppressLint("MissingPermission")
     public Location getLocation() {
         try {
-            locationManager = (LocationManager) mContext
+            locationManager = (LocationManager) context
                     .getSystemService(LOCATION_SERVICE);
 
             isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
             if (!isGPSEnabled && !isNetworkEnabled) {
-
+                showSettingsAlert();
             } else {
                 this.canGetLocation = true;
                 if (isNetworkEnabled) {
@@ -65,7 +72,6 @@ public class GPSTracker extends Service implements LocationListener {
                         }
                     }
                 }
-                // if GPS Enabled get lat/long using GPS Services
                 if (isGPSEnabled) {
                     if (location == null) {
                         locationManager.requestLocationUpdates(
@@ -81,6 +87,8 @@ public class GPSTracker extends Service implements LocationListener {
                             }
                         }
                     }
+                }else{
+                    showSettingsAlert();
                 }
             }
         } catch (Exception e) {
@@ -129,48 +137,47 @@ public class GPSTracker extends Service implements LocationListener {
      * On pressing Settings button will lauch Settings Options
      * */
     public void showSettingsAlert(){
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
-        // Setting Dialog Title
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
         alertDialog.setTitle("GPS is settings");
-        // Setting Dialog Message
         alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
-        // On pressing Settings button
         alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int which) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                mContext.startActivity(intent);
+                context.startActivity(intent);
             }
         });
-        // on pressing cancel button
         alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }
         });
-        // Showing Alert Message
         alertDialog.show();
     }
     @Override
     public void onLocationChanged(Location location) {
-// TODO Auto-generated method stub
-    }
-    @Override
-    public void onProviderDisabled(String provider) {
-// TODO Auto-generated method stub
+        if(location!=null){
+            this.location = location;
+            this.latitude = location.getLatitude();
+            this.longitude = location.getLongitude();
+        }
     }
 
     @Override
     public void onProviderEnabled(String provider) {
-// TODO Auto-generated method stub
-
+        Toast.makeText(context,provider+" enabled",Toast.LENGTH_LONG).show();
     }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+        Toast.makeText(context,provider+" disabled",Toast.LENGTH_LONG).show();
+    }
+
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-// TODO Auto-generated method stub
+        Toast.makeText(context,provider+" status changed to "+ status,Toast.LENGTH_LONG).show();
     }
     @Override
     public IBinder onBind(Intent intent) {
-// TODO Auto-generated method stub
         return null;
     }
 }
