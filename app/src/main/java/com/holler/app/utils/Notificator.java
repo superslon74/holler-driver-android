@@ -2,7 +2,6 @@ package com.holler.app.utils;
 
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
-import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -15,20 +14,16 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.os.SystemClock;
-import android.support.v4.app.NotificationCompat;
 
 import com.google.firebase.messaging.RemoteMessage;
-import com.holler.app.Activity.HistoryDetails;
-import com.holler.app.Activity.MainActivity;
-import com.holler.app.Activity.SplashScreen;
-import com.holler.app.Helper.SharedHelper;
 import com.holler.app.R;
 import com.holler.app.Services.NotificationPublisher;
 
 import java.util.Date;
 import java.util.Map;
+
+import androidx.core.app.NotificationCompat;
 
 
 public class Notificator {

@@ -4,10 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +22,9 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.bumptech.glide.Glide;
-import com.holler.app.Activity.HistoryDetails;
-import com.holler.app.Activity.WelcomeScreenActivity;
+import com.google.android.material.snackbar.Snackbar;
+import com.holler.app.activity.HistoryDetails;
+import com.holler.app.activity.WelcomeScreenActivity;
 import com.holler.app.AndarApplication;
 import com.holler.app.Helper.ConnectionHelper;
 import com.holler.app.Helper.CustomDialog;
@@ -47,6 +44,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import static com.holler.app.AndarApplication.trimMessage;
 

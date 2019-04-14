@@ -1,41 +1,16 @@
-package com.holler.app.Activity;
+package com.holler.app.activity;
 
 
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkError;
-import com.android.volley.NoConnectionError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.holler.app.Helper.SharedHelper;
-import com.holler.app.Models.AccessDetails;
-import com.holler.app.AndarApplication;
 import com.holler.app.R;
 import com.holler.app.Services.UserStatusChecker;
 import com.holler.app.utils.CustomActivity;
-
-import org.json.JSONObject;
-
-import java.util.HashMap;
 
 public class WaitingForApproval extends CustomActivity {
 

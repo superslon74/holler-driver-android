@@ -1,12 +1,10 @@
-package com.holler.app.Activity;
+package com.holler.app.activity;
 
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -14,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.R;
 import com.holler.app.Utilities.Utilities;

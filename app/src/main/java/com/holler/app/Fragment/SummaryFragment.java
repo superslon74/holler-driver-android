@@ -2,11 +2,6 @@ package com.holler.app.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +22,8 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.daasuu.cat.CountAnimationTextView;
-import com.holler.app.Activity.WelcomeScreenActivity;
+import com.google.android.material.snackbar.Snackbar;
+import com.holler.app.activity.WelcomeScreenActivity;
 import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Helper.URLHelper;
@@ -38,6 +34,11 @@ import com.holler.app.R;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import static com.holler.app.AndarApplication.trimMessage;
 

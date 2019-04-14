@@ -8,10 +8,7 @@ import android.database.Cursor;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,16 +16,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.holler.app.Activity.DocumentsActivity;
-import com.holler.app.BuildConfig;
+import com.holler.app.activity.DocumentsActivity;
 import com.holler.app.R;
 import com.bumptech.glide.Glide;
 import com.holler.app.utils.CustomActivity;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
 
 public class DocumentsListItem extends Fragment {
 

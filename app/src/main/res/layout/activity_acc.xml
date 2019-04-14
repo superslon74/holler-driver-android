@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.holler.app.Activity.ActivitySocialLogin">
+    tools:context="com.holler.app.activity.ActivitySocialLogin">
 
     <ImageView
         android:layout_width="@dimen/_18sdp"

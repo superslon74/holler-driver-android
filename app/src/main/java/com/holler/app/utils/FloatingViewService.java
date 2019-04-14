@@ -1,19 +1,13 @@
 package com.holler.app.utils;
 
-import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
+
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,7 +19,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.holler.app.Activity.MainActivity;
+import com.holler.app.activity.MainActivity;
 import com.holler.app.AndarApplication;
 import com.holler.app.FloatingViewService.FloatingViewListener;
 import com.holler.app.FloatingViewService.FloatingViewManager;
@@ -35,6 +29,7 @@ import com.holler.app.server.OrderServerApi;
 
 import java.util.HashMap;
 
+import androidx.annotation.Nullable;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
@@ -103,9 +98,13 @@ public class FloatingViewService extends Service implements FloatingViewListener
 
         final FloatingViewManager.Options options = new FloatingViewManager.Options();
         SharedPreferences storedPosition = getSharedPreferences("floating_view", Context.MODE_PRIVATE);
-        options.moveDirection = FloatingViewManager.MOVE_DIRECTION_NEAREST;
-        options.floatingViewX = storedPosition.getInt(ARG_POSITION_X, 500);
-        options.floatingViewY = storedPosition.getInt(ARG_POSITION_Y, 400);
+        options.moveDirection = FloatingViewManager.MOVE_DIRECTION_DEFAULT;
+
+        int anInt = storedPosition.getInt(ARG_POSITION_X, Integer.MAX_VALUE);
+        int anInt1 = storedPosition.getInt(ARG_POSITION_Y, Integer.MAX_VALUE);
+
+        options.floatingViewX = storedPosition.getInt(ARG_POSITION_X, 582);
+        options.floatingViewY = storedPosition.getInt(ARG_POSITION_Y, 540);
 
         mFloatingViewManager.addViewToWindow(mFloatingView, options);
     }
@@ -214,7 +213,7 @@ public class FloatingViewService extends Service implements FloatingViewListener
     @Override
     public void onTouchFinished(boolean isFinished, int x, int y) {
         //save position to shared preferences
-//        if(!isFinished) return;
+        if(isFinished) return;
         SharedPreferences.Editor positionStorage = getSharedPreferences("floating_view", Context.MODE_PRIVATE).edit();
         positionStorage.putInt(ARG_POSITION_X, x);
         positionStorage.putInt(ARG_POSITION_Y, y);

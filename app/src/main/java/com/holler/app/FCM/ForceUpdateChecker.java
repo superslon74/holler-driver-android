@@ -2,11 +2,13 @@ package com.holler.app.FCM;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+
+import androidx.annotation.NonNull;
+
 
 public class ForceUpdateChecker {
 

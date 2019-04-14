@@ -1,6 +1,6 @@
 package com.holler.app.di;
 
-import com.holler.app.Activity.SplashScreen;
+import com.holler.app.activity.SplashScreen;
 
 import dagger.Component;
 

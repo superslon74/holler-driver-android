@@ -1,13 +1,8 @@
 package com.holler.app.di;
 
-import android.util.Log;
-
 import com.google.gson.JsonObject;
-import com.holler.app.Activity.BeginScreen;
-import com.holler.app.Activity.MainActivity;
-import com.holler.app.Activity.RegisterActivity;
-import com.holler.app.Activity.WelcomeScreenActivity;
-import com.holler.app.Helper.SharedHelper;
+import com.holler.app.activity.MainActivity;
+import com.holler.app.activity.WelcomeScreenActivity;
 import com.holler.app.server.OrderServerApi;
 import com.holler.app.utils.CustomActivity;
 

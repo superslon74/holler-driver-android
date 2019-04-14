@@ -16,12 +16,10 @@ import android.graphics.drawable.Drawable;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import com.holler.app.Activity.MainActivity;
+import com.holler.app.activity.MainActivity;
 import com.holler.app.R;
 
 import java.io.InputStream;
@@ -30,6 +28,9 @@ import java.net.URL;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 /**
  * Created by Freeware Sys on 4/8/2017.
@@ -70,6 +71,7 @@ public class Utilities {
         return status;
     }
 
+    @Deprecated
     public static boolean isAppIsInBackground(Context context) {
         boolean isInBackground = true;
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layoutDirection="locale"
     android:orientation="vertical"
-    tools:context="com.holler.app.Activity.BeginScreen">
+    tools:context="com.holler.app.activity.BeginScreen">
 
     <FrameLayout
         android:layout_width="match_parent"

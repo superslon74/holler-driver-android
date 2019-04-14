@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:orientation="vertical"
-    tools:context="com.holler.app.Activity.MainActivity">
+    tools:context="com.holler.app.activity.MainActivity">
 
     <FrameLayout
         android:layout_width="match_parent"

@@ -13,10 +13,11 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.v4.content.ContextCompat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+
+import androidx.core.content.ContextCompat;
 
 
 public class AppHelper {

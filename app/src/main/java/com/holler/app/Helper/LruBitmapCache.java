@@ -1,9 +1,10 @@
 package com.holler.app.Helper;
 
 import android.graphics.Bitmap;
-import android.support.v4.util.LruCache;
 
 import com.android.volley.toolbox.ImageLoader;
+
+import androidx.collection.LruCache;
 
 
 public class LruBitmapCache extends LruCache<String, Bitmap> implements

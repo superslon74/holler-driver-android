@@ -1,11 +1,10 @@
-package com.holler.app.Activity;
+package com.holler.app.activity;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -20,6 +19,8 @@ import com.holler.app.Helper.ConnectionHelper;
 import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.User;
 import com.holler.app.R;
+
+import androidx.core.content.ContextCompat;
 
 
 public class ShowProfile extends CustomActivity {
