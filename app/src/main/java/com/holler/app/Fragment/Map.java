@@ -566,7 +566,8 @@ public class Map
 
                         utils.print("Location error", "Location error " + connectionResult.getErrorCode());
                     }
-                }).build();
+                })
+                .build();
         mGoogleApiClient.connect();
 
         LocationRequest locationRequest = LocationRequest.create();
@@ -2190,6 +2191,7 @@ public class Map
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Toast.makeText(context, "OFFLINE", Toast.LENGTH_LONG).show();
     }
 
     @Override

@@ -25,11 +25,12 @@ import com.holler.app.di.Presenter;
 import com.holler.app.di.SplashScreenModule;
 import com.holler.app.di.SplashScreenPresenter;
 import com.holler.app.utils.CustomActivity;
+import com.holler.app.utils.GPSTracker;
 
 import javax.inject.Inject;
 
 
-public class SplashScreen
+public class  SplashScreen
         extends CustomActivity
         implements ForceUpdateChecker.OnUpdateNeededListener, SplashScreenPresenter.View {
 
@@ -43,12 +44,15 @@ public class SplashScreen
                 .splashScreenModule(new SplashScreenModule(this))
                 .build()
                 .inject(this);
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         requestPermissions();
+
+        new GPSTracker(SplashScreen.this);
     }
 
     private void requestPermissions(){
@@ -245,6 +249,7 @@ public class SplashScreen
 
     @Override
     public void gotoActivity(Class<? extends CustomActivity> redirectTo) {
+        if(true)return;
         if(redirectTo == MainActivity.class){
             Intent mainIntent = new Intent(SplashScreen.this, MainActivity.class);
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
