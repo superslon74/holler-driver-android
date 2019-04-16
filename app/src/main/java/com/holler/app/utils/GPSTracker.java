@@ -13,11 +13,15 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.provider.Settings;
+import android.support.annotation.IdRes;
+import android.support.annotation.IntDef;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -27,74 +31,64 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.gson.JsonObject;
 import com.holler.app.AndarApplication;
+import com.holler.app.di.RetrofitModule;
+import com.holler.app.di.UserStorageModule;
+import com.holler.app.server.OrderServerApi;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 import javax.inject.Inject;
 
+import dagger.multibindings.IntKey;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class GPSTracker
         extends Service
-        implements
-
-        LocationListener {
+        implements LocationListener {
 
 
-    // flag for GPS status
-    boolean isGPSEnabled = false;
-    // flag for network status
-    boolean isNetworkEnabled = false;
-    // flag for GPS status
-    boolean canGetLocation = false;
-    Location location; // location
-    double latitude; // latitude
-    double longitude; // longitude
 
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 3; // 3 sec
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 0;
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 3;
 
-    protected LocationManager locationManager;
+    private Location lastLocation;
+    private Handler sender;
+    private int trackingType = LIVE_TRACKING;
 
-    @Inject
-    public Context context;
+    private LocationManager locationManager;
+
+    @Inject public Context context;
+    @Inject public GoogleApiClient googleApiClient;
+    @Inject public RetrofitModule.ServerAPI serverAPI;
+    @Inject public UserStorageModule.UserStorage userStorage;
+
+    private GPSTrackerBinder binder;
 
     public GPSTracker() {
         AndarApplication.getInstance().component().inject(this);
-//        getLocation();
     }
 
-    public GPSTracker(Activity activity) {
-        AndarApplication.getInstance().component().inject(this);
-        buildGoogleAPIClient(activity);
-//        getLocation();
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+        sender = new Handler();
+        binder = new GPSTrackerBinder();
     }
 
-    private void buildGoogleAPIClient(final Activity activity) {
-        GoogleApiClient googleApiClient = new GoogleApiClient
-                .Builder(context)
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                    @Override
-                    public void onConnected(Bundle bundle) {
-                        Log.d("AZAZA", "GoogleApi connected");
-                    }
-
-                    @Override
-                    public void onConnectionSuspended(int i) {
-//                        throw new RuntimeException("GoogleApi connection suspended with flag: "+i);
-                    }
-                })
-                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(ConnectionResult connectionResult) {
-//                        throw new RuntimeException("GoogleApi connection failed with result: "+connectionResult.toString());
-                    }
-                })
-                .build();
-
+    @SuppressLint("MissingPermission")
+    private void connectGoogleApi(ResultCallback<LocationSettingsResult> locationSettingsResultCallback ) {
 
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -106,169 +100,157 @@ public class GPSTracker
                 .setAlwaysShow(false)
                 .build();
 
-        final int REQUEST_LOCATION = 1491;
-
         LocationServices
                 .SettingsApi
                 .checkLocationSettings(googleApiClient, locationSettingsRequest)
-                .setResultCallback(new ResultCallback<LocationSettingsResult>() {
-                    @Override
-                    public void onResult(LocationSettingsResult result) {
-                        int statusCode = result.getStatus().getStatusCode();
-                        try {
-                            if (LocationSettingsStatusCodes.RESOLUTION_REQUIRED == statusCode)
-                                result.getStatus().startResolutionForResult(activity,REQUEST_LOCATION);
-                        } catch (IntentSender.SendIntentException e) {
-                            Log.e("AZAZA", "Error requesting location setting: ", e);
-                        }
-                    }
-                });
+                .setResultCallback(locationSettingsResultCallback);
 
         googleApiClient.connect();
-
     }
 
     @SuppressLint("MissingPermission")
     public Location getLocation() {
-        try {
-            locationManager = (LocationManager) context
-                    .getSystemService(LOCATION_SERVICE);
+        Location result = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if(result==null){
+            lastLocation = result;
+        }
+        return lastLocation;
+    }
 
-            isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-            if (!isGPSEnabled && !isNetworkEnabled) {
-                showSettingsAlert();
-            } else {
-                this.canGetLocation = true;
-                if (isNetworkEnabled) {
-                    locationManager.requestLocationUpdates(
-                            LocationManager.NETWORK_PROVIDER,
-                            MIN_TIME_BW_UPDATES,
-                            MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                    Log.d("Network", "Network");
-                    if (locationManager != null) {
-                        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                        if (location != null) {
-                            latitude = location.getLatitude();
-                            longitude = location.getLongitude();
-                        }
-                    }
-                }
-                if (isGPSEnabled) {
-                    if (location == null) {
-                        locationManager.requestLocationUpdates(
-                                LocationManager.GPS_PROVIDER,
-                                MIN_TIME_BW_UPDATES,
-                                MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                        Log.d("GPS Enabled", "GPS Enabled");
-                        if (locationManager != null) {
-                            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                            if (location != null) {
-                                latitude = location.getLatitude();
-                                longitude = location.getLongitude();
-                            }
-                        }
-                    }
-                } else {
-                    showSettingsAlert();
-                }
+    private void stopReceiveLocationUpdates() {
+        locationManager.removeUpdates(GPSTracker.this);
+    }
+
+    @SuppressLint("MissingPermission")
+    private void startReceiveLocationUpdates(){
+        locationManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER,
+                MIN_TIME_BW_UPDATES,
+                MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+    }
+
+
+    private Runnable updateLocationLooperBody = new Runnable() {
+        @Override
+        public void run() {
+            try{
+                sendLocation(lastLocation);
+            }finally {
+                sender.postDelayed(updateLocationLooperBody, MIN_TIME_BW_UPDATES);
             }
-        } catch (Exception e) {
-            Log.e("AZAZA", "Error: ", e);
-            e.printStackTrace();
         }
-        return location;
+    };
+
+    private void startSendingLocation(){
+        sender.postDelayed(updateLocationLooperBody, MIN_TIME_BW_UPDATES);
     }
 
-    /**
-     * Stop using GPS listener
-     * Calling this function will stop using GPS in your app
-     */
-    public void stopUsingGPS() {
-        if (locationManager != null) {
-            locationManager.removeUpdates(GPSTracker.this);
-        }
+    private void stopSendingLocation(){
+        sender.removeCallbacksAndMessages(null);
     }
 
-    /**
-     * Function to get latitude
-     */
-    public double getLatitude() {
-        if (location != null) {
-            latitude = location.getLatitude();
-        }
-        // return latitude
-        return latitude;
+    public boolean isNetworkEnabled() {
+        return locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 
-    /**
-     * Function to get longitude
-     */
-    public double getLongitude() {
-        if (location != null) {
-            longitude = location.getLongitude();
-        }
-        // return longitude
-        return longitude;
-    }
-
-    /**
-     * Function to check GPS/wifi enabled
-     *
-     * @return boolean
-     */
-    public boolean canGetLocation() {
-        return this.canGetLocation;
-    }
-
-    /**
-     * Function to show settings alert dialog
-     * On pressing Settings button will lauch Settings Options
-     */
-    public void showSettingsAlert() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-        alertDialog.setTitle("GPS is settings");
-        alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
-        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                context.startActivity(intent);
-            }
-        });
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        alertDialog.show();
+    private boolean isGPSEnabled(){
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
     @Override
     public void onLocationChanged(Location location) {
         if (location != null) {
-            this.location = location;
-            this.latitude = location.getLatitude();
-            this.longitude = location.getLongitude();
+            this.lastLocation = location;
+        }
+    }
+
+
+    private void setTrackingRequestType(@TrackingType int type) {
+        this.trackingType = type;
+    }
+
+    private void sendLocation(Location l){
+        try {
+            String latitude = ""+l.getLatitude();
+            String longitude = ""+l.getLongitude();
+            String authHeader = "Bearer " + userStorage.getAccessToken();
+            this.serverAPI
+                    .sendTripLocation(authHeader, latitude, longitude)
+                    .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(null) {
+                        @Override
+                        public void onSuccessfulResponse(Response<JsonObject> response) {
+                            Log.d("AZAZA", "GPSTracker: Location updated");
+                        }
+
+                        @Override
+                        public void onDisplayMessage(String message) {
+                            Log.d("AZAZA", "GPSTracker: message-> " +message);
+                        }
+                    });
+        }catch (NullPointerException e){
+            Log.e("AZAZA","GPSTracker error: lastLocation not defined",e);
         }
     }
 
     @Override
     public void onProviderEnabled(String provider) {
+        //TODO: check provider & enable listening
         Toast.makeText(context, provider + " enabled", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onProviderDisabled(String provider) {
+        //TODO: check provider & disable listening
         Toast.makeText(context, provider + " disabled", Toast.LENGTH_LONG).show();
     }
 
+    @Deprecated
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        Toast.makeText(context, provider + " status changed to " + status, Toast.LENGTH_LONG).show();
-    }
+    public void onStatusChanged(String provider, int status, Bundle extras) {}
 
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return binder;
     }
+
+
+    public static final int LIVE_TRACKING = 1;
+    public static final int TRIP_TRACKING = 2;
+
+    @IntDef({LIVE_TRACKING, TRIP_TRACKING})
+    @Retention(RetentionPolicy.SOURCE)
+    @Deprecated
+    @interface TrackingType {
+    }
+
+    public class GPSTrackerBinder extends Binder{
+
+        public void connectGoogleApi(ResultCallback<LocationSettingsResult> locationSettingsResultCallback){
+            GPSTracker.this.connectGoogleApi(locationSettingsResultCallback);
+        }
+
+        public void startTracking(){
+            //TODO: start listenening fo updates
+            //TODO: make server calls on each location changed
+            //TODO: implement location listener
+            GPSTracker.this.startReceiveLocationUpdates();
+            GPSTracker.this.startSendingLocation();
+        }
+
+        public void stopTracking(){
+            GPSTracker.this.stopReceiveLocationUpdates();
+            GPSTracker.this.stopSendingLocation();
+        }
+
+        public Location getLocation(){
+            return GPSTracker.this.getLocation();
+        }
+
+        @Deprecated
+        public void setTrackingRequestType(@TrackingType int requestType){
+            GPSTracker.this.setTrackingRequestType(requestType);
+        }
+
+    }
+
 }

@@ -2,9 +2,12 @@ package com.holler.app.utils;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.IntentSender;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -12,14 +15,20 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 
+import com.google.android.gms.awareness.snapshot.LocationResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.holler.app.Activity.MainActivity;
 
 import java.util.HashMap;
@@ -99,6 +108,17 @@ public class CustomActivity extends AppCompatActivity {
     }
 
     @Override
+    public void startIntentSenderForResult(IntentSender intent, int requestCode, @Nullable Intent fillInIntent, int flagsMask, int flagsValues, int extraFlags) throws IntentSender.SendIntentException {
+        super.startIntentSenderForResult(intent, requestCode, fillInIntent, flagsMask, flagsValues, extraFlags);
+        if (requestCode != -1) {
+            synchronized (CustomActivity.class) {
+                runningActivitiesCount++;
+                toggleFloatingViewService(isRunning());
+            }
+        }
+    }
+
+    @Override
     public void startActivityForResult(Intent intent, int requestCode) {
         super.startActivityForResult(intent, requestCode);
         if (requestCode != -1) {
@@ -154,34 +174,38 @@ public class CustomActivity extends AppCompatActivity {
     public static final int PERMISSION_GRANTED = 1;
     public static final int PERMISSION_DENID = 2;
 
-    private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 6027;
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 7064;
-    private static final int PERMISSIONS_REQUEST_CALL_PHONE = 6311;
-    private static final int PERMISSIONS_REQUEST_SYSTEM_ALERT_WINDOW = 5757;
-    private static final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 7349;
-    private static final int PERMISSIONS_REQUEST_CAMERA = 6482;
-    private static final int PERMISSIONS_REQUEST_INTERNET = 14737;
-    private static final int PERMISSIONS_REQUEST_LOCATION = 1064;
+    private static final int CODE_REQUEST_READ_CONTACTS = 6027;
+    private static final int CODE_REQUEST_ACCESS_FINE_LOCATION = 7064;
+    private static final int CODE_REQUEST_CALL_PHONE = 6311;
+    private static final int CODE_REQUEST_SYSTEM_ALERT_WINDOW = 5757;
+    private static final int CODE_REQUEST_READ_EXTERNAL_STORAGE = 7349;
+    private static final int CODE_REQUEST_CAMERA = 6482;
+    private static final int CODE_REQUEST_INTERNET = 14737;
+    private static final int CODE_REQUEST_LOCATION = 1064;
+    private static final int CODE_ENABLE_LOCATION = 1450;
+
+    public static final String PERMISSION_ENABLE_LOCATION = "com.holler.app.ACCESS_LOCATION";
 
     private static Map<String, Integer> permissionRequestCodes = new HashMap<>();
 
     static {
-        permissionRequestCodes.put(Manifest.permission.READ_CONTACTS, PERMISSIONS_REQUEST_READ_CONTACTS);
-        permissionRequestCodes.put(Manifest.permission.ACCESS_FINE_LOCATION, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        permissionRequestCodes.put(Manifest.permission.CALL_PHONE, PERMISSIONS_REQUEST_CALL_PHONE);
-        permissionRequestCodes.put(Manifest.permission.SYSTEM_ALERT_WINDOW, PERMISSIONS_REQUEST_SYSTEM_ALERT_WINDOW);
-        permissionRequestCodes.put(Manifest.permission.READ_EXTERNAL_STORAGE, PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-        permissionRequestCodes.put(Manifest.permission.CAMERA, PERMISSIONS_REQUEST_CAMERA);
-        permissionRequestCodes.put(Manifest.permission.INTERNET, PERMISSIONS_REQUEST_INTERNET);
-        permissionRequestCodes.put(Manifest.permission.LOCATION_HARDWARE, PERMISSIONS_REQUEST_LOCATION);
+        permissionRequestCodes.put(Manifest.permission.READ_CONTACTS, CODE_REQUEST_READ_CONTACTS);
+        permissionRequestCodes.put(Manifest.permission.ACCESS_FINE_LOCATION, CODE_REQUEST_ACCESS_FINE_LOCATION);
+        permissionRequestCodes.put(Manifest.permission.CALL_PHONE, CODE_REQUEST_CALL_PHONE);
+        permissionRequestCodes.put(Manifest.permission.SYSTEM_ALERT_WINDOW, CODE_REQUEST_SYSTEM_ALERT_WINDOW);
+        permissionRequestCodes.put(Manifest.permission.READ_EXTERNAL_STORAGE, CODE_REQUEST_READ_EXTERNAL_STORAGE);
+        permissionRequestCodes.put(Manifest.permission.CAMERA, CODE_REQUEST_CAMERA);
+        permissionRequestCodes.put(Manifest.permission.INTERNET, CODE_REQUEST_INTERNET);
+        permissionRequestCodes.put(Manifest.permission.LOCATION_HARDWARE, CODE_REQUEST_LOCATION);
+        permissionRequestCodes.put(PERMISSION_ENABLE_LOCATION, CODE_ENABLE_LOCATION);
     }
 
     private static Map<Integer, RequestPermissionHandler> permissionHandlers = new HashMap<>();
     private static Map<String, String> permissionExplanation = new HashMap<>();
 
-    public void checkPermissionAsynchronously(String permission, RequestPermissionHandler handler) {
+    public void checkPermissionAsynchronously(String permission, final RequestPermissionHandler handler) {
 
-        int code = permissionRequestCodes.get(permission);
+        final int code = permissionRequestCodes.get(permission);
         permissionHandlers.put(code, handler);
 
         ///
@@ -197,6 +221,35 @@ public class CustomActivity extends AppCompatActivity {
                 } else {
                     handler.onPermissionDenied();
                 }
+                break;
+            case PERMISSION_ENABLE_LOCATION:
+                Intent gpsTrackerBinding = new Intent(this, GPSTracker.class);
+                ServiceConnection gpsTrackerConnection = new ServiceConnection() {
+                    @Override
+                    public void onServiceConnected(ComponentName name, IBinder binder) {
+                        GPSTracker.GPSTrackerBinder service = (GPSTracker.GPSTrackerBinder) binder;
+                        service.connectGoogleApi(new ResultCallback<LocationSettingsResult>(){
+                            @Override
+                            public void onResult(@NonNull LocationSettingsResult result) {
+                                if(LocationSettingsStatusCodes.RESOLUTION_REQUIRED==result.getStatus().getStatusCode()){
+                                    try {
+                                        result.getStatus().startResolutionForResult(CustomActivity.this, code);
+                                    } catch (IntentSender.SendIntentException e) {
+                                        handler.onPermissionDenied();
+                                    }
+                                }else{
+                                    handler.onPermissionGranted();
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onServiceDisconnected(ComponentName name) {
+
+                    }
+                };
+                bindService(gpsTrackerBinding,gpsTrackerConnection,Context.BIND_AUTO_CREATE);
                 break;
             case Manifest.permission.INTERNET:
                 if (isInternet()) {
@@ -225,7 +278,6 @@ public class CustomActivity extends AppCompatActivity {
                     } else {
                         ActivityCompat.requestPermissions(CustomActivity.this, new String[]{permission}, code);
                     }
-
                 } else {
                     handler.onPermissionGranted();
                 }
@@ -254,7 +306,7 @@ public class CustomActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1450)return;
+//        if(requestCode == SETTINGS_REQUEST_LOCATION)return;
 
 //        TODO: shitcode here
         if (listener != null) {
@@ -294,6 +346,13 @@ public class CustomActivity extends AppCompatActivity {
             if (isGPSEnabled()) {
                 handler.onPermissionGranted();
             } else {
+                handler.onPermissionDenied();
+            }
+        }
+        if(PERMISSION_ENABLE_LOCATION.equals(requestedPermission)){
+            if(isGPSEnabled()){
+                handler.onPermissionGranted();
+            }else{
                 handler.onPermissionDenied();
             }
         }

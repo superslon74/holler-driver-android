@@ -1,5 +1,7 @@
 package com.holler.app.di;
 
+import android.content.Context;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -17,11 +19,12 @@ public class SplashScreenModule {
     }
 
     @Provides
-    public Presenter providePresenter(SplashScreenPresenter.View splashScreenView,
+    public Presenter providePresenter(Context context,
+                                      SplashScreenPresenter.View splashScreenView,
                                       RetrofitModule.ServerAPI serverAPI,
                                       DeviceInfoModule.DeviceInfo deviceInfo,
                                       UserStorageModule.UserStorage userStorage){
 
-        return new SplashScreenPresenter(splashScreenView,serverAPI, deviceInfo, userStorage);
+        return new SplashScreenPresenter(context,splashScreenView,serverAPI, deviceInfo, userStorage);
     }
 }

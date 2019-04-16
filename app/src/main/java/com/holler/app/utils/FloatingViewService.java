@@ -2,8 +2,10 @@ package com.holler.app.utils;
 
 import android.Manifest;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -53,7 +55,7 @@ public class FloatingViewService extends Service implements FloatingViewListener
             initLayout();
         }
 
-        return START_REDELIVER_INTENT;
+        return flags;
     }
 
     private void initLayout() {
@@ -74,7 +76,7 @@ public class FloatingViewService extends Service implements FloatingViewListener
                 switch (v.getId()) {
                     case R.id.orderbtn:
                         if (!orderButtonLocked)
-                            createAndSendOrder();
+                            getLocation();
                         break;
                     case R.id.collapsed_iv:
                         Intent intent = new Intent(FloatingViewService.this, MainActivity.class);
@@ -103,11 +105,29 @@ public class FloatingViewService extends Service implements FloatingViewListener
 
         final FloatingViewManager.Options options = new FloatingViewManager.Options();
         SharedPreferences storedPosition = getSharedPreferences("floating_view", Context.MODE_PRIVATE);
-        options.moveDirection = FloatingViewManager.MOVE_DIRECTION_NEAREST;
+        options.moveDirection = FloatingViewManager.MOVE_DIRECTION_DEFAULT;
         options.floatingViewX = storedPosition.getInt(ARG_POSITION_X, 500);
         options.floatingViewY = storedPosition.getInt(ARG_POSITION_Y, 400);
 
         mFloatingViewManager.addViewToWindow(mFloatingView, options);
+    }
+
+    private void getLocation() {
+        Intent gpsTrackerBinding = new Intent(this, GPSTracker.class);
+        ServiceConnection gpsTrackerConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder binder) {
+                GPSTracker.GPSTrackerBinder service = (GPSTracker.GPSTrackerBinder) binder;
+                Location location = service.getLocation();
+                createAndSendOrder(location);
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                //TODO: update spinner end error handler
+            }
+        };
+        bindService(gpsTrackerBinding,gpsTrackerConnection,Context.BIND_AUTO_CREATE);
     }
 
     private void showSpinnerAndLockButton() {
@@ -140,7 +160,7 @@ public class FloatingViewService extends Service implements FloatingViewListener
         }
     }
 
-    private void createAndSendOrder() {
+    private void createAndSendOrder(Location location) {
         showSpinnerAndLockButton();
         OrderServerApi serverApiClient = OrderServerApi.ApiCreator.createInstance();
 
@@ -150,10 +170,9 @@ public class FloatingViewService extends Service implements FloatingViewListener
 
         OrderServerApi.Order order = new OrderServerApi.Order();
 
-        GPSTracker gpsTracker = new GPSTracker();
-
-        order.startLatitude = ""+gpsTracker.getLatitude();
-        order.startLongitude = ""+gpsTracker.getLongitude();
+        //TODO: service may return null location if app was closed
+        order.startLatitude = ""+location.getLatitude();
+        order.startLongitude = ""+location.getLongitude();
 
         serverApiClient
                 .createOrder(headers, order)
@@ -214,7 +233,7 @@ public class FloatingViewService extends Service implements FloatingViewListener
     @Override
     public void onTouchFinished(boolean isFinished, int x, int y) {
         //save position to shared preferences
-//        if(!isFinished) return;
+        if(isFinished) return;
         SharedPreferences.Editor positionStorage = getSharedPreferences("floating_view", Context.MODE_PRIVATE).edit();
         positionStorage.putInt(ARG_POSITION_X, x);
         positionStorage.putInt(ARG_POSITION_Y, y);

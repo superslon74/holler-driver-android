@@ -1,9 +1,12 @@
 package com.holler.app.Activity;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -25,6 +28,7 @@ import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.gson.JsonObject;
 import com.holler.app.AndarApplication;
 import com.holler.app.Fragment.Map;
 import com.holler.app.Helper.ConnectionHelper;
@@ -34,12 +38,16 @@ import com.holler.app.Helper.URLHelper;
 import com.holler.app.Models.AccessDetails;
 import com.holler.app.R;
 import com.holler.app.Utilities.Utilities;
+import com.holler.app.di.RetrofitModule;
+import com.holler.app.server.OrderServerApi;
+import com.holler.app.utils.GPSTracker;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 
+import javax.inject.Inject;
 
 
 public class Offline extends Fragment {
@@ -59,9 +67,12 @@ public class Offline extends Fragment {
 
     Utilities utils = new Utilities();
 
+    @Inject public RetrofitModule.ServerAPI serverAPI;
+    @Inject public Context appContext;
+    private GPSTracker.GPSTrackerBinder gpsService;
+
 
     public Offline() {
-        // Required empty public constructor
     }
 
     @Override
@@ -79,6 +90,20 @@ public class Offline extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AndarApplication.getInstance().component().inject(this);
+        Intent gpsTrackerBinding = new Intent(appContext, GPSTracker.class);
+        ServiceConnection gpsTrackerConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                Offline.this.gpsService = (GPSTracker.GPSTrackerBinder) service;
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                Offline.this.gpsService = null;
+            }
+        };
+        appContext.bindService(gpsTrackerBinding,gpsTrackerConnection,Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -121,95 +146,29 @@ public class Offline extends Fragment {
         customDialog = new CustomDialog(activity);
         customDialog.setCancelable(false);
         customDialog.show();
-        JSONObject param = new JSONObject();
-        try {
-            param.put("service_status", "active");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-       JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AccessDetails.serviceurl + URLHelper.UPDATE_AVAILABILITY_API ,param, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                if (response != null) {
-                    try {
+
+        String authHeader = "Bearer "+token;
+        serverAPI
+                .sendStatus(authHeader, RetrofitModule.ServerAPI.STATUS_ONLINE)
+                .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(getActivity()) {
+                    @Override
+                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
+                        FragmentManager manager = MainActivity.fragmentManager;
+                        FragmentTransaction transaction = manager.beginTransaction();
+                        transaction.replace(R.id.content, new Map());
+                        transaction.commitAllowingStateLoss();
+
+                        gpsService.startTracking();
+                    }
+
+                    @Override
+                    public void onFinishHandling() {
+                        super.onFinishHandling();
                         customDialog.dismiss();
-                            if (response.optJSONObject("service").optString("status").equalsIgnoreCase("active")) {
-//                            Intent intent = new Intent(context, MainActivity.class);
-//                            context.startActivity(intent);
-                                FragmentManager manager = MainActivity.fragmentManager;
-                                FragmentTransaction transaction = manager.beginTransaction();
-                                transaction.replace(R.id.content, new Map());
-                                transaction.commitAllowingStateLoss();
-                            } else {
-                                displayMessage(getString(R.string.something_went_wrong));
-                            }
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }else{
-                    customDialog.dismiss();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                customDialog.dismiss();
-                utils.print("Error", error.toString());
-                String json = null;
-                String Message;
-                NetworkResponse response = error.networkResponse;
-                if(response != null && response.data != null){
-
-                    try {
-                        JSONObject errorObj = new JSONObject(new String(response.data));
-
-                        if(response.statusCode == 400 || response.statusCode == 405 || response.statusCode == 500){
-                            try{
-                                displayMessage(errorObj.optString("message"));
-                            }catch (Exception e){
-                                displayMessage(getString(R.string.something_went_wrong));
-                            }
-                        }else if(response.statusCode == 401){
-                            SharedHelper.putKey(context,"loggedIn",getString(R.string.False));
-                            GoToBeginActivity();
-                        }else if(response.statusCode == 422){
-                            json = AndarApplication.trimMessage(new String(response.data));
-                            if(json !="" && json != null) {
-                                displayMessage(json);
-                            }else{
-                                displayMessage(getString(R.string.please_try_again));
-                            }
-
-                        }else if(response.statusCode == 503){
-                            displayMessage(getString(R.string.server_down));
-                        }else{
-                            displayMessage(getString(R.string.please_try_again));
-                        }
-
-                    }catch (Exception e){
-                        displayMessage(getString(R.string.something_went_wrong));
                     }
 
-                } else {
-                    if (error instanceof NoConnectionError) {
-                        displayMessage(getString(R.string.oops_connect_your_internet));
-                    } else if (error instanceof NetworkError) {
-                        displayMessage(getString(R.string.oops_connect_your_internet));
-                    } else if (error instanceof TimeoutError) {
-                        goOnline();
-                    }
-                }
-            }
-        }){
-            @Override
-            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("X-Requested-With", "XMLHttpRequest");
-                headers.put("Authorization","Bearer "+token);
-                return headers;
-            }
-        };
-        AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+                });
+
     }
 
     public void displayMessage(String toastString){

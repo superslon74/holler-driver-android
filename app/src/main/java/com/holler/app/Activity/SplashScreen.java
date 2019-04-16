@@ -51,8 +51,6 @@ public class  SplashScreen
     protected void onStart() {
         super.onStart();
         requestPermissions();
-
-        new GPSTracker(SplashScreen.this);
     }
 
     private void requestPermissions(){
@@ -68,8 +66,8 @@ public class  SplashScreen
         chain
                 .next(new RequestPermissionChain(activity,Manifest.permission.SYSTEM_ALERT_WINDOW))
                 .next(new RequestPermissionChain(activity,Manifest.permission.ACCESS_FINE_LOCATION))
-                .next(new RequestPermissionChain(activity,Manifest.permission.INTERNET));
-//                .next(new RequestPermissionChain(activity,Manifest.permission.LOCATION_HARDWARE));
+                .next(new RequestPermissionChain(activity,Manifest.permission.INTERNET))
+                .next(new RequestPermissionChain(activity,CustomActivity.PERMISSION_ENABLE_LOCATION));
 
         chain.call();
     }
@@ -249,7 +247,6 @@ public class  SplashScreen
 
     @Override
     public void gotoActivity(Class<? extends CustomActivity> redirectTo) {
-        if(true)return;
         if(redirectTo == MainActivity.class){
             Intent mainIntent = new Intent(SplashScreen.this, MainActivity.class);
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

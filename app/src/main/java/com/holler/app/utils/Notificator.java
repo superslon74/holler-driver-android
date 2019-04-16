@@ -199,13 +199,16 @@ public class Notificator {
         public NotificationText(RemoteMessage message) {
             Map<String, String> data = message.getData();
             boolean isMessageEmpty = message.getData() == null || message.getData().get("message") == null;
-            boolean isNewRide =
-                    !isMessageEmpty &&
-                            message
-                                    .getData()
-                                    .get("message")
-                                    .substring(0, MESSAGE_NEW_RIDE.length())
-                                    .equalsIgnoreCase(MESSAGE_NEW_RIDE);
+            boolean isNewRide;
+                    try {
+                        isNewRide = !isMessageEmpty && message
+                                .getData()
+                                .get("message")
+                                .substring(0, MESSAGE_NEW_RIDE.length())
+                                .equalsIgnoreCase(MESSAGE_NEW_RIDE);
+                    }catch (IndexOutOfBoundsException e){
+                        isNewRide = false;
+                    }
 
             if (isMessageEmpty) {
                 NotificationText.this.title = Notificator.NOTIFICATION_CHANNEL_NAME;

@@ -43,10 +43,6 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         super.onTokenRefresh();
         final String refreshedToken = FirebaseInstanceId.getInstance().getToken();
 
-
-        HashMap<String, String> headers = new HashMap<String, String>();
-        headers.put("X-Requested-With", "XMLHttpRequest");
-
         User user = userStorage.getUser();
 
         user.deviceType = "android";
@@ -54,7 +50,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         user.deviceToken = deviceInfo.deviceToken;
 
         serverAPI
-                .signIn(headers, user)
+                .signIn(user)
                 .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(null) {
                     @Override
                     public void onSuccessfulResponse(Response<JsonObject> response) {

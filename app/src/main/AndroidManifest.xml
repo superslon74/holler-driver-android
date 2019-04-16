@@ -198,6 +198,15 @@
             android:process=":external"
             />
         <service
+            android:name=".utils.GPSTracker"
+            android:exported="false"
+            />
+        <service
+            android:name=".Utilities.LocationTracking"
+            android:exported="false"
+            android:process=":external"
+            />
+        <service
             android:name=".utils.FloatingViewService"
             android:enabled="true"
             android:exported="false"

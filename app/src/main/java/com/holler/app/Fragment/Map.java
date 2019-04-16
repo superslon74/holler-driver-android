@@ -6,10 +6,12 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.NotificationManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -27,6 +29,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.IBinder;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -89,11 +92,13 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.holler.app.Activity.RegisterActivity;
+import com.holler.app.di.RetrofitModule;
 import com.holler.app.server.OrderServerApi;
 import com.holler.app.utils.CustomActivity;
 import com.holler.app.utils.CustomActivity.RequestPermissionHandler;
 import com.holler.app.utils.CustomActivity.RefactoringException;
 import com.holler.app.utils.FloatingViewService;
+import com.holler.app.utils.GPSTracker;
 import com.squareup.picasso.Picasso;
 import com.holler.app.Activity.MainActivity;
 import com.holler.app.Activity.Offline;
@@ -132,6 +137,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+
+import javax.inject.Inject;
 
 import me.philio.pinentry.PinEntryView;
 import okhttp3.ResponseBody;
@@ -281,6 +288,9 @@ public class Map
     private String feedBackComment;
     private String strOTP = "";
 
+    @Inject public RetrofitModule.ServerAPI serverAPI;
+    @Inject public Context appContext;
+    private GPSTracker.GPSTrackerBinder gpsService;
     private boolean isUserExists = false;
 
     public Map() {
@@ -296,6 +306,21 @@ public class Map
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        AndarApplication.getInstance().component().inject(this);
+        Intent gpsTrackerBinding = new Intent(appContext, GPSTracker.class);
+        ServiceConnection gpsTrackerConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                Map.this.gpsService = (GPSTracker.GPSTrackerBinder) service;
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                Map.this.gpsService = null;
+            }
+        };
+        appContext.bindService(gpsTrackerBinding,gpsTrackerConnection,Context.BIND_AUTO_CREATE);
+
         super.onCreate(savedInstanceState);
 
 
@@ -1278,6 +1303,7 @@ public class Map
 //                    Intent intent = new Intent(activity, Offline.class);
 //                    activity.startActivity(intent);
                                 goOffline();
+                                gpsService.stopTracking();
                             } else {
                                 if (response.optJSONArray("requests") != null && response.optJSONArray("requests").length() > 0) {
                                     JSONObject statusResponse = null;
@@ -1866,42 +1892,23 @@ public class Map
         Utilities.hideKeyboard(getActivity());
         showSpinner();
         if (status.equals("ONLINE")) {
-
-            JSONObject param = new JSONObject();
-            try {
-                param.put("service_status", "offline");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AccessDetails.serviceurl + URLHelper.UPDATE_AVAILABILITY_API, param, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    hideSpinner();
-                    if (response != null) {
-                        if (response.optJSONObject("service").optString("status").equalsIgnoreCase("offline")) {
+            String authHeader = "Bearer " + token;
+            serverAPI
+                    .sendStatus(authHeader, RetrofitModule.ServerAPI.STATUS_OFFLINE)
+                    .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(getActivity()) {
+                        @Override
+                        public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
                             goOffline();
-                        } else {
-                            displayMessage(context.getResources().getString(R.string.something_went_wrong));
+                            gpsService.stopTracking();
                         }
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    hideSpinner();
-                    utils.print("Error", error.toString());
-                    errorHandler(error);
-                }
-            }) {
-                @Override
-                public java.util.Map<String, String> getHeaders() throws AuthFailureError {
-                    HashMap<String, String> headers = new HashMap<>();
-                    headers.put("X-Requested-With", "XMLHttpRequest");
-                    headers.put("Authorization", "Bearer " + token);
-                    return headers;
-                }
-            };
-            AndarApplication.getInstance().addToRequestQueue(jsonObjectRequest);
+
+                        @Override
+                        public void onFinishHandling() {
+                            super.onFinishHandling();
+                            hideSpinner();
+                        }
+                    });
+
         } else {
             String url;
             JSONObject param = new JSONObject();
