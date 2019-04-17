@@ -2,7 +2,7 @@ package com.holler.app.FCM;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.holler.app.Activity.MainActivity;
+import com.holler.app.activity.MainActivity;
 import com.holler.app.utils.Notificator;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {

@@ -8,13 +8,15 @@ import android.view.View;
 
 import com.holler.app.R;
 
+import androidx.appcompat.widget.AppCompatTextView;
+
 
 /**
  * Created by Esack N on 7/15/2017.
  */
 
 
-public class ExpandableTextView extends android.support.v7.widget.AppCompatTextView {
+public class ExpandableTextView extends AppCompatTextView {
     private static final int DEFAULT_TRIM_LENGTH = 25;
     private static final String ELLIPSIS = "...";
 

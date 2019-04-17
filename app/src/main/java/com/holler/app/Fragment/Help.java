@@ -2,17 +2,13 @@ package com.holler.app.Fragment;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +25,8 @@ import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.holler.app.Activity.WelcomeScreenActivity;
+import com.google.android.material.snackbar.Snackbar;
+import com.holler.app.activity.WelcomeScreenActivity;
 import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Helper.URLHelper;
@@ -40,6 +37,10 @@ import com.holler.app.R;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 
 import static com.holler.app.AndarApplication.trimMessage;
 

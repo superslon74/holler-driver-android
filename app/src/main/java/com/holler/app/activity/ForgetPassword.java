@@ -1,13 +1,11 @@
-package com.holler.app.Activity;
+package com.holler.app.activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -24,6 +22,8 @@ import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 import com.holler.app.Helper.ConnectionHelper;
 import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;

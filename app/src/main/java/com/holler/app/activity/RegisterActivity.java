@@ -1,4 +1,4 @@
-package com.holler.app.Activity;
+package com.holler.app.activity;
 
 
 import android.app.Activity;
@@ -7,11 +7,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.support.annotation.IdRes;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+
 import android.telephony.TelephonyManager;
 import android.text.InputFilter;
 import android.text.Spanned;
@@ -24,14 +20,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkError;
-import com.android.volley.NetworkResponse;
-import com.android.volley.NoConnectionError;
-import com.android.volley.Request;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.facebook.accountkit.Account;
 import com.facebook.accountkit.AccountKit;
 import com.facebook.accountkit.AccountKitCallback;
@@ -43,11 +31,11 @@ import com.facebook.accountkit.ui.AccountKitConfiguration;
 import com.facebook.accountkit.ui.LoginType;
 import com.facebook.accountkit.ui.SkinManager;
 import com.facebook.accountkit.ui.UIManager;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.JsonObject;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import com.holler.app.AndarApplication;
 import com.holler.app.Helper.ConnectionHelper;
 import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;
@@ -56,18 +44,11 @@ import com.holler.app.Models.AccessDetails;
 import com.holler.app.R;
 import com.holler.app.Utilities.Utilities;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.junit.Test;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static com.holler.app.AndarApplication.trimMessage;
 
 import com.facebook.accountkit.AccessToken;
 import com.holler.app.di.User;
@@ -75,6 +56,8 @@ import com.holler.app.server.OrderServerApi;
 import com.holler.app.utils.CustomActivity;
 
 
+import androidx.annotation.IdRes;
+import androidx.core.content.ContextCompat;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -588,9 +571,9 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
         try{
 
             Snackbar snackbar =  Snackbar.make(activity.getCurrentFocus(), toastString ,Snackbar.LENGTH_LONG)
-                    .setDuration(Snackbar.LENGTH_LONG);
+                    .setDuration(BaseTransientBottomBar.LENGTH_LONG);
             View snackbarView = snackbar.getView();
-            TextView tv= (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+            TextView tv= (TextView) snackbarView.findViewById(R.id.snackbar_text);
             tv.setMaxLines(3);
             snackbar.show();
 

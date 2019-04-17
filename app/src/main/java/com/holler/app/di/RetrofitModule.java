@@ -1,13 +1,7 @@
 package com.holler.app.di;
 
 import com.google.gson.JsonObject;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import com.holler.app.Activity.DocumentsActivity;
-import com.holler.app.Activity.RegisterActivity;
 import com.holler.app.Helper.URLHelper;
-import com.holler.app.Services.UserStatusChecker;
-import com.holler.app.server.OrderServerApi;
 
 import org.json.JSONObject;
 
@@ -31,9 +25,7 @@ import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.HeaderMap;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;

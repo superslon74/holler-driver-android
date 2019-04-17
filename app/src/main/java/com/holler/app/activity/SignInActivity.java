@@ -1,10 +1,9 @@
-package com.holler.app.Activity;
+package com.holler.app.activity;
 
 
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.support.v7.app.AppCompatActivity;
 
 import com.holler.app.R;
 import com.holler.app.utils.CustomActivity;

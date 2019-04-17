@@ -1,21 +1,15 @@
 package com.holler.app.utils;
 
-import android.Manifest;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
+
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,7 +22,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
-import com.holler.app.Activity.MainActivity;
+import com.holler.app.activity.MainActivity;
 import com.holler.app.AndarApplication;
 import com.holler.app.FloatingViewService.FloatingViewListener;
 import com.holler.app.FloatingViewService.FloatingViewManager;
@@ -38,6 +32,7 @@ import com.holler.app.server.OrderServerApi;
 
 import java.util.HashMap;
 
+import androidx.annotation.Nullable;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 

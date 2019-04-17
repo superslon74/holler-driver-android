@@ -1,27 +1,34 @@
 package com.holler.app.Helper;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.view.Window;
+import android.widget.Toast;
 
 import com.holler.app.R;
 
 
-public class CustomDialog extends ProgressDialog {
+public class CustomDialog  extends Toast{
+
+
 
     public CustomDialog(Context context) {
         super(context);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setIndeterminate(true);
-        setMessage(context.getResources().getString(R.string.please_wait));
+        makeText(context,context.getResources().getString(R.string.please_wait),Toast.LENGTH_LONG);
         //  setContentView(R.layout.custom_dialog);
     }
 
-    public CustomDialog(Context context, String strMessage) {
+    public CustomDialog(Context context, String message) {
         super(context);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setIndeterminate(true);
-        setMessage(strMessage);
+        makeText(context,message,Toast.LENGTH_LONG);
         //  setContentView(R.layout.custom_dialog);
+    }
+
+    public void setCancelable(boolean b) {
+    }
+
+    public void dismiss() {
+    }
+
+    public boolean isShowing() {
+        return false;
     }
 }

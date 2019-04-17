@@ -4,17 +4,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.holler.app.Activity.WelcomeScreenActivity;
+import com.google.android.material.snackbar.Snackbar;
+import com.holler.app.activity.WelcomeScreenActivity;
 import com.holler.app.Helper.ConnectionHelper;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.R;
 
+import androidx.fragment.app.Fragment;
 
 
 public class Wallet extends Fragment {

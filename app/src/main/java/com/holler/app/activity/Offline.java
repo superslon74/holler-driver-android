@@ -1,4 +1,4 @@
-package com.holler.app.Activity;
+package com.holler.app.activity;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -7,11 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
+
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +24,7 @@ import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
 import com.holler.app.AndarApplication;
 import com.holler.app.Fragment.Map;
@@ -47,6 +44,10 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import javax.inject.Inject;
 
 

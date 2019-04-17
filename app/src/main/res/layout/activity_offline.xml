@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:orientation="vertical"
-    tools:context="com.holler.app.Activity.Offline">
+    tools:context="com.holler.app.activity.Offline">
 
     <ImageView
         android:id="@+id/menuIcon"

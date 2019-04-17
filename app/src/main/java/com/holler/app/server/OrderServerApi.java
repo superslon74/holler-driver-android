@@ -1,22 +1,19 @@
 package com.holler.app.server;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.TimeoutError;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.holler.app.Activity.HistoryDetails;
-import com.holler.app.Activity.WelcomeScreenActivity;
+import com.holler.app.activity.HistoryDetails;
+import com.holler.app.activity.WelcomeScreenActivity;
 import com.holler.app.AndarApplication;
-import com.holler.app.Fragment.OnGoingTrips;
 import com.holler.app.Helper.URLHelper;
 import com.holler.app.R;
 import com.holler.app.utils.Notificator;
@@ -40,7 +37,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.HeaderMap;
 import retrofit2.http.POST;
 import retrofit2.http.Path;

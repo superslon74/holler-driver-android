@@ -1,4 +1,4 @@
-package com.holler.app.Activity;
+package com.holler.app.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,9 +8,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,15 +22,13 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.NoConnectionError;
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
-import com.holler.app.Fragment.OnGoingTrips;
 import com.holler.app.server.OrderServerApi;
 import com.holler.app.utils.CustomActivity;
 import com.squareup.picasso.Picasso;
@@ -57,6 +53,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import androidx.appcompat.app.AlertDialog;
 import okhttp3.ResponseBody;
 
 import static com.holler.app.AndarApplication.trimMessage;

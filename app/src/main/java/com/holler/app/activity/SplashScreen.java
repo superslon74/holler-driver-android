@@ -1,15 +1,12 @@
-package com.holler.app.Activity;
+package com.holler.app.activity;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +25,8 @@ import com.holler.app.utils.CustomActivity;
 import com.holler.app.utils.GPSTracker;
 
 import javax.inject.Inject;
+
+import androidx.appcompat.app.AlertDialog;
 
 
 public class  SplashScreen

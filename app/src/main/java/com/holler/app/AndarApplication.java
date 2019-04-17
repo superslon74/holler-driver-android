@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.Intent;
-import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -28,6 +27,7 @@ import org.json.JSONObject;
 
 import java.util.Iterator;
 
+import androidx.multidex.MultiDex;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 
@@ -79,8 +79,8 @@ public class AndarApplication extends Application implements  ComponentCallbacks
 
     @Override
     public void onCreate() {
-        super.onCreate();
         setupDependencyGraph();
+        super.onCreate();
         /**********************/
         mInstance = this;
         FontsOverride.setDefaultFont(this, "MONOSPACE", "ClanPro-NarrBook.otf");
