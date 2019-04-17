@@ -1,4 +1,4 @@
-package com.holler.app.di;
+package com.holler.app.di.components.app.modules;
 
 import android.app.Application;
 import android.content.Context;

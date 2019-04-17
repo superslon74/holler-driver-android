@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -35,7 +34,6 @@ import android.os.IBinder;
 import android.provider.Settings;
 
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,7 +66,7 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.holler.app.di.RetrofitModule;
+import com.holler.app.di.components.app.modules.RetrofitModule;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
 import com.holler.app.activity.DocumentsActivity;
@@ -87,7 +85,6 @@ import com.holler.app.server.OrderServerApi;
 import com.holler.app.utils.CustomActivity;
 import com.holler.app.utils.CustomActivity.RequestPermissionHandler;
 import com.holler.app.utils.CustomActivity.RefactoringException;
-import com.holler.app.utils.FloatingViewService;
 import com.holler.app.utils.GPSTracker;
 import com.squareup.picasso.Picasso;
 import com.holler.app.activity.MainActivity;
@@ -1066,13 +1063,18 @@ public class Map
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(3000);
         mLocationRequest.setFastestInterval(3000);
+        mLocationRequest.setInterval(3000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         if (ContextCompat.checkSelfPermission(context,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED && mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, (com.google.android.gms.location.LocationListener) this);
+//            LocationServices
+//                    .FusedLocationApi
+//                    .requestLocationUpdates(
+//                            mGoogleApiClient,
+//                            mLocationRequest,
+//                            (com.google.android.gms.location.LocationListener) this);
         }
     }
 

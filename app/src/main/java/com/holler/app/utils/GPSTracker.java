@@ -1,16 +1,9 @@
 package com.holler.app.utils;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.PendingIntent;
-import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -18,36 +11,23 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
-import android.os.Message;
-import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.gson.JsonObject;
 import com.holler.app.AndarApplication;
-import com.holler.app.di.RetrofitModule;
-import com.holler.app.di.UserStorageModule;
+import com.holler.app.di.components.app.modules.RetrofitModule;
+import com.holler.app.di.components.app.modules.UserStorageModule;
 import com.holler.app.server.OrderServerApi;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 
 import javax.inject.Inject;
 
-import dagger.multibindings.IntKey;
-import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 public class GPSTracker
@@ -61,7 +41,6 @@ public class GPSTracker
 
     private Location lastLocation;
     private Handler sender;
-    private int trackingType = LIVE_TRACKING;
 
     private LocationManager locationManager;
 
@@ -166,10 +145,6 @@ public class GPSTracker
     }
 
 
-    private void setTrackingRequestType(@TrackingType int type) {
-        this.trackingType = type;
-    }
-
     private void sendLocation(Location l){
         try {
             String latitude = ""+l.getLatitude();
@@ -214,16 +189,6 @@ public class GPSTracker
         return binder;
     }
 
-
-    public static final int LIVE_TRACKING = 1;
-    public static final int TRIP_TRACKING = 2;
-
-    @IntDef({LIVE_TRACKING, TRIP_TRACKING})
-    @Retention(RetentionPolicy.SOURCE)
-    @Deprecated
-    @interface TrackingType {
-    }
-
     public class GPSTrackerBinder extends Binder{
 
         public void connectGoogleApi(ResultCallback<LocationSettingsResult> locationSettingsResultCallback){
@@ -247,10 +212,6 @@ public class GPSTracker
             return GPSTracker.this.getLocation();
         }
 
-        @Deprecated
-        public void setTrackingRequestType(@TrackingType int requestType){
-            GPSTracker.this.setTrackingRequestType(requestType);
-        }
 
     }
 

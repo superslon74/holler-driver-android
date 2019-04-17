@@ -3,8 +3,9 @@ package com.holler.app.Helper;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.holler.app.di.SharedPreferencesModule;
+import com.holler.app.di.components.app.modules.SharedPreferencesModule;
 
+@Deprecated
 public class SharedHelper {
 
     public static SharedPreferences sharedPreferences;

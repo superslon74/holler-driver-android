@@ -1,8 +1,7 @@
-package com.holler.app.di;
+package com.holler.app.di.components.app.modules;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 

@@ -1,33 +1,33 @@
-package com.holler.app.di;
+package com.holler.app.mvp.splash;
 
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
-import android.util.Log;
 
 import com.google.gson.JsonObject;
 import com.holler.app.activity.MainActivity;
 import com.holler.app.activity.WelcomeScreenActivity;
+import com.holler.app.di.components.app.modules.DeviceInfoModule;
+import com.holler.app.di.Presenter;
+import com.holler.app.di.components.app.modules.RetrofitModule;
+import com.holler.app.di.User;
+import com.holler.app.di.components.app.modules.UserStorageModule;
 import com.holler.app.server.OrderServerApi;
 import com.holler.app.utils.CustomActivity;
 import com.holler.app.utils.GPSTracker;
 
-import java.util.HashMap;
-
-import javax.inject.Inject;
-
 import retrofit2.Response;
 
-public class SplashScreenPresenter implements Presenter {
+public class SplashPresenter implements Presenter {
     private Context context;
     private View view;
     private RetrofitModule.ServerAPI serverAPI;
     private DeviceInfoModule.DeviceInfo deviceInfo;
     private UserStorageModule.UserStorage userStorage;
 
-    public SplashScreenPresenter(
+    public SplashPresenter(
             Context context,
             View view,
             RetrofitModule.ServerAPI serverAPI,

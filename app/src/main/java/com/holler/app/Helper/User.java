@@ -3,6 +3,7 @@ package com.holler.app.Helper;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+@Deprecated
 public class User implements Parcelable {
 
     private String firstName;

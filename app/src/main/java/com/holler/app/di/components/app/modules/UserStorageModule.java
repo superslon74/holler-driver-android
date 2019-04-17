@@ -1,4 +1,7 @@
-package com.holler.app.di;
+package com.holler.app.di.components.app.modules;
+
+import com.holler.app.di.User;
+import com.holler.app.di.components.app.modules.SharedPreferencesModule;
 
 import javax.inject.Singleton;
 

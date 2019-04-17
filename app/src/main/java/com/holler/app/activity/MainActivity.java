@@ -52,7 +52,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.holler.app.utils.CustomActivity;
 import com.squareup.picasso.Picasso;
-import com.holler.app.Bean.Connect;
 import com.holler.app.Fragment.EarningsFragment;
 import com.holler.app.Fragment.Help;
 import com.holler.app.Fragment.Map;
@@ -61,7 +60,6 @@ import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Helper.URLHelper;
 import com.holler.app.Models.AccessDetails;
 import com.holler.app.AndarApplication;
-import com.holler.app.Listeners.ConnectionBooleanChangedListener;
 import com.holler.app.R;
 import com.holler.app.Utilities.Utilities;
 
@@ -152,12 +150,6 @@ public class MainActivity extends CustomActivity {
         }
 
         map();
-        Connect.addMyBooleanListener(new ConnectionBooleanChangedListener() {
-            @Override
-            public void OnMyBooleanChanged() {
-                Toast.makeText(getApplication(), "Changed", Toast.LENGTH_SHORT).show();
-            }
-        });
         loadNavHeader();
         setUpNavigationView();
 

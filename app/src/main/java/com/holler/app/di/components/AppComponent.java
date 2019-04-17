@@ -1,11 +1,17 @@
-package com.holler.app.di;
+package com.holler.app.di.components;
 
 import android.content.Context;
 
-import com.holler.app.Activity.Offline;
+import com.holler.app.activity.Offline;
 import com.holler.app.AndarApplication;
 import com.holler.app.FCM.MyFirebaseInstanceIDService;
 import com.holler.app.Fragment.Map;
+import com.holler.app.di.components.app.modules.AppModule;
+import com.holler.app.di.components.app.modules.DeviceInfoModule;
+import com.holler.app.di.components.app.modules.GoogleApiClientModule;
+import com.holler.app.di.components.app.modules.RetrofitModule;
+import com.holler.app.di.components.app.modules.SharedPreferencesModule;
+import com.holler.app.di.components.app.modules.UserStorageModule;
 import com.holler.app.utils.GPSTracker;
 
 import javax.inject.Singleton;

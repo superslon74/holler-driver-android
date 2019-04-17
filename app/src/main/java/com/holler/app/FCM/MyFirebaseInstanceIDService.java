@@ -1,6 +1,5 @@
 package com.holler.app.FCM;
 
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -8,14 +7,11 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.gson.JsonObject;
 import com.holler.app.AndarApplication;
 import com.holler.app.Helper.SharedHelper;
-import com.holler.app.Utilities.Utilities;
-import com.holler.app.di.DeviceInfoModule;
-import com.holler.app.di.RetrofitModule;
+import com.holler.app.di.components.app.modules.DeviceInfoModule;
+import com.holler.app.di.components.app.modules.RetrofitModule;
 import com.holler.app.di.User;
-import com.holler.app.di.UserStorageModule;
+import com.holler.app.di.components.app.modules.UserStorageModule;
 import com.holler.app.server.OrderServerApi;
-
-import java.util.HashMap;
 
 import javax.inject.Inject;
 

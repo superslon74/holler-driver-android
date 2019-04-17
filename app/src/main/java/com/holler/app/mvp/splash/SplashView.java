@@ -1,4 +1,4 @@
-package com.holler.app.activity;
+package com.holler.app.mvp.splash;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -16,22 +16,22 @@ import com.holler.app.FCM.ForceUpdateChecker;
 import com.holler.app.Models.AccessDetails;
 import com.holler.app.AndarApplication;
 import com.holler.app.R;
-import com.holler.app.di.AppComponent;
-import com.holler.app.di.DaggerSplashScreenComponent;
+import com.holler.app.activity.MainActivity;
+import com.holler.app.activity.WelcomeScreenActivity;
+import com.holler.app.di.components.AppComponent;
 import com.holler.app.di.Presenter;
-import com.holler.app.di.SplashScreenModule;
-import com.holler.app.di.SplashScreenPresenter;
+import com.holler.app.di.components.DaggerSplashScreenComponent;
+import com.holler.app.di.components.splash.modules.SplashScreenModule;
 import com.holler.app.utils.CustomActivity;
-import com.holler.app.utils.GPSTracker;
 
 import javax.inject.Inject;
 
 import androidx.appcompat.app.AlertDialog;
 
 
-public class  SplashScreen
+public class SplashView
         extends CustomActivity
-        implements ForceUpdateChecker.OnUpdateNeededListener, SplashScreenPresenter.View {
+        implements ForceUpdateChecker.OnUpdateNeededListener, SplashPresenter.View {
 
     @Inject
     Presenter presenter;
@@ -241,23 +241,23 @@ public class  SplashScreen
 
     @Override
     public void showMessage(String message) {
-        Toast.makeText(SplashScreen.this, message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(SplashView.this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void gotoActivity(Class<? extends CustomActivity> redirectTo) {
         if(redirectTo == MainActivity.class){
-            Intent mainIntent = new Intent(SplashScreen.this, MainActivity.class);
+            Intent mainIntent = new Intent(SplashView.this, MainActivity.class);
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(mainIntent);
             finish();
         }else if(redirectTo == WelcomeScreenActivity.class){
-            Intent mainIntent = new Intent(SplashScreen.this, WelcomeScreenActivity.class);
+            Intent mainIntent = new Intent(SplashView.this, WelcomeScreenActivity.class);
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(mainIntent);
             finish();
         }else{
-            Intent mainIntent = new Intent(SplashScreen.this, WelcomeScreenActivity.class);
+            Intent mainIntent = new Intent(SplashView.this, WelcomeScreenActivity.class);
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(mainIntent);
             finish();

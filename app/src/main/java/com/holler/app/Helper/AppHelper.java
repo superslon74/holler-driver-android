@@ -19,7 +19,7 @@ import java.io.IOException;
 
 import androidx.core.content.ContextCompat;
 
-
+@Deprecated
 public class AppHelper {
 
     public static byte[] getFileDataFromDrawable(Context context, int id) {

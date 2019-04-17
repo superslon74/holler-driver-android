@@ -80,7 +80,7 @@
         </provider>
 
         <activity
-            android:name=".activity.SplashScreen"
+            android:name=".mvp.splash.SplashView"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

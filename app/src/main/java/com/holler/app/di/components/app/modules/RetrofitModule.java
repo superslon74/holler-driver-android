@@ -1,9 +1,8 @@
-package com.holler.app.di;
+package com.holler.app.di.components.app.modules;
 
 import com.google.gson.JsonObject;
 import com.holler.app.Helper.URLHelper;
-
-import org.json.JSONObject;
+import com.holler.app.di.User;
 
 import java.io.IOException;
 import java.util.Map;
@@ -25,6 +24,7 @@ import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.HeaderMap;
 import retrofit2.http.POST;
 import retrofit2.http.Path;

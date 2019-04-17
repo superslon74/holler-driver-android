@@ -15,15 +15,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkError;
-import com.android.volley.NetworkResponse;
-import com.android.volley.NoConnectionError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
 import com.holler.app.AndarApplication;
@@ -31,18 +22,11 @@ import com.holler.app.Fragment.Map;
 import com.holler.app.Helper.ConnectionHelper;
 import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;
-import com.holler.app.Helper.URLHelper;
-import com.holler.app.Models.AccessDetails;
 import com.holler.app.R;
 import com.holler.app.Utilities.Utilities;
-import com.holler.app.di.RetrofitModule;
+import com.holler.app.di.components.app.modules.RetrofitModule;
 import com.holler.app.server.OrderServerApi;
 import com.holler.app.utils.GPSTracker;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
