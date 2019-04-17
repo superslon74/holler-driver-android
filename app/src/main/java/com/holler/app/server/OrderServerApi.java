@@ -75,7 +75,7 @@ public interface OrderServerApi {
             @Path("id") String id);
 
     @POST("/api/provider/trip/send_request")
-    Call<ResponseBody> createOrder(
+    Call<CreteOrderResponse> createOrder(
             @HeaderMap Map<String, String> headers,
             @Body Order order);
 
@@ -100,6 +100,20 @@ public interface OrderServerApi {
                     .create(OrderServerApi.class);
         }
     }
+
+    class CreteOrderResponse{
+        @Expose(serialize = false)
+        @SerializedName("message")
+        public String message;
+        @Expose(serialize = false)
+        @SerializedName("request_id")
+        public String requestId;
+        @Expose(serialize = false)
+        @SerializedName("current_provider")
+        public String provider;
+    }
+
+
 
     abstract class CancelOrderCallbackHandler<T> extends CallbackErrorHandler<T> {
 

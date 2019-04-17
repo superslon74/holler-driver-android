@@ -541,15 +541,15 @@ public class Map
 
         serverApiClient
                 .createOrder(headers,order)
-                .enqueue(new OrderServerApi.CallbackErrorHandler<ResponseBody>(getActivity()) {
+                .enqueue(new OrderServerApi.CallbackErrorHandler<OrderServerApi.CreteOrderResponse>(getActivity()) {
                     @Override
-                    public void onSuccessfulResponse(retrofit2.Response<ResponseBody> response) {
+                    public void onSuccessfulResponse(retrofit2.Response<OrderServerApi.CreteOrderResponse> response) {
                         Log.d("AZAZA","order successfully created");
                         Toast.makeText(getActivity(),"Location sent",Toast.LENGTH_LONG).show();
                     }
 
                     @Override
-                    public void onUnsuccessfulResponse(retrofit2.Response<ResponseBody> response) {
+                    public void onUnsuccessfulResponse(retrofit2.Response<OrderServerApi.CreteOrderResponse> response) {
                         super.onUnsuccessfulResponse(response);
                     }
 

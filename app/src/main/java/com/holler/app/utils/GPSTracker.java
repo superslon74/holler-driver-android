@@ -59,7 +59,7 @@ public class GPSTracker
 
 
 
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 0;
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 5;
     private static final long MIN_TIME_BW_UPDATES = 1000 * 3;
 
     private Location lastLocation;
@@ -92,7 +92,7 @@ public class GPSTracker
 
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(30 * 1000);
+        locationRequest.setInterval(5 * 1000);
         locationRequest.setFastestInterval(5 * 1000);
 
         LocationSettingsRequest locationSettingsRequest = new LocationSettingsRequest.Builder()
@@ -110,9 +110,13 @@ public class GPSTracker
 
     @SuppressLint("MissingPermission")
     public Location getLocation() {
-        Location result = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if(result==null){
-            lastLocation = result;
+        if(lastLocation == null){
+            Location last = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if(last == null)
+                last = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            if(last!=null){
+                lastLocation = last;
+            }
         }
         return lastLocation;
     }
@@ -126,7 +130,7 @@ public class GPSTracker
         locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
                 MIN_TIME_BW_UPDATES,
-                MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                MIN_DISTANCE_CHANGE_FOR_UPDATES, GPSTracker.this);
     }
 
 
@@ -134,7 +138,7 @@ public class GPSTracker
         @Override
         public void run() {
             try{
-                sendLocation(lastLocation);
+                sendLocation(getLocation());
             }finally {
                 sender.postDelayed(updateLocationLooperBody, MIN_TIME_BW_UPDATES);
             }
@@ -188,7 +192,7 @@ public class GPSTracker
                         }
                     });
         }catch (NullPointerException e){
-            Log.e("AZAZA","GPSTracker error: lastLocation not defined",e);
+            Log.e("AZAZA","GPSTracker error: lastLocation not defined");
         }
     }
 

@@ -134,7 +134,7 @@ public class SplashScreenPresenter implements Presenter {
 
             }
         };
-        context.bindService(gpsTrackerBinding,gpsTrackerConnection,0);
+        context.bindService(gpsTrackerBinding,gpsTrackerConnection,Context.BIND_AUTO_CREATE);
     }
 
 

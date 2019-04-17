@@ -209,8 +209,7 @@
         <service
             android:name=".utils.FloatingViewService"
             android:enabled="true"
-            android:exported="false"
-            android:process=":external"/>
+            android:exported="false"/>
 
         <receiver android:name=".utils.Notificator$AlarmSignalReceiver" />
 

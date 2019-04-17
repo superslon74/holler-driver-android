@@ -30,6 +30,8 @@ import com.holler.app.Services.NotificationPublisher;
 import java.util.Date;
 import java.util.Map;
 
+import static android.media.AudioManager.STREAM_NOTIFICATION;
+
 
 public class Notificator {
 
@@ -88,8 +90,15 @@ public class Notificator {
         return this;
     }
 
-    public void castNotification() {
+    private Notification build(){
         Notification notification = notificationBuilder.build();
+        notification.flags = Notification.FLAG_INSISTENT | Notification.FLAG_ONGOING_EVENT;
+
+        return notification;
+    }
+
+    public void castNotification() {
+        Notification notification = build();
         int notificationId = (int) (Math.random() * 1000);
         castCustomNotification(notificationId, notification);
     }
@@ -106,7 +115,7 @@ public class Notificator {
                 .setContentTitle(title)
                 .setContentText(text)
                 .setAutoCancel(true)
-                .setSound(soundUri)
+                .setSound(soundUri, STREAM_NOTIFICATION)
                 .setChannelId(NOTIFICATION_CHANNEL_ID)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
                 .setPriority(NotificationManager.IMPORTANCE_HIGH)
@@ -129,7 +138,7 @@ public class Notificator {
 
         Intent alarmIntent = new Intent(context, AlarmSignalReceiver.class);
         alarmIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, notificationId);
-        alarmIntent.putExtra(NotificationPublisher.NOTIFICATION, notificationBuilder.build());
+        alarmIntent.putExtra(NotificationPublisher.NOTIFICATION, build());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context,
                 notificationId,
@@ -150,7 +159,7 @@ public class Notificator {
 
         Intent alarmIntent = new Intent(context, AlarmSignalReceiver.class);
         alarmIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, notificationId);
-        alarmIntent.putExtra(NotificationPublisher.NOTIFICATION, notificationBuilder.build());
+        alarmIntent.putExtra(NotificationPublisher.NOTIFICATION, build());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context,
                 notificationId,
@@ -168,13 +177,17 @@ public class Notificator {
         notificationManager.cancelAll();
     }
 
+    public void cancelByOrderId(int orderId){
+        notificationManager.cancel(orderId);
+    }
+
 
     @TargetApi(Build.VERSION_CODES.O)
     private NotificationChannel createChannel() {
 
         Uri soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.alert_tone);
         AudioAttributes soundAttributes = new AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
                 .build();
 
@@ -183,7 +196,7 @@ public class Notificator {
         notificationChannel.enableLights(true);
         notificationChannel.setLightColor(Color.RED);
         notificationChannel.enableVibration(true);
-        notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+        notificationChannel.setVibrationPattern(new long[]{500,500,500,100});
         notificationChannel.setSound(soundUri, soundAttributes);
 
         return notificationChannel;

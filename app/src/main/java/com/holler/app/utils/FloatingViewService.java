@@ -27,6 +27,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.gson.JsonObject;
 import com.holler.app.Activity.MainActivity;
 import com.holler.app.AndarApplication;
 import com.holler.app.FloatingViewService.FloatingViewListener;
@@ -113,6 +114,8 @@ public class FloatingViewService extends Service implements FloatingViewListener
     }
 
     private void getLocation() {
+        showSpinnerAndLockButton();
+
         Intent gpsTrackerBinding = new Intent(this, GPSTracker.class);
         ServiceConnection gpsTrackerConnection = new ServiceConnection() {
             @Override
@@ -161,7 +164,17 @@ public class FloatingViewService extends Service implements FloatingViewListener
     }
 
     private void createAndSendOrder(Location location) {
-        showSpinnerAndLockButton();
+        if(location == null){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                ((ImageView)icon).setImageDrawable(AndarApplication.getInstance().getDrawable(R.drawable.ic_close_yellow));
+                Toast.makeText(AndarApplication.getInstance(),"Cant't get location",Toast.LENGTH_LONG).show();
+            }else{
+                Toast.makeText(AndarApplication.getInstance(),"Cant't get location",Toast.LENGTH_LONG).show();
+            }
+            hideSpinnerAndUnlockButton();
+            return;
+        }
+
         OrderServerApi serverApiClient = OrderServerApi.ApiCreator.createInstance();
 
         HashMap<String, String> headers = new HashMap<String, String>();
@@ -170,27 +183,35 @@ public class FloatingViewService extends Service implements FloatingViewListener
 
         OrderServerApi.Order order = new OrderServerApi.Order();
 
-        //TODO: service may return null location if app was closed
         order.startLatitude = ""+location.getLatitude();
         order.startLongitude = ""+location.getLongitude();
 
         serverApiClient
                 .createOrder(headers, order)
-                .enqueue(new OrderServerApi.CallbackErrorHandler<ResponseBody>(null) {
+                .enqueue(new OrderServerApi.CallbackErrorHandler<OrderServerApi.CreteOrderResponse>(null) {
+                    private static final String MESSAGE_REQUEST_SUCCESFULL = "New request Created!";
+
                     @Override
-                    public void onSuccessfulResponse(Response<ResponseBody> response) {
+                    public void onSuccessfulResponse(Response<OrderServerApi.CreteOrderResponse> response) {
                         Log.d("AZAZA", "order successfully created");
-//                        Toast.makeText(null,"Location sent",Toast.LENGTH_LONG).show();
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            ((ImageView)icon).setImageDrawable(AndarApplication.getInstance().getDrawable(R.drawable.ic_check_yellow));
+                        String message = response.body().message;
+                        if(MESSAGE_REQUEST_SUCCESFULL.equals(message)) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                ((ImageView) icon).setImageDrawable(AndarApplication.getInstance().getDrawable(R.drawable.ic_check_yellow));
+                            }
+                            Toast.makeText(AndarApplication.getInstance(), message, Toast.LENGTH_LONG).show();
+
                         }else{
-                            Toast.makeText(AndarApplication.getInstance(),"Location sent.",Toast.LENGTH_LONG).show();
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                ((ImageView)icon).setImageDrawable(AndarApplication.getInstance().getDrawable(R.drawable.ic_close_yellow));
+                            }
+                            Toast.makeText(AndarApplication.getInstance(), message, Toast.LENGTH_LONG).show();
                         }
 
                     }
 
                     @Override
-                    public void onUnsuccessfulResponse(retrofit2.Response<ResponseBody> response) {
+                    public void onUnsuccessfulResponse(retrofit2.Response<OrderServerApi.CreteOrderResponse> response) {
                         super.onUnsuccessfulResponse(response);
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             ((ImageView)icon).setImageDrawable(AndarApplication.getInstance().getDrawable(R.drawable.ic_close_yellow));
