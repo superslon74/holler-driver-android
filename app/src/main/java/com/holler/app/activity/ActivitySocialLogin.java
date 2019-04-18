@@ -61,6 +61,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.JsonObject;
+import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.utils.CustomActivity;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -300,7 +301,7 @@ public class ActivitySocialLogin extends CustomActivity implements GoogleApiClie
                                 SharedHelper.putKey(ActivitySocialLogin.this, "account_kit_token", "");
                                 Intent mainIntent;
 
-                                mainIntent = new Intent(ActivitySocialLogin.this, WelcomeScreenActivity.class);
+                                mainIntent = new Intent(ActivitySocialLogin.this, WelcomeView.class);
 
                                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(mainIntent);
@@ -490,7 +491,7 @@ public class ActivitySocialLogin extends CustomActivity implements GoogleApiClie
     public void GoToBeginActivity() {
         Intent mainIntent;
 
-        mainIntent = new Intent(ActivitySocialLogin.this, WelcomeScreenActivity.class);
+        mainIntent = new Intent(ActivitySocialLogin.this, WelcomeView.class);
 
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(mainIntent);

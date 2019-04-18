@@ -1,4 +1,4 @@
-package com.holler.app.di.components;
+package com.holler.app.di.app;
 
 import android.content.Context;
 
@@ -6,12 +6,14 @@ import com.holler.app.activity.Offline;
 import com.holler.app.AndarApplication;
 import com.holler.app.FCM.MyFirebaseInstanceIDService;
 import com.holler.app.Fragment.Map;
-import com.holler.app.di.components.app.modules.AppModule;
-import com.holler.app.di.components.app.modules.DeviceInfoModule;
-import com.holler.app.di.components.app.modules.GoogleApiClientModule;
-import com.holler.app.di.components.app.modules.RetrofitModule;
-import com.holler.app.di.components.app.modules.SharedPreferencesModule;
-import com.holler.app.di.components.app.modules.UserStorageModule;
+import com.holler.app.di.app.modules.AppModule;
+import com.holler.app.di.app.modules.DeviceInfoModule;
+import com.holler.app.di.app.modules.GoogleApiClientModule;
+import com.holler.app.di.app.modules.RetrofitModule;
+import com.holler.app.di.app.modules.RouterModule;
+import com.holler.app.di.app.modules.SharedPreferencesModule;
+import com.holler.app.di.app.modules.UserStorageModule;
+import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.utils.GPSTracker;
 
 import javax.inject.Singleton;
@@ -25,19 +27,22 @@ import dagger.Component;
         DeviceInfoModule.class,
         SharedPreferencesModule.class,
         UserStorageModule.class,
-        GoogleApiClientModule.class
+        GoogleApiClientModule.class,
+        RouterModule.class
 })
 public interface AppComponent {
     void inject(AndarApplication app);
     void inject(MyFirebaseInstanceIDService firebaseIdChecker);
     void inject(GPSTracker tracker);
 
+    void inject(WelcomeView welcomeView);
     //TODO: remove shit above
     void inject(Map mapFragment);
     void inject(Offline offlineFragment);
 
 
     Context getContext();
+
     RetrofitModule.ServerAPI getRetrofitClient();
     DeviceInfoModule.DeviceInfo getDeviceInfoObject();
     SharedPreferencesModule.SharedPreferencesHelper getSharedPreferencesHalper();

@@ -17,6 +17,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.R;
 import com.holler.app.Utilities.Utilities;
+import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.utils.CustomActivity;
 
 import java.util.regex.Matcher;
@@ -79,7 +80,7 @@ public class ActivityEmail extends CustomActivity {
             @Override
             public void onClick(View view) {
                 SharedHelper.putKey(ActivityEmail.this, "email", "");
-                Intent mainIntent = new Intent(ActivityEmail.this, WelcomeScreenActivity.class);
+                Intent mainIntent = new Intent(ActivityEmail.this, WelcomeView.class);
                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(mainIntent);
                 ActivityEmail.this.finish();
@@ -134,7 +135,7 @@ public class ActivityEmail extends CustomActivity {
     public void onBackPressed() {
         super.onBackPressed();
         SharedHelper.putKey(ActivityEmail.this, "email", "");
-        Intent mainIntent = new Intent(ActivityEmail.this, WelcomeScreenActivity.class);
+        Intent mainIntent = new Intent(ActivityEmail.this, WelcomeView.class);
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(mainIntent);
         ActivityEmail.this.finish();

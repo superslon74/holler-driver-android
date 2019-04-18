@@ -15,6 +15,7 @@ import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Models.AccessDetails;
 import com.holler.app.R;
 import com.holler.app.Utilities.Utilities;
+import com.holler.app.mvp.welcome.WelcomeView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -164,7 +165,7 @@ public class AccessKeyActivity extends AppCompatActivity {
     }
 
     public void GoToBeginActivity(){
-        Intent mainIntent = new Intent(AccessKeyActivity.this, WelcomeScreenActivity.class);
+        Intent mainIntent = new Intent(AccessKeyActivity.this, WelcomeView.class);
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(mainIntent);
         finish();

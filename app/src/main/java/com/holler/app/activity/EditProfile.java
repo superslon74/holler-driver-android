@@ -34,6 +34,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.snackbar.Snackbar;
+import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.utils.CustomActivity;
 import com.squareup.picasso.Picasso;
 import com.holler.app.AndarApplication;
@@ -721,7 +722,7 @@ public class EditProfile extends CustomActivity implements RadioGroup.OnCheckedC
         SharedHelper.putKey(activity, "loggedIn", getString(R.string.False));
         Intent mainIntent;
 
-            mainIntent = new Intent(activity, WelcomeScreenActivity.class);
+            mainIntent = new Intent(activity, WelcomeView.class);
 
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(mainIntent);

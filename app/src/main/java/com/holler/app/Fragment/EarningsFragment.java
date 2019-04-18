@@ -27,7 +27,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.snackbar.Snackbar;
-import com.holler.app.activity.WelcomeScreenActivity;
+import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.Helper.ConnectionHelper;
 import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;
@@ -278,7 +278,7 @@ public class EarningsFragment extends Fragment {
         Intent mainIntent;
 
 
-            mainIntent = new Intent(activity, WelcomeScreenActivity.class);
+            mainIntent = new Intent(activity, WelcomeView.class);
 
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(mainIntent);

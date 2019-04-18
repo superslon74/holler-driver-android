@@ -50,6 +50,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.utils.CustomActivity;
 import com.squareup.picasso.Picasso;
 import com.holler.app.Fragment.EarningsFragment;
@@ -127,7 +128,7 @@ public class MainActivity extends CustomActivity {
         super.onCreate(savedInstanceState);
         String userLoggedIn = SharedHelper.getKey(MainActivity.this, "loggedIn");
         if("false".endsWith(userLoggedIn)){
-            Intent goToLogin = new Intent(MainActivity.this, WelcomeScreenActivity.class);
+            Intent goToLogin = new Intent(MainActivity.this, WelcomeView.class);
             goToLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(goToLogin);
             finish();
@@ -531,7 +532,7 @@ public class MainActivity extends CustomActivity {
                 Intent goToLogin;
 
 
-                goToLogin = new Intent(activity, WelcomeScreenActivity.class);
+                goToLogin = new Intent(activity, WelcomeView.class);
 
                 goToLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(goToLogin);

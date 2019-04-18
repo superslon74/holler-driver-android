@@ -31,6 +31,7 @@ import com.holler.app.Helper.URLHelper;
 import com.holler.app.Models.AccessDetails;
 import com.holler.app.R;
 import com.holler.app.Utilities.Utilities;
+import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.utils.CustomActivity;
 
 import org.json.JSONException;
@@ -207,7 +208,7 @@ public class ChangePassword extends CustomActivity {
         SharedHelper.putKey(activity,"loggedIn",getString(R.string.False));
         Intent mainIntent;
 
-            mainIntent = new Intent(activity, WelcomeScreenActivity.class);
+            mainIntent = new Intent(activity, WelcomeView.class);
 
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(mainIntent);

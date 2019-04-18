@@ -23,7 +23,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.daasuu.cat.CountAnimationTextView;
 import com.google.android.material.snackbar.Snackbar;
-import com.holler.app.activity.WelcomeScreenActivity;
+import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Helper.URLHelper;
@@ -288,7 +288,7 @@ public class SummaryFragment extends Fragment implements View.OnClickListener {
     public void GoToBeginActivity() {
         SharedHelper.putKey(getContext(), "loggedIn", getString(R.string.False));
         Intent mainIntent;
-            mainIntent = new Intent(getContext(), WelcomeScreenActivity.class);
+            mainIntent = new Intent(getContext(), WelcomeView.class);
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(mainIntent);
         getActivity().finish();

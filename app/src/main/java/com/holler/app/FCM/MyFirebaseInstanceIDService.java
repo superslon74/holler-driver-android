@@ -7,10 +7,10 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.gson.JsonObject;
 import com.holler.app.AndarApplication;
 import com.holler.app.Helper.SharedHelper;
-import com.holler.app.di.components.app.modules.DeviceInfoModule;
-import com.holler.app.di.components.app.modules.RetrofitModule;
+import com.holler.app.di.app.modules.DeviceInfoModule;
+import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.di.User;
-import com.holler.app.di.components.app.modules.UserStorageModule;
+import com.holler.app.di.app.modules.UserStorageModule;
 import com.holler.app.server.OrderServerApi;
 
 import javax.inject.Inject;

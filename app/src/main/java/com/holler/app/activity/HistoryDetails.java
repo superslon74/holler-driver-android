@@ -29,6 +29,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
+import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.server.OrderServerApi;
 import com.holler.app.utils.CustomActivity;
 import com.squareup.picasso.Picasso;
@@ -627,7 +628,7 @@ public class HistoryDetails extends CustomActivity {
         SharedHelper.putKey(activity, "loggedIn", getString(R.string.False));
         Intent mainIntent;
 
-        mainIntent = new Intent(activity, WelcomeScreenActivity.class);
+        mainIntent = new Intent(activity, WelcomeView.class);
 
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(mainIntent);

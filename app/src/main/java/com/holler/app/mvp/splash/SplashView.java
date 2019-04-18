@@ -17,11 +17,11 @@ import com.holler.app.Models.AccessDetails;
 import com.holler.app.AndarApplication;
 import com.holler.app.R;
 import com.holler.app.activity.MainActivity;
-import com.holler.app.activity.WelcomeScreenActivity;
-import com.holler.app.di.components.AppComponent;
 import com.holler.app.di.Presenter;
-import com.holler.app.di.components.DaggerSplashScreenComponent;
-import com.holler.app.di.components.splash.modules.SplashScreenModule;
+import com.holler.app.di.app.AppComponent;
+import com.holler.app.di.app.components.DaggerSplashComponent;
+import com.holler.app.di.app.components.splash.modules.SplashScreenModule;
+import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.utils.CustomActivity;
 
 import javax.inject.Inject;
@@ -34,16 +34,18 @@ public class SplashView
         implements ForceUpdateChecker.OnUpdateNeededListener, SplashPresenter.View {
 
     @Inject
-    Presenter presenter;
+    public Presenter presenter;
+//
+//    @Inject
+//    public RouterModule.Router router;
 
     private void setupComponent(){
-        AppComponent appComponent = (AppComponent) AndarApplication.get(this).component();
-        DaggerSplashScreenComponent.builder()
+        AppComponent appComponent = (AppComponent) AndarApplication.getInstance().component();
+        DaggerSplashComponent.builder()
                 .appComponent(appComponent)
                 .splashScreenModule(new SplashScreenModule(this))
                 .build()
                 .inject(this);
-
     }
 
     @Override
@@ -247,20 +249,9 @@ public class SplashView
     @Override
     public void gotoActivity(Class<? extends CustomActivity> redirectTo) {
         if(redirectTo == MainActivity.class){
-            Intent mainIntent = new Intent(SplashView.this, MainActivity.class);
-            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(mainIntent);
-            finish();
-        }else if(redirectTo == WelcomeScreenActivity.class){
-            Intent mainIntent = new Intent(SplashView.this, WelcomeScreenActivity.class);
-            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(mainIntent);
-            finish();
-        }else{
-            Intent mainIntent = new Intent(SplashView.this, WelcomeScreenActivity.class);
-            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(mainIntent);
-            finish();
+//            router.goToMainScreen();
+        }else {
+//            router.goToWelcomeScreen();
         }
     }
 }

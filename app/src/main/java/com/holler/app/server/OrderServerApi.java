@@ -12,7 +12,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.holler.app.activity.HistoryDetails;
-import com.holler.app.activity.WelcomeScreenActivity;
+import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.AndarApplication;
 import com.holler.app.Helper.URLHelper;
 import com.holler.app.R;
@@ -232,7 +232,7 @@ public interface OrderServerApi {
             switch (response.code()) {
                 case 401:
                     if(activity!=null){
-                        Intent mainIntent = new Intent(activity, WelcomeScreenActivity.class);
+                        Intent mainIntent = new Intent(activity, WelcomeView.class);
                         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         activity.startActivity(mainIntent);
                         activity.finish();

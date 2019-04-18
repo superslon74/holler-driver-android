@@ -43,6 +43,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
+import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.utils.CustomActivity;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -332,7 +333,7 @@ public class BeginScreen extends CustomActivity implements GoogleApiClient.OnCon
 
 
     public void GoToBeginActivity() {
-        Intent mainIntent = new Intent(context, WelcomeScreenActivity.class);
+        Intent mainIntent = new Intent(context, WelcomeView.class);
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(mainIntent);
         finish();

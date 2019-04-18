@@ -24,7 +24,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
 import com.holler.app.activity.HistoryDetails;
-import com.holler.app.activity.WelcomeScreenActivity;
+import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.AndarApplication;
 import com.holler.app.Helper.ConnectionHelper;
 import com.holler.app.Helper.CustomDialog;
@@ -386,7 +386,7 @@ public class PastTrips extends Fragment {
     public void GoToBeginActivity() {
         SharedHelper.putKey(activity, "loggedIn", getString(R.string.False));
         Intent mainIntent;
-            mainIntent = new Intent(activity, WelcomeScreenActivity.class);
+            mainIntent = new Intent(activity, WelcomeView.class);
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(mainIntent);
         activity.finish();

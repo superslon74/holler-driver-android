@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.holler.app.activity.WelcomeScreenActivity;
+import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.Helper.ConnectionHelper;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.R;
@@ -69,7 +69,7 @@ public class Wallet extends Fragment {
         SharedHelper.putKey(activity,"loggedIn",getString(R.string.False));
         Intent mainIntent;
 
-            mainIntent = new Intent(activity, WelcomeScreenActivity.class);
+            mainIntent = new Intent(activity, WelcomeView.class);
 
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(mainIntent);

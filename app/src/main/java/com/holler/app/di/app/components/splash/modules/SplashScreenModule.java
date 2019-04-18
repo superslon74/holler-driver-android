@@ -1,11 +1,12 @@
-package com.holler.app.di.components.splash.modules;
+package com.holler.app.di.app.components.splash.modules;
 
 import android.content.Context;
 
 import com.holler.app.di.Presenter;
-import com.holler.app.di.components.app.modules.UserStorageModule;
-import com.holler.app.di.components.app.modules.DeviceInfoModule;
-import com.holler.app.di.components.app.modules.RetrofitModule;
+import com.holler.app.di.app.ActivityScope;
+import com.holler.app.di.app.modules.UserStorageModule;
+import com.holler.app.di.app.modules.DeviceInfoModule;
+import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.mvp.splash.SplashPresenter;
 
 import dagger.Module;

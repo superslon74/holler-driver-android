@@ -11,13 +11,20 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.holler.app.Utilities.FontsOverride;
-import com.holler.app.di.components.AppComponent;
-import com.holler.app.di.components.DaggerAppComponent;
-import com.holler.app.di.components.app.modules.AppModule;
-import com.holler.app.di.components.app.modules.DeviceInfoModule;
-import com.holler.app.di.components.app.modules.RetrofitModule;
-import com.holler.app.di.components.app.modules.SharedPreferencesModule;
-import com.holler.app.di.components.app.modules.UserStorageModule;
+import com.holler.app.di.app.AppComponent;
+import com.holler.app.di.app.DaggerAppComponent;
+import com.holler.app.di.app.modules.AppModule;
+import com.holler.app.di.app.modules.DeviceInfoModule;
+import com.holler.app.di.app.modules.RetrofitModule;
+import com.holler.app.di.app.modules.RouterModule;
+import com.holler.app.di.app.modules.SharedPreferencesModule;
+import com.holler.app.di.app.modules.UserStorageModule;
+import com.orhanobut.logger.AndroidLogAdapter;
+import com.orhanobut.logger.CsvFormatStrategy;
+import com.orhanobut.logger.FormatStrategy;
+import com.orhanobut.logger.LogcatLogStrategy;
+import com.orhanobut.logger.Logger;
+import com.orhanobut.logger.PrettyFormatStrategy;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,9 +38,19 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class AndarApplication extends Application implements  ComponentCallbacks2 {
 
-//    TODO: hard inject component
-    private AppComponent component;
 
+    @Override
+    public void onCreate() {
+        initLogger();
+        setupDependencyGraph();
+        super.onCreate();
+        /**********************/
+        mInstance = this;
+        FontsOverride.setDefaultFont(this, "MONOSPACE", "ClanPro-NarrBook.otf");
+
+    }
+
+    private AppComponent component;
     public AppComponent component(){
         return component;
     }
@@ -43,6 +60,7 @@ public class AndarApplication extends Application implements  ComponentCallbacks
     }
 
     private void setupDependencyGraph(){
+
         component = DaggerAppComponent
                 .builder()
                 .appModule(new AppModule(this))
@@ -50,8 +68,36 @@ public class AndarApplication extends Application implements  ComponentCallbacks
                 .sharedPreferencesModule(new SharedPreferencesModule())
                 .deviceInfoModule(new DeviceInfoModule())
                 .userStorageModule(new UserStorageModule())
+                .routerModule(new RouterModule())
                 .build();
         component.inject(this);
+        Logger.d("Dependency Graph Set Up");
+    }
+
+    private static AndarApplication mInstance;
+
+    public static synchronized AndarApplication getInstance() {
+        return mInstance;
+    }
+
+    private void initLogger() {
+        FormatStrategy prettyFormat = PrettyFormatStrategy.newBuilder()
+                .showThreadInfo(false)
+                .methodCount(2)
+                .methodOffset(7)
+                .logStrategy(new LogcatLogStrategy())
+                .tag("HOLLER_LOGGER")
+                .build();
+
+        FormatStrategy cvsFormat = CsvFormatStrategy.newBuilder()
+                .tag("HOLLER_FILE_LOGGER")
+                .build();
+
+//        Logger.addLogAdapter(new DiskLogAdapter(cvsFormat));
+        Logger.addLogAdapter(new AndroidLogAdapter(prettyFormat));
+
+        Logger.i("STARTING APPLICATION");
+
     }
 
     /******************************************************************************************/
@@ -62,29 +108,20 @@ public class AndarApplication extends Application implements  ComponentCallbacks
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
 
-    private static AndarApplication mInstance;
 
     @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
     }
 
+    @Deprecated
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
     }
 
-    @Override
-    public void onCreate() {
-        setupDependencyGraph();
-        super.onCreate();
-        /**********************/
-        mInstance = this;
-        FontsOverride.setDefaultFont(this, "MONOSPACE", "ClanPro-NarrBook.otf");
-
-    }
-
+    @Deprecated
     private void initCalligraphyConfig() {
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                 .setDefaultFontPath(getResources().getString(R.string.bariol))
@@ -93,10 +130,7 @@ public class AndarApplication extends Application implements  ComponentCallbacks
         );
     }
 
-    public static synchronized AndarApplication getInstance() {
-        return mInstance;
-    }
-
+    @Deprecated
     public RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
             mRequestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -104,24 +138,27 @@ public class AndarApplication extends Application implements  ComponentCallbacks
         return mRequestQueue;
     }
 
+    @Deprecated
     public <T> void addToRequestQueue(Request<T> req, String tag) {
         // set the no_user tag if tag is empty
         req.setTag(TextUtils.isEmpty(tag) ? TAG : tag);
         getRequestQueue().add(req);
     }
 
+    @Deprecated
     public <T> void addToRequestQueue(Request<T> req) {
         req.setTag(TAG);
         getRequestQueue().add(req);
     }
 
+    @Deprecated
     public void cancelPendingRequests(Object tag) {
         if (mRequestQueue != null) {
             mRequestQueue.cancelAll(tag);
         }
     }
 
-
+    @Deprecated
     public static String trimMessage(String json){
         String trimmedString = "";
 

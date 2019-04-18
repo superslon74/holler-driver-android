@@ -52,6 +52,7 @@ import java.util.regex.Pattern;
 
 import com.facebook.accountkit.AccessToken;
 import com.holler.app.di.User;
+import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.server.OrderServerApi;
 import com.holler.app.utils.CustomActivity;
 
@@ -301,7 +302,7 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
                             case 403:
                                 Toast.makeText(RegisterActivity.this, "Phone number already in use", Toast.LENGTH_LONG).show();
                                 SharedHelper.putKey(activity, "loggedIn", getString(R.string.False));
-                                Intent mainIntent = new Intent(activity, WelcomeScreenActivity.class);
+                                Intent mainIntent = new Intent(activity, WelcomeView.class);
                                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(mainIntent);
                                 activity.finish();
@@ -494,7 +495,7 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
                             SharedHelper.putKey(context, "email", "");
                             SharedHelper.putKey(context, "login_by", "");
                             SharedHelper.putKey(RegisterActivity.this, "account_kit_token", "");
-                            Intent goToLogin = new Intent(RegisterActivity.this, WelcomeScreenActivity.class);
+                            Intent goToLogin = new Intent(RegisterActivity.this, WelcomeView.class);
                             goToLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(goToLogin);
                             finish();

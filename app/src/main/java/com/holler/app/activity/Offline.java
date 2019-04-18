@@ -24,7 +24,8 @@ import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.R;
 import com.holler.app.Utilities.Utilities;
-import com.holler.app.di.components.app.modules.RetrofitModule;
+import com.holler.app.di.app.modules.RetrofitModule;
+import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.server.OrderServerApi;
 import com.holler.app.utils.GPSTracker;
 
@@ -166,7 +167,7 @@ public class Offline extends Fragment {
         SharedHelper.putKey(activity,"loggedIn",getString(R.string.False));
         Intent mainIntent;
 
-            mainIntent = new Intent(activity, WelcomeScreenActivity.class);
+            mainIntent = new Intent(activity, WelcomeView.class);
 
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(mainIntent);

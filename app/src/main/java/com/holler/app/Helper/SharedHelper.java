@@ -3,7 +3,7 @@ package com.holler.app.Helper;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.holler.app.di.components.app.modules.SharedPreferencesModule;
+import com.holler.app.di.app.modules.SharedPreferencesModule;
 
 @Deprecated
 public class SharedHelper {

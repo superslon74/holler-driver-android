@@ -1,16 +1,19 @@
-package com.holler.app.activity;
+package com.holler.app.mvp.welcome;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 
 import com.google.android.material.tabs.TabLayout;
+import com.holler.app.AndarApplication;
 import com.holler.app.Fragment.WelcomeScreenSlideFragment;
 import com.holler.app.R;
+import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.utils.CustomActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -19,14 +22,15 @@ import androidx.viewpager.widget.ViewPager;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-//import butterknife.ButterKnife;
-//import butterknife.OnClick;
+public class WelcomeView extends CustomActivity {
 
-public class WelcomeScreenActivity extends CustomActivity {
-
+    @Inject
+    public RouterModule.Router router;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndarApplication.getInstance().component().inject(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_screen);
         overridePendingTransition(R.anim.slide_in_right, R.anim.anim_nothing);
@@ -36,24 +40,17 @@ public class WelcomeScreenActivity extends CustomActivity {
 
     @OnClick(R.id.sign_in_btn)
     public void gotoLogin(){
-        Intent i = new Intent(WelcomeScreenActivity.this, ActivityEmail.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
-
+        router.goToLoginScreen();
     }
+
     @OnClick(R.id.sign_up_btn)
     public void gotoRegistration(){
-        Intent i = new Intent(WelcomeScreenActivity.this, RegisterActivity.class);
-        i.putExtra("signup", true).putExtra("viewpager", "yes");
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
+        router.goToRegisterScreen();
     }
 
     @OnClick(R.id.social_layout)
     public void gotoSocialLogin(){
-        Intent i = new Intent(WelcomeScreenActivity.this, ActivitySocialLogin.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
+        router.gotoSocialLogin();
     }
 
     private void initSlider(){

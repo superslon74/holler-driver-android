@@ -1,4 +1,4 @@
-package com.holler.app.di.components.app.modules;
+package com.holler.app.di.app.modules;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

@@ -22,8 +22,8 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.gson.JsonObject;
 import com.holler.app.AndarApplication;
-import com.holler.app.di.components.app.modules.RetrofitModule;
-import com.holler.app.di.components.app.modules.UserStorageModule;
+import com.holler.app.di.app.modules.RetrofitModule;
+import com.holler.app.di.app.modules.UserStorageModule;
 import com.holler.app.server.OrderServerApi;
 
 import javax.inject.Inject;

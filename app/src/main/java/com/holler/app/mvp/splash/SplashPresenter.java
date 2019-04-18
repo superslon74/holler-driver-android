@@ -8,12 +8,12 @@ import android.os.IBinder;
 
 import com.google.gson.JsonObject;
 import com.holler.app.activity.MainActivity;
-import com.holler.app.activity.WelcomeScreenActivity;
-import com.holler.app.di.components.app.modules.DeviceInfoModule;
+import com.holler.app.mvp.welcome.WelcomeView;
+import com.holler.app.di.app.modules.DeviceInfoModule;
 import com.holler.app.di.Presenter;
-import com.holler.app.di.components.app.modules.RetrofitModule;
+import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.di.User;
-import com.holler.app.di.components.app.modules.UserStorageModule;
+import com.holler.app.di.app.modules.UserStorageModule;
 import com.holler.app.server.OrderServerApi;
 import com.holler.app.utils.CustomActivity;
 import com.holler.app.utils.GPSTracker;
@@ -46,7 +46,7 @@ public class SplashPresenter implements Presenter {
         if(userLoggedIn){
             updateAccessToken();
         }else{
-            view.gotoActivity(WelcomeScreenActivity.class);
+            view.gotoActivity(WelcomeView.class);
         }
 
     }
@@ -78,7 +78,7 @@ public class SplashPresenter implements Presenter {
                             updateAccessToken();
                         }else{
                             userStorage.setLoggedIn("false");
-                            view.gotoActivity(WelcomeScreenActivity.class);
+                            view.gotoActivity(WelcomeView.class);
                         }
                     }
 
@@ -105,7 +105,7 @@ public class SplashPresenter implements Presenter {
                     @Override
                     public void onUnsuccessfulResponse(Response<User> response) {
                         super.onUnsuccessfulResponse(response);
-                        view.gotoActivity(WelcomeScreenActivity.class);
+                        view.gotoActivity(WelcomeView.class);
                     }
 
                     @Override

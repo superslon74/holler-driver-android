@@ -1,9 +1,6 @@
-package com.holler.app.di.components.app.modules;
+package com.holler.app.di.app.modules;
 
-import android.app.Application;
 import android.content.Context;
-
-import com.holler.app.AndarApplication;
 
 import javax.inject.Singleton;
 

@@ -10,6 +10,7 @@ import android.widget.Button;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.R;
 import com.holler.app.Services.UserStatusChecker;
+import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.utils.CustomActivity;
 
 public class WaitingForApproval extends CustomActivity {
@@ -26,7 +27,7 @@ public class WaitingForApproval extends CustomActivity {
             public void onClick(View view) {
                 SharedHelper.putKey(WaitingForApproval.this, "loggedIn", getString(R.string.False));
 //                starting main activity
-                Intent mainIntent = new Intent(WaitingForApproval.this, WelcomeScreenActivity.class);
+                Intent mainIntent = new Intent(WaitingForApproval.this, WelcomeView.class);
                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(mainIntent);
 //                stopping service
