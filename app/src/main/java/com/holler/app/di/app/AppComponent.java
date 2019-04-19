@@ -43,6 +43,7 @@ public interface AppComponent {
 
     Context getContext();
 
+    RouterModule.Router getRouter();
     RetrofitModule.ServerAPI getRetrofitClient();
     DeviceInfoModule.DeviceInfo getDeviceInfoObject();
     SharedPreferencesModule.SharedPreferencesHelper getSharedPreferencesHalper();

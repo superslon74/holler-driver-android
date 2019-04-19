@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import com.google.android.material.tabs.TabLayout;
 import com.holler.app.AndarApplication;
-import com.holler.app.Fragment.WelcomeScreenSlideFragment;
 import com.holler.app.R;
 import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.utils.CustomActivity;
@@ -40,7 +39,7 @@ public class WelcomeView extends CustomActivity {
 
     @OnClick(R.id.sign_in_btn)
     public void gotoLogin(){
-        router.goToLoginScreen();
+        router.goToEmailScreen();
     }
 
     @OnClick(R.id.sign_up_btn)
@@ -59,9 +58,9 @@ public class WelcomeView extends CustomActivity {
         tabLayout.setupWithViewPager(viewPager, true);
 
         List<Fragment> slides = new ArrayList<>();
-        slides.add(WelcomeScreenSlideFragment.newInstance(R.string.mas_header_welcome,R.string.mas_description_welcome,R.drawable.welcome_sample));
-        slides.add(WelcomeScreenSlideFragment.newInstance(R.string.mas_header_find,R.string.mas_description_find,R.drawable.drive_sample));
-        slides.add(WelcomeScreenSlideFragment.newInstance(R.string.mas_header_notify,R.string.mas_description_notify,R.drawable.earn_sample));
+        slides.add(WelcomeViewSlideFragment.newInstance(R.string.mas_header_welcome,R.string.mas_description_welcome,R.drawable.welcome_sample));
+        slides.add(WelcomeViewSlideFragment.newInstance(R.string.mas_header_find,R.string.mas_description_find,R.drawable.drive_sample));
+        slides.add(WelcomeViewSlideFragment.newInstance(R.string.mas_header_notify,R.string.mas_description_notify,R.drawable.earn_sample));
 
         viewPager.setAdapter(new SliderAdapter(getSupportFragmentManager(), slides));
     }

@@ -1,4 +1,4 @@
-package com.holler.app.Fragment;
+package com.holler.app.mvp.welcome;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.holler.app.R;
 
-public class WelcomeScreenSlideFragment extends Fragment {
+public class WelcomeViewSlideFragment extends Fragment {
 
     private static final String ARG_HEADER = "wssf_header";
     private static final String ARG_DESCRIPTION= "wssf_description";
@@ -21,9 +21,9 @@ public class WelcomeScreenSlideFragment extends Fragment {
     private int imageResource;
 
 
-    public static WelcomeScreenSlideFragment newInstance(int headerResource, int descriptionResource, int imageResource) {
+    public static WelcomeViewSlideFragment newInstance(int headerResource, int descriptionResource, int imageResource) {
 
-        final WelcomeScreenSlideFragment f = new WelcomeScreenSlideFragment ();
+        final WelcomeViewSlideFragment f = new WelcomeViewSlideFragment();
 
         final Bundle args = new Bundle();
         args.putInt(ARG_HEADER, headerResource);
@@ -34,7 +34,7 @@ public class WelcomeScreenSlideFragment extends Fragment {
         return f;
     }
 
-    public WelcomeScreenSlideFragment() {}
+    public WelcomeViewSlideFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

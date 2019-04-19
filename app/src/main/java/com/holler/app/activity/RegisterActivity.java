@@ -219,8 +219,8 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
         genderGrp = (RadioGroup) findViewById(R.id.gender_group);
         genderGrp.setOnCheckedChangeListener(this);
 
-        maleImg= (ImageView) findViewById(R.id.male_img);
-        femaleImg= (ImageView) findViewById(R.id.female_img);
+//        maleImg= (ImageView) findViewById(R.id.male_img);
+//        femaleImg= (ImageView) findViewById(R.id.female_img);
 
         maleImg.setColorFilter(ContextCompat.getColor(context,R.color.theme));
         femaleImg.setColorFilter(ContextCompat.getColor(context,R.color.calendar_selected_date_text));

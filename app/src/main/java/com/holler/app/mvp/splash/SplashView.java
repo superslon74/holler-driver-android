@@ -35,9 +35,6 @@ public class SplashView
 
     @Inject
     public Presenter presenter;
-//
-//    @Inject
-//    public RouterModule.Router router;
 
     private void setupComponent(){
         AppComponent appComponent = (AppComponent) AndarApplication.getInstance().component();
@@ -244,14 +241,5 @@ public class SplashView
     @Override
     public void showMessage(String message) {
         Toast.makeText(SplashView.this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void gotoActivity(Class<? extends CustomActivity> redirectTo) {
-        if(redirectTo == MainActivity.class){
-//            router.goToMainScreen();
-        }else {
-//            router.goToWelcomeScreen();
-        }
     }
 }

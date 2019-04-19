@@ -1,270 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ra_header"
+        style="@style/MAIN_Header_Container"
+        tools:ignore="MissingConstraints">
+
+        <ImageView
+            android:id="@+id/ra_back_button"
+            style="@style/MAIN_Header_Back_Button"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/las_header"
+            style="@style/MAIN_Header_Title"
+            tools:ignore="MissingConstraints" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        style="@style/LA_Page_Padding"
+        android:paddingTop="30dp"
+        android:paddingBottom="45dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ra_header">
 
-        <LinearLayout
+        <EditText
+            android:id="@+id/ra_name"
+            android:inputType="textCapWords"
+            style="@style/LA_Input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:orientation="vertical">
+            android:hint="@string/ras_name_placeholder"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/ra_email"
+            android:inputType="textEmailAddress"
+            style="@style/LA_Input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/ras_email_placeholder"
+            app:layout_constraintTop_toBottomOf="@id/ra_name"/>
+
+        <EditText
+            android:id="@+id/ra_mobile"
+            android:inputType="number"
+            style="@style/LA_Input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/ras_mobile_placeholder"
+            app:layout_constraintTop_toBottomOf="@id/ra_email"/>
+
+        <RadioGroup
+            android:id="@+id/ra_gender"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ra_mobile">
+
+            <RadioButton
+                android:id="@+id/ra_male_radio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:checked="true" />
 
             <ImageView
-                android:id="@+id/backArrow"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/back_icon" />
+                android:id="@+id/ra_male_icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/male" />
 
-            <com.holler.app.Utilities.MyTextView
+            <RadioButton
+                android:id="@+id/ra_female_radio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/enter_your_details"
-                android:textColor="@color/black_text_color"
-                android:textSize="@dimen/_16sdp" />
+                android:layout_gravity="center_vertical"
+                android:textSize="@dimen/_13sdp" />
 
-            <com.holler.app.Utilities.MyTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:text="@string/email"
-                android:textColor="@color/black_text_color"
-                android:textSize="@dimen/_14sdp" />
+            <ImageView
+                android:id="@+id/ra_female_icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/female" />
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+        </RadioGroup>
 
-                <com.holler.app.Utilities.MyEditText
-                    android:id="@+id/email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
-                    android:inputType="textEmailAddress"
-                    android:maxLines="1"
-                    android:textAlignment="viewStart"
-                    android:textSize="@dimen/_14sdp" />
+        <EditText
+            android:id="@+id/ra_password"
+            android:inputType="textPassword"
+            style="@style/LA_Input"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/ras_password_placeholder"
+            app:layout_constraintTop_toBottomOf="@id/ra_gender"/>
 
-            </android.support.design.widget.TextInputLayout>
+        <EditText
+            android:id="@+id/ra_password_confirmation"
+            android:inputType="textPassword"
+            style="@style/LA_Input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/ras_password_confirmation_placeholder"
+            app:layout_constraintTop_toBottomOf="@id/ra_password"/>
 
-            <com.holler.app.Utilities.MyTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/name"
-                android:textColor="@color/black_text_color"
-                android:textSize="@dimen/_14sdp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
-
-                    <com.holler.app.Utilities.MyEditText
-                        android:id="@+id/first_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/first_name"
-                        android:imeOptions="actionNext"
-                        android:inputType="textCapWords|textPersonName"
-                        android:maxLines="1"
-                        android:textAlignment="viewStart"
-                        android:textSize="@dimen/_14sdp" />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="1">
-
-                    <com.holler.app.Utilities.MyEditText
-                        android:id="@+id/last_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/last_name"
-                        android:imeOptions="actionNext"
-                        android:inputType="text|textCapSentences"
-                        android:maxLines="1"
-                        android:textAlignment="viewStart"
-                        android:textSize="@dimen/_14sdp" />
-
-                </android.support.design.widget.TextInputLayout>
-            </LinearLayout>
+        <Button
+            android:id="@+id/ra_sign_up"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/RA_Button"
+            android:text="@string/ras_sign_up_button"
+            app:layout_constraintTop_toBottomOf="@+id/ra_password_confirmation"
+            />
 
 
-            <com.holler.app.Utilities.MyTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:text="@string/gender"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/_14sdp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <RadioGroup
-                android:id="@+id/gender_group"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/_5sdp"
-                android:layout_marginStart="@dimen/_35sdp"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:orientation="horizontal">
+</androidx.constraintlayout.widget.ConstraintLayout>
 
-                <RadioButton
-                    android:id="@+id/male_btn"
-                    android:layout_gravity="center_vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/_13sdp"
-                    android:checked="true"/>
-
-                <ImageView
-                    android:id="@+id/male_img"
-                    android:layout_width="@dimen/_35sdp"
-                    android:src="@drawable/male"
-                    android:layout_marginLeft="@dimen/_15sdp"
-                    android:layout_marginRight="@dimen/_15sdp"
-                    android:contentDescription="@string/app_name"
-                    android:layout_height="@dimen/_35sdp" />
-
-                <RadioButton
-                    android:textSize="@dimen/_13sdp"
-                    android:id="@+id/female_btn"
-                    android:layout_gravity="center_vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <ImageView
-                    android:id="@+id/female_img"
-                    android:layout_width="@dimen/_35sdp"
-                    android:src="@drawable/female"
-                    android:layout_marginLeft="@dimen/_15sdp"
-                    android:layout_marginRight="@dimen/_15sdp"
-                    android:contentDescription="@string/app_name"
-                    android:layout_height="@dimen/_35sdp" />
-
-            </RadioGroup>
-
-
-            <com.holler.app.Utilities.MyTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/phone_number"
-                android:textColor="@color/black_text_color"
-                android:textSize="@dimen/_14sdp"
-                android:visibility="gone" />
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                tools:ignore="RtlHardcoded">
-
-                <com.holler.app.Utilities.MyEditText
-                    android:id="@+id/mobile_no"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
-                    android:inputType="phone"
-                    android:maxLines="1" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <com.holler.app.Utilities.MyTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/password"
-                android:textColor="@color/black_text_color"
-                android:textSize="@dimen/_14sdp" />
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp">
-
-                <com.holler.app.Utilities.MyEditText
-                    android:id="@+id/password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:imeOptions="actionDone"
-                    android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:textAlignment="viewStart"
-                    android:textSize="@dimen/_14sdp" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <com.holler.app.Utilities.MyTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/password_confirm"
-                android:textColor="@color/black_text_color"
-                android:textSize="@dimen/_14sdp" />
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp">
-
-                <com.holler.app.Utilities.MyEditText
-                    android:id="@+id/confirm_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:imeOptions="actionDone"
-                    android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:textAlignment="viewStart"
-                    android:textSize="@dimen/_14sdp" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <com.holler.app.Utilities.MyTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/choose_type"
-                android:textColor="@color/black_text_color"
-                android:textSize="@dimen/_14sdp"
-                android:visibility="gone" />
-
-            <Spinner
-                android:id="@+id/service_spinner"
-                style="@style/spinner_style"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/_10sdp"
-                android:layout_marginLeft="@dimen/_10sdp"
-                android:layout_marginRight="@dimen/_10sdp"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:visibility="gone" />
-
-        </LinearLayout>
-    </ScrollView>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/nextIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_arrow_right" />
-
-
-</android.support.design.widget.CoordinatorLayout>

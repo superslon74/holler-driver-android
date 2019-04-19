@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string translatable="false" name="las_header">Get on Board</string>
+    <string translatable="false" name="las_email_placeholder">Email</string>
+    <string translatable="false" name="las_password_placeholder">Password</string>
+    <string translatable="false" name="las_sign_in_button">SIGN IN</string>
+
+    <string translatable="false" name="las_sign_up_link">I need to create an account</string>
+    <string translatable="false" name="las_forgot_password">I forgot my password</string>
+
+</resources>

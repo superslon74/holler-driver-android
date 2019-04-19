@@ -18,11 +18,13 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.Toast;
 
 
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.material.snackbar.Snackbar;
 import com.holler.app.activity.MainActivity;
 
 import java.util.HashMap;
@@ -92,6 +94,12 @@ public class CustomActivity extends AppCompatActivity {
             toggleFloatingViewService(isRunning());
         }
 
+    }
+
+    protected void onMessage(String message) {
+        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT)
+                .setAction("Action", null)
+                .show();
     }
 
 

@@ -8,6 +8,7 @@ import android.os.IBinder;
 
 import com.google.gson.JsonObject;
 import com.holler.app.activity.MainActivity;
+import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.di.app.modules.DeviceInfoModule;
 import com.holler.app.di.Presenter;
@@ -22,6 +23,7 @@ import retrofit2.Response;
 
 public class SplashPresenter implements Presenter {
     private Context context;
+    private RouterModule.Router router;
     private View view;
     private RetrofitModule.ServerAPI serverAPI;
     private DeviceInfoModule.DeviceInfo deviceInfo;
@@ -29,11 +31,13 @@ public class SplashPresenter implements Presenter {
 
     public SplashPresenter(
             Context context,
+            RouterModule.Router router,
             View view,
             RetrofitModule.ServerAPI serverAPI,
             DeviceInfoModule.DeviceInfo deviceInfo,
             UserStorageModule.UserStorage userStorage){
         this.context=context;
+        this.router = router;
         this.view = view;
         this.serverAPI = serverAPI;
         this.deviceInfo = deviceInfo;
@@ -46,7 +50,7 @@ public class SplashPresenter implements Presenter {
         if(userLoggedIn){
             updateAccessToken();
         }else{
-            view.gotoActivity(WelcomeView.class);
+            router.goToWelcomeScreen();
         }
 
     }
@@ -78,7 +82,7 @@ public class SplashPresenter implements Presenter {
                             updateAccessToken();
                         }else{
                             userStorage.setLoggedIn("false");
-                            view.gotoActivity(WelcomeView.class);
+                            router.goToWelcomeScreen();
                         }
                     }
 
@@ -105,7 +109,7 @@ public class SplashPresenter implements Presenter {
                     @Override
                     public void onUnsuccessfulResponse(Response<User> response) {
                         super.onUnsuccessfulResponse(response);
-                        view.gotoActivity(WelcomeView.class);
+                        router.goToWelcomeScreen();
                     }
 
                     @Override
@@ -123,7 +127,7 @@ public class SplashPresenter implements Presenter {
             public void onServiceConnected(ComponentName name, IBinder binder) {
                 GPSTracker.GPSTrackerBinder service = (GPSTracker.GPSTrackerBinder)binder;
                 service.startTracking();
-                view.gotoActivity(MainActivity.class);
+                router.goToMainScreen();
             }
 
             @Override
@@ -139,6 +143,5 @@ public class SplashPresenter implements Presenter {
         void showProgress();
         void hideProgress();
         void showMessage(String message);
-        void gotoActivity(Class<? extends CustomActivity> redirectTo);
     }
 }

@@ -5,6 +5,8 @@ import android.content.Context;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.io.IOException;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -27,9 +29,15 @@ public class DeviceInfoModule {
             info.deviceId = "COULD NOT GET UDID";
         }
 
-        FirebaseInstanceId.getInstance().getToken();
 
-        info.deviceToken = storage.get("device_token");
+        try {
+            info.deviceToken = FirebaseInstanceId.getInstance().getToken(info.deviceId, "aaaaa");
+        } catch (IOException e) {
+            info.deviceToken = "COULD NOT GET UDID";
+        }
+//        storage.get("device_token");
+
+
 
         return info;
     }

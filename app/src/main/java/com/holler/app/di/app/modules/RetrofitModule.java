@@ -86,13 +86,11 @@ public class RetrofitModule {
 
         @POST("api/provider/verify")
         Call<JsonObject> checkEmailExists(
-                @HeaderMap Map<String, String> headers,
                 @Body User user
         );
 
         @POST("api/provider/register")
         Call<JsonObject> register(
-                @HeaderMap Map<String, String> headers,
                 @Body User user
         );
 
@@ -127,6 +125,7 @@ public class RetrofitModule {
                 @Header(HEADER_KEY_AUTHORIZATION) String authHeader,
                 @Body JsonObject status
         );
+
 
     }
 }

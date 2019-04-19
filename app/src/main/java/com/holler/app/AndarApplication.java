@@ -83,8 +83,8 @@ public class AndarApplication extends Application implements  ComponentCallbacks
     private void initLogger() {
         FormatStrategy prettyFormat = PrettyFormatStrategy.newBuilder()
                 .showThreadInfo(false)
-                .methodCount(2)
-                .methodOffset(7)
+                .methodCount(0)
+                .methodOffset(0)
                 .logStrategy(new LogcatLogStrategy())
                 .tag("HOLLER_LOGGER")
                 .build();
