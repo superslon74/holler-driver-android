@@ -124,7 +124,8 @@
             android:name=".activity.RegisterActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="stateVisible|adjustResize"
+            />
         <activity
             android:name=".activity.SignInActivity"
             android:screenOrientation="portrait"
@@ -135,13 +136,15 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="stateVisible|adjustResize"
+            />
         <activity
             android:name=".activity.ActivityPassword"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="stateVisible|adjustResize"
+            />
         <activity
             android:name=".activity.ShowProfile"
             android:label="@string/app_name"

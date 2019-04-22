@@ -76,7 +76,7 @@
             android:layout_marginRight="5dp"
             android:clickable="true"
 
-            android:text="@string/mas_button_login"
+            android:text="@string/was_button_login"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="parent"
@@ -90,6 +90,7 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.5" />
 
+        <!--540*146-->
         <Button
             android:id="@+id/sign_up_btn"
             android:layout_width="0dp"
@@ -99,7 +100,7 @@
             android:layout_marginLeft="5dp"
             android:clickable="true"
 
-            android:text="@string/mas_button_register"
+            android:text="@string/was_button_register"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
@@ -120,7 +121,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimary"
-            android:text="@string/mas_link_social"
+            android:text="@string/was_link_social"
             android:gravity="center" />
 
 

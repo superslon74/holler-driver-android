@@ -224,17 +224,12 @@ public class RegisterView
 
     @Override
     public void onLoadingStarted() {
-//        if(customDialog==null)
-//            customDialog = new CustomDialog(this);
-//        customDialog.setCancelable(true);
-//        customDialog.show();
-        onMessage("Loading...");
-
+        super.showLoadingProgress();
     }
 
     @Override
     public void onLoadingFinished() {
-//        customDialog.dismiss();
+        super.hideLoadingProgress();
     }
 
     @Override

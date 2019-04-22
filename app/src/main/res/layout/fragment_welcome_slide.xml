@@ -41,14 +41,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
-            android:text="@string/mas_header_welcome" />
+            android:text="@string/was_header_welcome" />
 
         <TextView
             android:id="@+id/ma_description"
             style="@style/MA_Description_Text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/mas_description_welcome"
+            android:text="@string/was_description_welcome"
             android:textAlignment="center" />
     </LinearLayout>
 

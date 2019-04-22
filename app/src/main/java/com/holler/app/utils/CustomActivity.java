@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -18,6 +19,10 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.widget.Toast;
 
 
@@ -25,6 +30,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.material.snackbar.Snackbar;
+import com.holler.app.R;
 import com.holler.app.activity.MainActivity;
 
 import java.util.HashMap;
@@ -35,6 +41,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 public class CustomActivity extends AppCompatActivity {
 
@@ -58,7 +65,7 @@ public class CustomActivity extends AppCompatActivity {
         return runningActivitiesCount > 0;
     }
 
-    private void toggleFloatingViewService(boolean isActivityRunning){
+    private void toggleFloatingViewService(boolean isActivityRunning) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (Settings.canDrawOverlays(CustomActivity.this)) {
                 final Intent intent = new Intent(this, FloatingViewService.class);
@@ -100,6 +107,20 @@ public class CustomActivity extends AppCompatActivity {
         Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT)
                 .setAction("Action", null)
                 .show();
+    }
+
+    private LoadingProgress spinner;
+    protected void showLoadingProgress() {
+        if(spinner == null){
+            spinner = new LoadingProgress(this);
+        }
+        spinner.startLoading();
+    }
+
+    protected void hideLoadingProgress() {
+        if(spinner!=null){
+            spinner.stopLoading();
+        }
     }
 
 
@@ -148,6 +169,7 @@ public class CustomActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initKeyboardObserver();
         // for home listen
 //        InnerRecevier innerReceiver = new InnerRecevier();
 //        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
@@ -236,16 +258,16 @@ public class CustomActivity extends AppCompatActivity {
                     @Override
                     public void onServiceConnected(ComponentName name, IBinder binder) {
                         GPSTracker.GPSTrackerBinder service = (GPSTracker.GPSTrackerBinder) binder;
-                        service.connectGoogleApi(new ResultCallback<LocationSettingsResult>(){
+                        service.connectGoogleApi(new ResultCallback<LocationSettingsResult>() {
                             @Override
                             public void onResult(@NonNull LocationSettingsResult result) {
-                                if(LocationSettingsStatusCodes.RESOLUTION_REQUIRED==result.getStatus().getStatusCode()){
+                                if (LocationSettingsStatusCodes.RESOLUTION_REQUIRED == result.getStatus().getStatusCode()) {
                                     try {
                                         result.getStatus().startResolutionForResult(CustomActivity.this, code);
                                     } catch (IntentSender.SendIntentException e) {
                                         handler.onPermissionDenied();
                                     }
-                                }else{
+                                } else {
                                     handler.onPermissionGranted();
                                 }
                             }
@@ -257,7 +279,7 @@ public class CustomActivity extends AppCompatActivity {
 
                     }
                 };
-                bindService(gpsTrackerBinding,gpsTrackerConnection,Context.BIND_AUTO_CREATE);
+                bindService(gpsTrackerBinding, gpsTrackerConnection, Context.BIND_AUTO_CREATE);
                 break;
             case Manifest.permission.INTERNET:
                 if (isInternet()) {
@@ -357,10 +379,10 @@ public class CustomActivity extends AppCompatActivity {
                 handler.onPermissionDenied();
             }
         }
-        if(PERMISSION_ENABLE_LOCATION.equals(requestedPermission)){
-            if(isGPSEnabled()){
+        if (PERMISSION_ENABLE_LOCATION.equals(requestedPermission)) {
+            if (isGPSEnabled()) {
                 handler.onPermissionGranted();
-            }else{
+            } else {
                 handler.onPermissionDenied();
             }
         }
@@ -399,4 +421,48 @@ public class CustomActivity extends AppCompatActivity {
             super.printStackTrace();
         }
     }
+
+
+    private void initKeyboardObserver() {
+        final int MIN_KEYBOARD_HEIGHT_PX = 150;
+
+        final View decorView = (ViewGroup) this.getWindow().getDecorView();
+
+        decorView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            private final Rect windowVisibleDisplayFrame = new Rect();
+            private int lastVisibleDecorViewHeight;
+
+            @Override
+            public void onGlobalLayout() {
+                // Retrieve visible rectangle inside window.
+                decorView.getWindowVisibleDisplayFrame(windowVisibleDisplayFrame);
+                final int visibleDecorViewHeight = windowVisibleDisplayFrame.height();
+
+                // Decide whether keyboard is visible from changing decor view height.
+                if (lastVisibleDecorViewHeight != 0) {
+                    if (lastVisibleDecorViewHeight > visibleDecorViewHeight + MIN_KEYBOARD_HEIGHT_PX) {
+                        // Calculate current keyboard height (this includes also navigation bar height when in fullscreen mode).
+                        int currentKeyboardHeight = decorView.getHeight() - windowVisibleDisplayFrame.bottom;
+                        // Notify listener about keyboard being shown.
+                        onKeyboardShown();
+                    } else if (lastVisibleDecorViewHeight + MIN_KEYBOARD_HEIGHT_PX < visibleDecorViewHeight) {
+                        // Notify listener about keyboard being hidden.
+                        onKeyboardHidden();
+                    }
+                }
+                // Save current decor view height for the next call.
+                lastVisibleDecorViewHeight = visibleDecorViewHeight;
+            }
+        });
+    }
+
+    protected void onKeyboardHidden() {
+
+    }
+
+    protected void onKeyboardShown() {
+
+    }
+
+
 }

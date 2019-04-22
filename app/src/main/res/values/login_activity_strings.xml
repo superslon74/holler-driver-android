@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string translatable="false" name="las_header">Get on Board</string>
+    <string translatable="false" name="las_header">Welcome Back</string>
     <string translatable="false" name="las_email_placeholder">Email</string>
     <string translatable="false" name="las_password_placeholder">Password</string>
     <string translatable="false" name="las_sign_in_button">SIGN IN</string>

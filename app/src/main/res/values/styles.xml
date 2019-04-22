@@ -26,6 +26,7 @@
         <item name="android:paddingBottom">8dp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:textSize">17dp</item>
         <item name="android:fontFamily">@font/montserrat</item>
 
     </style>
@@ -111,9 +112,6 @@
         <item name="android:layout_marginBottom">8dp</item>
         <item name="android:background">@color/transparent</item>
         <item name="android:src">@drawable/next_button_round</item>
-        <item name="layout_constraintBottom_toBottomOf">parent</item>
-        <item name="layout_constraintEnd_toEndOf">parent</item>
-        <item name="layout_constraintTop_toTopOf">parent</item>
     </style>
 
 

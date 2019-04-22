@@ -1,6 +1,10 @@
 package com.holler.app.mvp.login;
 
 import android.os.Bundle;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
@@ -25,7 +29,10 @@ public class EmailView extends CustomActivity implements LoginPresenter.View{
 
     @BindView(R.id.la_email)
     public TextView emailView;
-
+    @BindView(R.id.la_footer)
+    public View footer;
+    @BindView(R.id.la_button_next)
+    public View buttonNext;
 
     private void setupComponent(){
         ButterKnife.bind(this);
@@ -51,6 +58,22 @@ public class EmailView extends CustomActivity implements LoginPresenter.View{
         });
     }
 
+    @Override
+    protected void onKeyboardShown() {
+        super.onKeyboardShown();
+        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up);
+        animation.setStartOffset(200);
+        buttonNext.setAnimation(animation);
+        footer.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onKeyboardHidden() {
+        super.onKeyboardHidden();
+        footer.setAnimation(AnimationUtils.loadAnimation(getApplicationContext(),R.anim.slide_up));
+        footer.setVisibility(View.VISIBLE);
+    }
+
     @OnClick(R.id.la_back_button)
     public void goToWelcome(){
         presenter.goToWelcomeView();
@@ -60,6 +83,10 @@ public class EmailView extends CustomActivity implements LoginPresenter.View{
     public void goToPassword(){
         String email = emailView.getText().toString();
         presenter.goToPasswordView(new LoginPresenter.PendingCredentials(email,null));
+    }
+    @OnClick(R.id.la_link_sign_ap)
+    public void goToRegister(){
+        presenter.goToRegisterView();
     }
 
     @Override

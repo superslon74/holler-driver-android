@@ -8,6 +8,7 @@ import com.holler.app.AndarApplication;
 import com.holler.app.R;
 import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.utils.CustomActivity;
+import com.holler.app.utils.LoadingProgress;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,9 +59,9 @@ public class WelcomeView extends CustomActivity {
         tabLayout.setupWithViewPager(viewPager, true);
 
         List<Fragment> slides = new ArrayList<>();
-        slides.add(WelcomeViewSlideFragment.newInstance(R.string.mas_header_welcome,R.string.mas_description_welcome,R.drawable.welcome_sample));
-        slides.add(WelcomeViewSlideFragment.newInstance(R.string.mas_header_find,R.string.mas_description_find,R.drawable.drive_sample));
-        slides.add(WelcomeViewSlideFragment.newInstance(R.string.mas_header_notify,R.string.mas_description_notify,R.drawable.earn_sample));
+        slides.add(WelcomeViewSlideFragment.newInstance(R.string.was_header_welcome,R.string.was_description_welcome,R.drawable.welcome_sample));
+        slides.add(WelcomeViewSlideFragment.newInstance(R.string.was_header_find,R.string.was_description_find,R.drawable.drive_sample));
+        slides.add(WelcomeViewSlideFragment.newInstance(R.string.was_header_notify,R.string.was_description_notify,R.drawable.earn_sample));
 
         viewPager.setAdapter(new SliderAdapter(getSupportFragmentManager(), slides));
     }

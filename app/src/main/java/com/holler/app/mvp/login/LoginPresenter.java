@@ -110,6 +110,11 @@ public class LoginPresenter {
                     }
 
                     @Override
+                    public void onDisplayMessage(String message) {
+                        view.onMessage(message);
+                    }
+
+                    @Override
                     public void onFinishHandling() {
                         super.onFinishHandling();
 //                        hideSpinner();
@@ -152,6 +157,11 @@ public class LoginPresenter {
                     }
 
                     @Override
+                    public void onDisplayMessage(String message) {
+                        view.onMessage(message);
+                    }
+
+                    @Override
                     public void onFinishHandling() {
                         super.onFinishHandling();
                         view.onLoadingFinished();
@@ -163,6 +173,11 @@ public class LoginPresenter {
         credentials.clear();
         view.onFinish();
         router.goToWelcomeScreen();
+    }
+
+    public void goToRegisterView() {
+        router.goToRegisterScreen();
+        view.onFinish();
     }
 
     public static class PendingCredentials{
