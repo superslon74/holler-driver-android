@@ -12,6 +12,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.Single;
 import okhttp3.ConnectionPool;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -19,6 +20,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
@@ -34,6 +36,7 @@ import retrofit2.http.Query;
 public class RetrofitModule {
     private static JsonObject STATUS_OFFLINE_JSON;
     private static JsonObject STATUS_ONLINE_JSON;
+
     static {
         STATUS_OFFLINE_JSON = new JsonObject();
         STATUS_OFFLINE_JSON.addProperty("service_status", "offline");
@@ -72,6 +75,7 @@ public class RetrofitModule {
                 .client(httpClient)
                 .baseUrl(URLHelper.base)
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
                 .create(ServerAPI.class);
 
@@ -82,6 +86,17 @@ public class RetrofitModule {
         String HEADER_KEY_AUTHORIZATION = "Authorization";
         JsonObject STATUS_OFFLINE = STATUS_OFFLINE_JSON;
         JsonObject STATUS_ONLINE = STATUS_ONLINE_JSON;
+
+        //      auth
+        @POST("api/provider/oauth/token")
+        Single<JsonObject> getAccessToken(
+                @Body User user
+        );
+
+        @GET("api/provider/profile")
+        Single<User> getUserProfile(
+                @Header(HEADER_KEY_AUTHORIZATION) String authHeader
+        );
 
 
         @POST("api/provider/verify")

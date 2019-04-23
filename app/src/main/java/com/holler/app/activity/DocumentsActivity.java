@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.holler.app.Fragment.DocumentsListItem;
-import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Helper.URLHelper;
 import com.holler.app.R;
@@ -53,7 +52,6 @@ public class DocumentsActivity
     private static final int REQUEST_PERMISSIONS_CODE = 6411;
 
     private View documentsListView;
-    private CustomDialog spinner;
 
     private Map<String, Document> documents;
 
@@ -199,17 +197,7 @@ public class DocumentsActivity
 
     }
 
-    private void showSpinner() {
-        if (spinner == null) {
-             spinner = new CustomDialog(this);
-        }
-        spinner.setCancelable(false);
-        spinner.show();
-    }
 
-    private void hideSpinner() {
-        spinner.dismiss();
-    }
 
     private void uploadDocuments(final Stack<Document> toUpload){
 //        TODO: rewrite with javarx

@@ -50,7 +50,6 @@ import com.koushikdutta.ion.Ion;
 import com.splunk.mint.Mint;
 import com.holler.app.AndarApplication;
 import com.holler.app.Helper.ConnectionHelper;
-import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Helper.URLHelper;
 import com.holler.app.Models.AccessDetails;
@@ -83,7 +82,6 @@ public class BeginScreen extends CustomActivity implements GoogleApiClient.OnCon
     JSONObject json;
     ConnectionHelper helper;
     Boolean isInternet;
-    CustomDialog customDialog;
     public Context context = BeginScreen.this;
     String TAG = "BEGINSCREEN";
     String device_token, device_UDID;
@@ -252,9 +250,6 @@ public class BeginScreen extends CustomActivity implements GoogleApiClient.OnCon
 
     public void login(String accesstoken, String URL, final String Loginby) {
 
-        customDialog = new CustomDialog(context);
-        customDialog.setCancelable(false);
-        customDialog.show();
         final JsonObject json = new JsonObject();
         json.addProperty("device_type", "android");
         json.addProperty("device_token", device_token);
@@ -274,7 +269,6 @@ public class BeginScreen extends CustomActivity implements GoogleApiClient.OnCon
                         // do stuff with the result or error
 
                         //Log.v(Loginby+"_Response",result.toString());
-                        customDialog.dismiss();
                         if (result != null) {
                             try {
                                 JSONObject jsonObject = new JSONObject(result.toString());
@@ -357,14 +351,10 @@ public class BeginScreen extends CustomActivity implements GoogleApiClient.OnCon
 
         if (isInternet) {
 
-            customDialog = new CustomDialog(context);
-            customDialog.setCancelable(false);
-            customDialog.show();
             JSONObject object = new JSONObject();
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, AccessDetails.serviceurl +  URLHelper.USER_PROFILE_API, object, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    customDialog.dismiss();
                     utils.print("GetProfile", response.toString());
                     SharedHelper.putKey(context, "id", response.optString("id"));
                     SharedHelper.putKey(context, "first_name", response.optString("first_name"));
@@ -392,7 +382,6 @@ public class BeginScreen extends CustomActivity implements GoogleApiClient.OnCon
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    customDialog.dismiss();
                     String json = null;
                     String Message;
                     NetworkResponse response = error.networkResponse;

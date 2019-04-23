@@ -65,6 +65,7 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:textStyle">bold</item>
         <item name="android:fontFamily">@font/montserrat</item>
+        <item name="android:textAlignment">center</item>
         <item name="layout_constraintBottom_toBottomOf">parent</item>
         <item name="layout_constraintEnd_toEndOf">parent</item>
         <item name="layout_constraintStart_toStartOf">parent</item>
@@ -116,8 +117,6 @@
 
 
 
-
-
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
@@ -132,8 +131,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="lollipop">true</item>
-        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/colorPrimaryDark
-        </item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/colorPrimaryDark</item>
         <item name="android:typeface">monospace</item>
     </style>
 
@@ -142,7 +140,7 @@
     <style name="NavigationDrawerStyle">
         <item name="android:textSize">@dimen/_14sdp</item>
         <item name="android:listPreferredItemHeightSmall">@dimen/_40sdp</item>
-        <item name="android:fontFamily">fonts/ClanPro-Book.otf</item>
+        <item name="android:fontFamily">@font/montserrat</item>
     </style>
 
     <style name="spinner_style">
@@ -158,7 +156,6 @@
     </style>
 
     <style name="AppTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
     <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 

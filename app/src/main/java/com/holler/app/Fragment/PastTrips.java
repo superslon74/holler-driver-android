@@ -27,7 +27,6 @@ import com.holler.app.activity.HistoryDetails;
 import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.AndarApplication;
 import com.holler.app.Helper.ConnectionHelper;
-import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Helper.URLHelper;
 import com.holler.app.Models.AccessDetails;
@@ -59,7 +58,6 @@ public class PastTrips extends Fragment {
     RecyclerView recyclerView;
     RelativeLayout errorLayout;
     ConnectionHelper helper;
-    CustomDialog customDialog;
     View rootView;
 
     ImageView backImg;
@@ -125,9 +123,6 @@ public class PastTrips extends Fragment {
 
     public void getHistoryList() {
 
-        customDialog = new CustomDialog(context);
-        customDialog.setCancelable(false);
-        customDialog.show();
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(AccessDetails.serviceurl + URLHelper.GET_HISTORY_API, new Response.Listener<JSONArray>() {
             @Override
@@ -154,13 +149,13 @@ public class PastTrips extends Fragment {
                     errorLayout.setVisibility(View.VISIBLE);
                 }
 
-                customDialog.dismiss();
+
 
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                customDialog.dismiss();
+
                 String json = null;
                 String Message;
                 NetworkResponse response = error.networkResponse;

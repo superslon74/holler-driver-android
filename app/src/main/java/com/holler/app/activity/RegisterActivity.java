@@ -37,7 +37,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.JsonObject;
 import com.holler.app.Helper.ConnectionHelper;
-import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Helper.URLHelper;
 import com.holler.app.Models.AccessDetails;
@@ -70,7 +69,7 @@ import retrofit2.http.GET;
 import retrofit2.http.HeaderMap;
 import retrofit2.http.POST;
 
-
+@Deprecated
 public class RegisterActivity extends CustomActivity implements RadioGroup.OnCheckedChangeListener {
 
     public Context context = RegisterActivity.this;
@@ -80,7 +79,6 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
     ImageView backArrow;
     FloatingActionButton nextICON;
     EditText email, first_name, last_name, mobile_no, password, confirm_password;
-    CustomDialog customDialog;
     ConnectionHelper helper;
     Boolean isInternet;
     Boolean fromActivity = false;
@@ -94,7 +92,6 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
     AccountKitConfiguration.AccountKitConfigurationBuilder configurationBuilder;
     UIManager uiManager;
 
-    Spinner serviceSpinner;
 
     private String blockCharacterSet = "~#^|$%&*!()_-*.,@/";
     Utilities utils = new Utilities();
@@ -633,16 +630,6 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
     }
 
 
-    private void showSpinner() {
-        if(customDialog==null)
-            customDialog = new CustomDialog(context);
-        customDialog.setCancelable(false);
-        customDialog.show();
-    }
-
-    private void hideSpinner() {
-        customDialog.dismiss();
-    }
 
 
     interface UserServerApi{

@@ -23,6 +23,7 @@ import com.holler.app.utils.CustomActivity;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Deprecated
 public class ActivityEmail extends CustomActivity {
 
     ImageView backArrow;

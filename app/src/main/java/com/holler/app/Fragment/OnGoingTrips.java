@@ -23,7 +23,6 @@ import com.google.gson.JsonObject;
 import com.holler.app.activity.HistoryDetails;
 import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.Helper.ConnectionHelper;
-import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Models.AccessDetails;
 import com.holler.app.R;
@@ -57,7 +56,6 @@ public class OnGoingTrips extends Fragment {
     RecyclerView recyclerView;
     RelativeLayout errorLayout;
     ConnectionHelper helper;
-    CustomDialog spinner;
 
     LinearLayout toolbar;
     ImageView backImg;
@@ -121,7 +119,6 @@ public class OnGoingTrips extends Fragment {
 
     public void getUpcomingList() {
 
-        showSpinner();
 
         HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("X-Requested-With", "XMLHttpRequest");
@@ -163,7 +160,7 @@ public class OnGoingTrips extends Fragment {
 
                     @Override
                     public void onFinishHandling() {
-                        hideSpinner();
+
                     }
                 });
 
@@ -355,7 +352,6 @@ public class OnGoingTrips extends Fragment {
 
     public void cancelRequest(final Order order) {
 
-        showSpinner();
 
         HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("X-Requested-With", "XMLHttpRequest");
@@ -384,22 +380,10 @@ public class OnGoingTrips extends Fragment {
 
                     @Override
                     public void onFinishHandling() {
-                        hideSpinner();
                     }
                 });
     }
 
-    private void showSpinner() {
-        if (spinner == null) {
-            spinner = new CustomDialog(context);
-            spinner.setCancelable(false);
-        }
-        spinner.show();
-    }
-
-    private void hideSpinner() {
-        spinner.dismiss();
-    }
 
 
     private String generateDateRepresentation(String date) {

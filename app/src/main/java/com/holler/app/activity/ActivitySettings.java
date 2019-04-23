@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 
-import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.LocaleUtils;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.R;
@@ -25,7 +24,6 @@ public class ActivitySettings extends CustomActivity {
 
     private LinearLayout lnrEnglish, lnrArabic;
 
-    private CustomDialog customDialog;
 
     private ImageView backArrow;
 
@@ -106,14 +104,12 @@ public class ActivitySettings extends CustomActivity {
     }
 
     public void GoToMainActivity(){
-        customDialog = new CustomDialog(ActivitySettings.this, getResources().getString(R.string.language_update));
-        if (customDialog != null)
-            customDialog.show();
+
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                customDialog.dismiss();
+
                 Intent mainIntent = new Intent(ActivitySettings.this, MainActivity.class);
                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(mainIntent);

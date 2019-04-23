@@ -93,7 +93,6 @@ import com.holler.app.activity.ShowProfile;
 import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.AndarApplication;
 import com.holler.app.Helper.ConnectionHelper;
-import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.DataParser;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Helper.URLHelper;
@@ -273,7 +272,6 @@ public class Map
     private User user = new User();
     private ImageView sos;
     //Button layout
-    private CustomDialog customDialog;
     private Object previous_request_id = " ";
     private String count;
     private JSONArray statusResponses;
@@ -521,7 +519,6 @@ public class Map
     }
 
     private void createAndSendOrder(){
-        showSpinner();
         OrderServerApi serverApiClient = OrderServerApi.ApiCreator.createInstance();
 
         HashMap<String, String> headers = new HashMap<String, String>();
@@ -549,7 +546,6 @@ public class Map
                     @Override
                     public void onFinishHandling() {
                         super.onFinishHandling();
-                        hideSpinner();
                     }
                 });
 
@@ -1903,7 +1899,6 @@ public class Map
             status = newStatus;
         }
         Utilities.hideKeyboard(getActivity());
-        showSpinner();
         if (status.equals("ONLINE")) {
             String authHeader = "Bearer " + token;
             serverAPI
@@ -1918,7 +1913,6 @@ public class Map
                         @Override
                         public void onFinishHandling() {
                             super.onFinishHandling();
-                            hideSpinner();
                         }
                     });
 
@@ -1952,7 +1946,6 @@ public class Map
             final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, param, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    hideSpinner();
                     if (response.optJSONObject("requests") != null) {
                         utils.print("request", response.optJSONObject("requests").toString());
                     }
@@ -1973,7 +1966,6 @@ public class Map
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    hideSpinner();
                     utils.print("Error", error.toString());
                     if (status.equals("RATE")) {
                         lnrGoOffline.setVisibility(View.VISIBLE);
@@ -1994,21 +1986,9 @@ public class Map
         }
     }
 
-    private void showSpinner() {
-        if (customDialog == null) {
-            customDialog = new CustomDialog(context);
-        }
-        customDialog.setCancelable(false);
-        customDialog.show();
-    }
-
-    private void hideSpinner() {
-        customDialog.dismiss();
-    }
 
     public void cancelRequest(final String id, final String reason) {
 
-        showSpinner();
 
         OrderServerApi.Order order = new OrderServerApi.Order();
         order.id = id;
@@ -2036,7 +2016,6 @@ public class Map
 
                     @Override
                     public void onFinishHandling() {
-                        hideSpinner();
                     }
 
                     @Override
@@ -2050,7 +2029,6 @@ public class Map
 
     private void handleIncomingRequest(final String status, final String id) {
         if (!((Activity) context).isFinishing()) {
-            showSpinner();
         }
 
         OrderServerApi.Order order = new OrderServerApi.Order();
@@ -2081,7 +2059,6 @@ public class Map
                     @Override
                     public void onFinishHandling() {
                         super.onFinishHandling();
-                        hideSpinner();
                     }
 
                     @Override
@@ -2127,7 +2104,6 @@ public class Map
                     @Override
                     public void onFinishHandling() {
                         super.onFinishHandling();
-                        hideSpinner();
                     }
 
                     @Override
@@ -2308,11 +2284,7 @@ public class Map
     public void onPause() {
 
         super.onPause();
-        if (customDialog != null) {
-            if (customDialog.isShowing()) {
-                customDialog.dismiss();
-            }
-        }
+
         if (ha != null) {
             ha.removeCallbacksAndMessages(null);
         }

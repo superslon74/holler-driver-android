@@ -59,7 +59,7 @@ public class EmailView extends CustomActivity implements LoginPresenter.View{
     }
 
     @Override
-    protected void onKeyboardShown() {
+    public void onKeyboardShown() {
         super.onKeyboardShown();
         Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up);
         animation.setStartOffset(200);
@@ -68,7 +68,7 @@ public class EmailView extends CustomActivity implements LoginPresenter.View{
     }
 
     @Override
-    protected void onKeyboardHidden() {
+    public void onKeyboardHidden() {
         super.onKeyboardHidden();
         footer.setAnimation(AnimationUtils.loadAnimation(getApplicationContext(),R.anim.slide_up));
         footer.setVisibility(View.VISIBLE);
@@ -95,23 +95,8 @@ public class EmailView extends CustomActivity implements LoginPresenter.View{
     }
 
     @Override
-    public void onMessage(String message) {
-        super.onMessage(message);
-    }
-
-    @Override
     public void onFinish() {
         finish();
     }
 
-    @Override
-    public void onLoadingStarted() {
-        onMessage("Loading...");
-
-    }
-
-    @Override
-    public void onLoadingFinished() {
-
-    }
 }

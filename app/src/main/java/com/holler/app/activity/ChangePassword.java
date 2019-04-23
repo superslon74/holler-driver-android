@@ -25,7 +25,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.snackbar.Snackbar;
 import com.holler.app.AndarApplication;
 import com.holler.app.Helper.ConnectionHelper;
-import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Helper.URLHelper;
 import com.holler.app.Models.AccessDetails;
@@ -45,7 +44,6 @@ public class ChangePassword extends CustomActivity {
     String TAG = "ChangePasswordActivity";
     public Context context = ChangePassword.this;
     public Activity activity = ChangePassword.this;
-    CustomDialog customDialog;
     ConnectionHelper helper;
     Boolean isInternet;
     Button changePasswordBtn;
@@ -112,9 +110,6 @@ public class ChangePassword extends CustomActivity {
 
     private void changePassword() {
 
-        customDialog = new CustomDialog(context);
-        customDialog.setCancelable(false);
-        customDialog.show();
         JSONObject object = new JSONObject();
         try {
             object.put("password", new_password.getText().toString());
@@ -129,7 +124,6 @@ public class ChangePassword extends CustomActivity {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AccessDetails.serviceurl + URLHelper.CHANGE_PASSWORD_API, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                customDialog.dismiss();
                 utils.print("SignInResponse", response.toString());
                 displayMessage(response.optString("message"));
 //                GoToBeginActivity();
@@ -139,7 +133,6 @@ public class ChangePassword extends CustomActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                customDialog.dismiss();
                 String json = null;
                 String Message;
                 NetworkResponse response = error.networkResponse;

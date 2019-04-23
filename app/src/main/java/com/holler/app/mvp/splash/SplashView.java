@@ -226,20 +226,4 @@ public class SplashView
         startActivity(intent);
     }
 
-
-
-    @Override
-    public void showProgress() {
-
-    }
-
-    @Override
-    public void hideProgress() {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-        Toast.makeText(SplashView.this, message, Toast.LENGTH_SHORT).show();
-    }
 }

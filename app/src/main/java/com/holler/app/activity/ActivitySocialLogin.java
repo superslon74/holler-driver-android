@@ -67,7 +67,6 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.holler.app.AndarApplication;
 import com.holler.app.Helper.ConnectionHelper;
-import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Helper.URLHelper;
 import com.holler.app.Models.AccessDetails;
@@ -105,7 +104,6 @@ public class ActivitySocialLogin extends CustomActivity implements GoogleApiClie
     Boolean isInternet;
     LinearLayout facebook_layout;
     LinearLayout google_layout;
-    CustomDialog customDialog;
     public Context context = ActivitySocialLogin.this;
     String TAG = "ActivitySocialLogin";
     String device_token, device_UDID;
@@ -389,9 +387,7 @@ public class ActivitySocialLogin extends CustomActivity implements GoogleApiClie
     }
 
     public void login(final String accesstoken, final String URL, final String Loginby) {
-        customDialog = new CustomDialog(context);
-        customDialog.setCancelable(false);
-        customDialog.show();
+
         final JsonObject json = new JsonObject();
         json.addProperty("device_type", "android");
         json.addProperty("device_token", device_token);
@@ -409,7 +405,7 @@ public class ActivitySocialLogin extends CustomActivity implements GoogleApiClie
                     @Override
                     public void onCompleted(Exception e, JsonObject result) {
                         // do stuff with the result or error
-                        customDialog.dismiss();
+
                         if (e != null) {
                             if (e instanceof NetworkErrorException) {
                                 displayMessage(getString(R.string.oops_connect_your_internet));
@@ -528,7 +524,6 @@ public class ActivitySocialLogin extends CustomActivity implements GoogleApiClie
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, AccessDetails.serviceurl +  URLHelper.USER_PROFILE_API+"?device_type=android&device_id="+device_UDID+"&device_token="+device_token, object, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    customDialog.dismiss();
                     Log.v("GetProfile", response.toString());
                     SharedHelper.putKey(context, "id", response.optString("id"));
                     SharedHelper.putKey(context, "login_by", "facebook");
@@ -567,7 +562,6 @@ public class ActivitySocialLogin extends CustomActivity implements GoogleApiClie
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    customDialog.dismiss();
                     String json = null;
                     String Message;
                     NetworkResponse response = error.networkResponse;

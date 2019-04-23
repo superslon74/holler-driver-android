@@ -20,7 +20,6 @@ import com.google.gson.JsonObject;
 import com.holler.app.AndarApplication;
 import com.holler.app.Fragment.Map;
 import com.holler.app.Helper.ConnectionHelper;
-import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.R;
 import com.holler.app.Utilities.Utilities;
@@ -43,7 +42,7 @@ public class Offline extends Fragment {
     ConnectionHelper helper;
     Boolean isInternet;
     View rootView;
-    CustomDialog customDialog;
+
     String token;
     Button goOnlineBtn;
     //menu icon
@@ -129,9 +128,7 @@ public class Offline extends Fragment {
 
 
     public void goOnline(){
-        customDialog = new CustomDialog(activity);
-        customDialog.setCancelable(false);
-        customDialog.show();
+
 
         String authHeader = "Bearer "+token;
         serverAPI
@@ -150,7 +147,7 @@ public class Offline extends Fragment {
                     @Override
                     public void onFinishHandling() {
                         super.onFinishHandling();
-                        customDialog.dismiss();
+
                     }
 
                 });

@@ -25,7 +25,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.holler.app.Helper.ConnectionHelper;
-import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Helper.URLHelper;
 import com.holler.app.Models.AccessDetails;
@@ -50,7 +49,6 @@ public class ForgetPassword extends CustomActivity {
     TextInputLayout newPasswordLayout, confirmPasswordLayout, OtpLay;
     EditText newPassowrd, confirmPassword, OTP;
     EditText email;
-    CustomDialog customDialog;
     String validation = "", str_newPassword, str_confirmPassword, id, str_email = "", str_otp, server_opt;
     ConnectionHelper helper;
     Boolean isInternet;
@@ -147,9 +145,7 @@ public class ForgetPassword extends CustomActivity {
 
 
     private void resetpassword() {
-        customDialog = new CustomDialog(ForgetPassword.this);
-        customDialog.setCancelable(false);
-        customDialog.show();
+
         JSONObject object = new JSONObject();
         try {
             object.put("id", id);
@@ -164,7 +160,6 @@ public class ForgetPassword extends CustomActivity {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AccessDetails.serviceurl + URLHelper.RESET_PASSWORD, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                customDialog.dismiss();
                 Log.v("ResetPasswordResponse", response.toString());
                 try {
                     JSONObject object1 = new JSONObject(response.toString());
@@ -178,7 +173,6 @@ public class ForgetPassword extends CustomActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                customDialog.dismiss();
                 String json = null;
                 String Message;
                 NetworkResponse response = error.networkResponse;
@@ -248,9 +242,7 @@ public class ForgetPassword extends CustomActivity {
     }
 
     private void forgetPassword() {
-        customDialog = new CustomDialog(ForgetPassword.this);
-        customDialog.setCancelable(false);
-        customDialog.show();
+
         JSONObject object = new JSONObject();
         try {
 
@@ -264,7 +256,7 @@ public class ForgetPassword extends CustomActivity {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AccessDetails.serviceurl + URLHelper.FORGET_PASSWORD, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                customDialog.dismiss();
+
                 Log.v("ForgetPasswordResponse", response.toString());
                 validation = "reset";
                 JSONObject userObject = response.optJSONObject("provider");
@@ -284,14 +276,11 @@ public class ForgetPassword extends CustomActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                customDialog.dismiss();
+
                 String json = null;
                 String Message;
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
-                    Log.e("MyTest", "" + error);
-                    Log.e("MyTestError", "" + error.networkResponse);
-                    Log.e("MyTestError1", "" + response.statusCode);
                     try {
                         JSONObject errorObj = new JSONObject(new String(response.data));
 

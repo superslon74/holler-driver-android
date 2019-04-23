@@ -1,5 +1,6 @@
 package com.holler.app.mvp.register;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.telephony.TelephonyManager;
@@ -13,6 +14,7 @@ import com.facebook.accountkit.ui.AccountKitActivity;
 import com.facebook.accountkit.ui.AccountKitConfiguration;
 import com.facebook.accountkit.ui.LoginType;
 import com.facebook.accountkit.ui.SkinManager;
+import com.facebook.accountkit.ui.UIManager;
 import com.google.gson.JsonObject;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Models.AccessDetails;
@@ -24,6 +26,9 @@ import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.di.app.modules.UserStorageModule;
 import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.server.OrderServerApi;
+import com.holler.app.utils.CustomActivity;
+import com.holler.app.utils.MessageDisplayer;
+import com.holler.app.utils.SpinnerShower;
 
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -82,7 +87,7 @@ public class RegisterPresenter {
     }
 
     private void doRequest() {
-        view.onLoadingStarted();
+        view.showSpinner();
         checkMailAlreadyExit();
     }
 
@@ -96,7 +101,7 @@ public class RegisterPresenter {
                 .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(null) {
                     @Override
                     public void onSuccessfulResponse(Response<JsonObject> response) {
-                        view.onLoadingFinished();
+                        view.hideSpinner();
                         verifyByPhone();
                     }
 
@@ -112,7 +117,7 @@ public class RegisterPresenter {
                     @Override
                     public void onFinishHandling() {
                         super.onFinishHandling();
-                        view.onLoadingFinished();
+                        view.hideSpinner();
                     }
                 });
 
@@ -122,16 +127,29 @@ public class RegisterPresenter {
         AccessToken accessToken = AccountKit.getCurrentAccessToken();
 
         final Intent intent = new Intent(context, AccountKitActivity.class);
+
         SkinManager manager = new SkinManager(
-                SkinManager.Skin.TRANSLUCENT,
-                ContextCompat.getColor(context, R.color.cancel_ride_color),
-                R.drawable.banner_fb,
+                SkinManager.Skin.CONTEMPORARY,
+                context.getColor(R.color.colorAccent),
+                -1,
                 SkinManager.Tint.WHITE,
-                85);
+                0);
+
         AccountKitConfiguration.AccountKitConfigurationBuilder accountKitConfigurationBuilder =
                 new AccountKitConfiguration.AccountKitConfigurationBuilder(
                         LoginType.PHONE,
                         AccountKitActivity.ResponseType.TOKEN);
+
+
+        int themeId;
+        ComponentName componentName = ((CustomActivity)view).getComponentName();
+        try {
+            themeId = context.getPackageManager().getActivityInfo(componentName,0).getThemeResource();
+        }catch (Exception e){
+            themeId = -1;
+        }
+        AccountKitAdvancedManager advancedManager = new AccountKitAdvancedManager(themeId);
+
         accountKitConfigurationBuilder.setUIManager(manager);
 
         String code = getCountryZipCode();
@@ -163,7 +181,7 @@ public class RegisterPresenter {
     }
 
     private void register() {
-        view.onLoadingStarted();
+        view.showSpinner();
 
         final User user = new User();
 
@@ -192,7 +210,7 @@ public class RegisterPresenter {
 
                     @Override
                     public void onUnsuccessfulResponse(Response<JsonObject> response) {
-                        view.onLoadingFinished();
+                        view.hideSpinner();
                         switch (response.code()) {
                             case 403:
                                 view.onMessage("Phone number already in use");
@@ -222,7 +240,7 @@ public class RegisterPresenter {
     }
 
     public void signIn(final User user) {
-        view.onLoadingStarted();
+        view.showSpinner();
 
         serverAPI
                 .signIn(user)
@@ -244,7 +262,7 @@ public class RegisterPresenter {
                     @Override
                     public void onUnsuccessfulResponse(Response<JsonObject> response) {
                         super.onUnsuccessfulResponse(response);
-                        view.onLoadingFinished();
+                        view.hideSpinner();
                     }
 
                     @Override
@@ -257,7 +275,7 @@ public class RegisterPresenter {
     }
 
     public void getProfile() {
-        view.onLoadingStarted();
+        view.showSpinner();
         String authHeader = "Bearer " + userStorage.getAccessToken();
 
         serverAPI
@@ -290,7 +308,7 @@ public class RegisterPresenter {
                     @Override
                     public void onFinishHandling() {
                         super.onFinishHandling();
-                        view.onLoadingFinished();
+                        view.hideSpinner();
                     }
                 });
     }
@@ -380,15 +398,8 @@ public class RegisterPresenter {
         }
     }
 
-    public interface View {
-        void onLoadingStarted();
-
-        void onLoadingFinished();
-
+    public interface View extends SpinnerShower, MessageDisplayer {
         void onFinish();
-
         void startVerificationActivity(Intent i);
-
-        void onMessage(String message);
     }
 }

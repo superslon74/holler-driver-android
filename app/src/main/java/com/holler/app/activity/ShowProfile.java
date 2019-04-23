@@ -16,7 +16,6 @@ import com.holler.app.utils.CustomActivity;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 import com.holler.app.Helper.ConnectionHelper;
-import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.User;
 import com.holler.app.R;
 
@@ -28,7 +27,6 @@ public class ShowProfile extends CustomActivity {
     public Context context = ShowProfile.this;
     public Activity activity = ShowProfile.this;
     String TAG = "ShowActivity";
-    CustomDialog customDialog;
     ConnectionHelper helper;
     Boolean isInternet;
     ImageView backArrow;

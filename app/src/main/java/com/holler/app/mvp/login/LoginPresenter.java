@@ -12,6 +12,8 @@ import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.di.app.modules.UserStorageModule;
 import com.holler.app.mvp.register.RegisterPresenter;
 import com.holler.app.server.OrderServerApi;
+import com.holler.app.utils.MessageDisplayer;
+import com.holler.app.utils.SpinnerShower;
 import com.orhanobut.logger.Logger;
 
 import retrofit2.Response;
@@ -83,7 +85,7 @@ public class LoginPresenter {
     }
 
     public void signIn(final User user) {
-        view.onLoadingStarted();
+        view.showSpinner();
 
         serverAPI
                 .signIn(user)
@@ -106,7 +108,7 @@ public class LoginPresenter {
                     public void onUnsuccessfulResponse(Response<JsonObject> response) {
                         super.onUnsuccessfulResponse(response);
 
-                        view.onLoadingFinished();
+                        view.hideSpinner();
                     }
 
                     @Override
@@ -124,7 +126,7 @@ public class LoginPresenter {
     }
 
     public void getProfile() {
-        view.onLoadingStarted();
+        view.showSpinner();
         String authHeader = "Bearer " + userStorage.getAccessToken();
 
         serverAPI
@@ -164,7 +166,7 @@ public class LoginPresenter {
                     @Override
                     public void onFinishHandling() {
                         super.onFinishHandling();
-                        view.onLoadingFinished();
+                        view.hideSpinner();
                     }
                 });
     }
@@ -231,11 +233,8 @@ public class LoginPresenter {
         }
     }
 
-    public interface View{
+    public interface View extends SpinnerShower, MessageDisplayer {
         void setupFields(PendingCredentials credentials);
-        void onMessage(String message);
         void onFinish();
-        void onLoadingStarted();
-        void onLoadingFinished();
     }
 }

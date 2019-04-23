@@ -1,71 +1,26 @@
 package com.holler.app.mvp.register;
 
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.telephony.TelephonyManager;
 import android.text.InputFilter;
 import android.text.Spanned;
-import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.facebook.accountkit.AccessToken;
-import com.facebook.accountkit.Account;
-import com.facebook.accountkit.AccountKit;
-import com.facebook.accountkit.AccountKitCallback;
-import com.facebook.accountkit.AccountKitError;
 import com.facebook.accountkit.AccountKitLoginResult;
-import com.facebook.accountkit.PhoneNumber;
-import com.facebook.accountkit.ui.AccountKitActivity;
-import com.facebook.accountkit.ui.AccountKitConfiguration;
-import com.facebook.accountkit.ui.LoginType;
-import com.facebook.accountkit.ui.SkinManager;
-import com.facebook.accountkit.ui.UIManager;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.gson.JsonObject;
 import com.holler.app.AndarApplication;
-import com.holler.app.Helper.ConnectionHelper;
-import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;
-import com.holler.app.Helper.URLHelper;
-import com.holler.app.Models.AccessDetails;
 import com.holler.app.R;
-import com.holler.app.Utilities.Utilities;
-import com.holler.app.activity.ActivityEmail;
-import com.holler.app.activity.ActivityPassword;
-import com.holler.app.activity.MainActivity;
-import com.holler.app.di.User;
 import com.holler.app.di.app.AppComponent;
 import com.holler.app.di.app.components.DaggerRegisterComponent;
 import com.holler.app.di.app.components.register.modules.RegisterModule;
-import com.holler.app.di.app.components.splash.modules.SplashScreenModule;
-import com.holler.app.mvp.welcome.WelcomeView;
-import com.holler.app.server.OrderServerApi;
 import com.holler.app.utils.CustomActivity;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
-import androidx.annotation.IdRes;
 import androidx.core.content.ContextCompat;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -76,7 +31,6 @@ public class RegisterView
         extends CustomActivity
         implements
         RegisterPresenter.View{
-
 
 
     private InputFilter filter = new InputFilter() {
@@ -112,7 +66,6 @@ public class RegisterView
     public ImageView femaleIcon;
 
 
-    private CustomDialog customDialog;
     private String gender = GENDER_MALE_VALUE;
     private static final int PHONE_VERIFICATION_REQUEST_CODE = 99;
 
@@ -160,6 +113,7 @@ public class RegisterView
 
         femaleIcon.setColorFilter(grey);
         maleIcon.setColorFilter(accent);
+
 
     }
 
@@ -217,20 +171,6 @@ public class RegisterView
         super.startActivityForResult(i,PHONE_VERIFICATION_REQUEST_CODE);
     }
 
-    @Override
-    public void onMessage(String message) {
-        super.onMessage(message);
-    }
-
-    @Override
-    public void onLoadingStarted() {
-        super.showLoadingProgress();
-    }
-
-    @Override
-    public void onLoadingFinished() {
-        super.hideLoadingProgress();
-    }
 
     @Override
     public void onFinish() {

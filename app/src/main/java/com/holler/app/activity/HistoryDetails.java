@@ -35,7 +35,6 @@ import com.holler.app.utils.CustomActivity;
 import com.squareup.picasso.Picasso;
 import com.holler.app.AndarApplication;
 import com.holler.app.Helper.ConnectionHelper;
-import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Helper.URLHelper;
 import com.holler.app.Helper.User;
@@ -64,7 +63,6 @@ public class HistoryDetails extends CustomActivity {
     Context context;
     Boolean isInternet;
     ConnectionHelper helper;
-    CustomDialog customDialog;
     TextView tripAmount;
     TextView tripDate;
     TextView paymentType;
@@ -360,9 +358,6 @@ public class HistoryDetails extends CustomActivity {
 
     public void getRequestDetails() {
 
-        customDialog = new CustomDialog(context);
-        customDialog.setCancelable(false);
-        customDialog.show();
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
                 AccessDetails.serviceurl
@@ -485,14 +480,12 @@ public class HistoryDetails extends CustomActivity {
                             Toast.makeText(activity, "Bad data received", Toast.LENGTH_SHORT).show();
                             onBackPressed();
                         } finally {
-                            customDialog.dismiss();
                         }
 
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                customDialog.dismiss();
                 String json = null;
                 String Message;
                 NetworkResponse response = error.networkResponse;
@@ -571,15 +564,6 @@ public class HistoryDetails extends CustomActivity {
     }
 
 
-    private void showSpinner() {
-        customDialog = new CustomDialog(context);
-        customDialog.setCancelable(false);
-        customDialog.show();
-    }
-
-    private void hideSpinner() {
-        customDialog.dismiss();
-    }
 
     public void cancelRequest() {
 
@@ -637,9 +621,6 @@ public class HistoryDetails extends CustomActivity {
 
     public void getUpcomingDetails() {
 
-        customDialog = new CustomDialog(context);
-        customDialog.setCancelable(false);
-        customDialog.show();
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
                 AccessDetails.serviceurl
@@ -651,14 +632,12 @@ public class HistoryDetails extends CustomActivity {
                     public void onResponse(JSONArray response) {
                         setDetails(response);
                         utils.print("Get Upcoming Details", response.toString());
-                        customDialog.dismiss();
                         parentLayout.setVisibility(View.VISIBLE);
 
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                customDialog.dismiss();
                 String json = null;
                 String Message;
                 NetworkResponse response = error.networkResponse;

@@ -27,7 +27,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.snackbar.Snackbar;
 import com.holler.app.mvp.welcome.WelcomeView;
-import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Helper.URLHelper;
 import com.holler.app.Models.AccessDetails;
@@ -188,22 +187,17 @@ public class Help extends Fragment implements View.OnClickListener {
     }
 
     public void getHelp() {
-        final CustomDialog customDialog = new CustomDialog(getActivity());
-        customDialog.setCancelable(false);
-        customDialog.show();
         JSONObject object = new JSONObject();
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, AccessDetails.serviceurl + URLHelper.HELP, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                customDialog.dismiss();
                 phone = response.optString("contact_number");
                 email = response.optString("contact_email");
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                customDialog.dismiss();
                 String json = null;
                 String Message;
                 NetworkResponse response = error.networkResponse;

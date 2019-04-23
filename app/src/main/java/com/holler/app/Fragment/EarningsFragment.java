@@ -29,7 +29,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.snackbar.Snackbar;
 import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.Helper.ConnectionHelper;
-import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Helper.URLHelper;
 import com.holler.app.Models.AccessDetails;
@@ -65,7 +64,6 @@ public class EarningsFragment extends Fragment {
     RecyclerView rcvRides;
     RelativeLayout errorLayout;
     ConnectionHelper helper;
-    CustomDialog customDialog;
     TextView lblTarget, lblEarnings;
     ImageView imgBack;
     CircularProgressBar custom_progressBar;
@@ -122,10 +120,6 @@ public class EarningsFragment extends Fragment {
     }
 
     public void getEarningsList() {
-
-        customDialog = new CustomDialog(context);
-        customDialog.setCancelable(false);
-        customDialog.show();
 
         JSONObject object = new JSONObject();
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, AccessDetails.serviceurl + URLHelper.TARGET_API, object , new Response.Listener<JSONObject>() {
@@ -193,7 +187,6 @@ public class EarningsFragment extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                customDialog.dismiss();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -243,7 +236,6 @@ public class EarningsFragment extends Fragment {
                         getEarningsList();
                     }
                 }
-                customDialog.dismiss();
             }
         }){
             @Override

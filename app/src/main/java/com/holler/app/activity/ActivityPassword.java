@@ -28,7 +28,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.holler.app.AndarApplication;
 import com.holler.app.Helper.ConnectionHelper;
-import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Helper.URLHelper;
 import com.holler.app.Models.AccessDetails;
@@ -42,7 +41,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-
+@Deprecated
 public class ActivityPassword extends CustomActivity {
 
     String TAG = "ActivityPassword";
@@ -53,7 +52,6 @@ public class ActivityPassword extends CustomActivity {
     ImageView backArrow;
     EditText password;
     TextView register, forgetPassword;
-    CustomDialog customDialog;
     String device_token, device_UDID;
     FloatingActionButton nextICON;
 
@@ -134,14 +132,9 @@ public class ActivityPassword extends CustomActivity {
     }
 
     private void signIn() {
-        Log.d("LALALA", "signing in step 1 from password activity");
 
         if (isInternet) {
-            Log.d("LALALA", "signing in step 2 from password activity");
 
-            customDialog = new CustomDialog(activity);
-            customDialog.setCancelable(false);
-            customDialog.show();
             JSONObject object = new JSONObject();
             try {
                 object.put("device_type", "android");
@@ -165,7 +158,6 @@ public class ActivityPassword extends CustomActivity {
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AccessDetails.serviceurl + URLHelper.login, object, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    customDialog.dismiss();
                     utils.print("SignUpResponse", response.toString());
                     SharedHelper.putKey(context, "access_token", response.optString("access_token"));
                     Log.d("LALALA", "signing in step 5 from password activity");
@@ -180,7 +172,6 @@ public class ActivityPassword extends CustomActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    customDialog.dismiss();
                     String json = null;
                     String Message;
                     NetworkResponse response = error.networkResponse;
@@ -243,14 +234,10 @@ public class ActivityPassword extends CustomActivity {
 
         if (isInternet) {
 
-            customDialog = new CustomDialog(context);
-            customDialog.setCancelable(false);
-            customDialog.show();
             JSONObject object = new JSONObject();
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, AccessDetails.serviceurl + URLHelper.USER_PROFILE_API+"?device_type=android&device_id="+device_UDID+"&device_token="+device_token, object, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    customDialog.dismiss();
                     utils.print("GetProfile", response.toString());
                     SharedHelper.putKey(context, "id", response.optString("id"));
                     SharedHelper.putKey(context, "first_name", response.optString("first_name"));
@@ -290,7 +277,6 @@ public class ActivityPassword extends CustomActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    customDialog.dismiss();
                     String json = null;
                     String Message;
                     NetworkResponse response = error.networkResponse;

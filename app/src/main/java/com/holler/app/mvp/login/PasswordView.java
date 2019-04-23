@@ -58,7 +58,7 @@ public class PasswordView extends CustomActivity implements LoginPresenter.View 
     }
 
     @Override
-    protected void onKeyboardShown() {
+    public void onKeyboardShown() {
         super.onKeyboardShown();
         Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up);
         animation.setStartOffset(200);
@@ -67,7 +67,7 @@ public class PasswordView extends CustomActivity implements LoginPresenter.View 
     }
 
     @Override
-    protected void onKeyboardHidden() {
+    public void onKeyboardHidden() {
         super.onKeyboardHidden();
         footer.setAnimation(AnimationUtils.loadAnimation(getApplicationContext(),R.anim.slide_up));
         footer.setVisibility(View.VISIBLE);
@@ -91,22 +91,8 @@ public class PasswordView extends CustomActivity implements LoginPresenter.View 
     }
 
     @Override
-    public void onMessage(String message) {
-        super.onMessage(message);
-    }
-
-    @Override
     public void onFinish() {
         finish();
     }
 
-    @Override
-    public void onLoadingStarted() {
-        super.showLoadingProgress();
-    }
-
-    @Override
-    public void onLoadingFinished() {
-        super.hideLoadingProgress();
-    }
 }

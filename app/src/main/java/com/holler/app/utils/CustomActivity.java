@@ -43,7 +43,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-public class CustomActivity extends AppCompatActivity {
+public class CustomActivity
+        extends AppCompatActivity
+        implements SpinnerShower, KeyboardObserver, MessageDisplayer {
 
     private static volatile int runningActivitiesCount = 0;
 
@@ -102,27 +104,6 @@ public class CustomActivity extends AppCompatActivity {
         }
 
     }
-
-    protected void onMessage(String message) {
-        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT)
-                .setAction("Action", null)
-                .show();
-    }
-
-    private LoadingProgress spinner;
-    protected void showLoadingProgress() {
-        if(spinner == null){
-            spinner = new LoadingProgress(this);
-        }
-        spinner.startLoading();
-    }
-
-    protected void hideLoadingProgress() {
-        if(spinner!=null){
-            spinner.stopLoading();
-        }
-    }
-
 
     public interface OnActivityResultListener {
         void onActivityResult(int requestCode, int resultCode, Intent data);
@@ -456,12 +437,39 @@ public class CustomActivity extends AppCompatActivity {
         });
     }
 
-    protected void onKeyboardHidden() {
+
+    @Override
+    public void onMessage(String message) {
+        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT)
+                .setAction("Action", null)
+                .show();
+    }
+
+
+    @Override
+    public void onKeyboardShown() {
 
     }
 
-    protected void onKeyboardShown() {
+    @Override
+    public void onKeyboardHidden() {
 
+    }
+
+    private LoadingProgress spinner;
+    @Override
+    public void showSpinner() {
+        if(spinner == null){
+            spinner = new LoadingProgress(this);
+        }
+        spinner.startLoading();
+    }
+
+    @Override
+    public void hideSpinner() {
+        if(spinner!=null){
+            spinner.stopLoading();
+        }
     }
 
 

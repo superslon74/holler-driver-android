@@ -24,7 +24,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.daasuu.cat.CountAnimationTextView;
 import com.google.android.material.snackbar.Snackbar;
 import com.holler.app.mvp.welcome.WelcomeView;
-import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Helper.URLHelper;
 import com.holler.app.Models.AccessDetails;
@@ -177,15 +176,11 @@ public class SummaryFragment extends Fragment implements View.OnClickListener {
 
     public void getProviderSummary() {
         {
-            final CustomDialog customDialog = new CustomDialog(getActivity());
-            customDialog.setCancelable(false);
-            customDialog.show();
             JSONObject object = new JSONObject();
 
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AccessDetails.serviceurl + URLHelper.SUMMARY, object, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    customDialog.dismiss();
                     cardLayout.setVisibility(View.VISIBLE);
                     Animation slideUp = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_up);
                     cardLayout.startAnimation(slideUp);
@@ -218,7 +213,6 @@ public class SummaryFragment extends Fragment implements View.OnClickListener {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    customDialog.dismiss();
                     String json = null;
                     String Message;
                     NetworkResponse response = error.networkResponse;

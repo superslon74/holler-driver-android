@@ -40,7 +40,6 @@ import com.squareup.picasso.Picasso;
 import com.holler.app.AndarApplication;
 import com.holler.app.Helper.AppHelper;
 import com.holler.app.Helper.ConnectionHelper;
-import com.holler.app.Helper.CustomDialog;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Helper.URLHelper;
 import com.holler.app.Helper.VolleyMultipartRequest;
@@ -71,7 +70,6 @@ public class EditProfile extends CustomActivity implements RadioGroup.OnCheckedC
     public Context context = EditProfile.this;
     public Activity activity = EditProfile.this;
     private static final int SELECT_PHOTO = 100;
-    CustomDialog customDialog;
     ConnectionHelper helper;
     Boolean isInternet;
     Button saveBTN;
@@ -374,13 +372,10 @@ public class EditProfile extends CustomActivity implements RadioGroup.OnCheckedC
     }
 
     private void updateProfileWithoutImage() {
-        customDialog = new CustomDialog(context);
-        customDialog.setCancelable(false);
-        customDialog.show();
+
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, AccessDetails.serviceurl + URLHelper.USER_PROFILE_API, new Response.Listener<NetworkResponse>() {
             @Override
             public void onResponse(NetworkResponse response) {
-                customDialog.dismiss();
                 String res = new String(response.data);
                 try {
                     JSONObject jsonObject = new JSONObject(res);
@@ -415,8 +410,7 @@ public class EditProfile extends CustomActivity implements RadioGroup.OnCheckedC
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if ((customDialog != null) && customDialog.isShowing())
-                    customDialog.dismiss();
+
                 String json = null;
                 String Message;
                 NetworkResponse response = error.networkResponse;
@@ -490,13 +484,9 @@ public class EditProfile extends CustomActivity implements RadioGroup.OnCheckedC
 
     private void updateProfileWithImage() {
 
-        customDialog = new CustomDialog(context);
-        customDialog.setCancelable(false);
-        customDialog.show();
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, AccessDetails.serviceurl + URLHelper.USER_PROFILE_API, new Response.Listener<NetworkResponse>() {
             @Override
             public void onResponse(NetworkResponse response) {
-                customDialog.dismiss();
 
                 String res = new String(response.data);
                 utils.print("ProfileUpdateRes", "" + res);
@@ -536,8 +526,7 @@ public class EditProfile extends CustomActivity implements RadioGroup.OnCheckedC
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if ((customDialog != null) && customDialog.isShowing())
-                    customDialog.dismiss();
+
                 String json = null;
                 String Message;
                 NetworkResponse response = error.networkResponse;
