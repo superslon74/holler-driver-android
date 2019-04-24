@@ -1,6 +1,8 @@
 package com.holler.app.di.app.modules;
 
 import com.google.gson.JsonObject;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.holler.app.Helper.URLHelper;
 import com.holler.app.di.User;
 
@@ -97,6 +99,70 @@ public class RetrofitModule {
         Single<User> getUserProfile(
                 @Header(HEADER_KEY_AUTHORIZATION) String authHeader
         );
+
+        // change password
+        @POST("api/provider/forgot/password")
+        Single<ForgotPasswordResponseBody> forgotPassword(
+                @Body ForgotPasswordRequestBody email
+        );
+
+        class ForgotPasswordRequestBody{
+            @Expose(deserialize = false)
+            @SerializedName("email")
+            public String email;
+
+            public ForgotPasswordRequestBody(String email) {
+                this.email = email;
+            }
+        }
+        class ForgotPasswordResponseBody{
+            @Expose(serialize = false)
+            @SerializedName("provider")
+            public Provider provider;
+            //TODO: remove otp checking to server
+            class Provider{
+                @Expose(serialize = false)
+                @SerializedName("id")
+                public String id;
+                @Expose(serialize = false)
+                @SerializedName("otp")
+                public String otp;
+            }
+
+            public String getId(){
+                if(provider!=null)
+                    return provider.id;
+                return null;
+            }
+
+            public String getOtp(){
+                if(provider!=null)
+                    return provider.otp;
+                return null;
+            }
+        }
+
+        @POST("api/provider/reset/password")
+        Single<JsonObject> changePassword(
+                @Body ChangePasswordRequestBody newPassword
+        );
+        class ChangePasswordRequestBody{
+            @Expose(deserialize = false)
+            @SerializedName("id")
+            public String id;
+            @Expose(deserialize = false)
+            @SerializedName("password")
+            public String password;
+            @Expose(deserialize = false)
+            @SerializedName("password_confirmation")
+            public String passwordConfirmation;
+
+            public ChangePasswordRequestBody(String id, String password, String passwordConfirmation) {
+                this.id = id;
+                this.password = password;
+                this.passwordConfirmation = passwordConfirmation;
+            }
+        }
 
 
         @POST("api/provider/verify")

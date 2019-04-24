@@ -7,6 +7,8 @@ import com.holler.app.activity.ActivitySocialLogin;
 import com.holler.app.activity.MainActivity;
 import com.holler.app.mvp.login.EmailView;
 import com.holler.app.mvp.login.PasswordView;
+import com.holler.app.mvp.password.ChangePasswordView;
+import com.holler.app.mvp.password.ForgotPasswordView;
 import com.holler.app.mvp.register.RegisterView;
 import com.holler.app.mvp.welcome.WelcomeView;
 
@@ -70,12 +72,24 @@ public class RouterModule {
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
         }
+
         public void goToEmailScreen(){
             Intent i = new Intent(context, EmailView.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
         }
 
+        public void goToForgotPasswordScreen(){
+            Intent i = new Intent(context, ForgotPasswordView.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(i);
+        }
+
+        public void goToChangePasswordScreen() {
+            Intent i = new Intent(context, ChangePasswordView.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(i);
+        }
     }
 
 }

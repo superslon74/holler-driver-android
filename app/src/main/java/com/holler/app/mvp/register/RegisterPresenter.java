@@ -363,6 +363,7 @@ public class RegisterPresenter {
         }
 
         public int validate() {
+            //TODO: refact validation process with validator
             if (email == null || email.length() == 0)
                 return VALIDATION_ERROR_EMAIL_EMPTY;
             if (name == null || name.length() == 0)

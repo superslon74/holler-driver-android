@@ -253,7 +253,11 @@ public class ForgetPassword extends CustomActivity {
             e.printStackTrace();
         }
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, AccessDetails.serviceurl + URLHelper.FORGET_PASSWORD, object, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest =
+                new JsonObjectRequest(
+                        Request.Method.POST,
+                        AccessDetails.serviceurl + URLHelper.FORGET_PASSWORD,
+                        object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
 

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string translatable="false" name="error_validation_email_empty">Please enter your email</string>
+    <string translatable="false" name="error_validation_email">Invalid email address</string>
+
+    <string translatable="false" name="error_validation_password_empty">Password required</string>
+    <string translatable="false" name="error_validation_password">Password must contains minimum 8 characters maximum 16 characters and at least one number</string>
+    <string translatable="false" name="error_validation_password_mismatched">Please repeat password for confirmation</string>
+
+    <string translatable="false" name="error_validation_name_empty">Enter your name</string>
+
+    <string translatable="false" name="error_validation_otp_empty">Please enter code</string>
+    <string translatable="false" name="error_validation_otp_mismatched">Wrong code</string>
+
+    <string translatable="false" name="error_validation">Validation failed</string>
+
+
+</resources>

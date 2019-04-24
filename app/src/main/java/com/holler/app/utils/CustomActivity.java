@@ -456,20 +456,24 @@ public class CustomActivity
 
     }
 
-    private LoadingProgress spinner;
+    private static volatile LoadingProgress spinner;
     @Override
     public void showSpinner() {
-        if(spinner == null){
-            spinner = new LoadingProgress(this);
-        }
-        spinner.startLoading();
+        runOnUiThread(() -> {
+            if(spinner == null){
+                spinner = new LoadingProgress(this);
+            }
+            spinner.startLoading();
+        });
     }
 
     @Override
     public void hideSpinner() {
-        if(spinner!=null){
-            spinner.stopLoading();
-        }
+        runOnUiThread(() -> {
+            if(spinner!=null){
+                spinner.stopLoading();
+            }
+        });
     }
 
 

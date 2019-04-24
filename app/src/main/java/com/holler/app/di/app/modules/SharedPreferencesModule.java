@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+
+import com.orhanobut.logger.Logger;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -40,6 +43,8 @@ public class SharedPreferencesModule {
                         .edit()
                         .putString(key, value)
                         .commit();
+            }else{
+                Logger.e("trying to save empty key: "+key);
             }
         }
     }

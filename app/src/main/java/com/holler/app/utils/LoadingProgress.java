@@ -12,11 +12,11 @@ import android.widget.Toast;
 import com.holler.app.R;
 
 public class LoadingProgress extends Toast {
+    private CustomActivity activity;
 
-
-    public LoadingProgress(Context context) {
-        super(context);
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public LoadingProgress(CustomActivity activity) {
+        super( activity.getApplicationContext());
+        LayoutInflater inflater = (LayoutInflater)  activity.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view  = inflater.inflate(R.layout.loding_spinner, null);
         setView(view);
         setGravity(Gravity.CENTER,0,0);

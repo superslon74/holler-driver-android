@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.os.Looper;
 
 import com.google.gson.JsonObject;
 import com.holler.app.activity.MainActivity;
@@ -22,11 +23,17 @@ import com.holler.app.utils.MessageDisplayer;
 import com.holler.app.utils.SpinnerShower;
 import com.orhanobut.logger.Logger;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.Scheduler;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
+import io.reactivex.SingleSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 
@@ -44,8 +51,8 @@ public class SplashPresenter implements Presenter {
             View view,
             RetrofitModule.ServerAPI serverAPI,
             DeviceInfoModule.DeviceInfo deviceInfo,
-            UserStorageModule.UserStorage userStorage){
-        this.context=context;
+            UserStorageModule.UserStorage userStorage) {
+        this.context = context;
         this.router = router;
         this.view = view;
         this.serverAPI = serverAPI;
@@ -56,131 +63,88 @@ public class SplashPresenter implements Presenter {
     @Override
     public void onResume() {
         boolean userLoggedIn = userStorage.getLoggedIn();
-        if(userLoggedIn){
-
-        }else{
+        if (userLoggedIn) {
+//            Observable.concat(accessTokenUpdating(),profileUpdating());
+            updateUserData();
+        } else {
             router.goToWelcomeScreen();
         }
 
     }
 
-
-    private Single accessTokenUpdating(){
+    private void updateUserData() {
         User user = userStorage.getUser();
 
-        user.deviceType = "android";
+        user.deviceType = deviceInfo.deviceType;
         user.deviceId = deviceInfo.deviceId;
         user.deviceToken = deviceInfo.deviceToken;
 
-        Single<JsonObject> signInProcess = serverAPI.getAccessToken(user);
-        signInProcess
+        Single accessTokenSource =
+                serverAPI.getAccessToken(user)
+                        .doOnSubscribe(new Consumer<Disposable>() {
+                            @Override
+                            public void accept(Disposable disposable) throws Exception {
+                                view.showSpinner();
+                            }
+                        })
+                        .doOnSuccess(new Consumer<JsonObject>() {
+                            @Override
+                            public void accept(JsonObject jsonObject) throws Exception {
+                                String accessToken = jsonObject.get("access_token").getAsString();
+                                userStorage.setAccessToken(accessToken);
+                            }
+                        })
+                        .flatMap(new Function<JsonObject, SingleSource<?>>() {
+                            @Override
+                            public SingleSource<?> apply(JsonObject jsonObject) throws Exception {
+                                String authHeader = "Bearer " + userStorage.getAccessToken();
+
+                                Single userProfileSource =
+                                        serverAPI.getUserProfile(authHeader)
+                                                .doOnSuccess(new Consumer<User>() {
+                                                    @Override
+                                                    public void accept(User user) throws Exception {
+                                                        userStorage.putUser(user);
+                                                        startTrackingLocation();
+                                                    }
+                                                });
+
+                                return userProfileSource;
+                            }
+                        });
+
+
+
+        accessTokenSource
                 .subscribeOn(Schedulers.io())
-                .subscribe(new SingleObserver<JsonObject>() {
+                .doFinally(new Action() {
                     @Override
-                    public void onSubscribe(Disposable d) {
-                        Logger.d("Access token updating disposed");
-
+                    public void run() throws Exception {
+                        view.hideSpinner();
                     }
-
+                })
+                .subscribe(new Consumer() {
                     @Override
-                    public void onSuccess(JsonObject jsonObject) {
-                        String accessToken = jsonObject.get("access_token").getAsString();
-                        userStorage.setAccessToken(accessToken);
+                    public void accept(Object o) throws Exception {
+                        Logger.i("onNext" + o.toString());
                     }
-
+                }, new Consumer<Throwable>() {
                     @Override
-                    public void onError(Throwable e) {
-                        Logger.e(e.getMessage());
+                    public void accept(Throwable throwable) throws Exception {
+                        view.onMessage("Error");
+                        router.goToWelcomeScreen();
+                        Logger.e("Error: " + throwable.getMessage());
                     }
                 });
-
-        return signInProcess;
-
-//        serverAPI
-//                .signIn(user)
-//                .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(null) {
-//                    @Override
-//                    public void onSuccessfulResponse(Response<JsonObject> response) {
-//                        String accessToken = response.body().get("access_token").getAsString();
-//                        userStorage.setAccessToken(accessToken);
-//                        updateProfile();
-//                    }
-//
-//                    @Override
-//                    public void onUnsuccessfulResponse(Response<JsonObject> response) {
-//                        super.onUnsuccessfulResponse(response);
-//                        if(signInRetryCount>0){
-//                            signInRetryCount--;
-//                            updateAccessToken();
-//                        }else{
-//                            userStorage.setLoggedIn("false");
-//                            router.goToWelcomeScreen();
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onDisplayMessage(String message) {
-//                        view.onMessage(message);
-//                    }
-//                });
     }
 
-    private Single profileUpdating(){
-        String authHeader = "Bearer " + userStorage.getAccessToken();
 
-        Single<User> loadingProfileProcess = serverAPI.getUserProfile(authHeader);
-        loadingProfileProcess.subscribe(new SingleObserver<User>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-                Logger.d("Profile updating disposed");
-            }
-
-            @Override
-            public void onSuccess(User user) {
-                userStorage.putUser(user);
-                startTrackingLocation();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Logger.e(e.getMessage());
-            }
-        });
-
-
-        return loadingProfileProcess;
-//
-//
-//        serverAPI
-//                .profile(authHeader)
-//                .enqueue(new OrderServerApi.CallbackErrorHandler<User>(null) {
-//                    @Override
-//                    public void onSuccessfulResponse(Response<User> response) {
-//                        User user = response.body();
-//                        userStorage.putUser(user);
-//                        startTrackingLocation();
-//                    }
-//
-//                    @Override
-//                    public void onUnsuccessfulResponse(Response<User> response) {
-//                        super.onUnsuccessfulResponse(response);
-//                        router.goToWelcomeScreen();
-//                    }
-//
-//                    @Override
-//                    public void onDisplayMessage(String message) {
-//                        view.onMessage(message);
-//                    }
-//                });
-
-    }
-
-    private void startTrackingLocation(){
+    private void startTrackingLocation() {
         Intent gpsTrackerBinding = new Intent(context, GPSTracker.class);
         ServiceConnection gpsTrackerConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder binder) {
-                GPSTracker.GPSTrackerBinder service = (GPSTracker.GPSTrackerBinder)binder;
+                GPSTracker.GPSTrackerBinder service = (GPSTracker.GPSTrackerBinder) binder;
                 service.startTracking();
                 router.goToMainScreen();
             }
@@ -190,7 +154,7 @@ public class SplashPresenter implements Presenter {
 
             }
         };
-        context.bindService(gpsTrackerBinding,gpsTrackerConnection,Context.BIND_AUTO_CREATE);
+        context.bindService(gpsTrackerBinding, gpsTrackerConnection, Context.BIND_AUTO_CREATE);
     }
 
 

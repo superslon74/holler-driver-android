@@ -85,6 +85,11 @@ public class PasswordView extends CustomActivity implements LoginPresenter.View 
         presenter.goToMainView(new LoginPresenter.PendingCredentials(null, password));
     }
 
+    @OnClick(R.id.la_forgot_password)
+    public void goToForgotPassword(){
+        presenter.goToForgotPasswordView();
+    }
+
     @Override
     public void setupFields(LoginPresenter.PendingCredentials credentials) {
         passwordView.setText(credentials.getPassword());

@@ -99,6 +99,7 @@ public class LoginPresenter {
                         }
                         SharedHelper.putKey(context, "currency", currency);
                         SharedHelper.putKey(context, "access_token", accessToken);
+                        userStorage.putUser(user);
 
                         getProfile();
 //                        hideSpinner();
@@ -179,6 +180,11 @@ public class LoginPresenter {
 
     public void goToRegisterView() {
         router.goToRegisterScreen();
+        view.onFinish();
+    }
+
+    public void goToForgotPasswordView() {
+        router.goToForgotPasswordScreen();
         view.onFinish();
     }
 
