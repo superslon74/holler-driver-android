@@ -39,7 +39,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-
+@Deprecated
 public class ChangePassword extends CustomActivity {
     String TAG = "ChangePasswordActivity";
     public Context context = ChangePassword.this;

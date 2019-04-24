@@ -27,7 +27,6 @@ public class Validator {
     public static final Throwable VALIDATION_ERROR_NAME_EMPTY =
             createByStringResId(R.string.error_validation_name_empty);
 
-    //TODO: provide strings
     public static final Throwable VALIDATION_ERROR_OTP_MISMATCHED =
             createByStringResId(R.string.error_validation_otp_empty);
     public static final Throwable VALIDATION_ERROR_OTP_EMPTY =

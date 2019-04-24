@@ -22,7 +22,7 @@ import org.json.JSONObject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-
+@Deprecated
 public class AccessKeyActivity extends AppCompatActivity {
 
     EditText txtAccessKey, txtUserName;

@@ -164,6 +164,8 @@ public class RetrofitModule {
             }
         }
 
+        //
+
 
         @POST("api/provider/verify")
         Call<JsonObject> checkEmailExists(

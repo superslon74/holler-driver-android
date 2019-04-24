@@ -7,6 +7,7 @@ import com.holler.app.activity.ActivitySocialLogin;
 import com.holler.app.activity.MainActivity;
 import com.holler.app.mvp.login.EmailView;
 import com.holler.app.mvp.login.PasswordView;
+import com.holler.app.mvp.main.MainView;
 import com.holler.app.mvp.password.ChangePasswordView;
 import com.holler.app.mvp.password.ForgotPasswordView;
 import com.holler.app.mvp.register.RegisterView;
@@ -41,7 +42,7 @@ public class RouterModule {
         }
 
         public void goToMainScreen(){
-            Intent i = new Intent(context, MainActivity.class);
+            Intent i = new Intent(context, MainView.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
         }

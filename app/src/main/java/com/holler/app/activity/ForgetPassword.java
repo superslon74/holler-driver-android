@@ -41,6 +41,7 @@ import java.util.Map;
 
 import static com.holler.app.AndarApplication.trimMessage;
 
+@Deprecated
 public class ForgetPassword extends CustomActivity {
 
     public Context context = ForgetPassword.this;

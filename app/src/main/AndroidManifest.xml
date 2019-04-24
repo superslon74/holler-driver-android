@@ -80,6 +80,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
+
+        <activity
+            android:name=".mvp.main.MainView"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".activity.DocumentsActivity"
             android:label="@string/upload_documents_title"
