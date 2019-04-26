@@ -48,6 +48,103 @@
     <style name="MA_Page_Padding">
         <item name="android:paddingLeft">35dp</item>
         <item name="android:paddingRight">35dp</item>
+
+    </style>
+
+    <!--Side menu styles-->
+    <style name="MENU_Header">
+        <item name="android:paddingLeft">25dp</item>
+        <item name="android:paddingTop">30dp</item>
+        <item name="android:paddingBottom">15dp</item>
+
+    </style>
+    <style name="MENU_Header_User_Name">
+        <item name="android:layout_marginTop">12dp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">@font/montserrat</item>
+        <item name="android:textStyle">bold</item>
+
+        <item name="android:textSize">17dp</item>
+
+    </style>
+
+    <style name="MENU_Header_Button_Close">
+        <item name="android:layout_marginRight">0dp</item>
+    </style>
+
+    <style name="MENU_Header_User_Photo">
+        <item name="android:layout_marginTop">15dp</item>
+    </style>
+
+    <style name="MENU_Header_Toggle">
+        <item name="android:layout_marginRight">25dp</item>
+        <item name="android:layout_marginLeft">25dp</item>
+    </style>
+
+
+    <style name="MENU_List_Item">
+        <item name="android:textSize">15dp</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:fontFamily">@font/montserrat</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+
+
+
+    </style>
+
+    <!--Order fragment-->
+
+    <style name="OF_Header_Text">
+        <item name="android:paddingBottom">6dp</item>
+        <item name="android:paddingLeft">6dp</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/montserrat</item>
+
+    </style>
+
+    <style name="OF_Header_Description">
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/montserrat</item>
+
+    </style>
+
+    <style name="OF_Link_Button">
+        <item name="android:textAlignment">textStart</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:minHeight">0dp</item>
+
+
+        <item name="android:textColor">@color/yellowLight</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">@font/montserrat</item>
+    </style>
+
+    <style name="OF_Pick_Up_Button">
+        <item name="android:textAlignment">textStart</item>
+        <item name="android:background">@color/yellowLight</item>
+        <item name="android:paddingTop">3dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:paddingLeft">22dp</item>
+        <item name="android:paddingRight">35dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:textAllCaps">true</item>
+
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/montserrat</item>
     </style>
 
     <!--Login activity styles-->
@@ -123,6 +220,11 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="listPreferredItemHeightSmall">35dp</item>
+        <item name="listPreferredItemPaddingLeft">35dp</item>
+        <item name="listPreferredItemPaddingRight">35dp</item>
+        <item name="android:expandableListPreferredItemPaddingLeft">35dp</item>
     </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
@@ -132,7 +234,6 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="lollipop">true</item>
         <item name="android:statusBarColor" tools:targetApi="lollipop">@color/colorPrimaryDark</item>
-        <item name="android:typeface">monospace</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

@@ -12,13 +12,23 @@
 
     <color name="greyGreen">#cee5e4</color>
 
+    <color name="energizedOrange">#f28400</color>
+    <color name="energizedGreen">#4af4bc</color>
+
 
 
 
     <!--old theme-->
     <color name="colorPrimary">@color/blueDark</color>
-    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorPrimaryDark">@color/black</color>
     <color name="colorAccent">@color/blueLight</color>
+
+    <color name="menuOverflowTint">@color/black</color>
+
+    <color name="userStatusOnline">@color/energizedGreen</color>
+    <color name="userStatusOffline">@color/energizedOrange</color>
+    <color name="userStatusDisapproved">@color/greyGreen</color>
+
 
 
 

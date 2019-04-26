@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <attr name="ciii_image" format="reference"/>
+
+    <declare-styleable name="UserStatusToggle">
+        <attr name="ust_online" format="boolean"/>
+        <attr name="ust_offline" format="boolean"/>
+        <attr name="ust_disapproved" format="boolean"/>
+        <attr name="ust_blocked" format="boolean"/>
+
+        <attr name="ct_bg_color" format="color"/>
+        <attr name="ct_bt_color" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="UserStatusDot">
+        <attr name="usd_online" format="boolean"/>
+        <attr name="usd_offline" format="boolean"/>
+        <attr name="usd_disapproved" format="boolean"/>
+        <attr name="usd_blocked" format="boolean"/>
+    </declare-styleable>
+
     <declare-styleable name="CircularProgressView">
         <attr name="cpv_progress" format="float" />
         <attr name="cpv_maxProgress" format="float" />
@@ -67,35 +86,20 @@
     </declare-styleable>
 
     <declare-styleable name="RippleView">
-
         <attr name="rv_alpha" format="integer" />
-
         <attr name="rv_framerate" format="integer" />
-
         <attr name="rv_rippleDuration" format="integer" />
-
         <attr name="rv_zoomDuration" format="integer" />
-
         <attr name="rv_color" format="color" />
-
         <attr name="rv_centered" format="boolean" />
-
         <attr name="rv_type" format="enum">
-
             <enum name="simpleRipple" value="0" />
-
             <enum name="doubleRipple" value="1" />
-
             <enum name="rectangle" value="2" />
-
         </attr>
-
         <attr name="rv_ripplePadding" format="dimension" />
-
         <attr name="rv_zoom" format="boolean" />
-
         <attr name="rv_zoomScale" format="float" />
-
     </declare-styleable>
     <declare-styleable name="ExpandableTextView">
         <attr name="trimLength" format="integer" />

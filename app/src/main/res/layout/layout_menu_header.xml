@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/insert_border_bottom"
+    style="@style/MENU_Header"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ma_nav_user_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/ma_nav_header_buttons">
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/ma_nav_user_photo"
+
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:src="@drawable/com_facebook_profile_picture_blank_portrait"
+
+            app:civ_border="true"
+            app:civ_border_width="2dp"
+            app:civ_border_color="@color/white"
+            style="@style/MENU_Header_User_Photo"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <com.holler.app.mvp.main.UserStatusDot
+            android:id="@+id/ma_nav_user_status"
+            app:usd_offline="true"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/selector_status_dot"
+            android:layout_marginBottom="3dp"
+            android:layout_marginRight="3dp"
+            app:layout_constraintBottom_toBottomOf="@+id/ma_nav_user_photo"
+            app:layout_constraintRight_toRightOf="@+id/ma_nav_user_photo"
+            />
+
+        <TextView
+            android:id="@+id/ma_nav_user_name"
+            style="@style/MENU_Header_User_Name"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Limor Salman"
+            app:layout_constraintTop_toBottomOf="@+id/ma_nav_user_photo"
+            app:layout_constraintLeft_toLeftOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ma_nav_header_buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        >
+
+        <ImageView
+            android:id="@+id/ma_nav_button_close"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            style="@style/MENU_Header_Button_Close"
+            android:src="@drawable/ic_button_back_accent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+
+        <com.holler.app.mvp.main.UserStatusToggle
+            android:id="@+id/ma_nav_user_state_toggle"
+            style="@style/MENU_Header_Toggle"
+            app:ust_offline="true"
+
+            android:background="@drawable/selector_status_toggle"
+            android:layout_width="75dp"
+            android:layout_height="40dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

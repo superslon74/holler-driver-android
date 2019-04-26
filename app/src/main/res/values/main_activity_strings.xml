@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string translatable="false" name="mas_nav_payment">Payment</string>
+    <string translatable="false" name="mas_nav_trips">Your trips</string>
+    <string translatable="false" name="mas_nav_coupon">Coupon</string>
+    <string translatable="false" name="mas_nav_wallet">Wallet</string>
+    <string translatable="false" name="mas_nav_passbook">Passbook</string>
+    <string translatable="false" name="mas_nav_settings">Settings</string>
+    <string translatable="false" name="mas_nav_help">Help</string>
+    <string translatable="false" name="mas_nav_share">Share</string>
+    <string translatable="false" name="mas_nav_documents">Upload Documents</string>
+    <string translatable="false" name="mas_nav_logout">Logout</string>
+
+</resources>

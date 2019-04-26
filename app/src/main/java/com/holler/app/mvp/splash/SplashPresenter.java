@@ -67,7 +67,7 @@ public class SplashPresenter implements Presenter {
 //            Observable.concat(accessTokenUpdating(),profileUpdating());
             updateUserData();
         } else {
-            router.goToWelcomeScreen();
+            router.goToMainScreen();
         }
 
     }
