@@ -175,6 +175,8 @@ public class Map
     GoogleApiClient mGoogleApiClient;
     LocationRequest mLocationRequest;
     ParserTask parserTask;
+
+    @Deprecated
     ImageView imgCurrentLoc;
     boolean normalPlay = false;
     String s_address = "", d_address = "";
@@ -293,7 +295,6 @@ public class Map
         super.onAttach(context);
         this.context = context;
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -971,6 +972,7 @@ public class Map
     }
 
     @SuppressWarnings("MissingPermission")
+    @Deprecated
     private void setupMap() {
         mMap.setMyLocationEnabled(false);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -996,11 +998,7 @@ public class Map
                     MapStyleOptions.loadRawResourceStyle(
                             activity, R.raw.style_json));
 
-            if (!success) {
-                Log.e("Map:Style", "Style parsing failed.");
-            } else if (success) {
-                Log.e("Map:Style", "Style Applied.");
-            }
+
         } catch (Resources.NotFoundException e) {
             Log.e("Map:Style", "Can't find style. Error: ", e);
         }
@@ -1056,29 +1054,35 @@ public class Map
         }
     }
 
+    @Deprecated
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setFastestInterval(3000);
         mLocationRequest.setInterval(3000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+
         if (ContextCompat.checkSelfPermission(context,
                 Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED && mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-//            LocationServices
-//                    .FusedLocationApi
-//                    .requestLocationUpdates(
-//                            mGoogleApiClient,
-//                            mLocationRequest,
-//                            (com.google.android.gms.location.LocationListener) this);
+                == PackageManager.PERMISSION_GRANTED
+                && mGoogleApiClient != null
+                && mGoogleApiClient.isConnected()) {
+            LocationServices
+                    .FusedLocationApi
+                    .requestLocationUpdates(
+                            mGoogleApiClient,
+                            mLocationRequest,
+                            (com.google.android.gms.location.LocationListener) this);
         }
     }
 
+    @Deprecated
     @Override
     public void onConnectionSuspended(int i) {
 
     }
 
+    @Deprecated
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
@@ -1140,22 +1144,26 @@ public class Map
 
     }
 
+    @Deprecated
     @Override
     public void onProviderEnabled(String provider) {
 
     }
 
+    @Deprecated
     @Override
     public void onProviderDisabled(String provider) {
 
     }
 
+    @Deprecated
     @Override
     public void onClick(View v) {
 
     }
 
     @Override
+    @Deprecated
     public void onCameraMove() {
         utils.print("Current marker", "Zoom Level " + mMap.getCameraPosition().zoom);
         if (currentMarker != null) {
@@ -2430,6 +2438,7 @@ public class Map
         }
     }
 
+    @Deprecated
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(context)
                 .addConnectionCallbacks(this)
@@ -2472,6 +2481,7 @@ public class Map
 //        activity.finish();
     }
 
+    @Deprecated
     private void showCustomFloatingView(Context context, boolean isShowOverlayPermission) {
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
 //            final Intent intent = new Intent(context, CustomFloatingViewService.class);

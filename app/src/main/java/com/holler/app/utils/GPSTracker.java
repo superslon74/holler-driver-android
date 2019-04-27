@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -15,24 +16,35 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+
+import com.google.android.gms.tasks.Task;
 import com.google.gson.JsonObject;
 import com.holler.app.AndarApplication;
+import com.holler.app.activity.MainActivity;
 import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.di.app.modules.UserStorageModule;
 import com.holler.app.server.OrderServerApi;
 
+import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import retrofit2.Response;
 
 public class GPSTracker
         extends Service
-        implements LocationListener {
+        implements Executor{
 
 
 
@@ -50,6 +62,8 @@ public class GPSTracker
     @Inject public UserStorageModule.UserStorage userStorage;
 
     private GPSTrackerBinder binder;
+    private LocationCallback locationCallback;
+    private LocationRequest locationRequest;
 
     public GPSTracker() {
         AndarApplication.getInstance().component().inject(this);
@@ -61,25 +75,38 @@ public class GPSTracker
         locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
         sender = new Handler();
         binder = new GPSTrackerBinder();
+        locationCallback = new LocationCallback(){
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                Location location = locationResult.getLastLocation();
+                onLocationChanged(location);
+            }
+        };
     }
 
     @SuppressLint("MissingPermission")
-    private void connectGoogleApi(ResultCallback<LocationSettingsResult> locationSettingsResultCallback ) {
+    private void connectGoogleApi(
+            OnSuccessListener<LocationSettingsResponse> successListener, 
+            OnFailureListener failureListener) {
 
-        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(5 * 1000);
-        locationRequest.setFastestInterval(5 * 1000);
+        locationRequest.setFastestInterval(500);
 
         LocationSettingsRequest locationSettingsRequest = new LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest)
                 .setAlwaysShow(false)
                 .build();
 
-        LocationServices
-                .SettingsApi
-                .checkLocationSettings(googleApiClient, locationSettingsRequest)
-                .setResultCallback(locationSettingsResultCallback);
+        Task<LocationSettingsResponse> locationSettingsResponse = LocationServices
+                .getSettingsClient(this)
+                .checkLocationSettings(locationSettingsRequest);
+        
+
+        locationSettingsResponse.addOnSuccessListener((Executor) this, successListener);
+        locationSettingsResponse.addOnFailureListener((Executor) this, failureListener);
 
         googleApiClient.connect();
     }
@@ -98,15 +125,16 @@ public class GPSTracker
     }
 
     private void stopReceiveLocationUpdates() {
-        locationManager.removeUpdates(GPSTracker.this);
+        LocationServices
+                .getFusedLocationProviderClient(this)
+                .removeLocationUpdates(locationCallback);
     }
 
     @SuppressLint("MissingPermission")
     private void startReceiveLocationUpdates(){
-        locationManager.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER,
-                MIN_TIME_BW_UPDATES,
-                MIN_DISTANCE_CHANGE_FOR_UPDATES, GPSTracker.this);
+        LocationServices
+                .getFusedLocationProviderClient(this)
+                .requestLocationUpdates(locationRequest,locationCallback,null);
     }
 
 
@@ -137,7 +165,6 @@ public class GPSTracker
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
-    @Override
     public void onLocationChanged(Location location) {
         if (location != null) {
             this.lastLocation = location;
@@ -168,31 +195,39 @@ public class GPSTracker
         }
     }
 
-    @Override
-    public void onProviderEnabled(String provider) {
-        //TODO: check provider & enable listening
-        Toast.makeText(context, provider + " enabled", Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-        //TODO: check provider & disable listening
-        Toast.makeText(context, provider + " disabled", Toast.LENGTH_LONG).show();
-    }
-
-    @Deprecated
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {}
+//    @Override
+//    public void onProviderEnabled(String provider) {
+//        //TODO: check provider & enable listening
+//        Toast.makeText(context, provider + " enabled", Toast.LENGTH_LONG).show();
+//    }
+//
+//    @Override
+//    public void onProviderDisabled(String provider) {
+//        //TODO: check provider & disable listening
+//        Toast.makeText(context, provider + " disabled", Toast.LENGTH_LONG).show();
+//    }
+//
+//    @Deprecated
+//    @Override
+//    public void onStatusChanged(String provider, int status, Bundle extras) {}
 
     @Override
     public IBinder onBind(Intent intent) {
         return binder;
     }
 
+    @Override
+    public void execute(Runnable command) {
+        command.run();
+    }
+
     public class GPSTrackerBinder extends Binder{
 
-        public void connectGoogleApi(ResultCallback<LocationSettingsResult> locationSettingsResultCallback){
-            GPSTracker.this.connectGoogleApi(locationSettingsResultCallback);
+        public void connectGoogleApi(
+                OnSuccessListener<LocationSettingsResponse> successListener,
+                OnFailureListener failureListener){
+
+            GPSTracker.this.connectGoogleApi(successListener,failureListener);
         }
 
         public void startTracking(){

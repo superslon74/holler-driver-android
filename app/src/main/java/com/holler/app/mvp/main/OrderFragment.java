@@ -9,6 +9,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.holler.app.R;
+import com.orhanobut.logger.Logger;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -57,6 +58,14 @@ public class OrderFragment extends Fragment {
 
     @OnClick(R.id.of_button_cancel)
     public void cancelOrder(){
-        getFragmentManager().beginTransaction().remove(this).commit();
+        try{
+            getFragmentManager()
+                    .beginTransaction()
+                    .remove(this)
+                    .commit();
+        }catch (IllegalStateException e){
+            Logger.e(e,"Can't cancel order");
+        }
+
     }
 }

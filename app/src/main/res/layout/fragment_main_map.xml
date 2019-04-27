@@ -4,19 +4,11 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
-
-    <com.holler.app.mvp.main.UserStatusDot
-        android:id="@+id/ma_map_nav_open_dot"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
-        app:usd_offline="true"
-        android:background="@drawable/selector_status_dot"
-        android:layout_marginTop="1dp"
-        android:layout_marginLeft="29dp"
-        app:layout_constraintLeft_toLeftOf="@id/ma_map_nav_open_button"
-        app:layout_constraintTop_toTopOf="@id/ma_map_nav_open_button"
-        />
+    <fragment
+        android:id="@+id/ma_map_google_map_container"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -45,6 +37,18 @@
         android:layout_marginLeft="20dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <com.holler.app.mvp.main.UserStatusDot
+        android:id="@+id/ma_map_nav_open_dot"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        app:usd_offline="true"
+        android:background="@drawable/selector_status_dot"
+        android:layout_marginTop="1dp"
+        android:layout_marginLeft="29dp"
+        app:layout_constraintLeft_toLeftOf="@id/ma_map_nav_open_button"
+        app:layout_constraintTop_toTopOf="@id/ma_map_nav_open_button"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

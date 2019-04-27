@@ -12,4 +12,10 @@
     <string translatable="false" name="mas_nav_documents">Upload Documents</string>
     <string translatable="false" name="mas_nav_logout">Logout</string>
 
+
+    <string translatable="false" name="ma_logout_alert_title">Logout</string>
+    <string translatable="false" name="ma_logout_alert_message">Would you like to logout?</string>
+    <string translatable="false" name="ma_logout_alert_button_confirm">Yes</string>
+    <string translatable="false" name="ma_logout_alert_button_cancel">No</string>
+
 </resources>

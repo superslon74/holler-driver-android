@@ -26,15 +26,20 @@ import android.view.Window;
 import android.widget.Toast;
 
 
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.holler.app.R;
 import com.holler.app.activity.MainActivity;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executor;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -104,6 +109,8 @@ public class CustomActivity
         }
 
     }
+
+
 
     public interface OnActivityResultListener {
         void onActivityResult(int requestCode, int resultCode, Intent data);
@@ -239,20 +246,20 @@ public class CustomActivity
                     @Override
                     public void onServiceConnected(ComponentName name, IBinder binder) {
                         GPSTracker.GPSTrackerBinder service = (GPSTracker.GPSTrackerBinder) binder;
-                        service.connectGoogleApi(new ResultCallback<LocationSettingsResult>() {
-                            @Override
-                            public void onResult(@NonNull LocationSettingsResult result) {
-                                if (LocationSettingsStatusCodes.RESOLUTION_REQUIRED == result.getStatus().getStatusCode()) {
-                                    try {
-                                        result.getStatus().startResolutionForResult(CustomActivity.this, code);
-                                    } catch (IntentSender.SendIntentException e) {
-                                        handler.onPermissionDenied();
+
+                        service.connectGoogleApi(
+                                locationSettingsResponse -> handler.onPermissionGranted(),
+                                e -> {
+                                    if (e instanceof ResolvableApiException) {
+                                        try {
+
+                                            ResolvableApiException resolvable = (ResolvableApiException) e;
+                                            resolvable.startResolutionForResult(CustomActivity.this, code);
+                                        } catch (IntentSender.SendIntentException sendEx) {
+                                            handler.onPermissionDenied();
+                                        }
                                     }
-                                } else {
-                                    handler.onPermissionGranted();
-                                }
-                            }
-                        });
+                                });
                     }
 
                     @Override
@@ -457,10 +464,11 @@ public class CustomActivity
     }
 
     private static volatile LoadingProgress spinner;
+
     @Override
     public void showSpinner() {
         runOnUiThread(() -> {
-            if(spinner == null){
+            if (spinner == null) {
                 spinner = new LoadingProgress(this);
             }
             spinner.startLoading();
@@ -470,7 +478,7 @@ public class CustomActivity
     @Override
     public void hideSpinner() {
         runOnUiThread(() -> {
-            if(spinner!=null){
+            if (spinner != null) {
                 spinner.stopLoading();
             }
         });

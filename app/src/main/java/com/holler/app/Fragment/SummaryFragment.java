@@ -275,8 +275,8 @@ public class SummaryFragment extends Fragment implements View.OnClickListener {
     }
 
     public void displayMessage(String toastString) {
-        Snackbar.make(getView(), toastString, Snackbar.LENGTH_SHORT)
-                .setAction("Action", null).show();
+//        Snackbar.make(getView(), toastString, Snackbar.LENGTH_SHORT)
+//                .setAction("Action", null).show();
     }
 
     public void GoToBeginActivity() {

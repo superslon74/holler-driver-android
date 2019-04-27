@@ -1,5 +1,6 @@
 package com.holler.app.mvp.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -7,8 +8,14 @@ import android.view.WindowManager;
 
 import com.google.android.material.navigation.NavigationView;
 import com.holler.app.AndarApplication;
-import com.holler.app.Fragment.Map;
+import com.holler.app.Fragment.Help;
+import com.holler.app.Fragment.SummaryFragment;
+import com.holler.app.Fragment.Wallet;
 import com.holler.app.R;
+import com.holler.app.activity.ActivitySettings;
+import com.holler.app.activity.DocumentsActivity;
+import com.holler.app.activity.HistoryActivity;
+import com.holler.app.activity.MainActivity;
 import com.holler.app.di.app.AppComponent;
 import com.holler.app.di.app.components.DaggerMainComponent;
 import com.holler.app.di.app.components.main.modules.MainScreenModule;
@@ -18,7 +25,7 @@ import com.orhanobut.logger.Logger;
 import javax.inject.Inject;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -39,7 +46,7 @@ public class MainView extends CustomActivity implements MainPresenter.View {
     @BindView(R.id.ma_content)
     public View content;
 
-    private FragmentRouter router;
+    private FragmentRouter fragmentRouter;
 
     protected HeaderViewHolder headerViewHolder;
 
@@ -65,13 +72,13 @@ public class MainView extends CustomActivity implements MainPresenter.View {
                 statusToggle.setOffline();
                 statusDot.setOffline();
                 try {
-                    ((MapFragment) router.currentFragment).userStatusDot.setOffline();
+                    ((MapFragment) fragmentRouter.currentFragment).userStatusDot.setOffline();
                 }catch (Exception e){}
             }else{
                 statusToggle.setOnline();
                 statusDot.setOnline();
                 try {
-                    ((MapFragment) router.currentFragment).userStatusDot.setOnline();
+                    ((MapFragment) fragmentRouter.currentFragment).userStatusDot.setOnline();
                 }catch (Exception e){}
             }
         }
@@ -93,21 +100,74 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         ButterKnife.bind(this);
         headerViewHolder = new HeaderViewHolder(navigationView.getHeaderView(0));
         buildComponent();
-        router = new FragmentRouter();
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setupNavView();
 
-        router.openMap();
+        fragmentRouter = new FragmentRouter();
+        fragmentRouter.openMap();
+
+        //TODO: load user image to nav header
+        //TODO: change user status
+        //TODO: add listener to user image
+
+        //TODO: bind with gps tracker
     }
 
+    @Override
+    public void onBackPressed() {
+        if(drawerView.isDrawerOpen(Gravity.LEFT)){
+            drawerView.closeDrawer(Gravity.LEFT);
+            return;
+        }
 
+        if(fragmentRouter.currentFragment instanceof MapFragment){
+            super.onBackPressed();
+        }else{
+            fragmentRouter.openMap();
+        }
+    }
+
+    public void logout(){
+        //TODO: prepare logout request
+
+        AlertDialog logoutDialog = new AlertDialog
+                .Builder(this)
+                .setTitle(getString(R.string.ma_logout_alert_title))
+                .setMessage(getString(R.string.ma_logout_alert_message))
+                .setPositiveButton(R.string.ma_logout_alert_button_confirm, (dialog, which) -> {
+                    //TODO: subscribe to request
+                    dialog.dismiss();
+                })
+                .setNegativeButton(R.string.ma_logout_alert_button_cancel, (dialog, which) -> {
+                    //TODO: close dialog
+                    dialog.dismiss();
+                })
+                .setCancelable(false)
+                .create();
+
+        logoutDialog.show();
+
+    }
 
     private void setupNavView() {
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             Logger.i("Menu item selected id: "+menuItem);
             drawerView.closeDrawer(Gravity.LEFT);
+            switch (menuItem.getItemId()){
+                case R.id.ma_nav_payment: fragmentRouter.openPayment(); break;
+                case R.id.ma_nav_trips: fragmentRouter.openTrips(); break;
+                //TODO: what is coupon
+                case R.id.ma_nav_coupon: break;
+                case R.id.ma_nav_wallet: fragmentRouter.openWallet(); break;
+                case R.id.ma_nav_settings: fragmentRouter.openSettings(); break;
+                case R.id.ma_nav_help: fragmentRouter.openHelp(); break;
+                case R.id.ma_nav_share: fragmentRouter.openShare(); break;
+                case R.id.ma_nav_documents: fragmentRouter.openDocuments(); break;
+                case R.id.ma_nav_logout: logout(); break;
+            }
+
             return true;
         });
 
@@ -121,10 +181,6 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         actionBarDrawerToggle.syncState();
 
     }
-
-
-
-
 
     protected class FragmentRouter {
         private FragmentManager fragmentManager;
@@ -140,6 +196,56 @@ public class MainView extends CustomActivity implements MainPresenter.View {
                     .beginTransaction()
                     .replace(content.getId(),currentFragment)
                     .commit();
+        }
+
+        public void openHelp(){
+            currentFragment = new Help();
+            fragmentManager
+                    .beginTransaction()
+                    .replace(content.getId(),currentFragment)
+                    .commit();
+        }
+
+        public void openPayment(){
+            currentFragment = new SummaryFragment();
+            fragmentManager
+                    .beginTransaction()
+                    .replace(content.getId(),currentFragment)
+                    .commit();
+        }
+
+        public void openWallet(){
+            currentFragment = new Wallet();
+            fragmentManager
+                    .beginTransaction()
+                    .replace(content.getId(),currentFragment)
+                    .commit();
+        }
+
+        public void openDocuments(){
+            //TODO: launch documents activity
+            startActivity(new Intent(MainView.this, DocumentsActivity.class));
+        }
+
+        public void openTrips() {
+            //TODO: launch trips activity
+            startActivity(new Intent(MainView.this, HistoryActivity.class));
+        }
+
+        public void openShare(){
+            //TODO: insert sharing app url
+            //TODO: create chooser to share url
+            String appSharingUrl = "https://www.google.com";
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, appSharingUrl);
+            sendIntent.setType("text/plain");
+            startActivity(sendIntent);
+        }
+
+        public void openSettings() {
+            //TODO: remove with router
+            startActivity(new Intent(MainView.this, ActivitySettings.class));
         }
     }
 
