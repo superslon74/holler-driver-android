@@ -1,5 +1,6 @@
 package com.holler.app.di.app.modules;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -164,7 +165,25 @@ public class RetrofitModule {
             }
         }
 
-        //
+        //check status
+        @GET("api/provider/trip")
+        Single<CheckStatusResponse> checkStatus(
+            @Header(HEADER_KEY_AUTHORIZATION) String authHeader,
+            @Query("latitude") String latitude,
+            @Query("longitude") String longitude
+        );
+
+        class CheckStatusResponse{
+            @Expose(deserialize = false)
+            @SerializedName("account_status")
+            public String accountStatus;
+            @Expose(deserialize = false)
+            @SerializedName("service_status")
+            public String serviceStatus;
+            @Expose(deserialize = false)
+            @SerializedName("requests")
+            public JsonArray requests;
+        }
 
 
         @POST("api/provider/verify")

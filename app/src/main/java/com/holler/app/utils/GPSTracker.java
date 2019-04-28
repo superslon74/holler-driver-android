@@ -34,7 +34,10 @@ import com.holler.app.activity.MainActivity;
 import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.di.app.modules.UserStorageModule;
 import com.holler.app.server.OrderServerApi;
+import com.orhanobut.logger.Logger;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
@@ -64,6 +67,7 @@ public class GPSTracker
     private GPSTrackerBinder binder;
     private LocationCallback locationCallback;
     private LocationRequest locationRequest;
+    private List<LocationChangingListener> locationListeners;
 
     public GPSTracker() {
         AndarApplication.getInstance().component().inject(this);
@@ -75,6 +79,7 @@ public class GPSTracker
         locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
         sender = new Handler();
         binder = new GPSTrackerBinder();
+        locationListeners  = new ArrayList<>();
         locationCallback = new LocationCallback(){
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -132,6 +137,7 @@ public class GPSTracker
 
     @SuppressLint("MissingPermission")
     private void startReceiveLocationUpdates(){
+        Logger.d("START RECEIVING LOCATION");
         LocationServices
                 .getFusedLocationProviderClient(this)
                 .requestLocationUpdates(locationRequest,locationCallback,null);
@@ -166,8 +172,14 @@ public class GPSTracker
     }
 
     public void onLocationChanged(Location location) {
+
         if (location != null) {
+            Logger.d("ON LOCATION CHANGED: "+location.getLatitude()+" "+location.getLongitude());
+
             this.lastLocation = location;
+            for(LocationChangingListener listener : this.locationListeners){
+                listener.onLocationChanged(location);
+            }
         }
     }
 
@@ -195,22 +207,6 @@ public class GPSTracker
         }
     }
 
-//    @Override
-//    public void onProviderEnabled(String provider) {
-//        //TODO: check provider & enable listening
-//        Toast.makeText(context, provider + " enabled", Toast.LENGTH_LONG).show();
-//    }
-//
-//    @Override
-//    public void onProviderDisabled(String provider) {
-//        //TODO: check provider & disable listening
-//        Toast.makeText(context, provider + " disabled", Toast.LENGTH_LONG).show();
-//    }
-//
-//    @Deprecated
-//    @Override
-//    public void onStatusChanged(String provider, int status, Bundle extras) {}
-
     @Override
     public IBinder onBind(Intent intent) {
         return binder;
@@ -219,6 +215,19 @@ public class GPSTracker
     @Override
     public void execute(Runnable command) {
         command.run();
+    }
+
+
+    private void addLocationListener(LocationChangingListener listener) {
+        this.locationListeners.add(listener);
+    }
+
+    private void removeLocationListener(LocationChangingListener listener) {
+        this.locationListeners.remove(listener);
+    }
+
+    public interface LocationChangingListener{
+        void onLocationChanged(Location newLocation);
     }
 
     public class GPSTrackerBinder extends Binder{
@@ -243,11 +252,19 @@ public class GPSTracker
             GPSTracker.this.stopSendingLocation();
         }
 
+        public void addLocationListener(LocationChangingListener listener){
+            GPSTracker.this.addLocationListener(listener);
+        }
+        public void removeLocationListener(LocationChangingListener listener){
+            GPSTracker.this.removeLocationListener(listener);
+        }
+
         public Location getLocation(){
             return GPSTracker.this.getLocation();
         }
 
 
     }
+
 
 }
