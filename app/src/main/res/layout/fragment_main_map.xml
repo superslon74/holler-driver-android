@@ -8,7 +8,8 @@
         android:id="@+id/ma_map_google_map_container"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        class="com.holler.app.mvp.main.MapFragment$CustomSupportMapFragment"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -28,17 +29,7 @@
 
     </ScrollView>
 
-    <ImageView
-        android:id="@+id/ma_map_nav_open_button"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        android:padding="5dp"
-        android:src="@drawable/ic_menu_black"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+
 
     <ImageView
         android:id="@+id/ma_map_to_current_location_button"
@@ -53,16 +44,5 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <com.holler.app.mvp.main.UserStatusDot
-        android:id="@+id/ma_map_nav_open_dot"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
-        app:usd_offline="true"
-        android:background="@drawable/selector_status_dot"
-        android:layout_marginTop="3dp"
-        android:layout_marginLeft="26dp"
-        app:layout_constraintLeft_toLeftOf="@id/ma_map_nav_open_button"
-        app:layout_constraintTop_toTopOf="@id/ma_map_nav_open_button"
-        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

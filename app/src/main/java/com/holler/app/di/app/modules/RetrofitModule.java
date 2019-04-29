@@ -6,6 +6,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.holler.app.Helper.URLHelper;
 import com.holler.app.di.User;
+import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
 import java.util.Map;
@@ -17,8 +18,10 @@ import dagger.Module;
 import dagger.Provides;
 import io.reactivex.Single;
 import okhttp3.ConnectionPool;
+import okhttp3.EventListener;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -64,11 +67,20 @@ public class RetrofitModule {
                 .addInterceptor(new Interceptor() {
                     @Override
                     public Response intercept(Chain chain) throws IOException {
-                        return chain.proceed(chain
+
+                        Request request = chain
                                 .request()
                                 .newBuilder()
                                 .addHeader("X-Requested-With", "XMLHttpRequest")
-                                .build());
+                                .build();
+                        try {
+                            return chain.proceed(request);
+                        }catch (Exception e){
+                            Logger.e(e.getMessage());
+                            return chain
+                                    .withConnectTimeout(3,TimeUnit.SECONDS)
+                                    .proceed(request);
+                        }
                     }
                 })
                 .build();
@@ -92,14 +104,60 @@ public class RetrofitModule {
 
         //      auth
         @POST("api/provider/oauth/token")
-        Single<JsonObject> getAccessToken(
-                @Body User user
+        Single<AccessTokenResponseBody> getAccessToken(
+                @Body AccessTokenRequestBody user
         );
+        class AccessTokenRequestBody{
+            @Expose
+            @SerializedName("email")
+            public String email;
+            @Expose
+            @SerializedName("password")
+            public String password;
+
+            @Expose
+            @SerializedName("device_type")
+            public String deviceType;
+            @Expose
+            @SerializedName("device_id")
+            public String deviceId;
+            @Expose
+            @SerializedName("device_token")
+            public String deviceToken;
+
+            public AccessTokenRequestBody(String email, String password, String deviceType, String deviceId, String deviceToken) {
+                this.email = email;
+                this.password = password;
+                this.deviceType = deviceType;
+                this.deviceId = deviceId;
+                this.deviceToken = deviceToken;
+            }
+        }
+        class AccessTokenResponseBody{
+            @Expose
+            @SerializedName("access_token")
+            public String token;
+        }
 
         @GET("api/provider/profile")
         Single<User> getUserProfile(
                 @Header(HEADER_KEY_AUTHORIZATION) String authHeader
         );
+
+        @POST("api/provider/logout")
+        Single<JsonObject> logout(
+                @Header(HEADER_KEY_AUTHORIZATION) String authHeader,
+                @Body LogoutRequestBody user
+        );
+        class LogoutRequestBody{
+            @Expose(deserialize = false)
+            @SerializedName("id")
+            public String userId;
+
+            public LogoutRequestBody(String userId) {
+                this.userId = userId;
+            }
+        }
 
         // change password
         @POST("api/provider/forgot/password")
@@ -185,6 +243,13 @@ public class RetrofitModule {
             public JsonArray requests;
         }
 
+        @POST("api/provider/profile/available")
+        Single<JsonObject> sendStatus(
+                @Header(HEADER_KEY_AUTHORIZATION) String authHeader,
+                @Body JsonObject status
+        );
+
+
 
         @POST("api/provider/verify")
         Call<JsonObject> checkEmailExists(
@@ -222,11 +287,7 @@ public class RetrofitModule {
                 @Field("longitude") String longitude
         );
 
-        @POST("api/provider/profile/available")
-        Call<JsonObject> sendStatus(
-                @Header(HEADER_KEY_AUTHORIZATION) String authHeader,
-                @Body JsonObject status
-        );
+
 
 
     }

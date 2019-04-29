@@ -131,26 +131,26 @@ public class Offline extends Fragment {
 
 
         String authHeader = "Bearer "+token;
-        serverAPI
-                .sendStatus(authHeader, RetrofitModule.ServerAPI.STATUS_ONLINE)
-                .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(getActivity()) {
-                    @Override
-                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
-                        FragmentManager manager = MainActivity.fragmentManager;
-                        FragmentTransaction transaction = manager.beginTransaction();
-                        transaction.replace(R.id.content, new Map());
-                        transaction.commitAllowingStateLoss();
-
-                        gpsService.startTracking();
-                    }
-
-                    @Override
-                    public void onFinishHandling() {
-                        super.onFinishHandling();
-
-                    }
-
-                });
+//        serverAPI
+//                .sendStatus(authHeader, RetrofitModule.ServerAPI.STATUS_ONLINE)
+//                .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(getActivity()) {
+//                    @Override
+//                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
+//                        FragmentManager manager = MainActivity.fragmentManager;
+//                        FragmentTransaction transaction = manager.beginTransaction();
+//                        transaction.replace(R.id.content, new Map());
+//                        transaction.commitAllowingStateLoss();
+//
+//                        gpsService.startTracking();
+//                    }
+//
+//                    @Override
+//                    public void onFinishHandling() {
+//                        super.onFinishHandling();
+//
+//                    }
+//
+//                });
 
     }
 

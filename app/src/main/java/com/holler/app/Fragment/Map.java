@@ -1909,20 +1909,20 @@ public class Map
         Utilities.hideKeyboard(getActivity());
         if (status.equals("ONLINE")) {
             String authHeader = "Bearer " + token;
-            serverAPI
-                    .sendStatus(authHeader, RetrofitModule.ServerAPI.STATUS_OFFLINE)
-                    .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(getActivity()) {
-                        @Override
-                        public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
-                            goOffline();
-                            gpsService.stopTracking();
-                        }
-
-                        @Override
-                        public void onFinishHandling() {
-                            super.onFinishHandling();
-                        }
-                    });
+//            serverAPI
+//                    .sendStatus(authHeader, RetrofitModule.ServerAPI.STATUS_OFFLINE)
+//                    .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(getActivity()) {
+//                        @Override
+//                        public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
+//                            goOffline();
+//                            gpsService.stopTracking();
+//                        }
+//
+//                        @Override
+//                        public void onFinishHandling() {
+//                            super.onFinishHandling();
+//                        }
+//                    });
 
         } else {
             String url;

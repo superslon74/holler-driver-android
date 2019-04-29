@@ -36,6 +36,7 @@
             app:usd_offline="true"
             android:layout_width="20dp"
             android:layout_height="20dp"
+            app:usd_disapproved="true"
             android:background="@drawable/selector_status_dot"
             android:layout_marginBottom="3dp"
             android:layout_marginRight="3dp"
@@ -79,7 +80,7 @@
             android:id="@+id/ma_nav_user_state_toggle"
             style="@style/MENU_Header_Toggle"
             app:ust_offline="true"
-
+            app:ust_disapproved="true"
             android:background="@drawable/selector_status_toggle"
             android:layout_width="75dp"
             android:layout_height="40dp"

@@ -45,7 +45,7 @@ public class UserStatusDot extends View {
 
     @Override
     protected int[] onCreateDrawableState(int extraSpace) {
-        int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
+        int[] drawableState = super.onCreateDrawableState(extraSpace + 4);
         if(isUserOnline) mergeDrawableStates(drawableState,STATE_USER_ONLINE);
         if(isUserOffline) mergeDrawableStates(drawableState,STATE_USER_OFFLINE);
         if(isUserDisapproved) mergeDrawableStates(drawableState,STATE_USER_DISAPPROVED);

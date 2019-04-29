@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,10 +10,42 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
-            android:id="@+id/ma_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <FrameLayout
+                android:id="@+id/ma_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:id="@+id/ma_map_nav_open_button"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:padding="5dp"
+                android:src="@drawable/ic_menu_black"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <com.holler.app.mvp.main.UserStatusDot
+                android:id="@+id/ma_map_nav_open_dot"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                app:usd_disapproved="true"
+                android:background="@drawable/selector_status_dot"
+                android:layout_marginTop="3dp"
+                android:layout_marginLeft="26dp"
+                app:layout_constraintLeft_toLeftOf="@id/ma_map_nav_open_button"
+                app:layout_constraintTop_toTopOf="@id/ma_map_nav_open_button"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/ma_nav"
@@ -30,5 +62,9 @@
 
 
     </androidx.drawerlayout.widget.DrawerLayout>
+
+
+
+
 
 </LinearLayout>

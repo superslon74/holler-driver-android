@@ -10,6 +10,7 @@ import android.os.Looper;
 import com.google.gson.JsonObject;
 import com.holler.app.activity.MainActivity;
 import com.holler.app.di.app.modules.RouterModule;
+import com.holler.app.mvp.main.UserModel;
 import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.di.app.modules.DeviceInfoModule;
 import com.holler.app.di.Presenter;
@@ -42,29 +43,24 @@ public class SplashPresenter implements Presenter {
     private RouterModule.Router router;
     private View view;
     private RetrofitModule.ServerAPI serverAPI;
-    private DeviceInfoModule.DeviceInfo deviceInfo;
-    private UserStorageModule.UserStorage userStorage;
+    private UserModel userModel;
 
     public SplashPresenter(
             Context context,
             RouterModule.Router router,
             View view,
             RetrofitModule.ServerAPI serverAPI,
-            DeviceInfoModule.DeviceInfo deviceInfo,
-            UserStorageModule.UserStorage userStorage) {
+            UserModel userModel) {
         this.context = context;
         this.router = router;
         this.view = view;
         this.serverAPI = serverAPI;
-        this.deviceInfo = deviceInfo;
-        this.userStorage = userStorage;
+        this.userModel = userModel;
     }
 
     @Override
     public void onResume() {
-        boolean userLoggedIn = userStorage.getLoggedIn();
-        if (userLoggedIn) {
-//            Observable.concat(accessTokenUpdating(),profileUpdating());
+        if (userModel.isLoggedIn()) {
             updateUserData();
         } else {
             router.goToMainScreen();
@@ -73,69 +69,20 @@ public class SplashPresenter implements Presenter {
     }
 
     private void updateUserData() {
-        User user = userStorage.getUser();
 
-        user.deviceType = deviceInfo.deviceType;
-        user.deviceId = deviceInfo.deviceId;
-        user.deviceToken = deviceInfo.deviceToken;
-
-        Single accessTokenSource =
-                serverAPI.getAccessToken(user)
-                        .doOnSubscribe(new Consumer<Disposable>() {
-                            @Override
-                            public void accept(Disposable disposable) throws Exception {
-                                view.showSpinner();
-                            }
-                        })
-                        .doOnSuccess(new Consumer<JsonObject>() {
-                            @Override
-                            public void accept(JsonObject jsonObject) throws Exception {
-                                String accessToken = jsonObject.get("access_token").getAsString();
-                                userStorage.setAccessToken(accessToken);
-                            }
-                        })
-                        .flatMap(new Function<JsonObject, SingleSource<?>>() {
-                            @Override
-                            public SingleSource<?> apply(JsonObject jsonObject) throws Exception {
-                                String authHeader = "Bearer " + userStorage.getAccessToken();
-
-                                Single userProfileSource =
-                                        serverAPI.getUserProfile(authHeader)
-                                                .doOnSuccess(new Consumer<User>() {
-                                                    @Override
-                                                    public void accept(User user) throws Exception {
-                                                        userStorage.putUser(user);
-                                                        startTrackingLocation();
-                                                    }
-                                                });
-
-                                return userProfileSource;
-                            }
-                        });
-
-
-
-        accessTokenSource
-                .subscribeOn(Schedulers.io())
-                .doFinally(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        view.hideSpinner();
+        userModel
+                .login()
+                .doOnSubscribe(disposable -> view.showSpinner())
+                .doOnNext(isLogged->{
+                    if(isLogged){
+                        startTrackingLocation();
+                    }else{
+                        router.goToWelcomeScreen();
                     }
                 })
-                .subscribe(new Consumer() {
-                    @Override
-                    public void accept(Object o) throws Exception {
-                        Logger.i("onNext" + o.toString());
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        view.onMessage("Error");
-                        router.goToWelcomeScreen();
-                        Logger.e("Error: " + throwable.getMessage());
-                    }
-                });
+                .doFinally(() -> view.hideSpinner())
+                .subscribeOn(Schedulers.io())
+                .subscribe();
     }
 
 

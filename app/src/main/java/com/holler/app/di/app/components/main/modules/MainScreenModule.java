@@ -8,6 +8,7 @@ import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.di.app.modules.UserStorageModule;
 import com.holler.app.mvp.main.MainPresenter;
+import com.holler.app.mvp.main.UserModel;
 import com.holler.app.mvp.splash.SplashPresenter;
 
 import dagger.Module;
@@ -32,9 +33,8 @@ public class MainScreenModule {
                                           RouterModule.Router router,
                                           MainPresenter.View view,
                                           RetrofitModule.ServerAPI serverAPI,
-                                          DeviceInfoModule.DeviceInfo deviceInfo,
-                                          UserStorageModule.UserStorage userStorage) {
+                                          UserModel userModel) {
 
-        return new MainPresenter(context, router, view, serverAPI, deviceInfo, userStorage);
+        return new MainPresenter(context, router, view, serverAPI, userModel);
     }
 }

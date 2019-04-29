@@ -12,7 +12,9 @@ import com.holler.app.di.app.modules.GoogleApiClientModule;
 import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.di.app.modules.SharedPreferencesModule;
+import com.holler.app.di.app.modules.UserModule;
 import com.holler.app.di.app.modules.UserStorageModule;
+import com.holler.app.mvp.main.UserModel;
 import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.utils.GPSTracker;
 
@@ -28,7 +30,8 @@ import dagger.Component;
         SharedPreferencesModule.class,
         UserStorageModule.class,
         GoogleApiClientModule.class,
-        RouterModule.class
+        RouterModule.class,
+        UserModule.class
 })
 public interface AppComponent {
     void inject(AndarApplication app);
@@ -48,6 +51,6 @@ public interface AppComponent {
     DeviceInfoModule.DeviceInfo getDeviceInfoObject();
     SharedPreferencesModule.SharedPreferencesHelper getSharedPreferencesHalper();
     UserStorageModule.UserStorage getUserStorage();
-
+    UserModel getUserModel();
 
 }

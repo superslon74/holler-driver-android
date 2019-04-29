@@ -18,6 +18,7 @@ import com.holler.app.di.app.modules.DeviceInfoModule;
 import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.di.app.modules.SharedPreferencesModule;
+import com.holler.app.di.app.modules.UserModule;
 import com.holler.app.di.app.modules.UserStorageModule;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.CsvFormatStrategy;
@@ -69,6 +70,7 @@ public class AndarApplication extends Application implements  ComponentCallbacks
                 .deviceInfoModule(new DeviceInfoModule())
                 .userStorageModule(new UserStorageModule())
                 .routerModule(new RouterModule())
+                .userModule(new UserModule())
                 .build();
         component.inject(this);
         Logger.d("Dependency Graph Set Up");

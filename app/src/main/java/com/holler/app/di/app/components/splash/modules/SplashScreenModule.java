@@ -8,6 +8,7 @@ import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.di.app.modules.UserStorageModule;
 import com.holler.app.di.app.modules.DeviceInfoModule;
 import com.holler.app.di.app.modules.RetrofitModule;
+import com.holler.app.mvp.main.UserModel;
 import com.holler.app.mvp.splash.SplashPresenter;
 
 import dagger.Module;
@@ -32,9 +33,8 @@ public class SplashScreenModule {
                                       RouterModule.Router router,
                                       SplashPresenter.View splashScreenView,
                                       RetrofitModule.ServerAPI serverAPI,
-                                      DeviceInfoModule.DeviceInfo deviceInfo,
-                                      UserStorageModule.UserStorage userStorage){
+                                      UserModel userModel){
 
-        return new SplashPresenter(context, router,splashScreenView,serverAPI, deviceInfo, userStorage);
+        return new SplashPresenter(context, router,splashScreenView,serverAPI, userModel);
     }
 }
