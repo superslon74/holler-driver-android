@@ -8,7 +8,10 @@ import com.orhanobut.logger.Logger;
 
 import androidx.annotation.Nullable;
 import io.reactivex.Single;
+import io.reactivex.SingleSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
@@ -33,8 +36,9 @@ public class UserModel {
     }
 
 
-    public static class Status{
+    public static class Status {
         public enum AccountStatus {UNKNOWN, DISAPPROVED, NEW, APPROVED, BLOCKED}
+
         public enum ServiceStatus {UNKNOWN, OFFLINE, ONLINE}
 
         public AccountStatus account;
@@ -45,11 +49,11 @@ public class UserModel {
             this.service = service;
         }
 
-        public Status(){
+        public Status() {
             this(AccountStatus.UNKNOWN, ServiceStatus.UNKNOWN);
         }
 
-        public Status(RetrofitModule.ServerAPI.CheckStatusResponse statusData){
+        public Status(RetrofitModule.ServerAPI.CheckStatusResponse statusData) {
             ServiceStatus newServiceStatus;
             switch (statusData.serviceStatus) {
                 case "active":
@@ -85,13 +89,17 @@ public class UserModel {
 
         @Override
         public boolean equals(@Nullable Object obj) {
-            try{
-                Status to = (Status)obj;
-                return to.service==this.service && to.account==this.account;
-            }catch (ClassCastException e){
+            try {
+                Status to = (Status) obj;
+                return to.service == this.service && to.account == this.account;
+            } catch (ClassCastException e) {
                 return false;
             }
         }
+    }
+
+    public Status getCurrentStatus() {
+        return currentStatus;
     }
 
     private Status currentStatus = new Status();
@@ -111,32 +119,37 @@ public class UserModel {
 
     public void goOffline() {
         serverAPI
-                .sendStatus(getAuthHeader(),RetrofitModule.ServerAPI.STATUS_OFFLINE)
+                .sendStatus(getAuthHeader(), RetrofitModule.ServerAPI.STATUS_OFFLINE)
                 .doOnSuccess(jsonObject -> {
-                    if(currentStatus.service!= Status.ServiceStatus.OFFLINE){
+                    if (currentStatus.service != Status.ServiceStatus.OFFLINE) {
                         currentStatus = new Status(currentStatus.account, Status.ServiceStatus.OFFLINE);
                         statusSource.onNext(currentStatus);
                     }
                     Logger.i("On send status success");
                 })
+                .doOnError(throwable -> {
+                    Logger.e(throwable.getMessage());
+                })
+                .subscribeOn(Schedulers.io())
                 .subscribe();
 
     }
 
-    public void goOnline(){
+    public void goOnline() {
         serverAPI
-                .sendStatus(getAuthHeader(),RetrofitModule.ServerAPI.STATUS_ONLINE)
+                .sendStatus(getAuthHeader(), RetrofitModule.ServerAPI.STATUS_ONLINE)
                 .doOnSuccess(jsonObject -> {
-                    if(currentStatus.service!= Status.ServiceStatus.ONLINE){
+                    if (currentStatus.service != Status.ServiceStatus.ONLINE) {
                         currentStatus = new Status(currentStatus.account, Status.ServiceStatus.ONLINE);
                         statusSource.onNext(currentStatus);
                     }
                     Logger.i("On send status success");
                 })
+                .subscribeOn(Schedulers.io())
                 .subscribe();
     }
 
-    public Subject<Boolean> logout(){
+    public Subject<Boolean> logout() {
         final Subject<Boolean> source = PublishSubject.create();
 
         User storedUser = userStorage.getUser();
@@ -153,31 +166,33 @@ public class UserModel {
                     source.onNext(false);
                     source.onComplete();
                 })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.newThread())
                 .subscribe();
 
 
         return source;
     }
 
-    public Subject<Boolean> login(){
+    public Subject<Boolean> login() {
         User user = userStorage.getUser();
         return login(user.email, user.password);
     }
 
-    public Subject<Boolean> login(String email, String password){
+    public Subject<Boolean> login(String email, String password) {
         final Subject<Boolean> source = PublishSubject.create();
 
         Single<RetrofitModule.ServerAPI.AccessTokenResponseBody> accessTokenSingle
                 = serverAPI.getAccessToken(
-                        new RetrofitModule
-                                .ServerAPI
-                                .AccessTokenRequestBody(
-                                email,
-                                password,
-                                deviceInfo.deviceType,
-                                deviceInfo.deviceId,
-                                deviceInfo.deviceToken
-                        ))
+                new RetrofitModule
+                        .ServerAPI
+                        .AccessTokenRequestBody(
+                        email,
+                        password,
+                        deviceInfo.deviceType,
+                        deviceInfo.deviceId,
+                        deviceInfo.deviceToken
+                ))
                 .doOnSubscribe(disposable -> {
                     source.onSubscribe(disposable);
                 })
@@ -193,24 +208,24 @@ public class UserModel {
                 });
 
         accessTokenSingle
-                .doOnSuccess(accessTokenResponseBody -> {
-                    userProfileSingle
-                            .doOnSuccess(user1 -> {
-                                source.onNext(true);
-                                source.onComplete();
-                            })
-                            .doOnError(throwable -> {
-                                source.onNext(false);
-                                source.onComplete();
-                            })
-                            .subscribeOn(Schedulers.io())
-                            .subscribe();
-                })
+                .flatMap(
+                        (Function<RetrofitModule.ServerAPI.AccessTokenResponseBody, SingleSource<?>>) accessTokenResponseBody
+                                -> userProfileSingle
+                                .doOnSuccess(user1 -> {
+                                    source.onNext(true);
+                                    source.onComplete();
+                                })
+                                .doOnError(throwable -> {
+                                    source.onNext(false);
+                                    source.onComplete();
+                                })
+                                .subscribeOn(Schedulers.newThread()))
                 .doOnError(throwable -> {
                     source.onNext(false);
                     source.onComplete();
                 })
-                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.newThread())
                 .subscribe();
 
         return source;
@@ -218,6 +233,6 @@ public class UserModel {
 
 
     public String getAuthHeader() {
-        return "Bearer "+userStorage.getAccessToken();
+        return "Bearer " + userStorage.getAccessToken();
     }
 }

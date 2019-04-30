@@ -2,9 +2,12 @@ package com.holler.app.mvp.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.holler.app.AndarApplication;
@@ -33,6 +36,14 @@ import androidx.fragment.app.FragmentManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.Subject;
+import io.reactivex.subjects.UnicastSubject;
 
 
 public class MainView extends CustomActivity implements MainPresenter.View {
@@ -46,8 +57,15 @@ public class MainView extends CustomActivity implements MainPresenter.View {
     public DrawerLayout drawerView;
     @BindView(R.id.ma_content)
     public View content;
+    @BindView(R.id.ma_content_overflow)
+    public View contentOverflow;
     @BindView(R.id.ma_map_nav_open_dot)
     public UserStatusDot openMenuUserStatusDot;
+
+    @BindView(R.id.ma_offline_header)
+    public TextView offlineHeader;
+    @BindView(R.id.ma_offline_status_toggle)
+    public UserStatusToggle offlineStatusTooggle;
 
     private FragmentRouter fragmentRouter;
 
@@ -98,7 +116,6 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         setContentView(R.layout.activity_main_container);
         ButterKnife.bind(this);
         headerViewHolder = new HeaderViewHolder(navigationView.getHeaderView(0));
-        buildComponent();
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -106,6 +123,9 @@ public class MainView extends CustomActivity implements MainPresenter.View {
 
         fragmentRouter = new FragmentRouter();
         fragmentRouter.openMap();
+
+        buildComponent();
+
 
         //TODO: load user image to nav header
         //TODO: change user status
@@ -121,6 +141,22 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         }else{
             drawerView.openDrawer(Gravity.LEFT);
         }
+    }
+
+    @OnClick(R.id.ma_offline_status_toggle)
+    public void toggleStatus() {
+        if (this.offlineStatusTooggle.isOnline()) {
+            offlineStatusTooggle.setOffline();
+            presenter.goOffline();
+        } else if(this.offlineStatusTooggle.isOffline()) {
+            offlineStatusTooggle.setOnline();
+            presenter.goOnline();
+        }
+    }
+
+    @OnClick(R.id.ma_offline_later_button)
+    public void changeStatusLater(){
+        fragmentRouter.closeOffline();
     }
 
     @Override
@@ -139,17 +175,45 @@ public class MainView extends CustomActivity implements MainPresenter.View {
 
     public void logout() {
         //TODO: prepare logout request
+        showLogoutConfirmation()
+                .flatMap(isLogoutConfirmed -> {
+                    if(isLogoutConfirmed){
+                        return presenter.logout();
+                    }else{
+                        return Observable.just(false);
+                    }
+                })
+                .flatMap(isLoggedOut -> {
+                    if(isLoggedOut){
+                        presenter.goToWelcomeScreen();
+                        return Observable.just(true);
+                    }else{
+                        return Observable.just(false);
+                    }
+                })
+                .doOnComplete(() -> {
+                    Logger.d("Logged out");
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
 
-        AlertDialog logoutDialog = new AlertDialog
+
+    }
+
+    private Subject<Boolean> showLogoutConfirmation(){
+        final Subject result = UnicastSubject.create();
+
+        final AlertDialog logoutDialog = new AlertDialog
                 .Builder(this)
                 .setTitle(getString(R.string.ma_logout_alert_title))
                 .setMessage(getString(R.string.ma_logout_alert_message))
                 .setPositiveButton(R.string.ma_logout_alert_button_confirm, (dialog, which) -> {
-                    //TODO: subscribe to request
+                    result.onNext(true);
                     dialog.dismiss();
                 })
                 .setNegativeButton(R.string.ma_logout_alert_button_cancel, (dialog, which) -> {
-                    //TODO: close dialog
+                    result.onNext(false);
                     dialog.dismiss();
                 })
                 .setCancelable(false)
@@ -157,6 +221,7 @@ public class MainView extends CustomActivity implements MainPresenter.View {
 
         logoutDialog.show();
 
+        return result;
     }
 
     private void setupNavView() {
@@ -230,6 +295,7 @@ public class MainView extends CustomActivity implements MainPresenter.View {
                     case BLOCKED:
                         fragmentRouter.openOffline();
                         runOnUiThread(() -> {
+                            offlineStatusTooggle.setBlocked();
                             headerViewHolder.statusToggle.setBlocked();
                             headerViewHolder.statusDot.setBlocked();
                             openMenuUserStatusDot.setBlocked();
@@ -245,7 +311,10 @@ public class MainView extends CustomActivity implements MainPresenter.View {
             switch (newStatus.service){
                 case ONLINE:
                     fragmentRouter.openMap();
+                    fragmentRouter.closeOfflineAfterOneSecond();
                     runOnUiThread(() -> {
+                        offlineStatusTooggle.setOnline();
+                        offlineHeader.setText(getApplicationContext().getString(R.string.mas_offline_header_success));
                         headerViewHolder.statusDot.setOnline();
                         headerViewHolder.statusToggle.setOnline();
                         openMenuUserStatusDot.setOnline();
@@ -254,6 +323,7 @@ public class MainView extends CustomActivity implements MainPresenter.View {
                 case OFFLINE:
                     fragmentRouter.openOffline();
                     runOnUiThread(() -> {
+                        offlineStatusTooggle.setOffline();
                         headerViewHolder.statusToggle.setOffline();
                         headerViewHolder.statusDot.setOffline();
                         openMenuUserStatusDot.setOffline();
@@ -277,8 +347,9 @@ public class MainView extends CustomActivity implements MainPresenter.View {
 
         public void openMap() {
             try{
-                MapFragment currentFragment = (MapFragment) this.currentFragment;
-            }catch (ClassCastException e){
+                //how about this?
+                String s = ((MapFragment) currentFragment).toString();
+            }catch (ClassCastException | NullPointerException e){
                 currentFragment = new MapFragment();
                 fragmentManager
                         .beginTransaction()
@@ -338,11 +409,20 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         }
 
         public void openOffline(){
-            currentFragment = new Offline();
-            fragmentManager
-                    .beginTransaction()
-                    .replace(content.getId(), currentFragment)
-                    .commit();
+            runOnUiThread(() -> {
+                offlineHeader.setText(getApplicationContext().getText(R.string.mas_offline_header));
+                contentOverflow.setVisibility(View.VISIBLE);
+            });
+        }
+
+        public void closeOffline(){
+            runOnUiThread(() -> contentOverflow.setVisibility(View.GONE));
+        }
+
+        public void closeOfflineAfterOneSecond(){
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                closeOffline();
+            },1000);
         }
     }
 

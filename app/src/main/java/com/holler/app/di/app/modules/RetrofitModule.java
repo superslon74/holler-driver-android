@@ -16,7 +16,9 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.Scheduler;
 import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.ConnectionPool;
 import okhttp3.EventListener;
 import okhttp3.Interceptor;
@@ -73,24 +75,30 @@ public class RetrofitModule {
                                 .newBuilder()
                                 .addHeader("X-Requested-With", "XMLHttpRequest")
                                 .build();
-                        try {
+//                        try {
                             return chain.proceed(request);
-                        }catch (Exception e){
-                            Logger.e(e.getMessage());
-                            return chain
-                                    .withConnectTimeout(3,TimeUnit.SECONDS)
-                                    .proceed(request);
-                        }
+//                        }catch (Exception e){
+//                            Logger.e(e.getMessage());
+//                            return chain
+//                                    .withWriteTimeout(10,TimeUnit.SECONDS)
+//                                    .proceed(request);
+//                        }
                     }
                 })
                 .build();
+
+        Scheduler scheduler = Schedulers.newThread();
+
+        RxJava2CallAdapterFactory rxAdapter =
+                RxJava2CallAdapterFactory
+                        .createWithScheduler(scheduler);
 
         ServerAPI retrofitClient = new Retrofit
                 .Builder()
                 .client(httpClient)
                 .baseUrl(URLHelper.base)
                 .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addCallAdapterFactory(rxAdapter)
                 .build()
                 .create(ServerAPI.class);
 

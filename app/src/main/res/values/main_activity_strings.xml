@@ -12,6 +12,10 @@
     <string translatable="false" name="mas_nav_documents">Upload Documents</string>
     <string translatable="false" name="mas_nav_logout">Logout</string>
 
+    <string translatable="false" name="mas_offline_header">Go Online!</string>
+    <string translatable="false" name="mas_offline_header_success">:)</string>
+    <string translatable="false" name="mas_offline_later">Maybe later</string>
+
 
     <string translatable="false" name="ma_logout_alert_title">Logout</string>
     <string translatable="false" name="ma_logout_alert_message">Would you like to logout?</string>

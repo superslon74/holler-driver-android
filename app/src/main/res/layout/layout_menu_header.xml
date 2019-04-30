@@ -79,7 +79,6 @@
         <com.holler.app.mvp.main.UserStatusToggle
             android:id="@+id/ma_nav_user_state_toggle"
             style="@style/MENU_Header_Toggle"
-            app:ust_offline="true"
             app:ust_disapproved="true"
             android:background="@drawable/selector_status_toggle"
             android:layout_width="75dp"

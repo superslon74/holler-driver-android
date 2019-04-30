@@ -63,7 +63,7 @@ public class SplashPresenter implements Presenter {
         if (userModel.isLoggedIn()) {
             updateUserData();
         } else {
-            router.goToMainScreen();
+            router.goToWelcomeScreen();
         }
 
     }
@@ -80,8 +80,9 @@ public class SplashPresenter implements Presenter {
                         router.goToWelcomeScreen();
                     }
                 })
-                .doFinally(() -> view.hideSpinner())
-                .subscribeOn(Schedulers.io())
+                .doOnComplete(() -> view.hideSpinner())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.newThread())
                 .subscribe();
     }
 

@@ -161,7 +161,7 @@ public class MapFragment extends Fragment {
 
                 googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-                setMarker(gpsTrackerBinder.getLocation());
+//                setMarker(gpsTrackerBinder.getLocation());
 
             }
         });

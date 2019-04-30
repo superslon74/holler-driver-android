@@ -43,6 +43,8 @@ import java.util.concurrent.Executor;
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 
 public class GPSTracker
@@ -189,20 +191,15 @@ public class GPSTracker
             String latitude = ""+l.getLatitude();
             String longitude = ""+l.getLongitude();
             String authHeader = "Bearer " + userStorage.getAccessToken();
-            this.serverAPI
-                    .sendTripLocation(authHeader, latitude, longitude)
-                    .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(null) {
-                        @Override
-                        public void onSuccessfulResponse(Response<JsonObject> response) {
-                            Log.d("AZAZA", "GPSTracker: Location updated");
-                        }
-
-                        @Override
-                        public void onDisplayMessage(String message) {
-                            Log.d("AZAZA", "GPSTracker: message-> " +message);
-                        }
-                    });
-        }catch (NullPointerException e){
+//            serverAPI
+//                    .checkStatus(authHeader,latitude,longitude)
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .doOnError(throwable -> {
+//                        Logger.d(throwable.getMessage());
+//                    })
+//                    .subscribeOn(Schedulers.io())
+//                    .subscribe();
+        }catch (Exception e){
             Log.e("AZAZA","GPSTracker error: lastLocation not defined");
         }
     }
