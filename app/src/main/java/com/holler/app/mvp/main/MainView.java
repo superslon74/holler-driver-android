@@ -159,6 +159,7 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         fragmentRouter.closeOffline();
     }
 
+
     @Override
     public void onBackPressed() {
         if (drawerView.isDrawerOpen(Gravity.LEFT)) {
@@ -174,7 +175,6 @@ public class MainView extends CustomActivity implements MainPresenter.View {
     }
 
     public void logout() {
-        //TODO: prepare logout request
         showLogoutConfirmation()
                 .flatMap(isLogoutConfirmed -> {
                     if(isLogoutConfirmed){

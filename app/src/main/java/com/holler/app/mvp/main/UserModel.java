@@ -1,20 +1,29 @@
 package com.holler.app.mvp.main;
 
+import android.content.Context;
+
+import com.holler.app.AndarApplication;
+import com.holler.app.R;
 import com.holler.app.di.User;
 import com.holler.app.di.app.modules.DeviceInfoModule;
 import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.di.app.modules.UserStorageModule;
+import com.holler.app.mvp.register.RegisterPresenter;
 import com.orhanobut.logger.Logger;
 
 import androidx.annotation.Nullable;
+import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
+import retrofit2.HttpException;
+import retrofit2.Response;
 
 public class UserModel {
 
@@ -34,7 +43,6 @@ public class UserModel {
     public boolean isLoggedIn() {
         return userStorage.getLoggedIn();
     }
-
 
     public static class Status {
         public enum AccountStatus {UNKNOWN, DISAPPROVED, NEW, APPROVED, BLOCKED}
@@ -145,7 +153,9 @@ public class UserModel {
                     }
                     Logger.i("On send status success");
                 })
-                .subscribeOn(Schedulers.io())
+                .doOnError(throwable -> {
+                    throw ParsedThrowable.parse(throwable);
+                })
                 .subscribe();
     }
 
@@ -163,11 +173,9 @@ public class UserModel {
                     source.onComplete();
                 })
                 .doOnError(throwable -> {
-                    source.onNext(false);
+                    source.onError(ParsedThrowable.parse(throwable));
                     source.onComplete();
                 })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
                 .subscribe();
 
 
@@ -201,34 +209,138 @@ public class UserModel {
                     userStorage.setAccessToken(accessTokenResponseBody.token);
                 });
 
-        Single<User> userProfileSingle
-                = serverAPI.getUserProfile(getAuthHeader())
-                .doOnSuccess(newUser -> {
-                    userStorage.putUser(newUser);
-                });
+
 
         accessTokenSingle
                 .flatMap(
                         (Function<RetrofitModule.ServerAPI.AccessTokenResponseBody, SingleSource<?>>) accessTokenResponseBody
-                                -> userProfileSingle
-                                .doOnSuccess(user1 -> {
-                                    source.onNext(true);
-                                    source.onComplete();
-                                })
-                                .doOnError(throwable -> {
-                                    source.onNext(false);
-                                    source.onComplete();
-                                })
-                                .subscribeOn(Schedulers.newThread()))
+                                ->
+                                serverAPI.getUserProfile(getAuthHeader())
+                                        .doOnSuccess(user1 -> {
+                                            userStorage.putUser(user1);
+                                            source.onNext(true);
+                                            source.onComplete();
+                                        }))
                 .doOnError(throwable -> {
-                    source.onNext(false);
+                    source.onError(ParsedThrowable.parse(throwable));
                     source.onComplete();
                 })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
                 .subscribe();
 
         return source;
+    }
+
+    public Subject<Boolean> checkEmailExists(String email) {
+        Subject<Boolean> source = PublishSubject.create();
+
+        serverAPI
+                .checkEmailExists(new RetrofitModule.ServerAPI.EmailVerificationRequestBody(email))
+                .doOnError(throwable -> {
+                    ParsedThrowable error = ParsedThrowable.parse(throwable);
+                    try {
+                        if (((HttpException) error.origin).code() == 422) {
+                            String message = AndarApplication.getInstance().getApplicationContext().getString(R.string.error_response_email_exists);
+                            error = new ParsedThrowable(message, throwable);
+                        }
+                    } catch (ClassCastException e) {
+                    }
+
+                    source.onError(error);
+                    source.onComplete();
+
+                })
+                .doOnSuccess(jsonObject -> {
+                    source.onNext(true);
+                    source.onComplete();
+                })
+                .subscribe();
+
+        return source;
+    }
+
+    public Subject<Boolean> register(RegisterPresenter.RegistrationPendingCredentials credentials) {
+        final Subject<Boolean> source = PublishSubject.create();
+
+        final User user = new User();
+
+        user.deviceType = deviceInfo.deviceType;
+        user.deviceId = deviceInfo.deviceId;
+        user.deviceToken = deviceInfo.deviceToken;
+        user.loggedBy = "manual";
+        //TODO: remove name duplication
+        user.firstName = credentials.name;
+        user.lastName = credentials.name;
+        user.gender = credentials.gender;
+        user.mobile = credentials.mobile;
+
+        user.email = credentials.email;
+        user.password = credentials.password;
+        user.passwordConfirmation = credentials.passwordConfirmation;
+
+        serverAPI
+                .register(user)
+                .doOnSuccess(jsonObject -> {
+                    source.onNext(true);
+                    source.onComplete();
+                })
+                .doOnError(throwable -> {
+                    ParsedThrowable error = ParsedThrowable.parse(throwable);
+                    try {
+                        int code = ((HttpException) error.origin).code();
+                        switch (code) {
+                            case 422:
+                                String emailExistsMessage = AndarApplication.getInstance().getApplicationContext().getString(R.string.error_response_email_exists);
+                                error = new ParsedThrowable(emailExistsMessage, throwable);
+                                break;
+
+                            case 403:
+                                String phoneExistsMessage = AndarApplication.getInstance().getApplicationContext().getString(R.string.error_response_phone_exists);
+                                error = new ParsedThrowable(phoneExistsMessage, throwable);
+                                break;
+                        }
+                    } catch (ClassCastException e) {
+                    }
+
+                    source.onError(error);
+                    source.onComplete();
+                })
+                .subscribe();
+
+
+        return source;
+    }
+
+
+    public static class ParsedThrowable extends Exception {
+        public Throwable origin;
+
+        public ParsedThrowable(String message, Throwable origin) {
+            super(message);
+            this.origin = origin;
+        }
+
+        public static ParsedThrowable parse(Throwable throwable) {
+            return parse(throwable, AndarApplication.getInstance().getApplicationContext());
+        }
+
+        public static ParsedThrowable parse(Throwable throwable, Context context) {
+            if (throwable instanceof HttpException) {
+                switch (((HttpException) throwable).code()) {
+                    case 400:
+                    case 405:
+                    case 500:
+                        return new ParsedThrowable(context.getString(R.string.error_response_something_wrong), throwable);
+                    case 422:
+                        return new ParsedThrowable(context.getString(R.string.error_response_try_again), throwable);
+                    case 503:
+                        return new ParsedThrowable(context.getString(R.string.error_response_unreachable_server), throwable);
+                    case 401:
+                        return new ParsedThrowable(context.getString(R.string.error_response_unauthenticated), throwable);
+                }
+            }
+
+            return new ParsedThrowable(context.getString(R.string.error_unexpected_error), throwable);
+        }
     }
 
 

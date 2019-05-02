@@ -9,7 +9,7 @@ import retrofit2.Retrofit;
 * Creates two retrofit instances with same url
 * */
 
-
+@Deprecated
 public class RetrofitClient {
     private static Retrofit retrofit = null;
     private static Retrofit retrofitAcceptReject = null;

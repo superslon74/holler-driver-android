@@ -71,4 +71,12 @@ public class Validator {
 
         return null;
     }
+
+    public static Throwable validateName(String name) {
+        if(name==null || name.length()==0)
+            return VALIDATION_ERROR_NAME_EMPTY;
+
+        return null;
+
+    }
 }

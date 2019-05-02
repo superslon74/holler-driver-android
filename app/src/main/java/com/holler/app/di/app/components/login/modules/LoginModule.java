@@ -10,6 +10,7 @@ import com.holler.app.di.app.modules.UserStorageModule;
 import com.holler.app.mvp.login.EmailView;
 import com.holler.app.mvp.login.LoginPresenter;
 import com.holler.app.mvp.login.PasswordView;
+import com.holler.app.mvp.main.UserModel;
 
 import dagger.Module;
 import dagger.Provides;
@@ -39,10 +40,11 @@ public class LoginModule {
                                                 Context context,
                                                 UserStorageModule.UserStorage userStorage,
                                                 DeviceInfoModule.DeviceInfo deviceInfo,
-                                                RetrofitModule.ServerAPI serverAPI){
+                                                RetrofitModule.ServerAPI serverAPI,
+                                                UserModel userModel){
 
         if(loginPresenter==null){
-            loginPresenter = new LoginPresenter(router,context, userStorage,deviceInfo,serverAPI);
+            loginPresenter = new LoginPresenter(router,context, userStorage,deviceInfo,serverAPI, userModel);
         }
         loginPresenter.setView(view);
         return loginPresenter;

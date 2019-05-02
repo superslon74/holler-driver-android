@@ -14,5 +14,14 @@
 
     <string translatable="false" name="error_validation">Validation failed</string>
 
+    <string translatable="false" name="error_response_something_wrong">Something went wrong.</string>
+    <string translatable="false" name="error_response_try_again">Please try again.</string>
+    <string translatable="false" name="error_response_unreachable_server">Unable to reach server.</string>
+    <string translatable="false" name="error_response_unauthenticated">Authentication error.</string>
+    <string translatable="false" name="error_response_email_exists">Email already taken</string>
+    <string translatable="false" name="error_response_phone_exists">Phone number already in use</string>
+
+    <string translatable="false" name="error_unexpected_error">Unexpected error.</string>
+
 
 </resources>

@@ -13,6 +13,7 @@ import retrofit2.http.Path;
 * This interface describes methods only for trips
 * */
 
+@Deprecated
 public interface ApiInterface {
 
     @FormUrlEncoded

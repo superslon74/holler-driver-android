@@ -2,9 +2,11 @@ package com.holler.app.utils;
 
 import android.annotation.SuppressLint;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.ServiceConnection;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -12,6 +14,7 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -45,12 +48,13 @@ import javax.inject.Inject;
 import androidx.annotation.NonNull;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.Subject;
 import retrofit2.Response;
 
 public class GPSTracker
         extends Service
-        implements Executor{
-
+        implements Executor {
 
 
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 5;
@@ -61,10 +65,14 @@ public class GPSTracker
 
     private LocationManager locationManager;
 
-    @Inject public Context context;
-    @Inject public GoogleApiClient googleApiClient;
-    @Inject public RetrofitModule.ServerAPI serverAPI;
-    @Inject public UserStorageModule.UserStorage userStorage;
+    @Inject
+    public Context context;
+    @Inject
+    public GoogleApiClient googleApiClient;
+    @Inject
+    public RetrofitModule.ServerAPI serverAPI;
+    @Inject
+    public UserStorageModule.UserStorage userStorage;
 
     private GPSTrackerBinder binder;
     private LocationCallback locationCallback;
@@ -76,13 +84,18 @@ public class GPSTracker
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     public void onCreate() {
         super.onCreate();
         locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
-        sender = new Handler();
+        sender = new Handler(Looper.getMainLooper());
         binder = new GPSTrackerBinder();
-        locationListeners  = new ArrayList<>();
-        locationCallback = new LocationCallback(){
+        locationListeners = new ArrayList<>();
+        locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
@@ -94,7 +107,7 @@ public class GPSTracker
 
     @SuppressLint("MissingPermission")
     private void connectGoogleApi(
-            OnSuccessListener<LocationSettingsResponse> successListener, 
+            OnSuccessListener<LocationSettingsResponse> successListener,
             OnFailureListener failureListener) {
 
         locationRequest = LocationRequest.create();
@@ -110,7 +123,7 @@ public class GPSTracker
         Task<LocationSettingsResponse> locationSettingsResponse = LocationServices
                 .getSettingsClient(this)
                 .checkLocationSettings(locationSettingsRequest);
-        
+
 
         locationSettingsResponse.addOnSuccessListener((Executor) this, successListener);
         locationSettingsResponse.addOnFailureListener((Executor) this, failureListener);
@@ -120,11 +133,11 @@ public class GPSTracker
 
     @SuppressLint("MissingPermission")
     public Location getLocation() {
-        if(lastLocation == null){
+        if (lastLocation == null) {
             Location last = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if(last == null)
+            if (last == null)
                 last = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            if(last!=null){
+            if (last != null) {
                 lastLocation = last;
             }
         }
@@ -138,69 +151,64 @@ public class GPSTracker
     }
 
     @SuppressLint("MissingPermission")
-    private void startReceiveLocationUpdates(){
+    private void startReceiveLocationUpdates() {
         Logger.d("START RECEIVING LOCATION");
+
         LocationServices
-                .getFusedLocationProviderClient(this)
-                .requestLocationUpdates(locationRequest,locationCallback,null);
+                .getFusedLocationProviderClient(GPSTracker.this)
+                .requestLocationUpdates(locationRequest, locationCallback, null);
+
     }
 
 
     private Runnable updateLocationLooperBody = new Runnable() {
         @Override
         public void run() {
-            try{
+            try {
                 sendLocation(getLocation());
-            }finally {
+            } finally {
                 sender.postDelayed(updateLocationLooperBody, MIN_TIME_BW_UPDATES);
             }
         }
     };
 
-    private void startSendingLocation(){
+    private void startSendingLocation() {
         sender.postDelayed(updateLocationLooperBody, MIN_TIME_BW_UPDATES);
     }
 
-    private void stopSendingLocation(){
+    private void stopSendingLocation() {
         sender.removeCallbacksAndMessages(null);
     }
 
-    public boolean isNetworkEnabled() {
-        return locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-    }
-
-    private boolean isGPSEnabled(){
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-    }
 
     public void onLocationChanged(Location location) {
 
         if (location != null) {
-            Logger.d("ON LOCATION CHANGED: "+location.getLatitude()+" "+location.getLongitude());
+            Logger.d("ON LOCATION CHANGED: " + location.getLatitude() + " " + location.getLongitude());
 
             this.lastLocation = location;
-            for(LocationChangingListener listener : this.locationListeners){
+            for (LocationChangingListener listener : this.locationListeners) {
                 listener.onLocationChanged(location);
             }
         }
     }
 
 
-    private void sendLocation(Location l){
+    private void sendLocation(Location l) {
         try {
-            String latitude = ""+l.getLatitude();
-            String longitude = ""+l.getLongitude();
+            String latitude = "" + l.getLatitude();
+            String longitude = "" + l.getLongitude();
             String authHeader = "Bearer " + userStorage.getAccessToken();
-//            serverAPI
-//                    .checkStatus(authHeader,latitude,longitude)
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .doOnError(throwable -> {
-//                        Logger.d(throwable.getMessage());
-//                    })
-//                    .subscribeOn(Schedulers.io())
-//                    .subscribe();
-        }catch (Exception e){
-            Log.e("AZAZA","GPSTracker error: lastLocation not defined");
+            serverAPI
+                    .checkStatus(authHeader, latitude, longitude)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnError(throwable -> {
+                        Logger.d(throwable.getMessage());
+                    })
+                    .subscribeOn(Schedulers.io())
+                    .subscribe();
+        } catch (Exception e) {
+            Log.e("AZAZA", "GPSTracker error: lastLocation not defined");
         }
     }
 
@@ -223,20 +231,20 @@ public class GPSTracker
         this.locationListeners.remove(listener);
     }
 
-    public interface LocationChangingListener{
+    public interface LocationChangingListener {
         void onLocationChanged(Location newLocation);
     }
 
-    public class GPSTrackerBinder extends Binder{
+    public class GPSTrackerBinder extends Binder {
 
         public void connectGoogleApi(
                 OnSuccessListener<LocationSettingsResponse> successListener,
-                OnFailureListener failureListener){
+                OnFailureListener failureListener) {
 
-            GPSTracker.this.connectGoogleApi(successListener,failureListener);
+            GPSTracker.this.connectGoogleApi(successListener, failureListener);
         }
 
-        public void startTracking(){
+        public void startTracking() {
             //TODO: start listenening fo updates
             //TODO: make server calls on each location changed
             //TODO: implement location listener
@@ -244,24 +252,46 @@ public class GPSTracker
             GPSTracker.this.startSendingLocation();
         }
 
-        public void stopTracking(){
+        public void stopTracking() {
             GPSTracker.this.stopReceiveLocationUpdates();
             GPSTracker.this.stopSendingLocation();
         }
 
-        public void addLocationListener(LocationChangingListener listener){
+        public void addLocationListener(LocationChangingListener listener) {
             GPSTracker.this.addLocationListener(listener);
         }
-        public void removeLocationListener(LocationChangingListener listener){
+
+        public void removeLocationListener(LocationChangingListener listener) {
             GPSTracker.this.removeLocationListener(listener);
         }
 
-        public Location getLocation(){
+        public Location getLocation() {
             return GPSTracker.this.getLocation();
         }
 
 
     }
 
+    public static Subject<GPSTrackerBinder> serviceConnection(Context context) {
+        Subject<GPSTracker.GPSTrackerBinder> subject = PublishSubject.create();
+
+        Intent gpsTrackerBinding = new Intent(context, GPSTracker.class);
+        ServiceConnection gpsTrackerConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder binder) {
+                GPSTracker.GPSTrackerBinder service = (GPSTracker.GPSTrackerBinder) binder;
+                service.startTracking();
+                subject.onNext(service);
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                subject.onComplete();
+            }
+        };
+        context.bindService(gpsTrackerBinding, gpsTrackerConnection, Context.BIND_AUTO_CREATE);
+
+        return subject;
+    }
 
 }

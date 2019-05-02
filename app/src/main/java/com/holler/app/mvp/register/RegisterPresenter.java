@@ -24,17 +24,21 @@ import com.holler.app.di.app.modules.DeviceInfoModule;
 import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.di.app.modules.UserStorageModule;
+import com.holler.app.mvp.main.UserModel;
 import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.server.OrderServerApi;
 import com.holler.app.utils.CustomActivity;
 import com.holler.app.utils.MessageDisplayer;
 import com.holler.app.utils.SpinnerShower;
+import com.holler.app.utils.Validator;
 
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import androidx.core.content.ContextCompat;
+import io.reactivex.Flowable;
 import retrofit2.Response;
 
 import static com.holler.app.activity.ActivitySocialLogin.APP_REQUEST_CODE;
@@ -46,6 +50,7 @@ public class RegisterPresenter {
     private UserStorageModule.UserStorage userStorage;
     private DeviceInfoModule.DeviceInfo deviceInfo;
     private RetrofitModule.ServerAPI serverAPI;
+    private UserModel userModel;
 
     private RegistrationPendingCredentials credentials;
 
@@ -54,7 +59,8 @@ public class RegisterPresenter {
                              RouterModule.Router router,
                              UserStorageModule.UserStorage userStorage,
                              DeviceInfoModule.DeviceInfo deviceInfo,
-                             RetrofitModule.ServerAPI serverAPI) {
+                             RetrofitModule.ServerAPI serverAPI,
+                             UserModel userModel) {
 
         this.context = context;
         this.view = view;
@@ -62,10 +68,10 @@ public class RegisterPresenter {
         this.userStorage = userStorage;
         this.deviceInfo = deviceInfo;
         this.serverAPI = serverAPI;
+        this.userModel = userModel;
     }
 
     public void goToWelcome() {
-        //TODO: user logged in false in shared prefs
         view.onFinish();
         router.goToWelcomeScreen();
     }
@@ -75,53 +81,28 @@ public class RegisterPresenter {
     }
 
     public void signUp(RegistrationPendingCredentials credentials) {
-        int validationResult = credentials.validate();
-        if (validationResult == RegistrationPendingCredentials.VALIDATION_PASSED) {
+        Throwable validationResult = credentials.validate();
+        if (validationResult == null) {
             this.credentials = credentials;
             doRequest();
 //            view.onFinish();
 //            router.goToMainScreen();
         } else {
-            view.onMessage(credentials.getErrorMessage(validationResult));
+            view.onMessage(validationResult.getMessage());
         }
     }
 
     private void doRequest() {
-        view.showSpinner();
-        checkMailAlreadyExit();
+
+        userModel
+                .checkEmailExists(credentials.email)
+                .doOnSubscribe(disposable -> view.showSpinner())
+                .doFinally(() -> view.hideSpinner())
+                .doOnError(throwable -> view.onMessage(throwable.getMessage()))
+                .doOnNext(aBoolean -> verifyByPhone())
+                .subscribe();
     }
 
-    public void checkMailAlreadyExit() {
-
-        User user = new User();
-        user.email = credentials.email;
-
-        serverAPI
-                .checkEmailExists(user)
-                .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(null) {
-                    @Override
-                    public void onSuccessfulResponse(Response<JsonObject> response) {
-                        view.hideSpinner();
-                        verifyByPhone();
-                    }
-
-                    @Override
-                    public void onUnsuccessfulResponse(Response<JsonObject> response) {
-                        if (response.code() == 422) {
-                            view.onMessage("Email already taken");
-                            return;
-                        }
-                        super.onUnsuccessfulResponse(response);
-                    }
-
-                    @Override
-                    public void onFinishHandling() {
-                        super.onFinishHandling();
-                        view.hideSpinner();
-                    }
-                });
-
-    }
 
     private void verifyByPhone() {
         AccessToken accessToken = AccountKit.getCurrentAccessToken();
@@ -171,9 +152,9 @@ public class RegisterPresenter {
         countryId = manager.getSimCountryIso().toUpperCase();
         String[] codesArray = context.getResources().getStringArray(R.array.CountryCodes);
         for (String codes : codesArray) {
-            String[] keyValye = codes.split(",");
-            if (keyValye[1].trim().equals(countryId.trim())) {
-                countryCode = keyValye[0];
+            String[] keyValue = codes.split(",");
+            if (keyValue[1].trim().equals(countryId.trim())) {
+                countryCode = keyValue[0];
                 break;
             }
         }
@@ -181,137 +162,27 @@ public class RegisterPresenter {
     }
 
     private void register() {
-        view.showSpinner();
 
-        final User user = new User();
+        userModel
+                .register(credentials)
+                .doOnSubscribe(disposable -> view.showSpinner())
+                .flatMap(registered -> {
+                    return Flowable.timer(15, TimeUnit.SECONDS).toObservable();
+                })
+                .flatMap(timerFinished -> {
+                    return userModel
+                            .login(credentials.email,credentials.password)
+                            .doOnNext(loggedIn -> {
+                                router.goToMainScreen();
+                            });
+                })
+                .doFinally(() -> view.hideSpinner())
+                .doOnError(throwable -> view.onMessage(throwable.getMessage()))
+                .subscribe();
 
-        user.deviceType = deviceInfo.deviceType;
-        user.deviceId = deviceInfo.deviceId;
-        user.deviceToken = deviceInfo.deviceToken;
-        user.loggedBy = "manual";
-        user.firstName = credentials.name;
-        user.lastName = credentials.name;
-        user.gender = credentials.gender;
-        user.mobile = credentials.mobile;
-
-        user.email = credentials.email;
-        user.password = credentials.password;
-        user.passwordConfirmation = credentials.passwordConfirmation;
-
-        serverAPI
-                .register(user)
-                .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(null) {
-                    @Override
-                    public void onSuccessfulResponse(Response<JsonObject> response) {
-                        SharedHelper.putKey(context, "email", credentials.email);
-                        SharedHelper.putKey(context, "password", credentials.password);
-                        signIn(user);
-                    }
-
-                    @Override
-                    public void onUnsuccessfulResponse(Response<JsonObject> response) {
-                        view.hideSpinner();
-                        switch (response.code()) {
-                            case 403:
-                                view.onMessage("Phone number already in use");
-                                SharedHelper.putKey(activity, "loggedIn", "false");
-                                view.onFinish();
-                                router.goToWelcomeScreen();
-                                break;
-                            case 401:
-                                view.onMessage("Something went wrong");
-                                break;
-                            case 422:
-                                view.onMessage("Email has already been taken");
-                                break;
-                            default:
-                                super.onUnsuccessfulResponse(response);
-                        }
-
-                    }
-
-
-                    @Override
-                    public void onFinishHandling() {
-                        super.onFinishHandling();
-//                        hideSpinner();
-                    }
-                });
-    }
-
-    public void signIn(final User user) {
-        view.showSpinner();
-
-        serverAPI
-                .signIn(user)
-                .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(null) {
-                    @Override
-                    public void onSuccessfulResponse(Response<JsonObject> response) {
-                        String accessToken = response.body().get("access_token").getAsString();
-                        String currency = response.body().get("currency").getAsString();
-                        if (currency == null || currency.isEmpty()) {
-                            currency = "$";
-                        }
-                        SharedHelper.putKey(context, "currency", currency);
-                        SharedHelper.putKey(context, "access_token", accessToken);
-
-                        getProfile();
-//                        hideSpinner();
-                    }
-
-                    @Override
-                    public void onUnsuccessfulResponse(Response<JsonObject> response) {
-                        super.onUnsuccessfulResponse(response);
-                        view.hideSpinner();
-                    }
-
-                    @Override
-                    public void onFinishHandling() {
-                        super.onFinishHandling();
-//                        hideSpinner();
-                    }
-                });
 
     }
 
-    public void getProfile() {
-        view.showSpinner();
-        String authHeader = "Bearer " + userStorage.getAccessToken();
-
-        serverAPI
-                .profile(authHeader)
-                .enqueue(new OrderServerApi.CallbackErrorHandler<User>(null) {
-                    @Override
-                    public void onSuccessfulResponse(Response<User> response) {
-                        User newUser = response.body();
-                        userStorage.setLoggedIn("true");
-                        userStorage.putUser(newUser);
-
-                        router.goToMainScreen();
-                    }
-
-                    @Override
-                    public void onUnsuccessfulResponse(Response<User> response) {
-                        switch (response.code()) {
-                            case 401:
-                                userStorage.setLoggedIn("false");
-                                view.onMessage("Something went wrong");
-                                break;
-                            case 422:
-                                view.onMessage("Email already exist");
-                                break;
-                            default:
-                                super.onUnsuccessfulResponse(response);
-                        }
-                    }
-
-                    @Override
-                    public void onFinishHandling() {
-                        super.onFinishHandling();
-                        view.hideSpinner();
-                    }
-                });
-    }
 
     public void onPhoneVerified() {
         register();
@@ -319,12 +190,12 @@ public class RegisterPresenter {
 
 
     public static class RegistrationPendingCredentials {
-        private String email;
-        private String name;
-        private String mobile;
-        private String gender;
-        private String password;
-        private String passwordConfirmation;
+        public String email;
+        public String name;
+        public String mobile;
+        public String gender;
+        public String password;
+        public String passwordConfirmation;
 
         public RegistrationPendingCredentials(String email, String name, String mobile, String gender, String password, String passwordConfirmation) {
             this.email = email;
@@ -335,67 +206,17 @@ public class RegisterPresenter {
             this.passwordConfirmation = passwordConfirmation;
         }
 
-        public static final int VALIDATION_PASSED = -1;
-        public static final int VALIDATION_ERROR_EMAIL_EMPTY = 1;
-        public static final int VALIDATION_ERROR_EMAIL = 2;
-        public static final int VALIDATION_ERROR_PASSWORD_EMPTY = 3;
-        public static final int VALIDATION_ERROR_PASSWORD = 4;
-        public static final int VALIDATION_ERROR_PASSWORD_MISMATCHED = 5;
-        public static final int VALIDATION_ERROR_NAME_EMPTY = 6;
+        public Throwable validate() {
+            Throwable emailValidation = Validator.validateEmail(email);
+            if(emailValidation!=null) return emailValidation;
 
-        public String getErrorMessage(int validationResult) {
-            switch (validationResult) {
-                case VALIDATION_ERROR_EMAIL_EMPTY:
-                    return "Please enter your email";
-                case VALIDATION_ERROR_EMAIL:
-                    return "Not a valid email id";
-                case VALIDATION_ERROR_PASSWORD_EMPTY:
-                    return "Password required";
-                case VALIDATION_ERROR_PASSWORD:
-                    return "Password must contains minimum 8 characters maximum 16 characters and at least one number";
-                case VALIDATION_ERROR_PASSWORD_MISMATCHED:
-                    return "Please repeat password for confirmation";
-                case VALIDATION_ERROR_NAME_EMPTY:
-                    return "Enter your name";
-                default:
-                    return "Validation failed";
-            }
-        }
+            Throwable nameValidation = Validator.validateName(name);
+            if(nameValidation!=null) return nameValidation;
 
-        public int validate() {
-            //TODO: refact validation process with validator
-            if (email == null || email.length() == 0)
-                return VALIDATION_ERROR_EMAIL_EMPTY;
-            if (name == null || name.length() == 0)
-                return VALIDATION_ERROR_NAME_EMPTY;
-            if (!isValidEmail())
-                return VALIDATION_ERROR_EMAIL;
-            if (password == null || password.length() == 0)
-                return VALIDATION_ERROR_PASSWORD_EMPTY;
-            if (!isValidPassword())
-                return VALIDATION_ERROR_PASSWORD;
-            if (!isPasswordsMatches())
-                return VALIDATION_ERROR_PASSWORD_MISMATCHED;
+            Throwable passwordValidation = Validator.validatePassword(password,passwordConfirmation);
+            if(passwordValidation!=null) return passwordValidation;
 
-            return VALIDATION_PASSED;
-        }
-
-        private boolean isPasswordsMatches() {
-            return password.endsWith(passwordConfirmation);
-        }
-
-        private boolean isValidPassword() {
-            String PASSWORD_PATTERN = "(?=.*[a-z])(?=.*[\\d]).{8,16}";
-            Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
-            Matcher matcher = pattern.matcher(password);
-            return matcher.matches();
-        }
-
-        private boolean isValidEmail() {
-            String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-            Pattern pattern = Pattern.compile(EMAIL_PATTERN);
-            Matcher matcher = pattern.matcher(email);
-            return matcher.matches();
+            return null;
         }
     }
 

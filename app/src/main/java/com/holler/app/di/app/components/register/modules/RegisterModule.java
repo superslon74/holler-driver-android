@@ -7,6 +7,7 @@ import com.holler.app.di.app.modules.DeviceInfoModule;
 import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.di.app.modules.UserStorageModule;
+import com.holler.app.mvp.main.UserModel;
 import com.holler.app.mvp.register.RegisterPresenter;
 import com.holler.app.mvp.splash.SplashPresenter;
 
@@ -33,8 +34,9 @@ public class RegisterModule {
                                               RouterModule.Router router,
                                               UserStorageModule.UserStorage userStorage,
                                               DeviceInfoModule.DeviceInfo deviceInfo,
-                                              RetrofitModule.ServerAPI serverAPI){
+                                              RetrofitModule.ServerAPI serverAPI,
+                                              UserModel userModel){
 
-        return new RegisterPresenter(context,view,router,userStorage,deviceInfo,serverAPI);
+        return new RegisterPresenter(context,view,router,userStorage,deviceInfo,serverAPI, userModel);
     }
 }

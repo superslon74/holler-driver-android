@@ -29,6 +29,7 @@ import com.holler.app.FloatingViewService.FloatingViewListener;
 import com.holler.app.FloatingViewService.FloatingViewManager;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.R;
+import com.holler.app.mvp.main.MainView;
 import com.holler.app.server.OrderServerApi;
 
 import java.util.HashMap;
@@ -76,7 +77,7 @@ public class FloatingViewService extends Service implements FloatingViewListener
                             getLocation();
                         break;
                     case R.id.collapsed_iv:
-                        Intent intent = new Intent(FloatingViewService.this, MainActivity.class);
+                        Intent intent = new Intent(FloatingViewService.this, MainView.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         break;
@@ -110,6 +111,7 @@ public class FloatingViewService extends Service implements FloatingViewListener
     }
 
     private void getLocation() {
+        //TODO: refact with rx java
         showSpinnerAndLockButton();
 
         Intent gpsTrackerBinding = new Intent(this, GPSTracker.class);
@@ -189,7 +191,6 @@ public class FloatingViewService extends Service implements FloatingViewListener
 
                     @Override
                     public void onSuccessfulResponse(Response<OrderServerApi.CreteOrderResponse> response) {
-                        Log.d("AZAZA", "order successfully created");
                         String message = response.body().message;
                         if(MESSAGE_REQUEST_SUCCESFULL.equals(message)) {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

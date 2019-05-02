@@ -5,24 +5,33 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.location.Location;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.gson.JsonObject;
+import com.holler.app.AndarApplication;
+import com.holler.app.Helper.SharedHelper;
+import com.holler.app.R;
 import com.holler.app.di.User;
 import com.holler.app.di.app.modules.DeviceInfoModule;
 import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.di.app.modules.UserStorageModule;
 import com.holler.app.mvp.splash.SplashPresenter;
+import com.holler.app.server.OrderServerApi;
 import com.holler.app.utils.Finishable;
 import com.holler.app.utils.GPSTracker;
 import com.holler.app.utils.MessageDisplayer;
+import com.holler.app.utils.ReactiveServiceBindingFactory;
 import com.holler.app.utils.SpinnerShower;
 import com.orhanobut.logger.Logger;
 
 import org.reactivestreams.Publisher;
 
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
@@ -39,8 +48,10 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.AsyncSubject;
+import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 import io.reactivex.subjects.UnicastSubject;
+import retrofit2.Response;
 
 public class MainPresenter {
 
@@ -49,6 +60,7 @@ public class MainPresenter {
     private MainPresenter.View view;
     private RetrofitModule.ServerAPI serverAPI;
     private UserModel userModel;
+    private OrderModel orderModel;
 
     private GPSTracker.GPSTrackerBinder gpsTrackerService;
 
@@ -56,50 +68,52 @@ public class MainPresenter {
                          RouterModule.Router router,
                          MainPresenter.View view,
                          RetrofitModule.ServerAPI serverAPI,
-                         UserModel userModel) {
+                         UserModel userModel,
+                         OrderModel orderModel) {
 
         this.context = context;
         this.router = router;
         this.view = view;
         this.serverAPI = serverAPI;
         this.userModel = userModel;
+        this.orderModel = orderModel;
 
-        serviceBinding()
+        GPSTracker.serviceConnection(context)
                 .flatMap(service -> {
-                    gpsTrackerService = service;
+                    gpsTrackerService = (GPSTracker.GPSTrackerBinder)service;
                     return statusRequesting();
                 })
                 .flatMap(checkStatusResponse -> {
                     Logger.d(checkStatusResponse.toString());
                     userModel.updateStatus(checkStatusResponse);
-                    return Observable.just(true);
+                    return Observable.just(Observable.fromIterable(orderModel.updateOrderStatus(checkStatusResponse.requests)));
+                })
+                .map(orderResponseObservable -> {
+
+                    return Observable.empty();
                 })
                 .doOnError(throwable -> {
-                    Logger.e("shit2",throwable);
+//                    Logger.e("shit2",throwable);
                 })
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(Schedulers.newThread())
                 .subscribe();
 
         userModel
                 .statusSource
                 .doOnNext(newStatus -> view.onStatusChanged(newStatus))
-                .doOnError(throwable -> {
-                    Logger.e(throwable.getMessage());
-                })
                 .subscribe();
 
         view.onStatusChanged(userModel.getCurrentStatus());
 
     }
 
+
+
     private Subject<RetrofitModule.ServerAPI.CheckStatusResponse> statusRequesting() {
         final Subject<RetrofitModule.ServerAPI.CheckStatusResponse> subject = UnicastSubject.create();
 
         Flowable
                 .interval(3, TimeUnit.SECONDS)
-                .flatMapSingle(__-> {
-
+                .flatMapSingle(time -> {
                     Location location = gpsTrackerService.getLocation();
                     String authHeader = userModel.getAuthHeader();
                     String latitude = "" + location.getLatitude();
@@ -109,35 +123,8 @@ public class MainPresenter {
                             .checkStatus(authHeader, latitude, longitude)
                             .doOnSuccess(subject::onNext)
                             .onErrorReturnItem(new RetrofitModule.ServerAPI.CheckStatusResponse());
-//                            .subscribeOn(Schedulers.io());
                 })
-                .doOnError(throwable -> {
-                    Logger.e("shit4",throwable);
-                })
-                .subscribeOn(Schedulers.newThread())
                 .subscribe();
-
-        return subject;
-    }
-
-    //TODO: make static move to service
-    //TODO: change subject type
-    private Subject<GPSTracker.GPSTrackerBinder> serviceBinding() {
-        Subject<GPSTracker.GPSTrackerBinder> subject = UnicastSubject.create();
-
-        Intent gpsTrackerBinding = new Intent(context, GPSTracker.class);
-        ServiceConnection gpsTrackerConnection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder binder) {
-                subject.onNext((GPSTracker.GPSTrackerBinder) binder);
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                subject.onError(new Throwable("Service disconnected"));
-            }
-        };
-        context.bindService(gpsTrackerBinding, gpsTrackerConnection, Context.BIND_AUTO_CREATE);
 
         return subject;
     }
@@ -166,16 +153,25 @@ public class MainPresenter {
         view.finish();
     }
 
+    public void createAndSendOrder(){
+
+        Location location = gpsTrackerService.getLocation();
+        String latitude = ""+location.getLatitude();
+        String longitude = ""+location.getLongitude();
+
+        serverAPI
+                .createOrder(userModel.getAuthHeader(), new RetrofitModule.ServerAPI.CreateOrderRequestBody(latitude,longitude))
+                .doOnSubscribe(disposable -> view.showSpinner())
+                .doFinally(() -> view.hideSpinner())
+                .doOnSuccess(creteOrderResponse -> view.onMessage("Order successfully created"))
+                .doOnError(throwable -> view.onMessage("Error, please try again"))
+                .subscribe();
+
+    }
+
     public interface View extends SpinnerShower, MessageDisplayer, Finishable {
 
         void onStatusChanged(UserModel.Status newStatus);
-    }
-
-    private interface IncomingOrderListener {
-        void onOrderReceived(Order incomingOrder);
-    }
-
-    private class Order {
 
     }
 

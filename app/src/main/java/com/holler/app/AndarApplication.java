@@ -3,6 +3,7 @@ package com.holler.app;
 import android.app.Application;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -15,11 +16,14 @@ import com.holler.app.di.app.AppComponent;
 import com.holler.app.di.app.DaggerAppComponent;
 import com.holler.app.di.app.modules.AppModule;
 import com.holler.app.di.app.modules.DeviceInfoModule;
+import com.holler.app.di.app.modules.OrderModule;
 import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.di.app.modules.SharedPreferencesModule;
 import com.holler.app.di.app.modules.UserModule;
 import com.holler.app.di.app.modules.UserStorageModule;
+import com.holler.app.utils.GPSTracker;
+import com.holler.app.utils.ReactiveServiceBindingFactory;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.CsvFormatStrategy;
 import com.orhanobut.logger.FormatStrategy;
@@ -34,6 +38,7 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 import androidx.multidex.MultiDex;
+import io.reactivex.disposables.Disposable;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 
@@ -71,9 +76,15 @@ public class AndarApplication extends Application implements  ComponentCallbacks
                 .userStorageModule(new UserStorageModule())
                 .routerModule(new RouterModule())
                 .userModule(new UserModule())
+                .orderModule(new OrderModule())
                 .build();
         component.inject(this);
         Logger.d("Dependency Graph Set Up");
+
+//        Disposable serviceSubscriber = new ReactiveServiceBindingFactory()
+//                .bind(getApplicationContext(),new Intent(getApplicationContext(), GPSTracker.class))
+//                .subscribe();
+
     }
 
     private static AndarApplication mInstance;
@@ -99,7 +110,6 @@ public class AndarApplication extends Application implements  ComponentCallbacks
         Logger.addLogAdapter(new AndroidLogAdapter(prettyFormat));
 
         Logger.i("STARTING APPLICATION");
-
     }
 
     /******************************************************************************************/

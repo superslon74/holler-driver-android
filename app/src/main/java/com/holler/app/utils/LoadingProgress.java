@@ -15,11 +15,11 @@ public class LoadingProgress extends Toast {
     private CustomActivity activity;
 
     public LoadingProgress(CustomActivity activity) {
-        super( activity.getApplicationContext());
-        LayoutInflater inflater = (LayoutInflater)  activity.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view  = inflater.inflate(R.layout.loding_spinner, null);
+        super(activity.getApplicationContext());
+        LayoutInflater inflater = (LayoutInflater) activity.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.loding_spinner, null);
         setView(view);
-        setGravity(Gravity.CENTER,0,0);
+        setGravity(Gravity.CENTER, 0, 0);
     }
 
     private CountDownTimer toastCountDown;
@@ -27,21 +27,22 @@ public class LoadingProgress extends Toast {
     public void startLoading() {
         int toastDurationInMilliSeconds = 100000;
 
+        if (toastCountDown == null)
+            toastCountDown = new CountDownTimer(toastDurationInMilliSeconds, 1000) {
+                public void onTick(long millisUntilFinished) {
+                    LoadingProgress.this.show();
+                }
 
-        toastCountDown = new CountDownTimer(toastDurationInMilliSeconds, 1000 /*Tick duration*/) {
-            public void onTick(long millisUntilFinished) {
-                LoadingProgress.this.show();
-            }
-            public void onFinish() {
-                LoadingProgress.this.cancel();
-            }
-        };
+                public void onFinish() {
+                    LoadingProgress.this.cancel();
+                }
+            };
 
         LoadingProgress.this.show();
         toastCountDown.start();
     }
 
-    public void stopLoading(){
+    public void stopLoading() {
         toastCountDown.cancel();
         LoadingProgress.this.cancel();
     }

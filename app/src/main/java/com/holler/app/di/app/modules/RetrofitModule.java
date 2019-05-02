@@ -6,9 +6,11 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.holler.app.Helper.URLHelper;
 import com.holler.app.di.User;
+import com.holler.app.server.OrderServerApi;
 import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -18,6 +20,8 @@ import dagger.Module;
 import dagger.Provides;
 import io.reactivex.Scheduler;
 import io.reactivex.Single;
+import io.reactivex.android.plugins.RxAndroidPlugins;
+import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ConnectionPool;
 import okhttp3.EventListener;
@@ -76,7 +80,7 @@ public class RetrofitModule {
                                 .addHeader("X-Requested-With", "XMLHttpRequest")
                                 .build();
 //                        try {
-                            return chain.proceed(request);
+                        return chain.proceed(request);
 //                        }catch (Exception e){
 //                            Logger.e(e.getMessage());
 //                            return chain
@@ -92,6 +96,10 @@ public class RetrofitModule {
         RxJava2CallAdapterFactory rxAdapter =
                 RxJava2CallAdapterFactory
                         .createWithScheduler(scheduler);
+
+        RxJavaPlugins.setErrorHandler(throwable -> {
+            Logger.e("Rx plugin error handler", throwable);
+        });
 
         ServerAPI retrofitClient = new Retrofit
                 .Builder()
@@ -115,7 +123,8 @@ public class RetrofitModule {
         Single<AccessTokenResponseBody> getAccessToken(
                 @Body AccessTokenRequestBody user
         );
-        class AccessTokenRequestBody{
+
+        class AccessTokenRequestBody {
             @Expose
             @SerializedName("email")
             public String email;
@@ -141,7 +150,8 @@ public class RetrofitModule {
                 this.deviceToken = deviceToken;
             }
         }
-        class AccessTokenResponseBody{
+
+        class AccessTokenResponseBody {
             @Expose
             @SerializedName("access_token")
             public String token;
@@ -157,7 +167,8 @@ public class RetrofitModule {
                 @Header(HEADER_KEY_AUTHORIZATION) String authHeader,
                 @Body LogoutRequestBody user
         );
-        class LogoutRequestBody{
+
+        class LogoutRequestBody {
             @Expose(deserialize = false)
             @SerializedName("id")
             public String userId;
@@ -173,7 +184,7 @@ public class RetrofitModule {
                 @Body ForgotPasswordRequestBody email
         );
 
-        class ForgotPasswordRequestBody{
+        class ForgotPasswordRequestBody {
             @Expose(deserialize = false)
             @SerializedName("email")
             public String email;
@@ -182,12 +193,14 @@ public class RetrofitModule {
                 this.email = email;
             }
         }
-        class ForgotPasswordResponseBody{
+
+        class ForgotPasswordResponseBody {
             @Expose(serialize = false)
             @SerializedName("provider")
             public Provider provider;
+
             //TODO: remove otp checking to server
-            class Provider{
+            class Provider {
                 @Expose(serialize = false)
                 @SerializedName("id")
                 public String id;
@@ -196,14 +209,14 @@ public class RetrofitModule {
                 public String otp;
             }
 
-            public String getId(){
-                if(provider!=null)
+            public String getId() {
+                if (provider != null)
                     return provider.id;
                 return null;
             }
 
-            public String getOtp(){
-                if(provider!=null)
+            public String getOtp() {
+                if (provider != null)
                     return provider.otp;
                 return null;
             }
@@ -213,7 +226,8 @@ public class RetrofitModule {
         Single<JsonObject> changePassword(
                 @Body ChangePasswordRequestBody newPassword
         );
-        class ChangePasswordRequestBody{
+
+        class ChangePasswordRequestBody {
             @Expose(deserialize = false)
             @SerializedName("id")
             public String id;
@@ -234,12 +248,12 @@ public class RetrofitModule {
         //check status
         @GET("api/provider/trip")
         Single<CheckStatusResponse> checkStatus(
-            @Header(HEADER_KEY_AUTHORIZATION) String authHeader,
-            @Query("latitude") String latitude,
-            @Query("longitude") String longitude
+                @Header(HEADER_KEY_AUTHORIZATION) String authHeader,
+                @Query("latitude") String latitude,
+                @Query("longitude") String longitude
         );
 
-        class CheckStatusResponse{
+        class CheckStatusResponse {
             @Expose(deserialize = false)
             @SerializedName("account_status")
             public String accountStatus;
@@ -248,7 +262,157 @@ public class RetrofitModule {
             public String serviceStatus;
             @Expose(deserialize = false)
             @SerializedName("requests")
-            public JsonArray requests;
+            public List<RequestedOrderResponse> requests;
+        }
+        class RequestedOrderResponse {
+            @Expose(deserialize = false)
+            @SerializedName("id")
+            public String id;
+            @Expose(deserialize = false)
+            @SerializedName("request_id")
+            public String requestId;
+            @Expose(deserialize = false)
+            @SerializedName("provider_id")
+            public String providerId;
+            @Expose(deserialize = false)
+            @SerializedName("status")
+            @Deprecated
+            public String status;
+            @Expose(deserialize = false)
+            @SerializedName("time_left_to_respond")
+            public String timeToRespond;
+
+            @Expose(deserialize = false)
+            @SerializedName("request")
+            public OrderResponse order;
+        }
+        class OrderResponse {
+            @Expose(deserialize = false)
+            @SerializedName("id")
+            public String id;
+            @Expose(deserialize = false)
+            @SerializedName("booking_id")
+            public String bookingId;
+            @Expose(deserialize = false)
+            @SerializedName("provider_send")
+            public String providerSend;
+            @Expose(deserialize = false)
+            @SerializedName("user_id")
+            public String userId;
+            @Expose(deserialize = false)
+            @SerializedName("provider_id")
+            public String providerId;
+            @Expose(deserialize = false)
+            @SerializedName("current_provider_id")
+            public String currentProviderId;
+            @Expose(deserialize = false)
+            @SerializedName("service_type_id")
+            public String serviceTypeId;
+            @Expose(deserialize = false)
+            @SerializedName("rental_hours")
+            public String rentalHours;
+            @Expose(deserialize = false)
+            @SerializedName("status")
+            public String status;
+            @Expose(deserialize = false)
+            @SerializedName("cancelled_by")
+            public String cancelledBy;
+            @Expose(deserialize = false)
+            @SerializedName("cancel_reason")
+            public String cancelReason;
+            @Expose(deserialize = false)
+            @SerializedName("is_track")
+            public String isTrack;
+            @Expose(deserialize = false)
+            @SerializedName("paid")
+            public String paid;
+            @Expose(deserialize = false)
+            @SerializedName("payment_mode")
+            public String paymentMode;
+            @Expose(deserialize = false)
+            @SerializedName("distance")
+            public String distance;
+            @Expose(deserialize = false)
+            @SerializedName("travel_time")
+            public String travelTime;
+            @Expose(deserialize = false)
+            @SerializedName("s_address")
+            public String sAddress;
+            @Expose(deserialize = false)
+            @SerializedName("d_address")
+            public String dAddress;
+            @Expose(deserialize = false)
+            @SerializedName("s_latitude")
+            public String sLatitude;
+            @Expose(deserialize = false)
+            @SerializedName("s_longitude")
+            public String sLongitude;
+            @Expose(deserialize = false)
+            @SerializedName("otp")
+            public String otp;
+            @Expose(deserialize = false)
+            @SerializedName("otp_required")
+            public String otp_required;
+            @Expose(deserialize = false)
+            @SerializedName("d_latitude")
+            public String dLatitude;
+            @Expose(deserialize = false)
+            @SerializedName("track_distance")
+            public String trackDistance;
+            @Expose(deserialize = false)
+            @SerializedName("track_latitude")
+            public String trackLatitude;
+            @Expose(deserialize = false)
+            @SerializedName("track_longitude")
+            public String trackLongitude;
+            @Expose(deserialize = false)
+            @SerializedName("d_longitude")
+            public String dLongitude;
+            @Expose(deserialize = false)
+            @SerializedName("assigned_at")
+            public String assignedAt;
+            @Expose(deserialize = false)
+            @SerializedName("schedule_at")
+            public String scheduleAt;
+            @Expose(deserialize = false)
+            @SerializedName("finished_at")
+            public String finishedAt;
+            @Expose(deserialize = false)
+            @SerializedName("started_at")
+            public String startedAt;
+            @Expose(deserialize = false)
+            @SerializedName("user_rated")
+            public String userRated;
+            @Expose(deserialize = false)
+            @SerializedName("provider_rated")
+            public String providerRated;
+            @Expose(deserialize = false)
+            @SerializedName("use_wallet")
+            public String useWallet;
+            @Expose(deserialize = false)
+            @SerializedName("surge")
+            public String surge;
+            @Expose(deserialize = false)
+            @SerializedName("route_key")
+            public String routeKey;
+            @Expose(deserialize = false)
+            @SerializedName("deleted_at")
+            public String deletedAt;
+            @Expose(deserialize = false)
+            @SerializedName("created_at")
+            public String createdAt;
+            @Expose(deserialize = false)
+            @SerializedName("updated_at")
+
+            public String updatedAtw;
+            @Expose(deserialize = false)
+            @SerializedName("user")
+            public JsonObject user;
+            @Expose(deserialize = false)
+            @SerializedName("payment")
+            public String payment;
+
+
         }
 
         @POST("api/provider/profile/available")
@@ -258,26 +422,57 @@ public class RetrofitModule {
         );
 
 
-
         @POST("api/provider/verify")
-        Call<JsonObject> checkEmailExists(
-                @Body User user
+        Single<JsonObject> checkEmailExists(
+                @Body EmailVerificationRequestBody email
         );
+
+        class EmailVerificationRequestBody {
+            @Expose(deserialize = false)
+            @SerializedName("email")
+            public String email;
+
+            public EmailVerificationRequestBody(String email) {
+                this.email = email;
+            }
+        }
 
         @POST("api/provider/register")
-        Call<JsonObject> register(
+        Single<JsonObject> register(
                 @Body User user
         );
+
+//        ORDER
+
+        @POST("/api/provider/trip/send_request")
+        Single<OrderServerApi.CreteOrderResponse> createOrder(
+                @Header(HEADER_KEY_AUTHORIZATION) String authHeader,
+                @Body CreateOrderRequestBody body
+        );
+
+        class CreateOrderRequestBody {
+            @Expose(deserialize = false)
+            @SerializedName("s_latitude")
+            public String startLatitude;
+            @Expose(deserialize = false)
+            @SerializedName("s_longitude")
+            public String startLongitude;
+
+            public CreateOrderRequestBody(String startLatitude, String startLongitude) {
+                this.startLatitude = startLatitude;
+                this.startLongitude = startLongitude;
+            }
+        }
+
+
+        //trash
+
 
         @POST("api/provider/oauth/token")
         Call<JsonObject> signIn(
                 @Body User user
         );
 
-        @GET("api/provider/profile")
-        Call<User> profile(
-                @Header(HEADER_KEY_AUTHORIZATION) String authHeader
-        );
 
         @GET("api/provider/trip")
         Call<JsonObject> sendTripLocation(
@@ -294,8 +489,6 @@ public class RetrofitModule {
                 @Field("latitude") String latitude,
                 @Field("longitude") String longitude
         );
-
-
 
 
     }

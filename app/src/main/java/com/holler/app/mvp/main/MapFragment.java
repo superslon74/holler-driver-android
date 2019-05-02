@@ -184,6 +184,11 @@ public class MapFragment extends Fragment {
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
+    @OnClick(R.id.ma_map_pass_button)
+    public void createOrder(){
+//        presenter.createAndSendOrder();
+        showOrder();
+    }
 
     private void setMarker(Location location) {
         if (googleMap == null) return;

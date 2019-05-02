@@ -21,6 +21,7 @@ import com.holler.app.server.OrderServerApi;
 import com.holler.app.utils.CustomActivity;
 import com.holler.app.utils.GPSTracker;
 import com.holler.app.utils.MessageDisplayer;
+import com.holler.app.utils.ReactiveServiceBindingFactory;
 import com.holler.app.utils.SpinnerShower;
 import com.orhanobut.logger.Logger;
 
@@ -36,6 +37,8 @@ import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.Subject;
 import retrofit2.Response;
 
 public class SplashPresenter implements Presenter {
@@ -72,39 +75,24 @@ public class SplashPresenter implements Presenter {
 
         userModel
                 .login()
-                .doOnSubscribe(disposable -> view.showSpinner())
-                .doOnNext(isLogged->{
-                    if(isLogged){
-                        startTrackingLocation();
-                    }else{
-                        router.goToWelcomeScreen();
-                    }
+//                .doOnSubscribe(disposable -> view.showSpinner())
+                .flatMap(isLogged -> {
+                    return GPSTracker.serviceConnection(context);
                 })
-                .doOnComplete(() -> view.hideSpinner())
+                .flatMap(service -> {
+                    service.startTracking();
+                    router.goToMainScreen();
+                    return Observable.empty();
+                })
+                .doOnError(throwable -> {
+                    throwable.printStackTrace();
+                    router.goToWelcomeScreen();
+                })
+//                .doOnComplete(() -> view.hideSpinner())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.newThread())
                 .subscribe();
     }
-
-
-    private void startTrackingLocation() {
-        Intent gpsTrackerBinding = new Intent(context, GPSTracker.class);
-        ServiceConnection gpsTrackerConnection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder binder) {
-                GPSTracker.GPSTrackerBinder service = (GPSTracker.GPSTrackerBinder) binder;
-                service.startTracking();
-                router.goToMainScreen();
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-
-            }
-        };
-        context.bindService(gpsTrackerBinding, gpsTrackerConnection, Context.BIND_AUTO_CREATE);
-    }
-
 
     public interface View extends SpinnerShower, MessageDisplayer {
 

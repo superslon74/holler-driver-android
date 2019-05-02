@@ -10,6 +10,7 @@ import com.google.gson.annotations.SerializedName;
 * Looks like this class was used to test retrofit library
 */
 
+@Deprecated
 public class Post {
 
     @SerializedName("id")

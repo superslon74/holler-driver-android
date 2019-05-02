@@ -10,10 +10,12 @@ import com.holler.app.di.app.modules.DeviceInfoModule;
 import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.di.app.modules.UserStorageModule;
+import com.holler.app.mvp.main.UserModel;
 import com.holler.app.mvp.register.RegisterPresenter;
 import com.holler.app.server.OrderServerApi;
 import com.holler.app.utils.MessageDisplayer;
 import com.holler.app.utils.SpinnerShower;
+import com.holler.app.utils.Validator;
 import com.orhanobut.logger.Logger;
 
 import retrofit2.Response;
@@ -27,7 +29,7 @@ public class LoginPresenter {
     private UserStorageModule.UserStorage userStorage;
     private DeviceInfoModule.DeviceInfo deviceInfo;
     private RetrofitModule.ServerAPI serverAPI;
-
+    private UserModel userModel;
 
     private PendingCredentials credentials;
 
@@ -35,8 +37,9 @@ public class LoginPresenter {
                           Context context,
                           UserStorageModule.UserStorage userStorage,
                           DeviceInfoModule.DeviceInfo deviceInfo,
-                          RetrofitModule.ServerAPI serverAPI) {
-        Logger.i("Login presenter init");
+                          RetrofitModule.ServerAPI serverAPI,
+                          UserModel userModel) {
+
         this.router = router;
         this.credentials = new PendingCredentials(null,null);
 
@@ -44,6 +47,7 @@ public class LoginPresenter {
         this.userStorage = userStorage;
         this.deviceInfo = deviceInfo;
         this.serverAPI = serverAPI;
+        this.userModel = userModel;
     }
 
     public void setView(View view){
@@ -53,12 +57,12 @@ public class LoginPresenter {
 
     public void goToPasswordView(PendingCredentials newCredentials){
         this.credentials.merge(newCredentials);
-        int validationResult = credentials.validate();
-        if(validationResult!=PendingCredentials.VALIDATION_EMAIL_ERROR){
+        Throwable validationResult = Validator.validateEmail(credentials.email);
+        if(validationResult==null){
             router.goToPasswordScreen();
             view.onFinish();
         }else{
-            view.onMessage(credentials.getErrorMessage(validationResult));
+            view.onMessage(validationResult.getMessage());
         }
     }
 
@@ -70,106 +74,29 @@ public class LoginPresenter {
 
     public void goToMainView(PendingCredentials newCredentials){
         this.credentials.merge(newCredentials);
-        int validationResult = credentials.validate();
-        if(validationResult==PendingCredentials.VALIDATION_PASSED){
-            User user = new User();
-            user.deviceType = deviceInfo.deviceType;
-            user.deviceId = deviceInfo.deviceId;
-            user.deviceToken = deviceInfo.deviceToken;
-            user.email = credentials.getEmail();
-            user.password = credentials.getPassword();
-            signIn(user);
+        Throwable validationResult = Validator.validatePassword(credentials.password, credentials.password);
+        if(validationResult==null){
+            signIn(credentials.getEmail(), credentials.getPassword());
         }else{
-            view.onMessage(credentials.getErrorMessage(validationResult));
+            view.onMessage(validationResult.toString());
         }
     }
 
-    public void signIn(final User user) {
-        view.showSpinner();
+    public void signIn(String email, String password) {
 
-        serverAPI
-                .signIn(user)
-                .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(null) {
-                    @Override
-                    public void onSuccessfulResponse(Response<JsonObject> response) {
-                        String accessToken = response.body().get("access_token").getAsString();
-                        String currency = response.body().get("currency").getAsString();
-                        if (currency == null || currency.isEmpty()) {
-                            currency = "$";
-                        }
-                        SharedHelper.putKey(context, "currency", currency);
-                        SharedHelper.putKey(context, "access_token", accessToken);
-                        userStorage.putUser(user);
-
-                        getProfile();
-//                        hideSpinner();
-                    }
-
-                    @Override
-                    public void onUnsuccessfulResponse(Response<JsonObject> response) {
-                        super.onUnsuccessfulResponse(response);
-
-                        view.hideSpinner();
-                    }
-
-                    @Override
-                    public void onDisplayMessage(String message) {
-                        view.onMessage(message);
-                    }
-
-                    @Override
-                    public void onFinishHandling() {
-                        super.onFinishHandling();
-//                        hideSpinner();
-                    }
-                });
-
-    }
-
-    public void getProfile() {
-        view.showSpinner();
-        String authHeader = "Bearer " + userStorage.getAccessToken();
-
-        serverAPI
-                .profile(authHeader)
-                .enqueue(new OrderServerApi.CallbackErrorHandler<User>(null) {
-                    @Override
-                    public void onSuccessfulResponse(Response<User> response) {
-                        User newUser = response.body();
-                        userStorage.setLoggedIn("true");
-                        userStorage.putUser(newUser);
-
-                        credentials.clear();
-                        view.onFinish();
+        userModel
+                .login(email, password)
+                .doOnSubscribe(disposable -> view.showSpinner())
+                .doOnNext(isLoggedIn -> {
+                    if(isLoggedIn)
                         router.goToMainScreen();
-                    }
+                    else
+                        Logger.e("Login Presenter user not logged in without error");
+                })
+                .doFinally(() -> view.hideSpinner())
+                .doOnError(throwable -> view.onMessage(throwable.getMessage()))
+                .subscribe();
 
-                    @Override
-                    public void onUnsuccessfulResponse(Response<User> response) {
-                        switch (response.code()) {
-                            case 401:
-                                userStorage.setLoggedIn("false");
-                                view.onMessage("Something went wrong");
-                                break;
-                            case 422:
-                                view.onMessage("Email already exist");
-                                break;
-                            default:
-                                super.onUnsuccessfulResponse(response);
-                        }
-                    }
-
-                    @Override
-                    public void onDisplayMessage(String message) {
-                        view.onMessage(message);
-                    }
-
-                    @Override
-                    public void onFinishHandling() {
-                        super.onFinishHandling();
-                        view.hideSpinner();
-                    }
-                });
     }
 
     public void goToWelcomeView() {
@@ -215,27 +142,6 @@ public class LoginPresenter {
                 this.email = newCredentials.email;
             if(newCredentials.password!=null)
                 this.password = newCredentials.password;
-        }
-
-        public static final int VALIDATION_PASSED = -1;
-        public static final int VALIDATION_EMAIL_ERROR = 1;
-        public static final int VALIDATION_PASSWORD_ERROR = 2;
-
-        public String getErrorMessage(int validationResult){
-            switch (validationResult){
-                case VALIDATION_EMAIL_ERROR: return "Invalid email";
-                case VALIDATION_PASSWORD_ERROR: return "Invalid password";
-                default: return  "Invalid credentials";
-            }
-        }
-
-        public int validate(){
-            if(email == null || email.length()==0)
-                return VALIDATION_EMAIL_ERROR;
-            if(password == null || password.length()==0)
-                return VALIDATION_PASSWORD_ERROR;
-
-            return VALIDATION_PASSED;
         }
     }
 
