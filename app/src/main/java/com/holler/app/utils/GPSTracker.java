@@ -165,6 +165,7 @@ public class GPSTracker
         @Override
         public void run() {
             try {
+                onLocationChanged(getLocation());
                 sendLocation(getLocation());
             } finally {
                 sender.postDelayed(updateLocationLooperBody, MIN_TIME_BW_UPDATES);

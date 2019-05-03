@@ -202,6 +202,10 @@ public class UserModel {
                         deviceInfo.deviceToken
                 ))
                 .doOnSubscribe(disposable -> {
+                    User u = new User();
+                    u.password = password;
+                    u.email = email;
+                    userStorage.putUser(u);
                     source.onSubscribe(disposable);
                 })
                 .doOnSuccess(accessTokenResponseBody -> {

@@ -30,7 +30,8 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/transparent">
+                    android:background="@color/black_tint"
+                    android:focusable="false">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:background="@drawable/shape_white_circle"

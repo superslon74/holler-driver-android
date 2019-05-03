@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
+    android:paddingLeft="15dp"
+    android:paddingTop="25dp"
+    android:paddingRight="15dp"
+    android:paddingBottom="5dp">
+
+
+    <TextView
+        android:id="@+id/of_message"
+        style="@style/OF_Header_Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rate your trip"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/of_star_1"
+        style="@style/OF_Star"
+
+        app:layout_constraintEnd_toStartOf="@+id/of_star_2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/of_message" />
+
+    <ImageView
+        android:id="@+id/of_star_2"
+        style="@style/OF_Star"
+
+        app:layout_constraintEnd_toStartOf="@+id/of_star_3"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/of_star_1"
+        app:layout_constraintTop_toTopOf="@id/of_star_1" />
+
+    <ImageView
+        android:id="@+id/of_star_3"
+        style="@style/OF_Star"
+        app:layout_constraintEnd_toStartOf="@+id/of_star_4"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/of_star_2"
+        app:layout_constraintTop_toTopOf="@id/of_star_1" />
+
+    <ImageView
+        android:id="@+id/of_star_4"
+        style="@style/OF_Star"
+
+        android:layout_marginStart="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/of_star_5"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/of_star_3"
+        app:layout_constraintTop_toTopOf="@id/of_star_1" />
+
+    <ImageView
+        android:id="@+id/of_star_5"
+        style="@style/OF_Star"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/of_star_4"
+        app:layout_constraintTop_toTopOf="@id/of_star_1" />
+
+    <TextView
+        android:id="@+id/of_submit_button"
+        style="@style/OF_Pick_Up_Button"
+        android:paddingRight="22dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="15dp"
+        android:text="Submit"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/of_star_1" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

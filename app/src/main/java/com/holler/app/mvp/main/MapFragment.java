@@ -4,13 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,10 +16,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResolvableApiException;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -32,7 +26,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.holler.app.R;
-import com.holler.app.utils.CustomActivity;
 import com.holler.app.utils.GPSTracker;
 import com.orhanobut.logger.Logger;
 
@@ -51,6 +44,9 @@ public class MapFragment extends Fragment {
     @BindView(R.id.ma_map_to_current_location_button)
     public ImageView currentLocationButton;
 
+    @BindView(R.id.ma_map_pass_button)
+    public View passItOnButton;
+
     private GPSTracker.GPSTrackerBinder gpsTrackerBinder;
     private GoogleMap googleMap;
     private GPSTracker.LocationChangingListener locationListener;
@@ -62,7 +58,6 @@ public class MapFragment extends Fragment {
         super.onCreate(savedInstanceState);
         this.presenter = ((MainView) getActivity()).presenter;
     }
-
 
     @Nullable
     @Override
@@ -81,7 +76,6 @@ public class MapFragment extends Fragment {
                 setMapCameraToCurrentPosition();
             }
         }, 1000);
-
 
         return view;
     }
@@ -187,7 +181,7 @@ public class MapFragment extends Fragment {
     @OnClick(R.id.ma_map_pass_button)
     public void createOrder(){
 //        presenter.createAndSendOrder();
-        showOrder();
+        showRequestOrder();
     }
 
     private void setMarker(Location location) {
@@ -207,16 +201,74 @@ public class MapFragment extends Fragment {
         }
     }
 
+    private void showRequestOrder() {
+        RequestOrderFragment o = new RequestOrderFragment();
 
-    private void showOrder() {
-        OrderFragment o = new OrderFragment();
+        o.source
+                .doOnSubscribe(disposable -> addFragment(o))
+                .doOnNext(isAccepted -> {
+                    if(isAccepted){
+                        Logger.i("Accepted");
+                        showArrivedOrder();
+                    }else{
+                        Logger.i("Rejected");
+                    }
+                })
+                .doFinally(() -> removeFragment(o))
+                .subscribe();
+    }
+
+    private void showArrivedOrder(){
+        ArrivedOrderFragment o = new ArrivedOrderFragment();
+
+        o.source
+                .doOnSubscribe(disposable -> addFragment(o))
+                .doOnNext(isAccepted -> {
+                    if(isAccepted){
+                        showRate();
+                        Logger.i("Accepted");
+
+                    }else{
+                        Logger.i("Arrived");
+                    }
+                })
+                .doFinally(() -> removeFragment(o))
+                .subscribe();
+    }
+
+    private void showRate(){
+        RateOrderFragment o = new RateOrderFragment();
+
+        o.source
+                .doOnSubscribe(disposable -> addFragment(o))
+                .doOnNext(rate -> {
+                    Logger.i("Rate is: " + rate);
+                })
+                .doFinally(() -> removeFragment(o))
+                .subscribe();
+    }
+
+    private void addFragment(Fragment f){
         getActivity()
                 .getSupportFragmentManager()
                 .beginTransaction()
-                .add(ordersContainer.getId(), o)
+                .add(ordersContainer.getId(), f)
+                .commit();
+    }
+    private void removeFragment(Fragment f){
+        getActivity()
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .remove(f)
                 .commit();
     }
 
+    public void hidePassItOnButton() {
+        passItOnButton.setVisibility(View.GONE);
+    }
+    public void showPassItOnButton() {
+        passItOnButton.setVisibility(View.VISIBLE);
+    }
 
     public static class CustomSupportMapFragment extends SupportMapFragment {
         public View mOriginalContentView;

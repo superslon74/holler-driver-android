@@ -70,8 +70,8 @@
         android:progress="10"
         android:background="@drawable/shape_progress_bar_background"
         android:progressDrawable="@drawable/shape_progress_bar_circular"
+        android:animateLayoutChanges="true"
 
-        android:layout_marginBottom="3dp"
         android:layout_marginLeft="125dp"
         app:layout_constraintBottom_toBottomOf="@+id/of_pick_up_button"
         app:layout_constraintLeft_toLeftOf="@+id/of_pick_up_button"

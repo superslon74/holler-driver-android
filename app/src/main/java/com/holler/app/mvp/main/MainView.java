@@ -197,8 +197,6 @@ public class MainView extends CustomActivity implements MainPresenter.View {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();
-
-
     }
 
     private Subject<Boolean> showLogoutConfirmation(){
@@ -412,11 +410,21 @@ public class MainView extends CustomActivity implements MainPresenter.View {
             runOnUiThread(() -> {
                 offlineHeader.setText(getApplicationContext().getText(R.string.mas_offline_header));
                 contentOverflow.setVisibility(View.VISIBLE);
+                try{
+                    ((MapFragment)currentFragment).hidePassItOnButton();
+                }catch (ClassCastException e){
+                }
             });
         }
 
         public void closeOffline(){
-            runOnUiThread(() -> contentOverflow.setVisibility(View.GONE));
+            runOnUiThread(() -> {
+                contentOverflow.setVisibility(View.GONE);
+                try{
+                    ((MapFragment)currentFragment).showPassItOnButton();
+                }catch (ClassCastException e){
+                }
+            });
         }
 
         public void closeOfflineAfterOneSecond(){

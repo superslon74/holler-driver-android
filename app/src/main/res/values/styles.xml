@@ -59,7 +59,7 @@
 
     </style>
     <style name="MENU_Header_User_Name">
-        <item name="android:layout_marginTop">12dp</item>
+        <item name="android:layout_marginTop">6dp</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:fontFamily">@font/montserrat</item>
         <item name="android:textStyle">bold</item>
@@ -145,6 +145,13 @@
         <item name="android:textSize">20dp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:fontFamily">@font/montserrat</item>
+    </style>
+
+    <style name="OF_Star">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:src">@drawable/ic_star_yellow_border</item>
     </style>
 
     <!--Login activity styles-->

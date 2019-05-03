@@ -86,10 +86,10 @@ public class MainPresenter {
                 .flatMap(checkStatusResponse -> {
                     Logger.d(checkStatusResponse.toString());
                     userModel.updateStatus(checkStatusResponse);
-                    return Observable.just(Observable.fromIterable(orderModel.updateOrderStatus(checkStatusResponse.requests)));
+                    return Observable.fromIterable(orderModel.updateOrderStatus(checkStatusResponse.requests));
                 })
                 .map(orderResponseObservable -> {
-
+                    Logger.w("Order in map "+ orderResponseObservable.toString());
                     return Observable.empty();
                 })
                 .doOnError(throwable -> {
