@@ -127,7 +127,7 @@ public class EarningsFragment extends Fragment {
             public void onResponse(JSONObject response) {
                 try {
                     if (response != null) {
-//                        lblTarget.setText(response.optString("rides_count")+"/"+response.optString("target"));
+//                        lblTarget.setText(data.optString("rides_count")+"/"+data.optString("target"));
 
                         custom_progressBar.setProgress(Integer.parseInt(response.optString("rides_count")));
 
@@ -155,7 +155,7 @@ public class EarningsFragment extends Fragment {
                         animateTextView(0,Integer.parseInt(response.optString("rides_count")),
                                 Integer.parseInt(response.optString("target")),lblTarget);
 
-//                        custom_progressBar.setProgress(Integer.parseInt(response.optString("rides_count")));
+//                        custom_progressBar.setProgress(Integer.parseInt(data.optString("rides_count")));
                         int animationDuration = 1500; // 1500ms = 1,5s
                         int progress = Integer.parseInt(response.optString("rides_count")); // Progress
                         custom_progressBar.setProgressWithAnimation(progress, animationDuration);

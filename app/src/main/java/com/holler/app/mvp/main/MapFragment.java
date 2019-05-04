@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -27,7 +28,6 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.holler.app.R;
 import com.holler.app.utils.GPSTracker;
-import com.orhanobut.logger.Logger;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,6 +35,7 @@ import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Observable;
 
 public class MapFragment extends Fragment {
 
@@ -170,7 +171,6 @@ public class MapFragment extends Fragment {
     public void setMapCameraToCurrentPosition() {
         cameraLocked=false;
         if(googleMap==null) return;
-        Logger.i("camera update position");
         Location location = getCurrentLocation();
         if (location == null) return;
         LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
@@ -180,8 +180,8 @@ public class MapFragment extends Fragment {
 
     @OnClick(R.id.ma_map_pass_button)
     public void createOrder(){
-//        presenter.createAndSendOrder();
-        showRequestOrder();
+        presenter.createAndSendOrder();
+//        showRequestOrder();
     }
 
     private void setMarker(Location location) {
@@ -201,48 +201,69 @@ public class MapFragment extends Fragment {
         }
     }
 
-    private void showRequestOrder() {
-        RequestOrderFragment o = new RequestOrderFragment();
+    public void showRequestOrder(OrderModel.Order order) {
+        String address = order.data.sAddress;
+        int time = order.timeToRespond;
+        RequestOrderFragment o = RequestOrderFragment.newInstance(address, time);
 
         o.source
                 .doOnSubscribe(disposable -> addFragment(o))
-                .doOnNext(isAccepted -> {
+                .flatMap(isAccepted -> {
                     if(isAccepted){
-                        Logger.i("Accepted");
-                        showArrivedOrder();
+
+                        return order.accept().toObservable();
                     }else{
-                        Logger.i("Rejected");
+
+                        return order.reject().toObservable();
                     }
+                })
+                .doOnError(throwable -> {
+                    UserModel.ParsedThrowable error = UserModel.ParsedThrowable.parse(throwable);
+                    ((MainView)getActivity()).onMessage(error.getMessage()); //vahahaha
                 })
                 .doFinally(() -> removeFragment(o))
                 .subscribe();
     }
 
-    private void showArrivedOrder(){
-        ArrivedOrderFragment o = new ArrivedOrderFragment();
+    public void showArrivedOrder(OrderModel.Order order){
+        String address = order.data.sAddress;
+
+        ArrivedOrderFragment o = ArrivedOrderFragment.newInstance(address);
 
         o.source
                 .doOnSubscribe(disposable -> addFragment(o))
-                .doOnNext(isAccepted -> {
+                .flatMap(isAccepted -> {
                     if(isAccepted){
-                        showRate();
-                        Logger.i("Accepted");
-
+                        return order
+                                .arrived()
+                                .toObservable();
                     }else{
-                        Logger.i("Arrived");
+                        return order
+                                .cancel()
+                                .toObservable();
                     }
+                })
+                .doOnError(throwable -> {
+                    UserModel.ParsedThrowable error = UserModel.ParsedThrowable.parse(throwable);
+                    ((MainView)getActivity()).onMessage(error.getMessage()); //vahahaha
                 })
                 .doFinally(() -> removeFragment(o))
                 .subscribe();
     }
 
-    private void showRate(){
+    public void showRateOrder(OrderModel.Order order){
         RateOrderFragment o = new RateOrderFragment();
 
         o.source
                 .doOnSubscribe(disposable -> addFragment(o))
-                .doOnNext(rate -> {
-                    Logger.i("Rate is: " + rate);
+                .flatMap(rating -> {
+                    return order
+                            .rate(rating)
+                            .toObservable();
+                })
+                .doOnError(throwable -> {
+                    UserModel.ParsedThrowable error = UserModel.ParsedThrowable.parse(throwable);
+                    ((MainView)getActivity()).onMessage(error.getMessage()); //vahahaha
                 })
                 .doFinally(() -> removeFragment(o))
                 .subscribe();
@@ -264,7 +285,11 @@ public class MapFragment extends Fragment {
     }
 
     public void hidePassItOnButton() {
-        passItOnButton.setVisibility(View.GONE);
+        try{
+            passItOnButton.setVisibility(View.GONE);
+        }catch (NullPointerException e){
+
+        }
     }
     public void showPassItOnButton() {
         passItOnButton.setVisibility(View.VISIBLE);

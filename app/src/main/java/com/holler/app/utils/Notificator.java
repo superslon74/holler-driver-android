@@ -87,7 +87,7 @@ public class Notificator {
 
     private Notification build(){
         Notification notification = notificationBuilder.build();
-        notification.flags = Notification.FLAG_INSISTENT | Notification.FLAG_ONGOING_EVENT;
+//        notification.flags = Notification.FLAG_INSISTENT | Notification.FLAG_ONGOING_EVENT;
 
         return notification;
     }

@@ -272,7 +272,7 @@ public class ActivitySocialLogin extends CustomActivity implements GoogleApiClie
                 GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
                 handleSignInResult(result);
             }
-            if (requestCode == APP_REQUEST_CODE) { // confirm that this response matches your request
+            if (requestCode == APP_REQUEST_CODE) { // confirm that this data matches your request
                 //AccountKitLoginResult loginResult = data.getParcelableExtra(AccountKitLoginResult.RESULT_KEY);
 
                 AccountKit.getCurrentAccount(new AccountKitCallback<Account>() {

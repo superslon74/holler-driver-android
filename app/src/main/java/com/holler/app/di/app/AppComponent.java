@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.holler.app.activity.Offline;
 import com.holler.app.AndarApplication;
-import com.holler.app.FCM.MyFirebaseInstanceIDService;
 import com.holler.app.Fragment.Map;
 import com.holler.app.di.app.modules.AppModule;
 import com.holler.app.di.app.modules.DeviceInfoModule;
@@ -38,7 +37,6 @@ import dagger.Component;
 })
 public interface AppComponent {
     void inject(AndarApplication app);
-    void inject(MyFirebaseInstanceIDService firebaseIdChecker);
     void inject(GPSTracker tracker);
 
     void inject(WelcomeView welcomeView);

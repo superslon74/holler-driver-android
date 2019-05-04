@@ -83,7 +83,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import static com.holler.app.AndarApplication.trimMessage;
 
-
+@Deprecated
 public class MainActivity extends CustomActivity {
     // tags used to attach the fragments
     private static final String TAG_HOME = "home";

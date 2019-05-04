@@ -1,11 +1,14 @@
 package com.holler.app.di.app.modules;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.holler.app.Helper.URLHelper;
 import com.holler.app.di.User;
+import com.holler.app.mvp.main.OrderModel;
 import com.holler.app.server.OrderServerApi;
 import com.orhanobut.logger.Logger;
 
@@ -16,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
+import androidx.annotation.Nullable;
 import dagger.Module;
 import dagger.Provides;
 import io.reactivex.Scheduler;
@@ -35,6 +39,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -280,11 +285,20 @@ public class RetrofitModule {
             public String status;
             @Expose(deserialize = false)
             @SerializedName("time_left_to_respond")
-            public String timeToRespond;
+            public int timeToRespond;
 
             @Expose(deserialize = false)
             @SerializedName("request")
             public OrderResponse order;
+
+            @Override
+            public boolean equals(@Nullable Object obj) {
+                try{
+                    return ((RequestedOrderResponse) obj).id.equals(this.id);
+                }catch (ClassCastException | NullPointerException e){
+                    return false;
+                }
+            }
         }
         class OrderResponse {
             @Expose(deserialize = false)
@@ -407,7 +421,7 @@ public class RetrofitModule {
             public String updatedAtw;
             @Expose(deserialize = false)
             @SerializedName("user")
-            public JsonObject user;
+            public JsonElement user;
             @Expose(deserialize = false)
             @SerializedName("payment")
             public String payment;
@@ -444,8 +458,8 @@ public class RetrofitModule {
 
 //        ORDER
 
-        @POST("/api/provider/trip/send_request")
-        Single<OrderServerApi.CreteOrderResponse> createOrder(
+        @POST("api/provider/trip/send_request")
+        Single<CreateOrderResponse> createOrder(
                 @Header(HEADER_KEY_AUTHORIZATION) String authHeader,
                 @Body CreateOrderRequestBody body
         );
@@ -463,8 +477,89 @@ public class RetrofitModule {
                 this.startLongitude = startLongitude;
             }
         }
+        class CreateOrderResponse{
+            @Expose(serialize = false)
+            @SerializedName("message")
+            public String message;
+            @Expose(serialize = false)
+            @SerializedName("request_id")
+            public String requestId;
+            @Expose(serialize = false)
+            @SerializedName("current_provider")
+            public String provider;
 
+            private static final String MESSAGE_REQUEST_SUCCESSFULL = "New request Created!";
+            public boolean isSuccessfullyCreated(){
+                return MESSAGE_REQUEST_SUCCESSFULL.equals(message);
+            }
+        }
 
+        @POST("api/provider/trip/{id}")
+        Single<JsonElement> acceptOrder(
+                @Header(HEADER_KEY_AUTHORIZATION) String authHeader,
+                @Path("id") String id);
+
+        @DELETE("api/provider/trip/{id}")
+        Single<JsonElement> rejectOrder(
+                @Header(HEADER_KEY_AUTHORIZATION) String authHeader,
+                @Path("id") String orderId);
+
+        @POST("api/provider/trip/{id}/rate")
+        Single<JsonObject> rateOrder(
+                @Header(HEADER_KEY_AUTHORIZATION) String authHeader,
+                @Path("id") String id,
+                @Body UpdateOrderRequestBody body);
+
+        @POST("api/provider/trip/{id}")
+        Single<JsonObject> updateOrder(
+                @Header(HEADER_KEY_AUTHORIZATION) String authHeader,
+                @Path("id") String id,
+                @Body UpdateOrderRequestBody body);
+
+        class UpdateOrderRequestBody{
+            @Expose(deserialize = false)
+            @SerializedName("_method")
+            public String method;
+            @Expose(deserialize = false)
+            @SerializedName("status")
+            public String status;
+            @Expose(deserialize = false)
+            @SerializedName("rating")
+            public String rating;
+            @Expose(deserialize = false)
+            @SerializedName("comment")
+            public String comment;
+            @Expose(deserialize = false)
+            @SerializedName("address")
+            public String address;
+
+            public UpdateOrderRequestBody(String method,
+                                          String status,
+                                          String rating,
+                                          String comment,
+                                          String address) {
+                this.method = method;
+                this.status = status;
+                this.rating = rating;
+                this.comment = comment;
+                this.address = address;
+            }
+        }
+
+        @POST("api/provider/cancel")
+        Single<JsonObject> cancelOrder(
+                @Header(HEADER_KEY_AUTHORIZATION) String authHeader,
+                @Body CancelOrderRequestBody body);
+
+        class CancelOrderRequestBody{
+            @Expose(deserialize = false)
+            @SerializedName("id")
+            public String id;
+
+            public CancelOrderRequestBody(String id) {
+                this.id = id;
+            }
+        }
         //trash
 
 

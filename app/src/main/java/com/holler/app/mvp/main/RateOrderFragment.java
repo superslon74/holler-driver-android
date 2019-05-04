@@ -53,6 +53,7 @@ public class RateOrderFragment extends Fragment{
         stars.add(star4);
         stars.add(star5);
 
+        fillStars(1);
         return view;
     }
     

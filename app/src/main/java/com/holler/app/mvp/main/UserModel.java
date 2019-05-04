@@ -2,6 +2,10 @@ package com.holler.app.mvp.main;
 
 import android.content.Context;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.holler.app.AndarApplication;
 import com.holler.app.R;
 import com.holler.app.di.User;
@@ -11,6 +15,9 @@ import com.holler.app.di.app.modules.UserStorageModule;
 import com.holler.app.mvp.register.RegisterPresenter;
 import com.orhanobut.logger.Logger;
 
+import java.util.concurrent.TimeUnit;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -40,6 +47,10 @@ public class UserModel {
         this.deviceInfo = deviceInfo;
     }
 
+    public User getProfileData(){
+        return userStorage.getUser();
+    }
+
     public boolean isLoggedIn() {
         return userStorage.getLoggedIn();
     }
@@ -47,7 +58,7 @@ public class UserModel {
     public static class Status {
         public enum AccountStatus {UNKNOWN, DISAPPROVED, NEW, APPROVED, BLOCKED}
 
-        public enum ServiceStatus {UNKNOWN, OFFLINE, ONLINE}
+        public enum ServiceStatus {UNKNOWN, OFFLINE, ONLINE, RIDING}
 
         public AccountStatus account;
         public ServiceStatus service;
@@ -69,6 +80,9 @@ public class UserModel {
                     break;
                 case "offline":
                     newServiceStatus = ServiceStatus.OFFLINE;
+                    break;
+                case "riding":
+                    newServiceStatus = ServiceStatus.ONLINE;
                     break;
                 default:
                     newServiceStatus = ServiceStatus.UNKNOWN;
@@ -123,7 +137,6 @@ public class UserModel {
             statusSource.onNext(newStatus);
         }
     }
-
 
     public void goOffline() {
         serverAPI
@@ -190,48 +203,75 @@ public class UserModel {
     public Subject<Boolean> login(String email, String password) {
         final Subject<Boolean> source = PublishSubject.create();
 
-        Single<RetrofitModule.ServerAPI.AccessTokenResponseBody> accessTokenSingle
-                = serverAPI.getAccessToken(
-                new RetrofitModule
-                        .ServerAPI
-                        .AccessTokenRequestBody(
-                        email,
-                        password,
-                        deviceInfo.deviceType,
-                        deviceInfo.deviceId,
-                        deviceInfo.deviceToken
-                ))
-                .doOnSubscribe(disposable -> {
-                    User u = new User();
-                    u.password = password;
-                    u.email = email;
-                    userStorage.putUser(u);
-                    source.onSubscribe(disposable);
+        Observable
+                .timer(5, TimeUnit.SECONDS)
+                .flatMap(aLong -> {
+                    return getFirebaseToken();
                 })
-                .doOnSuccess(accessTokenResponseBody -> {
-                    userStorage.setLoggedIn("true");
-                    userStorage.setAccessToken(accessTokenResponseBody.token);
-                });
-
-
-
-        accessTokenSingle
-                .flatMap(
-                        (Function<RetrofitModule.ServerAPI.AccessTokenResponseBody, SingleSource<?>>) accessTokenResponseBody
-                                ->
-                                serverAPI.getUserProfile(getAuthHeader())
-                                        .doOnSuccess(user1 -> {
-                                            userStorage.putUser(user1);
-                                            source.onNext(true);
-                                            source.onComplete();
-                                        }))
+                .flatMap(firebaseToken -> {
+                    deviceInfo.deviceToken = firebaseToken;
+                    return serverAPI.getAccessToken(
+                            new RetrofitModule
+                                    .ServerAPI
+                                    .AccessTokenRequestBody(
+                                    email,
+                                    password,
+                                    deviceInfo.deviceType,
+                                    deviceInfo.deviceId,
+                                    deviceInfo.deviceToken
+                            ))
+                            .doOnSubscribe(disposable -> {
+                                User u = new User();
+                                u.password = password;
+                                u.email = email;
+                                userStorage.putUser(u);
+                                source.onSubscribe(disposable);
+                            })
+                            .doOnSuccess(accessTokenResponseBody -> {
+                                userStorage.setLoggedIn("true");
+                                userStorage.setAccessToken(accessTokenResponseBody.token);
+                            })
+                            .toObservable();
+                })
+                .flatMap(accessToken -> {
+                    return serverAPI.getUserProfile(getAuthHeader())
+                            .doOnSuccess(user1 -> {
+                                userStorage.putUser(user1);
+                                source.onNext(true);
+                                source.onComplete();
+                            })
+                            .toObservable();
+                })
                 .doOnError(throwable -> {
                     source.onError(ParsedThrowable.parse(throwable));
                     source.onComplete();
                 })
                 .subscribe();
 
+
         return source;
+    }
+
+    private Subject<String> getFirebaseToken(){
+        Subject<String> result = PublishSubject.create();
+
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Logger.w("getInstanceId failed", task.getException());
+                            result.onNext("Could not get firebase token");
+                            result.onComplete();
+                            return;
+                        }
+                        String token = task.getResult().getToken();
+                        result.onNext(token);
+                        result.onComplete();
+                    }
+                });
+
+        return result;
     }
 
     public Subject<Boolean> checkEmailExists(String email) {
@@ -314,7 +354,6 @@ public class UserModel {
         return source;
     }
 
-
     public static class ParsedThrowable extends Exception {
         public Throwable origin;
 
@@ -346,7 +385,6 @@ public class UserModel {
             return new ParsedThrowable(context.getString(R.string.error_unexpected_error), throwable);
         }
     }
-
 
     public String getAuthHeader() {
         return "Bearer " + userStorage.getAccessToken();

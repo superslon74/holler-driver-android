@@ -10,6 +10,7 @@
     android:paddingBottom="5dp">
 
 
+
     <ImageView
         android:id="@+id/of_marker"
         android:layout_width="wrap_content"
@@ -19,14 +20,24 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/of_address"
+        android:id="@+id/of_address_big"
+        style="@style/OF_Header_Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pinhas lavos, 36"
+        app:layout_constraintTop_toTopOf="@id/of_marker"
+        app:layout_constraintLeft_toRightOf="@id/of_marker"/>
+
+    <TextView
+        android:id="@+id/of_address_small"
         style="@style/OF_Header_Description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Pinhas Lavos 35, Tel Aviv"
+        android:text="Tel Aviv"
+        android:paddingTop="0dp"
         app:layout_constraintLeft_toRightOf="@id/of_marker"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/of_address_big" />
 
     <Button
         android:id="@+id/of_button_cancel"
@@ -67,7 +78,7 @@
         app:layout_constraintBottom_toTopOf="@id/of_button_navigate_caption"
         app:layout_constraintRight_toRightOf="@id/of_button_navigate_caption"
         app:layout_constraintLeft_toLeftOf="@id/of_button_navigate_caption"
-        app:layout_constraintTop_toBottomOf="@+id/of_address" />
+        app:layout_constraintTop_toBottomOf="@+id/of_address_small" />
 
     <TextView
         android:id="@+id/of_button_arrived_caption"
@@ -98,7 +109,7 @@
         app:layout_constraintBottom_toTopOf="@id/of_button_arrived_caption"
         app:layout_constraintRight_toRightOf="@id/of_button_arrived_caption"
         app:layout_constraintLeft_toLeftOf="@id/of_button_arrived_caption"
-        app:layout_constraintTop_toBottomOf="@+id/of_address" />
+        app:layout_constraintTop_toBottomOf="@+id/of_address_small" />
 
 
 

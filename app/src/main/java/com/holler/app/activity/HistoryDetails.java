@@ -288,7 +288,7 @@ public class HistoryDetails extends CustomActivity {
             Glide.with(activity).load(imgUrl).placeholder(R.drawable.placeholder).error(R.drawable.placeholder).into(tripImg);
             if (!response.optJSONObject(0).optString("payment").equalsIgnoreCase("null")) {
                 Log.e("History Details", "onResponse: Currency" + SharedHelper.getKey(context, "currency"));
-                //tripAmount.setText(SharedHelper.getKey(context, "currency") + "" + response.optJSONObject(0).optJSONObject("payment").optString("total"));
+                //tripAmount.setText(SharedHelper.getKey(context, "currency") + "" + data.optJSONObject(0).optJSONObject("payment").optString("total"));
             } else {
                 //tripAmount.setText(SharedHelper.getKey(context, "currency") + "" + "0");
             }
@@ -344,9 +344,9 @@ public class HistoryDetails extends CustomActivity {
                 tripProviderRating.setRating(0);
             }
 
-            /*if (!response.optJSONObject(0).optString("rating").equalsIgnoreCase("null") &&
-                    !response.optJSONObject(0).optJSONObject("rating").optString("user_comment").equalsIgnoreCase("")) {
-                tripComments.setText(response.optJSONObject(0).optJSONObject("rating").optString("user_comment"));
+            /*if (!data.optJSONObject(0).optString("rating").equalsIgnoreCase("null") &&
+                    !data.optJSONObject(0).optJSONObject("rating").optString("user_comment").equalsIgnoreCase("")) {
+                tripComments.setText(data.optJSONObject(0).optJSONObject("rating").optString("user_comment"));
             } else {
                 tripComments.setText(getString(R.string.no_comments));
             }*/

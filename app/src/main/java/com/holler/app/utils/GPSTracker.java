@@ -152,7 +152,6 @@ public class GPSTracker
 
     @SuppressLint("MissingPermission")
     private void startReceiveLocationUpdates() {
-        Logger.d("START RECEIVING LOCATION");
 
         LocationServices
                 .getFusedLocationProviderClient(GPSTracker.this)
@@ -185,7 +184,6 @@ public class GPSTracker
     public void onLocationChanged(Location location) {
 
         if (location != null) {
-            Logger.d("ON LOCATION CHANGED: " + location.getLatitude() + " " + location.getLongitude());
 
             this.lastLocation = location;
             for (LocationChangingListener listener : this.locationListeners) {
@@ -212,6 +210,12 @@ public class GPSTracker
             Log.e("AZAZA", "GPSTracker error: lastLocation not defined");
         }
     }
+
+    /**
+     * Expected a com.google.gson.JsonObject but was com.google.gson.JsonNull
+     * @param intent
+     * @return
+     */
 
     @Override
     public IBinder onBind(Intent intent) {

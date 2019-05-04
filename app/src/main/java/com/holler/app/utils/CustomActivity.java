@@ -36,6 +36,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.holler.app.R;
 import com.holler.app.activity.MainActivity;
+import com.holler.app.mvp.main.MainView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -149,10 +150,9 @@ public class CustomActivity
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if (CustomActivity.this instanceof MainActivity) {
+        if (CustomActivity.this instanceof MainView) {
             moveTaskToBack(true);
         }
-
     }
 
     protected void onCreate(Bundle savedInstanceState) {

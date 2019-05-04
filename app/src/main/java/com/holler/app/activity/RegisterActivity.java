@@ -471,7 +471,7 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
             final int resultCode,
             final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == APP_REQUEST_CODE) { // confirm that this response matches your request
+        if (requestCode == APP_REQUEST_CODE) { // confirm that this data matches your request
             if (data != null) {
                 AccountKitLoginResult loginResult = data.getParcelableExtra(AccountKitLoginResult.RESULT_KEY);
 
@@ -701,14 +701,14 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
 //                .register(headers,user)
 //                .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(RegisterActivity.this) {
 //                    @Override
-//                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
-//                        Log.d("AZAZA",""+response.toString());
+//                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> data) {
+//                        Log.d("AZAZA",""+data.toString());
 //                        latch.countDown();
 //                    }
 //
 //                    @Override
-//                    public void onUnsuccessfulResponse(retrofit2.Response<JsonObject> response) {
-//                        super.onUnsuccessfulResponse(response);
+//                    public void onUnsuccessfulResponse(retrofit2.Response<JsonObject> data) {
+//                        super.onUnsuccessfulResponse(data);
 //                        latch.countDown();
 //                    }
 //
@@ -738,14 +738,14 @@ public class RegisterActivity extends CustomActivity implements RadioGroup.OnChe
 //                .checkEmailExists(headers,user)
 //                .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(RegisterActivity.this) {
 //                    @Override
-//                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
-//                        Log.d("AZAZA",""+response.toString());
+//                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> data) {
+//                        Log.d("AZAZA",""+data.toString());
 //                        latch.countDown();
 //                    }
 //
 //                    @Override
-//                    public void onUnsuccessfulResponse(retrofit2.Response<JsonObject> response) {
-//                        super.onUnsuccessfulResponse(response);
+//                    public void onUnsuccessfulResponse(retrofit2.Response<JsonObject> data) {
+//                        super.onUnsuccessfulResponse(data);
 //                        latch.countDown();
 //                    }
 //

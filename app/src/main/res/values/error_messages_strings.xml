@@ -23,5 +23,7 @@
 
     <string translatable="false" name="error_unexpected_error">Unexpected error.</string>
 
+    <string translatable="false" name="error_creating_order">Error, please try again.</string>
+    <string translatable="false" name="successfully_created_order">Order successfully created.</string>
 
 </resources>

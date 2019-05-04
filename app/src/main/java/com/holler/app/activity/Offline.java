@@ -135,7 +135,7 @@ public class Offline extends Fragment {
 //                .sendStatus(authHeader, RetrofitModule.ServerAPI.STATUS_ONLINE)
 //                .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(getActivity()) {
 //                    @Override
-//                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
+//                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> data) {
 //                        FragmentManager manager = MainActivity.fragmentManager;
 //                        FragmentTransaction transaction = manager.beginTransaction();
 //                        transaction.replace(R.id.content, new Map());

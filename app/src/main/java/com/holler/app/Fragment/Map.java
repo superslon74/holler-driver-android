@@ -1032,7 +1032,7 @@ public class Map
             if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
                 // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
+                // this thread waiting for the user's data! After the user
                 // sees the explanation, try again to request the permission.
                 new AlertDialog.Builder(context)
                         .setIcon(AccessDetails.site_icon)
@@ -1576,7 +1576,7 @@ public class Map
                                         }
                                     }
                                     if (!PreviousStatus.equalsIgnoreCase("NULL")) {
-                                        utils.print("response", "null");
+                                        utils.print("data", "null");
                                         if (mMap != null) {
                                             if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                                                 return;
@@ -1913,7 +1913,7 @@ public class Map
 //                    .sendStatus(authHeader, RetrofitModule.ServerAPI.STATUS_OFFLINE)
 //                    .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(getActivity()) {
 //                        @Override
-//                        public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
+//                        public void onSuccessfulResponse(retrofit2.Response<JsonObject> data) {
 //                            goOffline();
 //                            gpsService.stopTracking();
 //                        }

@@ -189,7 +189,7 @@ public class SummaryFragment extends Fragment implements View.OnClickListener {
                     cancel = Integer.parseInt(response.optString("cancel_rides"));
                     doubleRevenue = Double.parseDouble(response.optString("revenue"));
                     revenue= doubleRevenue.intValue();
-                    //revenue = Integer.parseInt(response.optString("revenue"));
+                    //revenue = Integer.parseInt(data.optString("revenue"));
 
                     slideUp.setAnimationListener(new Animation.AnimationListener() {
                         @Override

@@ -59,8 +59,8 @@ public class MainPresenter {
     private RouterModule.Router router;
     private MainPresenter.View view;
     private RetrofitModule.ServerAPI serverAPI;
-    private UserModel userModel;
-    private OrderModel orderModel;
+    public UserModel userModel;
+    public OrderModel orderModel;
 
     private GPSTracker.GPSTrackerBinder gpsTrackerService;
 
@@ -86,10 +86,7 @@ public class MainPresenter {
                 .flatMap(checkStatusResponse -> {
                     Logger.d(checkStatusResponse.toString());
                     userModel.updateStatus(checkStatusResponse);
-                    return Observable.fromIterable(orderModel.updateOrderStatus(checkStatusResponse.requests));
-                })
-                .map(orderResponseObservable -> {
-                    Logger.w("Order in map "+ orderResponseObservable.toString());
+                    orderModel.updateRequestOrder(checkStatusResponse.requests);
                     return Observable.empty();
                 })
                 .doOnError(throwable -> {
@@ -100,6 +97,13 @@ public class MainPresenter {
         userModel
                 .statusSource
                 .doOnNext(newStatus -> view.onStatusChanged(newStatus))
+                .subscribe();
+
+        orderModel
+                .orderSource
+                .doOnNext(order -> {
+                    view.onOrderChanged(order);
+                })
                 .subscribe();
 
         view.onStatusChanged(userModel.getCurrentStatus());
@@ -159,12 +163,21 @@ public class MainPresenter {
         String latitude = ""+location.getLatitude();
         String longitude = ""+location.getLongitude();
 
+        String messageSuccess = context.getString(R.string.successfully_created_order);
+        String messageError = context.getString(R.string.error_creating_order);
+
         serverAPI
                 .createOrder(userModel.getAuthHeader(), new RetrofitModule.ServerAPI.CreateOrderRequestBody(latitude,longitude))
                 .doOnSubscribe(disposable -> view.showSpinner())
                 .doFinally(() -> view.hideSpinner())
-                .doOnSuccess(creteOrderResponse -> view.onMessage("Order successfully created"))
-                .doOnError(throwable -> view.onMessage("Error, please try again"))
+                .doOnSuccess(creteOrderResponse -> {
+                    if(creteOrderResponse.isSuccessfullyCreated()){
+                        view.onMessage(messageSuccess);
+                    }else{
+                        view.onMessage(messageError);
+                    }
+                })
+                .doOnError(throwable -> view.onMessage(messageError))
                 .subscribe();
 
     }
@@ -172,7 +185,7 @@ public class MainPresenter {
     public interface View extends SpinnerShower, MessageDisplayer, Finishable {
 
         void onStatusChanged(UserModel.Status newStatus);
-
+        void onOrderChanged(OrderModel.Order order);
     }
 
 }

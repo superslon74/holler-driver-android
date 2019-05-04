@@ -16,8 +16,9 @@ public class OrderModule {
     @Singleton
     public OrderModel provideOrderModel(RetrofitModule.ServerAPI serverAPI,
                                         UserStorageModule.UserStorage userStorage,
-                                        DeviceInfoModule.DeviceInfo deviceInfo){
-        return new OrderModel(serverAPI, userStorage, deviceInfo);
+                                        DeviceInfoModule.DeviceInfo deviceInfo,
+                                        UserModel userModel){
+        return new OrderModel(serverAPI, userStorage, deviceInfo, userModel);
     }
 
 }

@@ -12,6 +12,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.holler.app.activity.MainActivity;
 import com.holler.app.Helper.URLHelper;
+import com.holler.app.mvp.main.MainView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -113,7 +114,7 @@ public class UserStatusChecker extends Service {
     }
 
     private void launchSplashScreenActivity() {
-        Intent i = new Intent(this, MainActivity.class);
+        Intent i = new Intent(this, MainView.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
         stopSelf();

@@ -441,7 +441,7 @@ public class BeginScreen extends CustomActivity implements GoogleApiClient.OnCon
 
                     // if (isInternetPresent) {
 
-                    Log.e("response", "" + response);
+                    Log.e("data", "" + response);
                     json = response.getJSONObject();
                     Log.e("FB JSON", "" + json);
 

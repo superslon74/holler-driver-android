@@ -211,14 +211,14 @@ public class RegisterView
 //                .register(headers,user)
 //                .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(RegisterActivity.this) {
 //                    @Override
-//                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
-//                        Log.d("AZAZA",""+response.toString());
+//                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> data) {
+//                        Log.d("AZAZA",""+data.toString());
 //                        latch.countDown();
 //                    }
 //
 //                    @Override
-//                    public void onUnsuccessfulResponse(retrofit2.Response<JsonObject> response) {
-//                        super.onUnsuccessfulResponse(response);
+//                    public void onUnsuccessfulResponse(retrofit2.Response<JsonObject> data) {
+//                        super.onUnsuccessfulResponse(data);
 //                        latch.countDown();
 //                    }
 //
@@ -248,14 +248,14 @@ public class RegisterView
 //                .checkEmailExists(headers,user)
 //                .enqueue(new OrderServerApi.CallbackErrorHandler<JsonObject>(RegisterActivity.this) {
 //                    @Override
-//                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> response) {
-//                        Log.d("AZAZA",""+response.toString());
+//                    public void onSuccessfulResponse(retrofit2.Response<JsonObject> data) {
+//                        Log.d("AZAZA",""+data.toString());
 //                        latch.countDown();
 //                    }
 //
 //                    @Override
-//                    public void onUnsuccessfulResponse(retrofit2.Response<JsonObject> response) {
-//                        super.onUnsuccessfulResponse(response);
+//                    public void onUnsuccessfulResponse(retrofit2.Response<JsonObject> data) {
+//                        super.onUnsuccessfulResponse(data);
 //                        latch.countDown();
 //                    }
 //

@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.holler.app.AndarApplication;
 import com.holler.app.Fragment.Help;
@@ -20,10 +21,12 @@ import com.holler.app.activity.DocumentsActivity;
 import com.holler.app.activity.HistoryActivity;
 import com.holler.app.activity.MainActivity;
 import com.holler.app.activity.Offline;
+import com.holler.app.di.User;
 import com.holler.app.di.app.AppComponent;
 import com.holler.app.di.app.components.DaggerMainComponent;
 import com.holler.app.di.app.components.main.modules.MainScreenModule;
 import com.holler.app.utils.CustomActivity;
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.orhanobut.logger.Logger;
 
 import javax.inject.Inject;
@@ -80,13 +83,16 @@ public class MainView extends CustomActivity implements MainPresenter.View {
                 .inject(this);
     }
 
-
-
     protected class HeaderViewHolder {
         @BindView(R.id.ma_nav_user_state_toggle)
         public UserStatusToggle statusToggle;
         @BindView(R.id.ma_nav_user_status)
         public UserStatusDot statusDot;
+
+        @BindView(R.id.ma_nav_user_name)
+        public TextView userNameView;
+        @BindView(R.id.ma_nav_user_photo)
+        public CircularImageView userPhotoView;
 
         @OnClick(R.id.ma_nav_user_state_toggle)
         public void toggleStatus() {
@@ -126,6 +132,15 @@ public class MainView extends CustomActivity implements MainPresenter.View {
 
         buildComponent();
 
+        User profile = presenter.userModel.getProfileData();
+        headerViewHolder.userNameView.setText(profile.firstName+" "+ profile.lastName);
+//        if (profile.avatar!=null && !"".equals(profile.avatar))
+            Glide
+                    .with(getApplicationContext())
+                    .load(profile.avatar)
+                    .placeholder(R.drawable.avatar)
+                    .error(R.drawable.avatar)
+                    .into(headerViewHolder.userPhotoView);
 
         //TODO: load user image to nav header
         //TODO: change user status
@@ -333,6 +348,21 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         currentStatus=newStatus;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        currentStatus = null;
+    }
+
+    @Override
+    public void onOrderChanged(OrderModel.Order newOrder) {
+//        Logger.w("ORDER");
+        switch (newOrder.status){
+            case SEARCHING: ((MapFragment)fragmentRouter.currentFragment).showRequestOrder(newOrder); break;
+            case STARTED: ((MapFragment)fragmentRouter.currentFragment).showArrivedOrder(newOrder); break;
+            case COMPLETED: ((MapFragment)fragmentRouter.currentFragment).showRateOrder(newOrder); break;
+        }
+    }
 
 
     protected class FragmentRouter {
