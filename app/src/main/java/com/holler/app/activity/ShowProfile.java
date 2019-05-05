@@ -12,11 +12,12 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.holler.app.di.User;
 import com.holler.app.utils.CustomActivity;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 import com.holler.app.Helper.ConnectionHelper;
-import com.holler.app.Helper.User;
 import com.holler.app.R;
 
 import androidx.core.content.ContextCompat;
@@ -69,27 +70,22 @@ public class ShowProfile extends CustomActivity {
         isInternet = helper.isConnectingToInternet();
 
         User user = getIntent().getParcelableExtra("user");
-        if (user.getEmail() != null && !user.getEmail().equalsIgnoreCase("null") && user.getEmail().length() > 0)
-            email.setText(user.getEmail());
-        else
-            email.setText("");
-        if (user.getFirstName() != null && !user.getFirstName().equalsIgnoreCase("null") && user.getFirstName().length() > 0)
-            first_name.setText(user.getFirstName());
-        else
-            first_name.setText("");
-        if (user.getMobile() != null && !user.getMobile().equalsIgnoreCase("null") && user.getMobile().length() > 0)
-            mobile_no.setText(user.getMobile());
-        else
-            mobile_no.setText(getString(R.string.user_no_mobile));
-        if (user.getLastName() != null && !user.getLastName().equalsIgnoreCase("null") && user.getLastName().length() > 0)
-            last_name.setText(user.getLastName());
-        else
-            last_name.setText("");
-        if (user.getRating() != null && !user.getRating().equalsIgnoreCase("null") && user.getRating().length() > 0)
-            ratingProvider.setRating(Float.parseFloat(user.getRating()));
-        else
-            ratingProvider.setRating(1);
-        Picasso.with(context).load(user.getImg()).memoryPolicy(MemoryPolicy.NO_CACHE).placeholder(R.drawable.ic_dummy_user).error(R.drawable.ic_dummy_user).into(profile_Image);
+        if(user ==null) return;
+
+            email.setText(user.email);
+            first_name.setText(user.firstName);
+            mobile_no.setText((user.mobile!=null&&!"".equals(user.mobile))?user.mobile:"No valid number.");
+            last_name.setText(user.lastName);
+
+            ratingProvider.setRating((user.rating!=null&&!"".equals(user.rating))?Float.parseFloat(user.rating):1);
+
+        Glide
+                .with(getApplicationContext())
+                .load(user.avatar)
+                .placeholder(R.drawable.avatar)
+                .error(R.drawable.avatar)
+                .into(profile_Image);
+
     }
 
     public void displayMessage(String toastString) {

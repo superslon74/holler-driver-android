@@ -26,6 +26,9 @@ import java.util.concurrent.TimeUnit;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import okhttp3.ConnectionPool;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -49,9 +52,8 @@ public class DocumentsActivity
         extends CustomActivity
         implements DocumentsListItem.OnDocumentViewInteractions {
 
-    private static final int REQUEST_PERMISSIONS_CODE = 6411;
-
-    private View documentsListView;
+    @BindView(R.id.da_documents_list)
+    public View documentsListView;
 
     private Map<String, Document> documents;
 
@@ -67,7 +69,8 @@ public class DocumentsActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_documents);
-        documentsListView = (View) findViewById(R.id.documents_list);
+        ButterKnife.bind(this);
+
 
         initUserData();
         initServerAPIClient();
@@ -75,23 +78,26 @@ public class DocumentsActivity
 //        onCheckPermissions();
         requestDocumentsList();
 
-        View submitButton = (View) findViewById(R.id.submitUploading);
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Stack<Document> toUpload = new Stack<>();
-                for(String id : documents.keySet() ){
-                    Document d = documents.get(id);
-                    if(d.localUrl!=null){
-                        toUpload.push(d);
-                    }
-                }
-                uploadDocuments(toUpload);
-            }
-        });
-
     }
 
+    @OnClick(R.id.da_button_submit)
+    public void submitUploading(){
+        Stack<Document> toUpload = new Stack<>();
+        for(String id : documents.keySet() ){
+            Document d = documents.get(id);
+            if(d.localUrl!=null){
+                toUpload.push(d);
+            }
+        }
+        uploadDocuments(toUpload);
+    }
+
+    @OnClick(R.id.da_back_button)
+    public void goBack(){
+        onBackPressed();
+    }
+
+    //TODO: remove with di
     private void initUserData(){
         authToken = "Bearer " + SharedHelper.getKey(this, "access_token");
         try {
@@ -194,7 +200,6 @@ public class DocumentsActivity
     @Override
     public void onDocumentSelected(Document document) {
         documents.put(document.id,document);
-
     }
 
 

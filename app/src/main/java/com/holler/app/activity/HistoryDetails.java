@@ -376,32 +376,41 @@ public class HistoryDetails extends CustomActivity {
                                         .placeholder(R.drawable.placeholder)
                                         .error(R.drawable.placeholder)
                                         .into(tripImg);
+                                JSONObject payment = response.optJSONObject(0).optJSONObject("payment");
+
+
                                 if (!response.optJSONObject(0).optString("payment").equalsIgnoreCase("null")) {
                                     Log.e("History Details", "onResponse: Currency" + SharedHelper.getKey(context, "currency"));
-                                    tripAmount.setText(SharedHelper.getKey(context, "currency") + "" + response.optJSONObject(0).optJSONObject("payment").optString("total"));
+                                    tripAmount.setText(SharedHelper.getKey(context, "currency") + "" + payment.optString("total"));
                                 } else {
                                     tripAmount.setText(SharedHelper.getKey(context, "currency") + "" + "0");
                                 }
 
-                                lblBasePrice.setText(SharedHelper.getKey(context, "currency") + response.optJSONObject(0).optJSONObject("payment").optInt("fixed"));
-                                lblDistancePrice.setText(SharedHelper.getKey(context, "currency") + response.optJSONObject(0).optJSONObject("payment").optInt("distance"));
-                                lblTaxPrice.setText(SharedHelper.getKey(context, "currency") + response.optJSONObject(0).optInt("tax"));
+                                if(payment!=null){
+                                    lblBasePrice.setText(SharedHelper.getKey(context, "currency") + payment.optInt("fixed"));
+                                    lblDistancePrice.setText(SharedHelper.getKey(context, "currency") + payment.optInt("distance"));
+                                    lblTaxPrice.setText(SharedHelper.getKey(context, "currency") + response.optJSONObject(0).optInt("tax"));
+
+                                    lblDiscountPrice.setText(SharedHelper.getKey(context, "currency") + payment.optInt("discount"));
+                                    lblWalletPrice.setText(SharedHelper.getKey(context, "currency") + payment.optInt("wallet"));
+
+                                    txt04Total.setText(SharedHelper.getKey(context, "currency") + "" + payment.optInt("total"));
+                                    txt04AmountToPaid.setText(SharedHelper.getKey(context, "currency") + "" + payment.optInt("payable"));
+
+                                    if (!payment.optString("wallet").equalsIgnoreCase("0") && payment.optString("wallet") != null) {
+                                        lnrWallet.setVisibility(View.VISIBLE);
+                                    }
+
+                                    if (!payment.optString("discount").equalsIgnoreCase("0") && payment.optString("discount") != null) {
+                                        lnrDiscount.setVisibility(View.VISIBLE);
+                                    }
+                                }
                                 lblBookingID.setText("" + response.optJSONObject(0).optString("booking_id"));
                                 lblDistanceCovered.setText(response.optJSONObject(0).optInt("distance") + " KM");
                                 lblTimeTaken.setText(response.optJSONObject(0).optString("travel_time") + " mins");
-                                lblDiscountPrice.setText(SharedHelper.getKey(context, "currency") + response.optJSONObject(0).optJSONObject("payment").optInt("discount"));
-                                lblWalletPrice.setText(SharedHelper.getKey(context, "currency") + response.optJSONObject(0).optJSONObject("payment").optInt("wallet"));
 
-                                if (!response.optJSONObject(0).optJSONObject("payment").optString("wallet").equalsIgnoreCase("0") && response.optJSONObject(0).optJSONObject("payment").optString("wallet") != null) {
-                                    lnrWallet.setVisibility(View.VISIBLE);
-                                }
 
-                                if (!response.optJSONObject(0).optJSONObject("payment").optString("discount").equalsIgnoreCase("0") && response.optJSONObject(0).optJSONObject("payment").optString("discount") != null) {
-                                    lnrDiscount.setVisibility(View.VISIBLE);
-                                }
 
-                                txt04Total.setText(SharedHelper.getKey(context, "currency") + "" + response.optJSONObject(0).optJSONObject("payment").optInt("total"));
-                                txt04AmountToPaid.setText(SharedHelper.getKey(context, "currency") + "" + response.optJSONObject(0).optJSONObject("payment").optInt("payable"));
                                 String form;
                                 if (tag.equalsIgnoreCase("past_trips")) {
                                     form = response.optJSONObject(0).optString("assigned_at");
@@ -421,15 +430,25 @@ public class HistoryDetails extends CustomActivity {
                                     paymentTypeImg.setImageResource(R.drawable.visa_icon);
                                 }
 
-                                if (response.optJSONObject(0).optJSONObject("user").optString("picture").startsWith("http"))
-                                    Picasso.with(activity)
-                                            .load(response.optJSONObject(0).optJSONObject("user").optString("picture"))
-                                            .placeholder(R.drawable.ic_dummy_user)
-                                            .error(R.drawable.ic_dummy_user)
-                                            .into(tripProviderImg);
-                                else
-                                    Picasso.with(activity).load(AccessDetails.serviceurl + "/storage/" + response.optJSONObject(0).optJSONObject("user").optString("picture")).placeholder(R.drawable.ic_dummy_user).error(R.drawable.ic_dummy_user).into(tripProviderImg);
+                                JSONObject user = response.optJSONObject(0).optJSONObject("user");
+                                if(user !=null){
+                                    if (user.optString("picture").startsWith("http"))
+                                        Picasso.with(activity)
+                                                .load(user.optString("picture"))
+                                                .placeholder(R.drawable.ic_dummy_user)
+                                                .error(R.drawable.ic_dummy_user)
+                                                .into(tripProviderImg);
+                                    else
+                                        Picasso.with(activity).load(AccessDetails.serviceurl + "/storage/" + user.optString("picture")).placeholder(R.drawable.ic_dummy_user).error(R.drawable.ic_dummy_user).into(tripProviderImg);
+                                    if (user.optString("rating") != null &&
+                                            !user.optString("rating").equalsIgnoreCase(""))
+                                        tripProviderRating.setRating(Float.parseFloat(user.optString("rating")));
+                                    else {
+                                        tripProviderRating.setRating(0);
+                                    }
+                                    tripProviderName.setText(user.optString("first_name") + " " + user.optString("last_name"));
 
+                                }
 
                                 final JSONArray res = response;
                                 tripProviderImg.setOnClickListener(new View.OnClickListener() {
@@ -455,12 +474,7 @@ public class HistoryDetails extends CustomActivity {
 
                                 tripId.setText(response.optJSONObject(0).optString("booking_id"));
 
-                                if (response.optJSONObject(0).optJSONObject("user").optString("rating") != null &&
-                                        !response.optJSONObject(0).optJSONObject("user").optString("rating").equalsIgnoreCase(""))
-                                    tripProviderRating.setRating(Float.parseFloat(response.optJSONObject(0).optJSONObject("user").optString("rating")));
-                                else {
-                                    tripProviderRating.setRating(0);
-                                }
+
 
                                 if (!response.optJSONObject(0).optString("rating").equalsIgnoreCase("null") &&
                                         !response.optJSONObject(0).optJSONObject("rating").optString("user_comment").equalsIgnoreCase("")) {
@@ -468,7 +482,6 @@ public class HistoryDetails extends CustomActivity {
                                 } else {
                                     tripComments.setText(getString(R.string.no_comments));
                                 }
-                                tripProviderName.setText(response.optJSONObject(0).optJSONObject("user").optString("first_name") + " " + response.optJSONObject(0).optJSONObject("user").optString("last_name"));
 
                                 setAddress(response);
 

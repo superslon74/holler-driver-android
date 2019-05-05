@@ -172,9 +172,9 @@ public class MainPresenter {
                 .doFinally(() -> view.hideSpinner())
                 .doOnSuccess(creteOrderResponse -> {
                     if(creteOrderResponse.isSuccessfullyCreated()){
-                        view.onMessage(messageSuccess);
+                        view.onMessage(creteOrderResponse.message);
                     }else{
-                        view.onMessage(messageError);
+                        view.onMessage(creteOrderResponse.message);
                     }
                 })
                 .doOnError(throwable -> view.onMessage(messageError))

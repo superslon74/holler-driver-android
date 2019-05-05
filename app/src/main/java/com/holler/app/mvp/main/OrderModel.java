@@ -39,6 +39,14 @@ public class OrderModel {
 
     public Subject<Order> orderSource;
 
+    public Order getCurrentOrder(){
+        try {
+            return new Order(currentRequest.order, currentRequest.timeToRespond);
+        }catch (NullPointerException e){
+            return null;
+        }
+    }
+
     public void updateRequestOrder(List<RetrofitModule.ServerAPI.RequestedOrderResponse> requests) {
         if (currentRequest == null && requests.size() > 0) {
             currentRequest = requests.get(0);
@@ -67,6 +75,10 @@ public class OrderModel {
         } else {
             Logger.e("DIFFERENT REQUEST");
         }
+    }
+
+    public void clearState() {
+        currentRequest=null;
     }
 
     class Order {

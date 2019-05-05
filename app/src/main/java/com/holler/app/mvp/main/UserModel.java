@@ -55,6 +55,10 @@ public class UserModel {
         return userStorage.getLoggedIn();
     }
 
+    public void clearState() {
+        currentStatus=new Status();
+    }
+
     public static class Status {
         public enum AccountStatus {UNKNOWN, DISAPPROVED, NEW, APPROVED, BLOCKED}
 

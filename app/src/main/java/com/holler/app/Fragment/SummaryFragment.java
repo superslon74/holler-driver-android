@@ -82,6 +82,7 @@ public class SummaryFragment extends Fragment implements View.OnClickListener {
         ridesCard.setOnClickListener(this);
         revenueCard.setOnClickListener(this);
         scheduleCard.setOnClickListener(this);
+        cancelCard.setOnClickListener(this);
     }
 
     private void findViewsById(View view) {
@@ -113,27 +114,27 @@ public class SummaryFragment extends Fragment implements View.OnClickListener {
             case R.id.rides_card:
                 fragment = new PastTrips();
                 fragment.setArguments(bundle);
-                transaction.replace(R.id.content, fragment, TAG);
+                transaction.replace(R.id.ma_content, fragment, TAG);
                 transaction.addToBackStack(TAG);
                 transaction.commit();
                 break;
             case R.id.schedule_card:
                 fragment = new OnGoingTrips();
                 fragment.setArguments(bundle);
-                transaction.replace(R.id.content, fragment, TAG);
+                transaction.replace(R.id.ma_content, fragment, TAG);
                 transaction.addToBackStack(TAG);
                 transaction.commit();
                 break;
             case R.id.revenue_card:
                 fragment = new EarningsFragment();
-                transaction.replace(R.id.content, fragment, TAG);
+                transaction.replace(R.id.ma_content, fragment, TAG);
                 transaction.addToBackStack(TAG);
                 transaction.commit();
                 break;
             case R.id.cancel_card:
                 fragment = new PastTrips();
                 fragment.setArguments(bundle);
-                transaction.replace(R.id.content, fragment, TAG);
+                transaction.replace(R.id.ma_content, fragment, TAG);
                 transaction.addToBackStack(TAG);
                 transaction.commit();
                 break;

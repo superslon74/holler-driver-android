@@ -103,7 +103,8 @@ public class RetrofitModule {
                         .createWithScheduler(scheduler);
 
         RxJavaPlugins.setErrorHandler(throwable -> {
-            Logger.e("Rx plugin error handler", throwable);
+            Logger.e("Rx plugin error handler");
+            throwable.printStackTrace();
         });
 
         ServerAPI retrofitClient = new Retrofit

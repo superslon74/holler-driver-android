@@ -34,6 +34,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.snackbar.Snackbar;
+import com.holler.app.mvp.main.MainView;
 import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.utils.CustomActivity;
 import com.squareup.picasso.Picasso;
@@ -682,7 +683,7 @@ public class EditProfile extends CustomActivity implements RadioGroup.OnCheckedC
     }
 
     public void GoToMainActivity() {
-        Intent mainIntent = new Intent(activity, MainActivity.class);
+        Intent mainIntent = new Intent(activity, MainView.class);
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(mainIntent);
         activity.finish();

@@ -1,65 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/activity_edit_profile"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/da_rootLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:elevation="@dimen/_5sdp"
-        android:background="@color/text_color_white">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/da_header"
+        style="@style/MAIN_Header_Container"
+        tools:ignore="MissingConstraints">
 
         <ImageView
-            android:id="@+id/backArrow"
-            android:src="@drawable/back_icon"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_margin="10dp"
-            android:padding="5dp"/>
+            android:id="@+id/da_back_button"
+            style="@style/MAIN_Header_Back_Button"
+            tools:ignore="MissingConstraints" />
 
-        <com.holler.app.Utilities.MyBoldTextView
-            android:text="@string/upload_documents_title"
-            android:gravity="center_vertical"
-            android:textSize="18sp"
-            android:layout_marginStart="10dp"
-            android:textColor="@color/black_text_color"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/das_header"
+            style="@style/MAIN_Header_Title"
+            tools:ignore="MissingConstraints" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/da_header">
         <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:paddingRight="35dp"
+            android:paddingLeft="35dp"
+            >
+
+
             <LinearLayout
-                android:id="@+id/documents_list"
+                android:id="@+id/da_documents_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
             </LinearLayout>
 
-
-
-
-            <com.holler.app.Utilities.MyButton
-                android:id="@+id/submitUploading"
-                android:text="@string/upload_button_text"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:background="@color/colorPrimary"
+            <TextView
+                android:id="@+id/da_button_submit"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="20dp"
+                android:layout_height="wrap_content"
+                android:text="@string/das_submit_button"
+                style="@style/MA_Button"
+                android:background="@color/colorPrimary"
+                android:textAllCaps="true"
+                android:gravity="center"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:layout_marginTop="35dp"
+                android:layout_marginBottom="35dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 />
         </LinearLayout>
+
+
     </ScrollView>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

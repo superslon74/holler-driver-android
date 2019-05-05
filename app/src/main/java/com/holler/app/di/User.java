@@ -1,9 +1,12 @@
 package com.holler.app.di;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class User{
+public class User implements Parcelable {
     @Expose
     @SerializedName("id")
     public String id;
@@ -34,6 +37,9 @@ public class User{
     @Expose
     @SerializedName("avatar")
     public String avatar;
+    @Expose
+    @SerializedName("rating")
+    public String rating;
 
     @Expose
     @SerializedName("status")
@@ -59,6 +65,68 @@ public class User{
     public String passwordConfirmation;
 
 
+    public User() {
+    }
+
+
+    protected User(Parcel in) {
+        id = in.readString();
+        deviceType = in.readString();
+        deviceId = in.readString();
+        deviceToken = in.readString();
+        loggedBy = in.readString();
+        firstName = in.readString();
+        lastName = in.readString();
+        gender = in.readString();
+        mobile = in.readString();
+        avatar = in.readString();
+        rating = in.readString();
+        status = in.readString();
+        currency = in.readString();
+        sos = in.readString();
+        email = in.readString();
+        password = in.readString();
+        passwordConfirmation = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(deviceType);
+        dest.writeString(deviceId);
+        dest.writeString(deviceToken);
+        dest.writeString(loggedBy);
+        dest.writeString(firstName);
+        dest.writeString(lastName);
+        dest.writeString(gender);
+        dest.writeString(mobile);
+        dest.writeString(avatar);
+        dest.writeString(rating);
+        dest.writeString(status);
+        dest.writeString(currency);
+        dest.writeString(sos);
+        dest.writeString(email);
+        dest.writeString(password);
+        dest.writeString(passwordConfirmation);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
+
     public void setServiceName(String name){
         if(service == null)
             service = new ServiceType();
@@ -75,4 +143,6 @@ public class User{
         if(currency!=null && !currency.isEmpty()) return currency;
         return "$";
     }
+
+
 }

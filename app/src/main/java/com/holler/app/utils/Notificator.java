@@ -113,7 +113,7 @@ public class Notificator {
                 .setSound(soundUri, STREAM_NOTIFICATION)
                 .setChannelId(NOTIFICATION_CHANNEL_ID)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
-                .setPriority(NotificationManager.IMPORTANCE_HIGH)
+                .setPriority(NotificationManager.IMPORTANCE_DEFAULT)
                 .setSmallIcon(R.mipmap.ic_launcher, 1);
 
         return builder;

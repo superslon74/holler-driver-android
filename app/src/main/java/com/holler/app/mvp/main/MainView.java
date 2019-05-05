@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -18,9 +19,11 @@ import com.holler.app.Fragment.Wallet;
 import com.holler.app.R;
 import com.holler.app.activity.ActivitySettings;
 import com.holler.app.activity.DocumentsActivity;
+import com.holler.app.activity.EditProfile;
 import com.holler.app.activity.HistoryActivity;
 import com.holler.app.activity.MainActivity;
 import com.holler.app.activity.Offline;
+import com.holler.app.activity.ShowProfile;
 import com.holler.app.di.User;
 import com.holler.app.di.app.AppComponent;
 import com.holler.app.di.app.components.DaggerMainComponent;
@@ -28,6 +31,8 @@ import com.holler.app.di.app.components.main.modules.MainScreenModule;
 import com.holler.app.utils.CustomActivity;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.orhanobut.logger.Logger;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -64,6 +69,8 @@ public class MainView extends CustomActivity implements MainPresenter.View {
     public View contentOverflow;
     @BindView(R.id.ma_map_nav_open_dot)
     public UserStatusDot openMenuUserStatusDot;
+    @BindView(R.id.ma_map_nav_open_button)
+    public ImageView gamburger;
 
     @BindView(R.id.ma_offline_header)
     public TextView offlineHeader;
@@ -100,7 +107,7 @@ public class MainView extends CustomActivity implements MainPresenter.View {
             if (this.statusToggle.isOnline()) {
                 statusToggle.setOffline();
                 presenter.goOffline();
-            } else if(this.statusToggle.isOffline()) {
+            } else if (this.statusToggle.isOffline()) {
                 statusToggle.setOnline();
                 presenter.goOnline();
             }
@@ -109,6 +116,11 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         @OnClick(R.id.ma_nav_button_close)
         public void closeNavigation() {
             drawerView.closeDrawer(Gravity.LEFT);
+        }
+
+        @OnClick(R.id.ma_nav_user_photo)
+        public void openProfile() {
+            fragmentRouter.openProfile();
         }
 
         public HeaderViewHolder(View view) {
@@ -128,32 +140,26 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         setupNavView();
 
         fragmentRouter = new FragmentRouter();
-        fragmentRouter.openMap();
 
         buildComponent();
 
         User profile = presenter.userModel.getProfileData();
-        headerViewHolder.userNameView.setText(profile.firstName+" "+ profile.lastName);
-//        if (profile.avatar!=null && !"".equals(profile.avatar))
-            Glide
-                    .with(getApplicationContext())
-                    .load(profile.avatar)
-                    .placeholder(R.drawable.avatar)
-                    .error(R.drawable.avatar)
-                    .into(headerViewHolder.userPhotoView);
+        headerViewHolder.userNameView.setText(profile.firstName + " " + profile.lastName);
 
-        //TODO: load user image to nav header
-        //TODO: change user status
-        //TODO: add listener to user image
+        Glide
+                .with(getApplicationContext())
+                .load(profile.avatar)
+                .placeholder(R.drawable.avatar)
+                .error(R.drawable.avatar)
+                .into(headerViewHolder.userPhotoView);
 
-        //TODO: bind with gps tracker
     }
 
     @OnClick(R.id.ma_map_nav_open_button)
-    public void toggleNavigationMenu(){
-        if(drawerView.isDrawerOpen(Gravity.LEFT)){
+    public void toggleNavigationMenu() {
+        if (drawerView.isDrawerOpen(Gravity.LEFT)) {
             drawerView.closeDrawers();
-        }else{
+        } else {
             drawerView.openDrawer(Gravity.LEFT);
         }
     }
@@ -163,14 +169,14 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         if (this.offlineStatusTooggle.isOnline()) {
             offlineStatusTooggle.setOffline();
             presenter.goOffline();
-        } else if(this.offlineStatusTooggle.isOffline()) {
+        } else if (this.offlineStatusTooggle.isOffline()) {
             offlineStatusTooggle.setOnline();
             presenter.goOnline();
         }
     }
 
     @OnClick(R.id.ma_offline_later_button)
-    public void changeStatusLater(){
+    public void changeStatusLater() {
         fragmentRouter.closeOffline();
     }
 
@@ -192,17 +198,17 @@ public class MainView extends CustomActivity implements MainPresenter.View {
     public void logout() {
         showLogoutConfirmation()
                 .flatMap(isLogoutConfirmed -> {
-                    if(isLogoutConfirmed){
+                    if (isLogoutConfirmed) {
                         return presenter.logout();
-                    }else{
+                    } else {
                         return Observable.just(false);
                     }
                 })
                 .flatMap(isLoggedOut -> {
-                    if(isLoggedOut){
+                    if (isLoggedOut) {
                         presenter.goToWelcomeScreen();
                         return Observable.just(true);
-                    }else{
+                    } else {
                         return Observable.just(false);
                     }
                 })
@@ -214,7 +220,7 @@ public class MainView extends CustomActivity implements MainPresenter.View {
                 .subscribe();
     }
 
-    private Subject<Boolean> showLogoutConfirmation(){
+    private Subject<Boolean> showLogoutConfirmation() {
         final Subject result = UnicastSubject.create();
 
         final AlertDialog logoutDialog = new AlertDialog
@@ -248,7 +254,6 @@ public class MainView extends CustomActivity implements MainPresenter.View {
                 case R.id.ma_nav_trips:
                     fragmentRouter.openTrips();
                     break;
-                //TODO: what is coupon
                 case R.id.ma_nav_coupon:
                     break;
                 case R.id.ma_nav_wallet:
@@ -285,43 +290,57 @@ public class MainView extends CustomActivity implements MainPresenter.View {
 
     }
 
+
+    public void displayGamburger(boolean show) {
+        runOnUiThread(() -> {
+            if (show) {
+                openMenuUserStatusDot.setVisibility(View.VISIBLE);
+                gamburger.setVisibility(View.VISIBLE);
+            } else {
+                openMenuUserStatusDot.setVisibility(View.GONE);
+                gamburger.setVisibility(View.GONE);
+            }
+        });
+    }
+
     //    view implementation
 
 
     private UserModel.Status currentStatus;
+
     @Override
     public void onStatusChanged(UserModel.Status newStatus) {
-        boolean accountStatusChanged = currentStatus==null || currentStatus.account!=newStatus.account;
-        boolean serviceStatusChanged = currentStatus==null || currentStatus.service!=newStatus.service;
+        boolean accountStatusChanged = currentStatus == null || currentStatus.account != newStatus.account;
+        boolean serviceStatusChanged = currentStatus == null || currentStatus.service != newStatus.service;
 
-        if(accountStatusChanged){
-                switch (newStatus.account){
-                    case DISAPPROVED:
-                    case NEW:
-                        fragmentRouter.openDocuments();
-                        runOnUiThread(() -> {
-                            headerViewHolder.statusToggle.setDisapproved();
-                            headerViewHolder.statusDot.setDisapproved();
-                            openMenuUserStatusDot.setDisapproved();
-                        });
-                        break;
-                    case BLOCKED:
-                        fragmentRouter.openOffline();
-                        runOnUiThread(() -> {
-                            offlineStatusTooggle.setBlocked();
-                            headerViewHolder.statusToggle.setBlocked();
-                            headerViewHolder.statusDot.setBlocked();
-                            openMenuUserStatusDot.setBlocked();
-                        });
-                        break;
-                    case APPROVED:
+        if (accountStatusChanged) {
+            switch (newStatus.account) {
+                case DISAPPROVED:
+                case NEW:
+                    fragmentRouter.openDocuments();
+                    runOnUiThread(() -> {
+                        headerViewHolder.statusToggle.setDisapproved();
+                        headerViewHolder.statusDot.setDisapproved();
+                        openMenuUserStatusDot.setDisapproved();
+                    });
+                    break;
+                case BLOCKED:
+                    fragmentRouter.openOffline();
+                    runOnUiThread(() -> {
+                        offlineStatusTooggle.setBlocked();
+                        headerViewHolder.statusToggle.setBlocked();
+                        headerViewHolder.statusDot.setBlocked();
+                        openMenuUserStatusDot.setBlocked();
+                    });
+                    break;
+                case APPROVED:
 
-                        break;
-                }
+                    break;
+            }
         }
 
-        if(serviceStatusChanged || (accountStatusChanged && newStatus.account==UserModel.Status.AccountStatus.APPROVED)){
-            switch (newStatus.service){
+        if (serviceStatusChanged || (accountStatusChanged && newStatus.account == UserModel.Status.AccountStatus.APPROVED)) {
+            switch (newStatus.service) {
                 case ONLINE:
                     fragmentRouter.openMap();
                     fragmentRouter.closeOfflineAfterOneSecond();
@@ -345,22 +364,40 @@ public class MainView extends CustomActivity implements MainPresenter.View {
             }
         }
 
-        currentStatus=newStatus;
+        currentStatus = newStatus;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        currentStatus = null;
+        presenter.orderModel.clearState();
+        presenter.userModel.clearState();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         currentStatus = null;
+        presenter.orderModel.clearState();
+        presenter.userModel.clearState();
     }
 
     @Override
     public void onOrderChanged(OrderModel.Order newOrder) {
-//        Logger.w("ORDER");
-        switch (newOrder.status){
-            case SEARCHING: ((MapFragment)fragmentRouter.currentFragment).showRequestOrder(newOrder); break;
-            case STARTED: ((MapFragment)fragmentRouter.currentFragment).showArrivedOrder(newOrder); break;
-            case COMPLETED: ((MapFragment)fragmentRouter.currentFragment).showRateOrder(newOrder); break;
+        Logger.w("ORDER");
+        if (newOrder == null) return;
+        fragmentRouter.openMap();
+        switch (newOrder.status) {
+            case SEARCHING:
+                ((MapFragment) fragmentRouter.currentFragment).showRequestOrder(newOrder);
+                break;
+            case STARTED:
+                ((MapFragment) fragmentRouter.currentFragment).showArrivedOrder(newOrder);
+                break;
+            case COMPLETED:
+                ((MapFragment) fragmentRouter.currentFragment).showRateOrder(newOrder);
+                break;
         }
     }
 
@@ -374,10 +411,12 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         }
 
         public void openMap() {
-            try{
+            try {
                 //how about this?
+                displayGamburger(true);
+
                 String s = ((MapFragment) currentFragment).toString();
-            }catch (ClassCastException | NullPointerException e){
+            } catch (ClassCastException | NullPointerException e) {
                 currentFragment = new MapFragment();
                 fragmentManager
                         .beginTransaction()
@@ -386,7 +425,17 @@ public class MainView extends CustomActivity implements MainPresenter.View {
             }
         }
 
+        public void openProfile() {
+//            Intent i = new Intent(MainView.this, ShowProfile.class);
+//            i.putExtra("user", presenter.userModel.getProfileData());
+//            startActivity(i);
+            Intent i = new Intent(MainView.this, EditProfile.class);
+            startActivity(i);
+        }
+
         public void openHelp() {
+            displayGamburger(false);
+
             currentFragment = new Help();
             fragmentManager
                     .beginTransaction()
@@ -395,6 +444,8 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         }
 
         public void openPayment() {
+            displayGamburger(false);
+
             currentFragment = new SummaryFragment();
             fragmentManager
                     .beginTransaction()
@@ -403,6 +454,7 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         }
 
         public void openWallet() {
+            displayGamburger(false);
             currentFragment = new Wallet();
             fragmentManager
                     .beginTransaction()
@@ -411,12 +463,10 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         }
 
         public void openDocuments() {
-            //TODO: launch documents activity
             startActivity(new Intent(MainView.this, DocumentsActivity.class));
         }
 
         public void openTrips() {
-            //TODO: launch trips activity
             startActivity(new Intent(MainView.this, HistoryActivity.class));
         }
 
@@ -436,31 +486,37 @@ public class MainView extends CustomActivity implements MainPresenter.View {
             startActivity(new Intent(MainView.this, ActivitySettings.class));
         }
 
-        public void openOffline(){
+        public void openOffline() {
             runOnUiThread(() -> {
+                displayGamburger(false);
                 offlineHeader.setText(getApplicationContext().getText(R.string.mas_offline_header));
                 contentOverflow.setVisibility(View.VISIBLE);
-                try{
-                    ((MapFragment)currentFragment).hidePassItOnButton();
-                }catch (ClassCastException e){
+                try {
+                    ((MapFragment) currentFragment).hidePassItOnButton();
+                } catch (ClassCastException | NullPointerException e) {
                 }
             });
         }
 
-        public void closeOffline(){
+        public void closeOffline() {
             runOnUiThread(() -> {
+                displayGamburger(true);
                 contentOverflow.setVisibility(View.GONE);
-                try{
-                    ((MapFragment)currentFragment).showPassItOnButton();
-                }catch (ClassCastException e){
+                try {
+                    ((MapFragment) currentFragment).showPassItOnButton();
+                } catch (ClassCastException | NullPointerException e) {
                 }
             });
         }
 
-        public void closeOfflineAfterOneSecond(){
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                closeOffline();
-            },1000);
+        public void closeOfflineAfterOneSecond() {
+            Observable
+                    .timer(1, TimeUnit.SECONDS)
+                    .flatMap(aLong -> {
+                        closeOffline();
+                        return Observable.empty();
+                    })
+                    .subscribe();
         }
     }
 

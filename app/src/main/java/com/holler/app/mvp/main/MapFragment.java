@@ -29,6 +29,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.holler.app.R;
 import com.holler.app.utils.GPSTracker;
 
+import java.util.concurrent.TimeUnit;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -74,9 +76,9 @@ public class MapFragment extends Fragment {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                setMapCameraToCurrentPosition();
+                setMapCameraToCurrentPosition(false);
             }
-        }, 1000);
+        }, 500);
 
         return view;
     }
@@ -168,14 +170,22 @@ public class MapFragment extends Fragment {
     }
 
     @OnClick(R.id.ma_map_to_current_location_button)
-    public void setMapCameraToCurrentPosition() {
+    public void toCurrentPosition(){
+        setMapCameraToCurrentPosition(true);
+    }
+
+    public void setMapCameraToCurrentPosition(boolean withAnimation) {
         cameraLocked=false;
         if(googleMap==null) return;
         Location location = getCurrentLocation();
         if (location == null) return;
         LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
         CameraPosition cameraPosition = new CameraPosition.Builder().target(currentLocation).zoom(16).build();
+        if(withAnimation)
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        else
+            googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
     }
 
     @OnClick(R.id.ma_map_pass_button)
@@ -197,7 +207,7 @@ public class MapFragment extends Fragment {
         googleMap.addMarker(markerOptions);
 
         if (!cameraLocked) {
-            setMapCameraToCurrentPosition();
+            setMapCameraToCurrentPosition(true);
         }
     }
 
@@ -270,11 +280,22 @@ public class MapFragment extends Fragment {
     }
 
     private void addFragment(Fragment f){
-        getActivity()
-                .getSupportFragmentManager()
-                .beginTransaction()
-                .add(ordersContainer.getId(), f)
-                .commit();
+        try {
+            getActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(ordersContainer.getId(), f)
+                    .commit();
+        }catch (NullPointerException e){
+            Observable.timer(1, TimeUnit.SECONDS).flatMap(aLong -> {
+                getActivity()
+                        .getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(ordersContainer.getId(), f)
+                        .commit();
+                return Observable.empty();
+            }).subscribe();
+        }
     }
     private void removeFragment(Fragment f){
         getActivity()

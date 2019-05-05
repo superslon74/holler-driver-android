@@ -145,7 +145,6 @@ public class FloatingViewService extends Service implements FloatingViewListener
         }
     }
 
-
     private void hideSpinnerAndUnlockButton() {
         orderButtonLocked = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

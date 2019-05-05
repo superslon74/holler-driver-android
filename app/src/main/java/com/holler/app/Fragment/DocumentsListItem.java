@@ -20,6 +20,7 @@ import com.holler.app.activity.DocumentsActivity;
 import com.holler.app.R;
 import com.bumptech.glide.Glide;
 import com.holler.app.utils.CustomActivity;
+import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -27,6 +28,7 @@ import java.util.Date;
 
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class DocumentsListItem extends Fragment {
 
@@ -38,7 +40,7 @@ public class DocumentsListItem extends Fragment {
 
     private OnDocumentViewInteractions mListener;
 
-    private ImageView imageView;
+    private CircleImageView imageView;
     private TextView documentNameView;
     private TextView fileNameView;
 
@@ -67,9 +69,9 @@ public class DocumentsListItem extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_documents_list_item, container, false);
-        imageView = (ImageView) view.findViewById(R.id.document_icon);
-        documentNameView = (TextView) view.findViewById(R.id.document_name_text);
-        fileNameView = (TextView) view.findViewById(R.id.file_name_text);
+        imageView = view.findViewById(R.id.document_icon);
+        documentNameView = view.findViewById(R.id.document_name_text);
+        fileNameView = view.findViewById(R.id.file_name_text);
 
         setupView();
 
@@ -192,7 +194,8 @@ public class DocumentsListItem extends Fragment {
 
         documentNameView.setText(document.name);
         if (document.remoteUrl == null && document.localUrl == null) {
-            imageView.setImageResource(R.drawable.ic_add_a_photo_black_24dp);
+            imageView.setImageResource(R.drawable.photo);
+            imageView.setBackgroundColor(getResources().getColor(R.color.transparent,getActivity().getTheme()));
             fileNameView.setText("Document required. Tap icon to select file..");
         } else if (document.remoteUrl != null) {
             Glide
