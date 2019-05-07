@@ -140,6 +140,7 @@ public class RegisterPresenter {
                         .setInitialPhoneNumber(new PhoneNumber("+" + code, "", ""))
                         .build()
         );
+
         view.startVerificationActivity(intent);
     }
 
@@ -166,9 +167,6 @@ public class RegisterPresenter {
         userModel
                 .register(credentials)
                 .doOnSubscribe(disposable -> view.showSpinner())
-                .flatMap(registered -> {
-                    return Flowable.timer(15, TimeUnit.SECONDS).toObservable();
-                })
                 .flatMap(timerFinished -> {
                     return userModel
                             .login(credentials.email,credentials.password)
@@ -184,7 +182,8 @@ public class RegisterPresenter {
     }
 
 
-    public void onPhoneVerified() {
+    public void onPhoneVerified(String phone) {
+        this.credentials.mobile = phone;
         register();
     }
 
@@ -192,15 +191,16 @@ public class RegisterPresenter {
     public static class RegistrationPendingCredentials {
         public String email;
         public String name;
+        public String lastName;
         public String mobile;
         public String gender;
         public String password;
         public String passwordConfirmation;
 
-        public RegistrationPendingCredentials(String email, String name, String mobile, String gender, String password, String passwordConfirmation) {
+        public RegistrationPendingCredentials(String email, String name, String lastName, String gender, String password, String passwordConfirmation) {
             this.email = email;
             this.name = name;
-            this.mobile = mobile;
+            this.lastName = lastName;
             this.gender = gender;
             this.password = password;
             this.passwordConfirmation = passwordConfirmation;
@@ -212,6 +212,9 @@ public class RegisterPresenter {
 
             Throwable nameValidation = Validator.validateName(name);
             if(nameValidation!=null) return nameValidation;
+
+            Throwable lastNameValidation = Validator.validateName(lastName);
+            if(nameValidation!=null) return lastNameValidation;
 
             Throwable passwordValidation = Validator.validatePassword(password,passwordConfirmation);
             if(passwordValidation!=null) return passwordValidation;

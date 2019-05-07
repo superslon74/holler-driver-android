@@ -2,6 +2,7 @@
 <resources>
     <string translatable="false" name="ras_header">Get on Board</string>
     <string translatable="false" name="ras_name_placeholder">Name</string>
+    <string translatable="false" name="ras_last_name_placeholder">Last Name</string>
     <string translatable="false" name="ras_email_placeholder">Email</string>
     <string translatable="false" name="ras_mobile_placeholder">Mobile</string>
     <string translatable="false" name="ras_password_placeholder">Password</string>

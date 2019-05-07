@@ -317,7 +317,7 @@ public class UserModel {
         user.loggedBy = "manual";
         //TODO: remove name duplication
         user.firstName = credentials.name;
-        user.lastName = credentials.name;
+        user.lastName = credentials.lastName;
         user.gender = credentials.gender;
         user.mobile = credentials.mobile;
 

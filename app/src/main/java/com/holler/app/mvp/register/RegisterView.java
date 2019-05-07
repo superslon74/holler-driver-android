@@ -10,7 +10,12 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.facebook.accountkit.Account;
+import com.facebook.accountkit.AccountKit;
+import com.facebook.accountkit.AccountKitCallback;
+import com.facebook.accountkit.AccountKitError;
 import com.facebook.accountkit.AccountKitLoginResult;
+import com.facebook.accountkit.PhoneNumber;
 import com.holler.app.AndarApplication;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.R;
@@ -18,6 +23,7 @@ import com.holler.app.di.app.AppComponent;
 import com.holler.app.di.app.components.DaggerRegisterComponent;
 import com.holler.app.di.app.components.register.modules.RegisterModule;
 import com.holler.app.utils.CustomActivity;
+import com.orhanobut.logger.Logger;
 
 import javax.inject.Inject;
 
@@ -47,8 +53,8 @@ public class RegisterView
     public EditText emailInput;
     @BindView(R.id.ra_name)
     public EditText nameInput;
-    @BindView(R.id.ra_mobile)
-    public EditText mobileInput;
+    @BindView(R.id.ra_last_name)
+    public EditText lastNameInput;
     @BindView(R.id.ra_password)
     public EditText passwordInput;
     @BindView(R.id.ra_password_confirmation)
@@ -120,14 +126,14 @@ public class RegisterView
     @OnClick(R.id.ra_sign_up)
     public void signUp(){
         String name = this.nameInput.getText().toString();
+        String lastName = this.lastNameInput.getText().toString();
         String email = this.emailInput.getText().toString();
-        String mobile = this.mobileInput.getText().toString();
         String gender = this.gender;
         String password = this.passwordInput.getText().toString();
         String passwordConfirmation = this.passwordConfirmationInput.getText().toString();
 
         RegisterPresenter.RegistrationPendingCredentials credentials =
-                new RegisterPresenter.RegistrationPendingCredentials(email, name, mobile, gender, password, passwordConfirmation);
+                new RegisterPresenter.RegistrationPendingCredentials(email, name, lastName, gender, password, passwordConfirmation);
 
         presenter.signUp(credentials);
     }
@@ -150,6 +156,7 @@ public class RegisterView
                 return;
             }
             AccountKitLoginResult verificationResult = data.getParcelableExtra(AccountKitLoginResult.RESULT_KEY);
+            //TODO: remove
             if (verificationResult != null) {
                 SharedHelper.putKey(this, "account_kit", getString(R.string.True));
             } else {
@@ -162,7 +169,24 @@ public class RegisterView
                 SharedHelper.putKey(this, "account_kit", "");
             }
 
-            presenter.onPhoneVerified();
+
+            AccountKit.getCurrentAccount(new AccountKitCallback<Account>() {
+                @Override
+                public void onSuccess(final Account account) {
+                    String accountKitId = account.getId();
+                    PhoneNumber phoneNumber = account.getPhoneNumber();
+                    String phoneNumberString = phoneNumber.toString();
+
+                    presenter.onPhoneVerified(phoneNumberString);
+                }
+
+                @Override
+                public void onError(final AccountKitError error) {
+                    Logger.e(error.toString());
+                    onMessage(getBaseContext().getString(R.string.error_account_kit_verification));
+                }
+            });
+
         }
     }
 
