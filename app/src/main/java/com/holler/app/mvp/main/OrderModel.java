@@ -39,6 +39,49 @@ public class OrderModel {
 
     public Subject<Order> orderSource;
 
+    public static Status extractOrderStatus(RetrofitModule.ServerAPI.CheckStatusResponse response){
+        try{
+            return extractOrderStatus(response.requests.get(0).order);
+        }catch (NullPointerException | IndexOutOfBoundsException e){
+            return Status.UNKNOWN;
+        }
+    }
+
+    public static Status extractOrderStatus(RetrofitModule.ServerAPI.OrderResponse data) {
+        if(data==null) return Status.UNKNOWN;
+        Status status;
+        switch (data.status) {
+            case "SEARCHING":
+                status = Status.SEARCHING;
+                break;
+            case "STARTED":
+                status = Status.STARTED;
+                break;
+            case "ARRIVED":
+                status = Status.ARRIVED;
+                break;
+            case "PICKEDUP":
+                status = Status.PICKEDUP;
+                break;
+            case "DROPPED":
+                status = Status.DROPPED;
+                break;
+            case "COMPLETED":
+                status = Status.COMPLETED;
+                break;
+            case "RATE":
+                status = Status.RATE;
+                break;
+            case "SCHEDULED":
+                status = Status.SCHEDULED;
+                break;
+            default:
+                status = Status.UNKNOWN;
+                break;
+        }
+        return status;
+    }
+
     public Order getCurrentOrder(){
         try {
             return new Order(currentRequest.order, currentRequest.timeToRespond);
@@ -89,35 +132,7 @@ public class OrderModel {
         public Order(RetrofitModule.ServerAPI.OrderResponse data, int timeToRespond) {
             this.timeToRespond = timeToRespond;
             this.data = data;
-            switch (data.status) {
-                case "SEARCHING":
-                    status = Status.SEARCHING;
-                    break;
-                case "STARTED":
-                    status = Status.STARTED;
-                    break;
-                case "ARRIVED":
-                    status = Status.ARRIVED;
-                    break;
-                case "PICKEDUP":
-                    status = Status.PICKEDUP;
-                    break;
-                case "DROPPED":
-                    status = Status.DROPPED;
-                    break;
-                case "COMPLETED":
-                    status = Status.COMPLETED;
-                    break;
-                case "RATE":
-                    status = Status.RATE;
-                    break;
-                case "SCHEDULED":
-                    status = Status.SCHEDULED;
-                    break;
-                default:
-                    status = Status.UNKNOWN;
-                    break;
-            }
+            status = extractOrderStatus(data);
         }
 
         @Override
@@ -149,7 +164,14 @@ public class OrderModel {
             String header = userModel.getAuthHeader();
             String orderId = this.data.id;
 
-            return serverAPI.rejectOrder(header, orderId);
+            return serverAPI.rejectOrder(header, orderId)
+                    .doOnSuccess(jsonElement -> {
+                        Logger.w("REJECTING  true ");
+                    })
+                    .doOnError(throwable -> {
+                        Throwable t = throwable;
+                        Logger.e("REJECTING false",t);
+                    });
         }
 
         public Single<JsonObject> arrived() {

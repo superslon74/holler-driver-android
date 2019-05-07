@@ -287,7 +287,7 @@ public class MapFragment extends Fragment {
                     .add(ordersContainer.getId(), f)
                     .commit();
         }catch (NullPointerException e){
-            Observable.timer(1, TimeUnit.SECONDS).flatMap(aLong -> {
+            Observable.timer(3, TimeUnit.SECONDS).flatMap(aLong -> {
                 getActivity()
                         .getSupportFragmentManager()
                         .beginTransaction()

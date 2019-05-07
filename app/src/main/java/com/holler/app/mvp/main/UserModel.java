@@ -77,40 +77,9 @@ public class UserModel {
         }
 
         public Status(RetrofitModule.ServerAPI.CheckStatusResponse statusData) {
-            ServiceStatus newServiceStatus;
-            switch (statusData.serviceStatus) {
-                case "active":
-                    newServiceStatus = ServiceStatus.ONLINE;
-                    break;
-                case "offline":
-                    newServiceStatus = ServiceStatus.OFFLINE;
-                    break;
-                case "riding":
-                    newServiceStatus = ServiceStatus.ONLINE;
-                    break;
-                default:
-                    newServiceStatus = ServiceStatus.UNKNOWN;
-            }
 
-            AccountStatus newAccountStatus;
-            switch (statusData.accountStatus) {
-                case "approved":
-                    newAccountStatus = AccountStatus.APPROVED;
-                    break;
-                case "new":
-                    newAccountStatus = AccountStatus.NEW;
-                    break;
-                case "onboarding":
-                    newAccountStatus = AccountStatus.DISAPPROVED;
-                    break;
-                case "banned":
-                    newAccountStatus = AccountStatus.BLOCKED;
-                    break;
-                default:
-                    newAccountStatus = AccountStatus.UNKNOWN;
-            }
-            this.account = newAccountStatus;
-            this.service = newServiceStatus;
+            this.account = extractAccountStatus(statusData);
+            this.service = extractServiceStatus(statusData);
         }
 
         @Override
@@ -122,6 +91,45 @@ public class UserModel {
                 return false;
             }
         }
+    }
+
+    public static Status.AccountStatus extractAccountStatus(RetrofitModule.ServerAPI.CheckStatusResponse statusData){
+        Status.AccountStatus newAccountStatus;
+        switch (statusData.accountStatus) {
+            case "approved":
+                newAccountStatus = Status.AccountStatus.APPROVED;
+                break;
+            case "new":
+                newAccountStatus = Status.AccountStatus.NEW;
+                break;
+            case "onboarding":
+                newAccountStatus = Status.AccountStatus.DISAPPROVED;
+                break;
+            case "banned":
+                newAccountStatus = Status.AccountStatus.BLOCKED;
+                break;
+            default:
+                newAccountStatus = Status.AccountStatus.UNKNOWN;
+        }
+        return newAccountStatus;
+    }
+
+    public static Status.ServiceStatus extractServiceStatus(RetrofitModule.ServerAPI.CheckStatusResponse statusData){
+        Status.ServiceStatus newServiceStatus;
+        switch (statusData.serviceStatus) {
+            case "active":
+                newServiceStatus = Status.ServiceStatus.ONLINE;
+                break;
+            case "offline":
+                newServiceStatus = Status.ServiceStatus.OFFLINE;
+                break;
+            case "riding":
+                newServiceStatus = Status.ServiceStatus.RIDING;
+                break;
+            default:
+                newServiceStatus = Status.ServiceStatus.UNKNOWN;
+        }
+        return newServiceStatus;
     }
 
     public Status getCurrentStatus() {

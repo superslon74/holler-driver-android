@@ -60,7 +60,8 @@
                             android:id="@+id/ma_offline_status_toggle"
                             android:layout_width="75dp"
                             android:layout_height="40dp"
-
+                            android:scaleX="1.5"
+                            android:scaleY="1.5"
                             style="@style/MENU_Header_Toggle"
                             android:background="@drawable/selector_status_toggle"
 

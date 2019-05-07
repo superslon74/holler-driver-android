@@ -1,72 +1,44 @@
 package com.holler.app.mvp.main;
 
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.location.Location;
-import android.os.Build;
-import android.os.Handler;
-import android.os.IBinder;
-import android.widget.ImageView;
-import android.widget.Toast;
-
-import com.google.gson.JsonObject;
-import com.holler.app.AndarApplication;
-import com.holler.app.Helper.SharedHelper;
 import com.holler.app.R;
-import com.holler.app.di.User;
-import com.holler.app.di.app.modules.DeviceInfoModule;
 import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.di.app.modules.RouterModule;
-import com.holler.app.di.app.modules.UserStorageModule;
-import com.holler.app.mvp.splash.SplashPresenter;
-import com.holler.app.server.OrderServerApi;
 import com.holler.app.utils.Finishable;
+import com.holler.app.utils.FiniteStateMachine;
 import com.holler.app.utils.GPSTracker;
 import com.holler.app.utils.MessageDisplayer;
-import com.holler.app.utils.ReactiveServiceBindingFactory;
 import com.holler.app.utils.SpinnerShower;
 import com.orhanobut.logger.Logger;
 
-import org.reactivestreams.Publisher;
-
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
-import io.reactivex.Observer;
-import io.reactivex.Single;
-import io.reactivex.SingleObserver;
-import io.reactivex.SingleSource;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.AsyncSubject;
-import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 import io.reactivex.subjects.UnicastSubject;
-import retrofit2.Response;
+
+
 
 public class MainPresenter {
 
     private Context context;
     private RouterModule.Router router;
-    private MainPresenter.View view;
+    private View view;
     private RetrofitModule.ServerAPI serverAPI;
     public UserModel userModel;
     public OrderModel orderModel;
 
     private GPSTracker.GPSTrackerBinder gpsTrackerService;
+    private FiniteStateMachine.StateOwner<UserModel.Status.AccountStatus> account;
 
     public MainPresenter(Context context,
                          RouterModule.Router router,
-                         MainPresenter.View view,
+                         View view,
                          RetrofitModule.ServerAPI serverAPI,
                          UserModel userModel,
                          OrderModel orderModel) {
@@ -87,6 +59,7 @@ public class MainPresenter {
                     Logger.d(checkStatusResponse.toString());
                     userModel.updateStatus(checkStatusResponse);
                     orderModel.updateRequestOrder(checkStatusResponse.requests);
+                    processStatus(checkStatusResponse);
                     return Observable.empty();
                 })
                 .doOnError(throwable -> {
@@ -108,8 +81,104 @@ public class MainPresenter {
 
         view.onStatusChanged(userModel.getCurrentStatus());
 
+        initStates();
+
     }
 
+    private void processStatus(RetrofitModule.ServerAPI.CheckStatusResponse response){
+        currentAccountStatus = UserModel.extractAccountStatus(response);
+        currentServiceStatus = UserModel.extractServiceStatus(response);
+        currentOrderStatus = OrderModel.extractOrderStatus(response);
+
+        account.onEnter();
+    }
+
+    private UserModel.Status.AccountStatus currentAccountStatus;
+    private UserModel.Status.ServiceStatus currentServiceStatus;
+    private OrderModel.Status currentOrderStatus;
+
+    private void initStates() {
+
+        FiniteStateMachine.StateOwner<OrderModel.Status> order =
+                new FiniteStateMachine.StateOwner(
+                        new HashMap<OrderModel.Status, FiniteStateMachine.State>() {{
+                            put(OrderModel.Status.SEARCHING, () -> {
+                                Logger.w("enter order SEARCHING");
+                            });
+                            put(OrderModel.Status.STARTED, () -> {
+                                Logger.w("enter order STARTED");
+                            });
+                            put(OrderModel.Status.COMPLETED, () -> {
+                                Logger.w("enter order COMPLETED");
+                            });
+                            put(OrderModel.Status.RATE, () -> {
+                                Logger.w("enter order RATE");
+                            });
+                        }}) {
+                    @Override
+                    public void onPrepare() {
+                        Logger.w("prepare service RIDING");
+                    }
+
+                    @Override
+                    public void onEnter() {
+                        Logger.w("enter service RIDING");
+                        processStatus(currentOrderStatus);
+                    }
+                };
+
+        FiniteStateMachine.StateOwner<UserModel.Status.ServiceStatus> service =
+                new FiniteStateMachine.StateOwner(
+                        new HashMap<UserModel.Status.ServiceStatus, FiniteStateMachine.State>() {{
+                            put(UserModel.Status.ServiceStatus.ONLINE, () -> {
+                                Logger.w("enter service ONLINE");
+                            });
+                            put(UserModel.Status.ServiceStatus.OFFLINE, () -> {
+                                Logger.w("enter service OFFLINE");
+                            });
+                            put(UserModel.Status.ServiceStatus.RIDING, order);
+                        }}) {
+                    @Override
+                    public void onPrepare() {
+                        Logger.w("prepare account APPROVED");
+                    }
+
+                    @Override
+                    public void onEnter() {
+                        Logger.w("enter account APPROVED");
+                        processStatus(currentServiceStatus);
+                    }
+                };
+
+        account =
+                new FiniteStateMachine.StateOwner(
+                        new HashMap<UserModel.Status.AccountStatus, FiniteStateMachine.State>() {{
+                            put(UserModel.Status.AccountStatus.NEW, () -> {
+                                Logger.w("enter account NEW");
+                            });
+                            put(UserModel.Status.AccountStatus.DISAPPROVED, () -> {
+                                Logger.w("enter account DISAPPROVED");
+                            });
+                            put(UserModel.Status.AccountStatus.BLOCKED, () -> {
+                                Logger.w("enter account BLOCKED");
+                            });
+                            put(UserModel.Status.AccountStatus.APPROVED, service);
+                        }}) {
+                    @Override
+                    public void onPrepare() {
+                        Logger.w("prepare state machine");
+                    }
+
+                    @Override
+                    public void onEnter() {
+                        Logger.w("enter state machine");
+                        processStatus(currentAccountStatus);
+                    }
+                };
+
+
+
+    }
 
 
     private Subject<RetrofitModule.ServerAPI.CheckStatusResponse> statusRequesting() {
@@ -187,5 +256,8 @@ public class MainPresenter {
         void onStatusChanged(UserModel.Status newStatus);
         void onOrderChanged(OrderModel.Order order);
     }
+
+
+
 
 }

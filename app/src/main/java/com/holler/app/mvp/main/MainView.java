@@ -341,6 +341,7 @@ public class MainView extends CustomActivity implements MainPresenter.View {
 
         if (serviceStatusChanged || (accountStatusChanged && newStatus.account == UserModel.Status.AccountStatus.APPROVED)) {
             switch (newStatus.service) {
+                case RIDING:
                 case ONLINE:
                     fragmentRouter.openMap();
                     fragmentRouter.closeOfflineAfterOneSecond();
@@ -463,7 +464,9 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         }
 
         public void openDocuments() {
-            startActivity(new Intent(MainView.this, DocumentsActivity.class));
+            Intent i = new Intent(MainView.this, DocumentsActivity.class);
+            startActivity(i);
+            finish();
         }
 
         public void openTrips() {
