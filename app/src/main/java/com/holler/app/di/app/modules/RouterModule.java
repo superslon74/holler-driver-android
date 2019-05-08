@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.holler.app.activity.ActivitySocialLogin;
+import com.holler.app.activity.DocumentsActivity;
 import com.holler.app.activity.MainActivity;
 import com.holler.app.mvp.login.EmailView;
 import com.holler.app.mvp.login.PasswordView;
@@ -88,6 +89,12 @@ public class RouterModule {
 
         public void goToChangePasswordScreen() {
             Intent i = new Intent(context, ChangePasswordView.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(i);
+        }
+
+        public void goToDocuments() {
+            Intent i = new Intent(context, DocumentsActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
         }

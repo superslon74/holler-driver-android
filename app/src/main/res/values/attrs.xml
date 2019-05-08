@@ -8,6 +8,7 @@
         <attr name="ust_offline" format="boolean"/>
         <attr name="ust_disapproved" format="boolean"/>
         <attr name="ust_blocked" format="boolean"/>
+        <attr name="ust_riding" format="boolean"/>
 
         <attr name="ct_bg_color" format="color"/>
         <attr name="ct_bt_color" format="color"/>
@@ -18,6 +19,7 @@
         <attr name="usd_offline" format="boolean"/>
         <attr name="usd_disapproved" format="boolean"/>
         <attr name="usd_blocked" format="boolean"/>
+        <attr name="usd_riding" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="CircularProgressView">

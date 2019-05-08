@@ -9,27 +9,44 @@ import androidx.annotation.CallSuper;
 
 public interface FiniteStateMachine {
 
-    abstract class StateOwner <Status> implements State{
+    abstract class StateOwner<Status> implements State {
         public Map<Status, State> states;
         public State currentState;
 
-        public StateOwner(Map<Status, State> states){
+        public StateOwner(Map<Status, State> states) {
             this.states = states;
         }
 
-        public void processStatus(Status status){
+        public void processStatus(Status status) {
             State state = states.get(status);
-            if(state == null) return;
-            if(!state.equals(currentState)){
-                if(state instanceof StateOwner){
+            if (state == null) {
+                return;
+            }
+            if (!state.equals(currentState)) {
+                if (state instanceof StateOwner) {
+                    resetNested();
                     ((StateOwner) state).onPrepare();
                 }
                 currentState = state;
                 state.onEnter();
                 return;
             }
-            if(state instanceof StateOwner){
+            if (state instanceof StateOwner) {
                 state.onEnter();
+            }
+        }
+
+        public void resetState(){
+            currentState=null;
+            resetNested();
+        }
+
+        private void resetNested(){
+            for(Status s : states.keySet()){
+                State st = states.get(s);
+                if (st instanceof StateOwner) {
+                    ((StateOwner) st).resetState();
+                }
             }
         }
 
@@ -46,7 +63,7 @@ public interface FiniteStateMachine {
         public abstract void onEnter();
     }
 
-    interface State{
+    interface State {
         //display data
         void onEnter();
     }

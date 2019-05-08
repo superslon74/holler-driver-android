@@ -28,6 +28,7 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.holler.app.R;
 import com.holler.app.utils.GPSTracker;
+import com.orhanobut.logger.Logger;
 
 import java.util.concurrent.TimeUnit;
 
@@ -211,13 +212,16 @@ public class MapFragment extends Fragment {
         }
     }
 
+    private RequestOrderFragment requestOrderFragment;
+    private ArrivedOrderFragment arrivedOrderFragment;
+    private RateOrderFragment rateOrderFragment;
     public void showRequestOrder(OrderModel.Order order) {
         String address = order.data.sAddress;
         int time = order.timeToRespond;
-        RequestOrderFragment o = RequestOrderFragment.newInstance(address, time);
+        requestOrderFragment = RequestOrderFragment.newInstance(address, time);
 
-        o.source
-                .doOnSubscribe(disposable -> addFragment(o))
+        requestOrderFragment.source
+                .doOnSubscribe(disposable -> addFragment(requestOrderFragment))
                 .flatMap(isAccepted -> {
                     if(isAccepted){
 
@@ -229,19 +233,19 @@ public class MapFragment extends Fragment {
                 })
                 .doOnError(throwable -> {
                     UserModel.ParsedThrowable error = UserModel.ParsedThrowable.parse(throwable);
-                    ((MainView)getActivity()).onMessage(error.getMessage()); //vahahaha
+//                    ((MainView)getActivity()).onMessage(error.getMessage()); //vahahaha
                 })
-                .doFinally(() -> removeFragment(o))
+                .doFinally(() -> removeFragment(requestOrderFragment))
                 .subscribe();
     }
 
     public void showArrivedOrder(OrderModel.Order order){
         String address = order.data.sAddress;
 
-        ArrivedOrderFragment o = ArrivedOrderFragment.newInstance(address);
+        arrivedOrderFragment = ArrivedOrderFragment.newInstance(address);
 
-        o.source
-                .doOnSubscribe(disposable -> addFragment(o))
+        arrivedOrderFragment.source
+                .doOnSubscribe(disposable -> addFragment(arrivedOrderFragment))
                 .flatMap(isAccepted -> {
                     if(isAccepted){
                         return order
@@ -255,17 +259,17 @@ public class MapFragment extends Fragment {
                 })
                 .doOnError(throwable -> {
                     UserModel.ParsedThrowable error = UserModel.ParsedThrowable.parse(throwable);
-                    ((MainView)getActivity()).onMessage(error.getMessage()); //vahahaha
+//                    ((MainView)getActivity()).onMessage(error.getMessage()); //vahahaha
                 })
-                .doFinally(() -> removeFragment(o))
+                .doFinally(() -> removeFragment(arrivedOrderFragment))
                 .subscribe();
     }
 
     public void showRateOrder(OrderModel.Order order){
-        RateOrderFragment o = new RateOrderFragment();
+        rateOrderFragment = new RateOrderFragment();
 
-        o.source
-                .doOnSubscribe(disposable -> addFragment(o))
+        rateOrderFragment.source
+                .doOnSubscribe(disposable -> addFragment(rateOrderFragment))
                 .flatMap(rating -> {
                     return order
                             .rate(rating)
@@ -273,9 +277,9 @@ public class MapFragment extends Fragment {
                 })
                 .doOnError(throwable -> {
                     UserModel.ParsedThrowable error = UserModel.ParsedThrowable.parse(throwable);
-                    ((MainView)getActivity()).onMessage(error.getMessage()); //vahahaha
+//                    ((MainView)getActivity()).onMessage(error.getMessage()); //vahahaha
                 })
-                .doFinally(() -> removeFragment(o))
+                .doFinally(() -> removeFragment(rateOrderFragment))
                 .subscribe();
     }
 
@@ -288,21 +292,35 @@ public class MapFragment extends Fragment {
                     .commit();
         }catch (NullPointerException e){
             Observable.timer(3, TimeUnit.SECONDS).flatMap(aLong -> {
-                getActivity()
-                        .getSupportFragmentManager()
-                        .beginTransaction()
-                        .add(ordersContainer.getId(), f)
-                        .commit();
+                addFragment(f);
                 return Observable.empty();
             }).subscribe();
         }
     }
     private void removeFragment(Fragment f){
-        getActivity()
-                .getSupportFragmentManager()
-                .beginTransaction()
-                .remove(f)
-                .commit();
+        if (f==null) return;
+        try{
+            getActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .remove(f)
+                    .commit();
+        }catch (Exception e){
+            Logger.e("Can't remove fragment");
+        }
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+//        removeFragments();
+    }
+
+    public void removeFragments(){
+        removeFragment(requestOrderFragment);
+        removeFragment(arrivedOrderFragment);
+        removeFragment(rateOrderFragment);
     }
 
     public void hidePassItOnButton() {

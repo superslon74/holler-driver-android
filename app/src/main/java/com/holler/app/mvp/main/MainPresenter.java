@@ -2,6 +2,8 @@ package com.holler.app.mvp.main;
 
 import android.content.Context;
 import android.location.Location;
+
+import com.google.gson.JsonArray;
 import com.holler.app.R;
 import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.di.app.modules.RouterModule;
@@ -85,10 +87,13 @@ public class MainPresenter {
 
     }
 
+    RetrofitModule.ServerAPI.RequestedOrderResponse currentRequest = null;
     private void processStatus(RetrofitModule.ServerAPI.CheckStatusResponse response){
         currentAccountStatus = UserModel.extractAccountStatus(response);
         currentServiceStatus = UserModel.extractServiceStatus(response);
         currentOrderStatus = OrderModel.extractOrderStatus(response);
+        currentRequest = OrderModel.extractRequest(response);
+
 
         account.onEnter();
     }
@@ -100,24 +105,30 @@ public class MainPresenter {
     private void initStates() {
 
         FiniteStateMachine.StateOwner<OrderModel.Status> order =
-                new FiniteStateMachine.StateOwner(
+                new FiniteStateMachine.StateOwner<OrderModel.Status>(
                         new HashMap<OrderModel.Status, FiniteStateMachine.State>() {{
                             put(OrderModel.Status.SEARCHING, () -> {
+                                view.setSearchingState(orderModel.createOrderFromRequest(currentRequest));
                                 Logger.w("enter order SEARCHING");
                             });
                             put(OrderModel.Status.STARTED, () -> {
+                                view.setStartedState(orderModel.createOrderFromRequest(currentRequest));
                                 Logger.w("enter order STARTED");
                             });
                             put(OrderModel.Status.COMPLETED, () -> {
+                                view.setCompletedState(orderModel.createOrderFromRequest(currentRequest));
                                 Logger.w("enter order COMPLETED");
                             });
                             put(OrderModel.Status.RATE, () -> {
+                                view.setRateState(orderModel.createOrderFromRequest(currentRequest));
                                 Logger.w("enter order RATE");
                             });
                         }}) {
                     @Override
                     public void onPrepare() {
                         Logger.w("prepare service RIDING");
+                        currentState=null;
+                        view.setRidingState();
                     }
 
                     @Override
@@ -128,12 +139,14 @@ public class MainPresenter {
                 };
 
         FiniteStateMachine.StateOwner<UserModel.Status.ServiceStatus> service =
-                new FiniteStateMachine.StateOwner(
+                new FiniteStateMachine.StateOwner<UserModel.Status.ServiceStatus>(
                         new HashMap<UserModel.Status.ServiceStatus, FiniteStateMachine.State>() {{
                             put(UserModel.Status.ServiceStatus.ONLINE, () -> {
+                                view.setOnlineState();
                                 Logger.w("enter service ONLINE");
                             });
                             put(UserModel.Status.ServiceStatus.OFFLINE, () -> {
+                                view.setOfflineState();
                                 Logger.w("enter service OFFLINE");
                             });
                             put(UserModel.Status.ServiceStatus.RIDING, order);
@@ -141,6 +154,8 @@ public class MainPresenter {
                     @Override
                     public void onPrepare() {
                         Logger.w("prepare account APPROVED");
+                        view.setApprovedState();
+                        currentState = null;
                     }
 
                     @Override
@@ -151,15 +166,18 @@ public class MainPresenter {
                 };
 
         account =
-                new FiniteStateMachine.StateOwner(
+                new FiniteStateMachine.StateOwner<UserModel.Status.AccountStatus>(
                         new HashMap<UserModel.Status.AccountStatus, FiniteStateMachine.State>() {{
                             put(UserModel.Status.AccountStatus.NEW, () -> {
+                                router.goToDocuments();
                                 Logger.w("enter account NEW");
                             });
                             put(UserModel.Status.AccountStatus.DISAPPROVED, () -> {
+                                router.goToDocuments();
                                 Logger.w("enter account DISAPPROVED");
                             });
                             put(UserModel.Status.AccountStatus.BLOCKED, () -> {
+                                view.setBlockedState();
                                 Logger.w("enter account BLOCKED");
                             });
                             put(UserModel.Status.AccountStatus.APPROVED, service);
@@ -175,9 +193,6 @@ public class MainPresenter {
                         processStatus(currentAccountStatus);
                     }
                 };
-
-
-
     }
 
 
@@ -185,7 +200,7 @@ public class MainPresenter {
         final Subject<RetrofitModule.ServerAPI.CheckStatusResponse> subject = UnicastSubject.create();
 
         Flowable
-                .interval(3, TimeUnit.SECONDS)
+                .interval(1, TimeUnit.SECONDS)
                 .flatMapSingle(time -> {
                     Location location = gpsTrackerService.getLocation();
                     String authHeader = userModel.getAuthHeader();
@@ -251,10 +266,35 @@ public class MainPresenter {
 
     }
 
+    public void resetState() {
+        currentAccountStatus = null;
+        currentServiceStatus = null;
+        currentOrderStatus = null;
+        account.resetState();
+    }
+
     public interface View extends SpinnerShower, MessageDisplayer, Finishable {
 
         void onStatusChanged(UserModel.Status newStatus);
         void onOrderChanged(OrderModel.Order order);
+
+        void setBlockedState();
+
+        void setOnlineState();
+
+        void setOfflineState();
+
+        void setSearchingState(OrderModel.Order order);
+
+        void setStartedState(OrderModel.Order order);
+
+        void setCompletedState(OrderModel.Order order);
+
+        void setRateState(OrderModel.Order order);
+
+        void setApprovedState();
+
+        void setRidingState();
     }
 
 

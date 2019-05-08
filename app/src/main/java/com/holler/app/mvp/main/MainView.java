@@ -28,6 +28,7 @@ import com.holler.app.di.User;
 import com.holler.app.di.app.AppComponent;
 import com.holler.app.di.app.components.DaggerMainComponent;
 import com.holler.app.di.app.components.main.modules.MainScreenModule;
+import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.utils.CustomActivity;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.orhanobut.logger.Logger;
@@ -146,11 +147,12 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         User profile = presenter.userModel.getProfileData();
         headerViewHolder.userNameView.setText(profile.firstName + " " + profile.lastName);
 
+        String avatarUrl = RetrofitModule.ServerAPI.BASE_URL + "storage/" + profile.avatar;
+
         Glide
-                .with(getApplicationContext())
-                .load(profile.avatar)
-                .placeholder(R.drawable.avatar)
-                .error(R.drawable.avatar)
+                .with(MainView.this)
+                .load(avatarUrl)
+                .error(R.drawable.splash_drawable_bottom)
                 .into(headerViewHolder.userPhotoView);
 
     }
@@ -306,100 +308,125 @@ public class MainView extends CustomActivity implements MainPresenter.View {
     //    view implementation
 
 
-    private UserModel.Status currentStatus;
 
     @Override
     public void onStatusChanged(UserModel.Status newStatus) {
-        boolean accountStatusChanged = currentStatus == null || currentStatus.account != newStatus.account;
-        boolean serviceStatusChanged = currentStatus == null || currentStatus.service != newStatus.service;
 
-        if (accountStatusChanged) {
-            switch (newStatus.account) {
-                case DISAPPROVED:
-                case NEW:
-                    fragmentRouter.openDocuments();
-                    runOnUiThread(() -> {
-                        headerViewHolder.statusToggle.setDisapproved();
-                        headerViewHolder.statusDot.setDisapproved();
-                        openMenuUserStatusDot.setDisapproved();
-                    });
-                    break;
-                case BLOCKED:
-                    fragmentRouter.openOffline();
-                    runOnUiThread(() -> {
-                        offlineStatusTooggle.setBlocked();
-                        headerViewHolder.statusToggle.setBlocked();
-                        headerViewHolder.statusDot.setBlocked();
-                        openMenuUserStatusDot.setBlocked();
-                    });
-                    break;
-                case APPROVED:
-
-                    break;
-            }
-        }
-
-        if (serviceStatusChanged || (accountStatusChanged && newStatus.account == UserModel.Status.AccountStatus.APPROVED)) {
-            switch (newStatus.service) {
-                case RIDING:
-                case ONLINE:
-                    fragmentRouter.openMap();
-                    fragmentRouter.closeOfflineAfterOneSecond();
-                    runOnUiThread(() -> {
-                        offlineStatusTooggle.setOnline();
-                        offlineHeader.setText(getApplicationContext().getString(R.string.mas_offline_header_success));
-                        headerViewHolder.statusDot.setOnline();
-                        headerViewHolder.statusToggle.setOnline();
-                        openMenuUserStatusDot.setOnline();
-                    });
-                    break;
-                case OFFLINE:
-                    fragmentRouter.openOffline();
-                    runOnUiThread(() -> {
-                        offlineStatusTooggle.setOffline();
-                        headerViewHolder.statusToggle.setOffline();
-                        headerViewHolder.statusDot.setOffline();
-                        openMenuUserStatusDot.setOffline();
-                    });
-                    break;
-            }
-        }
-
-        currentStatus = newStatus;
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        currentStatus = null;
-        presenter.orderModel.clearState();
-        presenter.userModel.clearState();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        currentStatus = null;
-        presenter.orderModel.clearState();
-        presenter.userModel.clearState();
-    }
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        currentStatus = null;
+//        presenter.orderModel.clearState();
+//        presenter.userModel.clearState();
+//    }
+//
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        currentStatus = null;
+//        presenter.orderModel.clearState();
+//        presenter.userModel.clearState();
+//    }
 
     @Override
     public void onOrderChanged(OrderModel.Order newOrder) {
-        Logger.w("ORDER");
-        if (newOrder == null) return;
-        fragmentRouter.openMap();
-        switch (newOrder.status) {
-            case SEARCHING:
-                ((MapFragment) fragmentRouter.currentFragment).showRequestOrder(newOrder);
-                break;
-            case STARTED:
-                ((MapFragment) fragmentRouter.currentFragment).showArrivedOrder(newOrder);
-                break;
-            case COMPLETED:
-                ((MapFragment) fragmentRouter.currentFragment).showRateOrder(newOrder);
-                break;
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.resetState();
+        try{
+            ((MapFragment)fragmentRouter.currentFragment).removeFragments();
+        }catch (ClassCastException | NullPointerException e){
+            Logger.e("Can't reset map fragments");
         }
+    }
+
+    @Override
+    public void setBlockedState() {
+        fragmentRouter.openOffline();
+        runOnUiThread(() -> {
+            offlineStatusTooggle.setBlocked();
+            headerViewHolder.statusToggle.setBlocked();
+            headerViewHolder.statusDot.setBlocked();
+            openMenuUserStatusDot.setBlocked();
+        });
+    }
+
+    @Override
+    public void setOnlineState() {
+        fragmentRouter.openMap();
+        fragmentRouter.closeOfflineAfterOneSecond();
+        runOnUiThread(() -> {
+            offlineStatusTooggle.setOnline();
+            offlineHeader.setText(getApplicationContext().getString(R.string.mas_offline_header_success));
+            headerViewHolder.statusDot.setOnline();
+            headerViewHolder.statusToggle.setOnline();
+            openMenuUserStatusDot.setOnline();
+        });
+    }
+
+    @Override
+    public void setOfflineState() {
+        fragmentRouter.openOffline();
+        runOnUiThread(() -> {
+            offlineStatusTooggle.setOffline();
+            headerViewHolder.statusToggle.setOffline();
+            headerViewHolder.statusDot.setOffline();
+            openMenuUserStatusDot.setOffline();
+        });
+    }
+
+    @Override
+    public void setSearchingState(OrderModel.Order newOrder) {
+        try{
+            ((MapFragment) fragmentRouter.currentFragment).showRequestOrder(newOrder);
+        }catch (ClassCastException | NullPointerException e){
+            Logger.e("Can't set order state");
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void setStartedState(OrderModel.Order newOrder) {
+        try{
+            ((MapFragment) fragmentRouter.currentFragment).showArrivedOrder(newOrder);
+        }catch (ClassCastException | NullPointerException e){
+            Logger.e("Can't set order state");
+        }
+    }
+
+    @Override
+    public void setCompletedState(OrderModel.Order newOrder) {
+        try{
+            ((MapFragment) fragmentRouter.currentFragment).showRateOrder(newOrder);
+        }catch (ClassCastException | NullPointerException e){
+            Logger.e("Can't set order state");
+        }
+    }
+
+    @Override
+    public void setRateState(OrderModel.Order order) {
+
+    }
+
+    @Override
+    public void setApprovedState() {
+        fragmentRouter.openMap();
+    }
+
+    @Override
+    public void setRidingState() {
+        runOnUiThread(() -> {
+            offlineStatusTooggle.setRiding();
+            headerViewHolder.statusToggle.setRiding();
+            headerViewHolder.statusDot.setRiding();
+            openMenuUserStatusDot.setRiding();
+        });
     }
 
 
@@ -432,6 +459,7 @@ public class MainView extends CustomActivity implements MainPresenter.View {
 //            startActivity(i);
             Intent i = new Intent(MainView.this, EditProfile.class);
             startActivity(i);
+//            finish();
         }
 
         public void openHelp() {
@@ -503,10 +531,10 @@ public class MainView extends CustomActivity implements MainPresenter.View {
 
         public void closeOffline() {
             runOnUiThread(() -> {
-                displayGamburger(true);
                 contentOverflow.setVisibility(View.GONE);
                 try {
                     ((MapFragment) currentFragment).showPassItOnButton();
+                    displayGamburger(true);
                 } catch (ClassCastException | NullPointerException e) {
                 }
             });

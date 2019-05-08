@@ -103,14 +103,14 @@ public class RetrofitModule {
                         .createWithScheduler(scheduler);
 
         RxJavaPlugins.setErrorHandler(throwable -> {
-            Logger.e("Rx plugin error handler");
+            Logger.wtf("Rx plugin error handler",throwable);
             throwable.printStackTrace();
         });
 
         ServerAPI retrofitClient = new Retrofit
                 .Builder()
                 .client(httpClient)
-                .baseUrl(URLHelper.base)
+                .baseUrl(ServerAPI.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(rxAdapter)
                 .build()
@@ -120,6 +120,7 @@ public class RetrofitModule {
     }
 
     public interface ServerAPI {
+        String BASE_URL = "https://api.holler.taxi/";
         String HEADER_KEY_AUTHORIZATION = "Authorization";
         JsonObject STATUS_OFFLINE = STATUS_OFFLINE_JSON;
         JsonObject STATUS_ONLINE = STATUS_ONLINE_JSON;

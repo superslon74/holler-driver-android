@@ -32,5 +32,12 @@
             <stroke android:color="@color/white" android:width="2dp"/>
         </shape>
     </item>
+    <item custom:usd_riding="true">
+        <shape
+            android:shape="oval">
+            <solid android:color="@color/yellowLight"/>
+            <stroke android:color="@color/white" android:width="2dp"/>
+        </shape>
+    </item>
 
 </selector>

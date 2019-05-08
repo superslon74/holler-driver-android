@@ -82,6 +82,17 @@ public class OrderModel {
         return status;
     }
 
+    public static RetrofitModule.ServerAPI.RequestedOrderResponse extractRequest(RetrofitModule.ServerAPI.CheckStatusResponse response) {
+        if(response.requests!=null && response.requests.size()>0)
+            return response.requests.get(0);
+
+        return null;
+    }
+
+    public Order createOrderFromRequest(RetrofitModule.ServerAPI.RequestedOrderResponse currentRequest) {
+        return new Order(currentRequest.order, currentRequest.timeToRespond);
+    }
+
     public Order getCurrentOrder(){
         try {
             return new Order(currentRequest.order, currentRequest.timeToRespond);

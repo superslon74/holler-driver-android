@@ -15,11 +15,13 @@ public class UserStatusToggle extends View {
     private static final int[] STATE_USER_OFFLINE = {R.attr.ust_offline};
     private static final int[] STATE_USER_DISAPPROVED= {R.attr.ust_disapproved};
     private static final int[] STATE_USER_BLOCKED = {R.attr.ust_blocked};
+    private static final int[] STATE_USER_RIDING = {R.attr.ust_riding};
 
     private boolean isUserOnline;
     private boolean isUserOffline;
     private boolean isUserDisapproved;
     private boolean isUserBlocked;
+    private boolean isUserRiding;
 
     public UserStatusToggle(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -33,6 +35,7 @@ public class UserStatusToggle extends View {
             isUserOffline = a.getBoolean(R.styleable.UserStatusToggle_ust_offline, false);
             isUserDisapproved = a.getBoolean(R.styleable.UserStatusToggle_ust_disapproved, false);
             isUserBlocked = a.getBoolean(R.styleable.UserStatusToggle_ust_blocked, false);
+            isUserRiding = a.getBoolean(R.styleable.UserStatusToggle_ust_riding, false);
         } finally {
             a.recycle();
         }
@@ -40,11 +43,12 @@ public class UserStatusToggle extends View {
 
     @Override
     protected int[] onCreateDrawableState(int extraSpace) {
-        int[] drawableState = super.onCreateDrawableState(extraSpace + 4);
+        int[] drawableState = super.onCreateDrawableState(extraSpace + 5);
         if(isUserOnline) mergeDrawableStates(drawableState,STATE_USER_ONLINE);
         if(isUserOffline) mergeDrawableStates(drawableState,STATE_USER_OFFLINE);
         if(isUserDisapproved) mergeDrawableStates(drawableState,STATE_USER_DISAPPROVED);
         if(isUserBlocked) mergeDrawableStates(drawableState,STATE_USER_BLOCKED);
+        if(isUserRiding) mergeDrawableStates(drawableState,STATE_USER_RIDING);
         return drawableState;
     }
 
@@ -53,6 +57,7 @@ public class UserStatusToggle extends View {
         isUserOffline=false;
         isUserDisapproved=false;
         isUserBlocked=false;
+        isUserRiding=false;
     }
 
     public void setOnline(){
@@ -75,6 +80,11 @@ public class UserStatusToggle extends View {
         isUserBlocked=true;
         refreshDrawableState();
     }
+    public void setRiding(){
+        resetState();
+        isUserRiding=true;
+        refreshDrawableState();
+    }
 
     public boolean isOnline(){
         return isUserOnline;
@@ -87,5 +97,8 @@ public class UserStatusToggle extends View {
     }
     public boolean isBlocked(){
         return isUserBlocked;
+    }
+    public boolean isRiding(){
+        return isUserRiding;
     }
 }
