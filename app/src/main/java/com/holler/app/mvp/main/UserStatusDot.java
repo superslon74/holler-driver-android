@@ -21,12 +21,14 @@ public class UserStatusDot extends View {
     private static final int[] STATE_USER_DISAPPROVED= {R.attr.usd_disapproved};
     private static final int[] STATE_USER_BLOCKED = {R.attr.usd_blocked};
     private static final int[] STATE_USER_RIDING = {R.attr.usd_riding};
+    private static final int[] HAS_BORDER = {R.attr.usd_has_border};
 
     private boolean isUserOnline;
     private boolean isUserOffline;
     private boolean isUserDisapproved;
     private boolean isUserBlocked;
     private boolean isUserRiding;
+    private boolean hasBorder;
 
     public UserStatusDot(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -41,6 +43,7 @@ public class UserStatusDot extends View {
             isUserDisapproved = a.getBoolean(R.styleable.UserStatusDot_usd_disapproved, false);
             isUserBlocked = a.getBoolean(R.styleable.UserStatusDot_usd_blocked, false);
             isUserRiding = a.getBoolean(R.styleable.UserStatusDot_usd_riding, false);
+            hasBorder = a.getBoolean(R.styleable.UserStatusDot_usd_has_border, false);
         } finally {
             a.recycle();
         }
@@ -48,12 +51,13 @@ public class UserStatusDot extends View {
 
     @Override
     protected int[] onCreateDrawableState(int extraSpace) {
-        int[] drawableState = super.onCreateDrawableState(extraSpace + 5);
+        int[] drawableState = super.onCreateDrawableState(extraSpace + 6);
         if(isUserOnline) mergeDrawableStates(drawableState,STATE_USER_ONLINE);
         if(isUserOffline) mergeDrawableStates(drawableState,STATE_USER_OFFLINE);
         if(isUserDisapproved) mergeDrawableStates(drawableState,STATE_USER_DISAPPROVED);
         if(isUserBlocked) mergeDrawableStates(drawableState,STATE_USER_BLOCKED);
         if(isUserRiding) mergeDrawableStates(drawableState,STATE_USER_RIDING);
+        if(hasBorder) mergeDrawableStates(drawableState,HAS_BORDER);
         return drawableState;
     }
 

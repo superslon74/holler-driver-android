@@ -37,6 +37,7 @@
             android:layout_height="20dp"
             app:usd_disapproved="true"
             android:background="@drawable/selector_status_dot"
+            app:usd_has_border="true"
             android:layout_marginBottom="0dp"
             android:layout_marginRight="0dp"
             app:layout_constraintBottom_toBottomOf="@+id/ma_nav_user_photo"

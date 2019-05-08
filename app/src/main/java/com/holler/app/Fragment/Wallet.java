@@ -52,6 +52,9 @@ public class Wallet extends Fragment {
         // Inflate the layout for this fragment
         rootView =  inflater.inflate(R.layout.fragment_wallet, container, false);
         findViewByIdAndInitialize();
+        rootView.findViewById(R.id.backArrow).setOnClickListener(v -> {
+            getActivity().onBackPressed();
+        });
         return  rootView;
     }
 

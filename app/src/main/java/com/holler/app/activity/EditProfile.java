@@ -35,6 +35,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.snackbar.Snackbar;
 import com.holler.app.mvp.main.MainView;
+import com.holler.app.mvp.password.ChangePasswordView;
+import com.holler.app.mvp.password.ForgotPasswordView;
 import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.utils.CustomActivity;
 import com.squareup.picasso.Picasso;
@@ -73,7 +75,7 @@ public class EditProfile extends CustomActivity implements RadioGroup.OnCheckedC
     private static final int SELECT_PHOTO = 100;
     ConnectionHelper helper;
     Boolean isInternet;
-    Button saveBTN;
+    View saveBTN;
     ImageView backArrow;
     TextView changePasswordTxt;
     EditText email, first_name, last_name, mobile_no, service;
@@ -148,7 +150,7 @@ public class EditProfile extends CustomActivity implements RadioGroup.OnCheckedC
         changePasswordTxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(activity, ChangePassword.class));
+                startActivity(new Intent(activity, ForgotPasswordView.class));
             }
         });
 
@@ -614,7 +616,7 @@ public class EditProfile extends CustomActivity implements RadioGroup.OnCheckedC
         first_name = (EditText) findViewById(R.id.first_name);
         last_name = (EditText) findViewById(R.id.last_name);
         mobile_no = (EditText) findViewById(R.id.mobile_no);
-        saveBTN = (Button) findViewById(R.id.saveBTN);
+        saveBTN =  findViewById(R.id.saveBTN);
         changePasswordTxt = (TextView) findViewById(R.id.changePasswordTxt);
         backArrow = (ImageView) findViewById(R.id.backArrow);
         profile_Image = (ImageView) findViewById(R.id.img_profile);

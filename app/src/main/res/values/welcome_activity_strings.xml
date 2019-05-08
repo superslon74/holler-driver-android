@@ -2,6 +2,9 @@
 <resources>
     <!--mas = main activity strings-->
 
+    <string translatable="false" name="was_powered_by">Powered by Andar Solutions</string>
+    <string translatable="false" name="was_version">version </string>
+
     <string translatable="false" name="was_button_login">sign in</string>
     <string translatable="false" name="was_button_register">sign up</string>
     <string translatable="false" name="was_link_social">connect with social</string>

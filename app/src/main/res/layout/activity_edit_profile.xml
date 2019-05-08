@@ -12,22 +12,26 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:elevation="@dimen/_5sdp"
-        android:background="@color/text_color_white">
+        android:background="@drawable/gradient_header_selector"
+        >
 
         <ImageView
             android:id="@+id/backArrow"
-            android:src="@drawable/back_icon"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_margin="10dp"
-            android:padding="5dp"/>
+            android:src="@drawable/vec_chevron_left_white_24dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="9dp"
 
-        <com.holler.app.Utilities.MyBoldTextView
+            />
+
+        <TextView
             android:text="@string/edit_profile"
             android:gravity="center_vertical"
             android:textSize="18sp"
-            android:layout_marginStart="10dp"
-            android:textColor="@color/black_text_color"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="0dp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/montserrat_bold"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             />
@@ -49,18 +53,13 @@
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="10dp"
-            android:src="@drawable/ic_dummy_user"
+            android:src="@drawable/avatar"
             app:civ_border_color="#FFFFFF"
             app:civ_border_width="4dp"
             app:civ_shadow="true"
             app:civ_shadow_radius="10"
             app:civ_shadow_color="#FFFFFF"/>
 
-        <View
-            android:id="@+id/line_devider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -75,31 +74,26 @@
                 android:layout_marginBottom="10dp"
                 android:orientation="vertical">
 
-                <com.holler.app.Utilities.MyTextView
+                <TextView
+                    android:fontFamily="@font/montserrat_medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
                     android:text="@string/first_name"/>
 
 
-                <com.holler.app.Utilities.MyEditText
-                        android:id="@+id/first_name"
-                        android:textSize="14sp"
-                        android:textColor="@android:color/black"
+                <EditText
+                    style="@style/LA_Input"
+                    android:id="@+id/first_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textCapWords"
-                        android:layout_marginTop="10dp"
-                        android:textAlignment="viewStart"
-                        android:background="@null"
+                        android:layout_marginTop="0dp"
                         android:imeOptions="actionDone"
                         android:maxLines="1" />
 
             </LinearLayout>
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="@android:color/darker_gray"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -109,73 +103,79 @@
                 android:layout_marginBottom="10dp"
                 android:orientation="vertical">
 
-                <com.holler.app.Utilities.MyTextView
+                <TextView
+                    android:fontFamily="@font/montserrat_medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
                     android:text="@string/last_name"/>
 
 
-                <com.holler.app.Utilities.MyEditText
+                <EditText
                         android:id="@+id/last_name"
+                    style="@style/LA_Input"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:textColor="@android:color/black"
                         android:inputType="text|textCapSentences"
                         android:imeOptions="actionDone"
-                        android:layout_marginTop="10dp"
-                        android:textAlignment="viewStart"
-                        android:background="@null"
+                        android:layout_marginTop="0dp"
                         android:maxLines="1" />
 
 
             </LinearLayout>
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray" />
 
-        <com.holler.app.Utilities.MyTextView
+
+        <TextView
+            android:fontFamily="@font/montserrat_medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="@dimen/_10sdp"
             android:text="@string/gender"
-            android:textSize="@dimen/_12sdp" />
+            android:textSize="16sp" />
 
-        <RadioGroup
-            android:id="@+id/gender_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_10sdp"
-            android:layout_marginStart="@dimen/_35sdp"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/male_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/male"
-                android:textSize="@dimen/_13sdp" />
-
-            <RadioButton
-                android:id="@+id/female_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/female"
-                android:textSize="@dimen/_13sdp" />
-
-        </RadioGroup>
-
-        <View
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray"/>
+            android:layout_height="wrap_content">
+            <RadioGroup
+                android:textAlignment="center"
+                android:id="@+id/gender_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent">
+
+                <RadioButton
+                    android:id="@+id/male_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:textColor="@color/colorAccent"
+                    android:text="@string/male"
+                    android:textSize="@dimen/_13sdp" />
+
+                <RadioButton
+                    android:id="@+id/female_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorAccent"
+                    android:text="@string/female"
+                    android:textSize="@dimen/_13sdp" />
+
+            </RadioGroup>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -185,34 +185,28 @@
             android:layout_marginBottom="20dp"
             android:orientation="vertical">
 
-            <com.holler.app.Utilities.MyTextView
+            <TextView
+                android:fontFamily="@font/montserrat_medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:textSize="17sp"
                 android:text="@string/phone_number"/>
 
 
-            <com.holler.app.Utilities.MyEditText
+            <EditText
+                style="@style/LA_Input"
                     android:id="@+id/mobile_no"
                     android:inputType="phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="@android:color/black"
                     android:imeOptions="actionDone"
-                    android:layout_marginTop="10dp"
+                android:layout_marginTop="0dp"
                     android:textAlignment="viewStart"
-                    android:background="@null"
                     android:maxLines="1" />
 
 
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray"/>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -221,32 +215,27 @@
             android:layout_marginBottom="20dp"
             android:orientation="vertical">
 
-            <com.holler.app.Utilities.MyTextView
+            <TextView
+                android:fontFamily="@font/montserrat_medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:textSize="17sp"
                 android:text="@string/email"/>
 
-            <com.holler.app.Utilities.MyEditText
+            <EditText
+                style="@style/LA_Input"
                     android:id="@+id/email"
                     android:inputType="textEmailAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="@android:color/black"
                     android:imeOptions="actionNext"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="0dp"
                     android:textAlignment="viewStart"
-                    android:background="@null"
                     android:enabled="false"
                     android:maxLines="1" />
 
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -256,34 +245,29 @@
             android:layout_marginBottom="20dp"
             android:orientation="vertical">
 
-            <com.holler.app.Utilities.MyTextView
+            <TextView
+                android:fontFamily="@font/montserrat_medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:textSize="17sp"
                 android:text="@string/service" />
 
-            <com.holler.app.Utilities.MyEditText
+            <EditText
                 android:id="@+id/service"
                 android:inputType="textEmailAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textColor="@android:color/black"
                 android:imeOptions="actionNext"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="0dp"
                 android:textAlignment="viewStart"
-                android:background="@null"
                 android:enabled="false"
                 android:maxLines="1" />
 
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray"/>
-
-        <com.holler.app.Utilities.MyButton
+        <TextView
+            style="@style/MA_Button"
+            android:textAlignment="center"
             android:id="@+id/saveBTN"
             android:text="@string/save"
             android:textColor="@android:color/white"
@@ -294,7 +278,8 @@
             android:layout_margin="20dp"
             />
 
-        <com.holler.app.Utilities.MyTextView
+        <TextView
+            android:fontFamily="@font/montserrat_medium"
             android:id="@+id/changePasswordTxt"
             android:text="@string/change_password"
             android:textColor="@android:color/holo_blue_light"

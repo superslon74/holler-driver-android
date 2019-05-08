@@ -1,12 +1,5 @@
 [
-  {
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#f5f5f5"
-      }
-    ]
-  },
+
   {
     "elementType": "labels.icon",
     "stylers": [
@@ -98,7 +91,7 @@
     "elementType": "geometry.fill",
     "stylers": [
       {
-        "visibility": "off"
+        "color": "#b2dfdb"
       }
     ]
   },

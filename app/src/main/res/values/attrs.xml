@@ -20,6 +20,7 @@
         <attr name="usd_disapproved" format="boolean"/>
         <attr name="usd_blocked" format="boolean"/>
         <attr name="usd_riding" format="boolean"/>
+        <attr name="usd_has_border" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="CircularProgressView">

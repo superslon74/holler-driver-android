@@ -8,25 +8,31 @@
 
     <LinearLayout
         android:id="@+id/lnrTitle"
+
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:elevation="@dimen/_5sdp"
-        android:background="@color/text_color_white">
+        android:background="@drawable/gradient_header_selector"
+        >
 
         <ImageView
             android:id="@+id/backArrow"
-            android:src="@drawable/back_icon"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_margin="10dp"
-            android:padding="5dp"/>
+
+            android:src="@drawable/vec_chevron_left_white_24dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="9dp"
+            />
 
         <com.holler.app.Utilities.MyBoldTextView
             android:text="@string/your_trips"
+
             android:gravity="center_vertical"
             android:textSize="18sp"
-            android:layout_marginStart="10dp"
-            android:textColor="@color/black_text_color"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="0dp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/montserrat_bold"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             />

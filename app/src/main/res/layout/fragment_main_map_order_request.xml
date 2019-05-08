@@ -12,9 +12,10 @@
     <TextView
         android:id="@+id/of_message"
         style="@style/OF_Header_Text"
+        android:fontFamily="@font/montserrat_bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="We found a Customer nearby"
+        android:text="@string/os_request_message"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
@@ -67,7 +68,7 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:secondaryProgress="100"
         android:max="100"
-        android:progress="10"
+        android:progress="100"
         android:background="@drawable/shape_progress_bar_background"
         android:progressDrawable="@drawable/shape_progress_bar_circular"
         android:animateLayoutChanges="true"
@@ -85,7 +86,7 @@
         android:layout_height="wrap_content"
         android:textSize="19dp"
         android:padding="0dp"
-        android:text="115"
+        android:text=""
         app:layout_constraintLeft_toLeftOf="@+id/of_progress_bar"
         app:layout_constraintTop_toTopOf="@+id/of_progress_bar"
         app:layout_constraintRight_toRightOf="@id/of_progress_bar"

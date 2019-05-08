@@ -149,11 +149,11 @@ public class SplashView
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_splash);
-//        ForceUpdateChecker.with(this).onUpdateNeeded(this).check();
-//        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        TextView lblVersion = (TextView) findViewById(R.id.lblVersion);
-        lblVersion.setText(getResources().getString(R.string.version) +" "+ BuildConfig.VERSION_NAME+" ("+BuildConfig.VERSION_CODE+")");
+        TextView lblVersion = (TextView) findViewById(R.id.sp_version);
+        lblVersion.setText(
+                getResources().getString(R.string.was_powered_by) +"\n "+
+                getResources().getString(R.string.was_version)+ " "+ BuildConfig.VERSION_NAME+" ("+BuildConfig.VERSION_CODE+")");
 
         if (Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -169,31 +169,7 @@ public class SplashView
 
     @Override
     protected void onDestroy() {
-//        handleCheckStatus.removeCallbacksAndMessages(null);
         super.onDestroy();
-    }
-
-    private void showDialog() {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setMessage(getString(R.string.connect_to_network))
-//                .setIcon(AccessDetails.site_icon)
-//                .setCancelable(false)
-//                .setPositiveButton(getString(R.string.connect_to_wifi), new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        alert.dismiss();
-//                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-//                    }
-//                })
-//                .setNegativeButton(getString(R.string.quit), new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        alert.dismiss();
-//                        finish();
-//                    }
-//                });
-//        if (alert == null) {
-//            alert = builder.create();
-//            alert.show();
-//        }
     }
 
 

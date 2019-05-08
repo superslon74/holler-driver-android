@@ -5,15 +5,16 @@
     android:layout_height="match_parent"
     android:background="@mipmap/splash">
 
-    <com.holler.app.Utilities.MyBoldTextView
-        android:id="@+id/lblVersion"
+    <TextView
+        android:id="@+id/sp_version"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
         android:gravity="center"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/_30sdp"
+        android:fontFamily="@font/montserrat_regular"
         android:textColor="@color/text_color_white"
-        android:textSize="@dimen/_12sdp"/>
+        android:textSize="17dp"/>
 
 </RelativeLayout>

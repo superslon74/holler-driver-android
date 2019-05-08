@@ -47,9 +47,10 @@
     <TextView
         android:id="@+id/ma_map_pass_button"
         style="@style/MA_Header_Text"
+        android:fontFamily="@font/montserrat_extrabold"
         android:layout_width="110dp"
         android:layout_height="110dp"
-        android:text="pass it on"
+        android:text="@string/ma_map_pas_it_on"
         android:padding="14dp"
         android:textColor="@color/white"
         android:textAllCaps="true"
