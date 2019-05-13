@@ -154,7 +154,6 @@ public class EditProfile extends CustomActivity implements RadioGroup.OnCheckedC
             }
         });
 
-
         profile_Image.setOnClickListener(new View.OnClickListener() {
             @TargetApi(Build.VERSION_CODES.M)
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -169,7 +168,6 @@ public class EditProfile extends CustomActivity implements RadioGroup.OnCheckedC
 
             }
         });
-
     }
 
     public void getProfile() {

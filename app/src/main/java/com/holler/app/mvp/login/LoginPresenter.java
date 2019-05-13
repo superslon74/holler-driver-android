@@ -79,7 +79,7 @@ public class LoginPresenter {
         if(validationResult==null){
             signIn(credentials.getEmail(), credentials.getPassword());
         }else{
-            view.onMessage(validationResult.toString());
+            view.onMessage(validationResult.getMessage());
         }
     }
 
@@ -95,7 +95,7 @@ public class LoginPresenter {
                         Logger.e("Login Presenter user not logged in without error");
                 })
                 .doFinally(() -> view.hideSpinner())
-                .doOnError(throwable -> view.onMessage(throwable.getMessage()))
+                .doOnError(throwable -> view.onMessage(((Exception)throwable).getMessage()))
                 .subscribe();
 
     }

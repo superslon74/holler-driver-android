@@ -216,7 +216,7 @@ public class UserModel {
         final Subject<Boolean> source = PublishSubject.create();
 
         Observable
-                .timer(5, TimeUnit.SECONDS)
+                .timer(0, TimeUnit.SECONDS)
                 .flatMap(aLong -> {
                     return getFirebaseToken();
                 })

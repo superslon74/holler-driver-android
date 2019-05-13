@@ -181,11 +181,17 @@ public class MapFragment extends Fragment {
         Location location = getCurrentLocation();
         if (location == null) return;
         LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(currentLocation).zoom(16).build();
-        if(withAnimation)
-        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        else
+        CameraPosition cameraPosition = new CameraPosition
+                .Builder()
+                .target(currentLocation)
+                .bearing(location.getBearing())
+                .zoom(16)
+                .build();
+        if(withAnimation) {
+            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        }else {
             googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        }
 
     }
 
