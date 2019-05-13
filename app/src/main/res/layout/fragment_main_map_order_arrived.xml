@@ -16,17 +16,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_marker_white"
+        android:paddingBottom="2dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/of_address_big" />
 
     <TextView
         android:id="@+id/of_address_big"
         style="@style/OF_Header_Text"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Pinhas lavos, 36"
-        app:layout_constraintTop_toTopOf="@id/of_marker"
-        app:layout_constraintLeft_toRightOf="@id/of_marker"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"/>
 
     <TextView
         android:id="@+id/of_address_small"
@@ -35,9 +37,10 @@
         android:layout_height="wrap_content"
         android:text="Tel Aviv"
         android:paddingTop="0dp"
+        android:paddingBottom="0dp"
         app:layout_constraintLeft_toRightOf="@id/of_marker"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/of_address_big" />
+        app:layout_constraintBottom_toBottomOf="@id/of_marker" />
 
     <Button
         android:id="@+id/of_button_cancel"

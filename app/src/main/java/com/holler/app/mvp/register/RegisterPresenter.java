@@ -39,6 +39,7 @@ import java.util.regex.Pattern;
 
 import androidx.core.content.ContextCompat;
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 import retrofit2.Response;
 
 import static com.holler.app.activity.ActivitySocialLogin.APP_REQUEST_CODE;
@@ -97,9 +98,12 @@ public class RegisterPresenter {
         userModel
                 .checkEmailExists(credentials.email)
                 .doOnSubscribe(disposable -> view.showSpinner())
-                .doFinally(() -> view.hideSpinner())
+                .flatMap(emailNotExist -> {
+                    verifyByPhone();
+                    return Observable.empty();
+                })
                 .doOnError(throwable -> view.onMessage(throwable.getMessage()))
-                .doOnNext(aBoolean -> verifyByPhone())
+                .doFinally(() -> view.hideSpinner())
                 .subscribe();
     }
 
@@ -169,13 +173,14 @@ public class RegisterPresenter {
                 .doOnSubscribe(disposable -> view.showSpinner())
                 .flatMap(timerFinished -> {
                     return userModel
-                            .login(credentials.email,credentials.password)
-                            .doOnNext(loggedIn -> {
-                                router.goToMainScreen();
-                            });
+                            .login(credentials.email,credentials.password);
                 })
-                .doFinally(() -> view.hideSpinner())
+                .flatMap(loggedIn -> {
+                    router.goToMainScreen();
+                    return Observable.empty();
+                })
                 .doOnError(throwable -> view.onMessage(throwable.getMessage()))
+                .doFinally(() -> view.hideSpinner())
                 .subscribe();
 
 

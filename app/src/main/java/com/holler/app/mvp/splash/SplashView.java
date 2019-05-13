@@ -23,6 +23,7 @@ import com.holler.app.di.app.components.DaggerSplashComponent;
 import com.holler.app.di.app.components.splash.modules.SplashScreenModule;
 import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.utils.CustomActivity;
+import com.orhanobut.logger.Logger;
 
 import javax.inject.Inject;
 
@@ -65,6 +66,8 @@ public class SplashView
                 .next(new RequestPermissionChain(activity,Manifest.permission.SYSTEM_ALERT_WINDOW))
                 .next(new RequestPermissionChain(activity,Manifest.permission.ACCESS_FINE_LOCATION))
                 .next(new RequestPermissionChain(activity,Manifest.permission.INTERNET))
+                .next(new RequestPermissionChain(activity,Manifest.permission.CAMERA))
+                .next(new RequestPermissionChain(activity,Manifest.permission.READ_EXTERNAL_STORAGE))
                 .next(new RequestPermissionChain(activity,CustomActivity.PERMISSION_ENABLE_LOCATION));
 
         chain.call();
@@ -109,8 +112,8 @@ public class SplashView
 
                 @Override
                 public void onPermissionDenied() {
-                    Log.e("AZAZA","permission "+permission+" denied, requesting again");
-                    call();
+                    Logger.d("Permission denied, repeating request");
+                    onGranted();
                 }
             };
 

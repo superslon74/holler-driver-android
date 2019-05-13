@@ -93,10 +93,4 @@ public class EmailView extends CustomActivity implements LoginPresenter.View{
     public void setupFields(LoginPresenter.PendingCredentials credentials) {
         emailView.setText(credentials.getEmail());
     }
-
-    @Override
-    public void onFinish() {
-        finish();
-    }
-
 }

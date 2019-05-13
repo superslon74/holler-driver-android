@@ -42,12 +42,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
+import javax.xml.transform.Source;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import io.reactivex.Completable;
+import io.reactivex.CompletableEmitter;
+import io.reactivex.CompletableObserver;
+import io.reactivex.disposables.Disposable;
 
 public class CustomActivity
         extends AppCompatActivity
@@ -110,7 +116,6 @@ public class CustomActivity
         }
 
     }
-
 
 
     public interface OnActivityResultListener {
@@ -221,6 +226,19 @@ public class CustomActivity
     private static Map<Integer, RequestPermissionHandler> permissionHandlers = new HashMap<>();
     private static Map<String, String> permissionExplanation = new HashMap<>();
 
+    //TODO: to strings
+    static {
+        permissionExplanation.put(Manifest.permission.READ_CONTACTS, "App needs access to contact to provide some feature");
+        permissionExplanation.put(Manifest.permission.ACCESS_FINE_LOCATION, "App needs access to gps");
+        permissionExplanation.put(Manifest.permission.CALL_PHONE, "App needs access to phone calls");
+        permissionExplanation.put(Manifest.permission.SYSTEM_ALERT_WINDOW, "");
+        permissionExplanation.put(Manifest.permission.READ_EXTERNAL_STORAGE, "App needs permissions to read external storage");
+        permissionExplanation.put(Manifest.permission.CAMERA, "App needs permissions to read camera");
+        permissionExplanation.put(Manifest.permission.INTERNET, "");
+        permissionExplanation.put(Manifest.permission.LOCATION_HARDWARE, "App needs permissions to gps");
+        permissionExplanation.put(PERMISSION_ENABLE_LOCATION, "");
+    }
+
     public void checkPermissionAsynchronously(String permission, final RequestPermissionHandler handler) {
 
         final int code = permissionRequestCodes.get(permission);
@@ -241,6 +259,7 @@ public class CustomActivity
                 }
                 break;
             case PERMISSION_ENABLE_LOCATION:
+                //TODO: remove
                 Intent gpsTrackerBinding = new Intent(this, GPSTracker.class);
                 ServiceConnection gpsTrackerConnection = new ServiceConnection() {
                     @Override
@@ -286,13 +305,13 @@ public class CustomActivity
                 }
                 break;
             default:
-                if (ContextCompat
-                        .checkSelfPermission(CustomActivity.this, Manifest.permission.READ_CONTACTS)
-                        != PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(CustomActivity.this, permission) != PackageManager.PERMISSION_GRANTED) {
+                    String explanation = permissionExplanation.get(permission);
 
                     if (ActivityCompat.shouldShowRequestPermissionRationale(CustomActivity.this, permission)) {
-//                TODO: show explanation based on Manifest.permission.<name>
-                        Log.e("AZAZA", "permission explanation needed");
+                        showMessage(explanation)
+                                .doOnComplete(handler::onPermissionDenied)
+                                .subscribe();
                     } else {
                         ActivityCompat.requestPermissions(CustomActivity.this, new String[]{permission}, code);
                     }
@@ -398,18 +417,41 @@ public class CustomActivity
         public abstract void onPermissionDenied();
     }
 
-    public static class RefactoringException extends Exception {
-        public RefactoringException(String message) {
-            super(message);
-        }
 
-        @Override
-        public void printStackTrace() {
-            Log.e("AZAZA", "REFACTORING ERROR: " + getMessage());
-            super.printStackTrace();
-        }
+    @Override
+    public void onMessage(String message) {
+        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT)
+                .setAction("Action", null)
+                .show();
     }
 
+    public Completable showMessage(String message) {
+        return showMessage(message, true);
+    }
+
+    public Completable showMessage(String message, boolean autocancelable) {
+        Completable c = Completable.create(emitter -> {
+
+            Snackbar snackbar = Snackbar
+                    .make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG)
+                    .addCallback(new Snackbar.Callback() {
+                        @Override
+                        public void onDismissed(Snackbar transientBottomBar, int event) {
+                            super.onDismissed(transientBottomBar, event);
+                            emitter.onComplete();
+                        }
+                    });
+
+            snackbar.setAction("Close", v -> {
+                snackbar.dismiss();
+            });
+
+            snackbar.show();
+
+        });
+
+        return c;
+    }
 
     private void initKeyboardObserver() {
         final int MIN_KEYBOARD_HEIGHT_PX = 150;
@@ -443,15 +485,6 @@ public class CustomActivity
             }
         });
     }
-
-
-    @Override
-    public void onMessage(String message) {
-        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT)
-                .setAction("Action", null)
-                .show();
-    }
-
 
     @Override
     public void onKeyboardShown() {

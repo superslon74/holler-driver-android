@@ -28,6 +28,9 @@ import java.util.Date;
 
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class DocumentsListItem extends Fragment {
@@ -40,9 +43,12 @@ public class DocumentsListItem extends Fragment {
 
     private OnDocumentViewInteractions mListener;
 
-    private CircleImageView imageView;
-    private TextView documentNameView;
-    private TextView fileNameView;
+    @BindView(R.id.document_icon)
+    protected CircleImageView imageView;
+    @BindView(R.id.document_name_text)
+    protected TextView documentNameView;
+    @BindView(R.id.file_name_text)
+    protected TextView fileNameView;
 
     private File capturedPhoto;
 
@@ -69,58 +75,17 @@ public class DocumentsListItem extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_documents_list_item, container, false);
-        imageView = view.findViewById(R.id.document_icon);
-        documentNameView = view.findViewById(R.id.document_name_text);
-        fileNameView = view.findViewById(R.id.file_name_text);
+        ButterKnife.bind(this,view);
 
         setupView();
-
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               checkCameraPermission();
-            }
-        });
 
         return view;
     }
 
-    private void checkCameraPermission(){
-        final CustomActivity activity = (CustomActivity) getActivity();
-        String permission = Manifest.permission.CAMERA;
-        CustomActivity.RequestPermissionHandler handler = new CustomActivity.RequestPermissionHandler() {
-            @Override
-            public void onPermissionGranted() {
-                checkStoragePermission();
-            }
-
-            @Override
-            public void onPermissionDenied() {
-                checkCameraPermission();
-            }
-        };
-        activity.checkPermissionAsynchronously(permission,handler);
-    }
-
-    private void checkStoragePermission(){
-        final CustomActivity activity = (CustomActivity) getActivity();
-        String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
-        CustomActivity.RequestPermissionHandler handler = new CustomActivity.RequestPermissionHandler() {
-            @Override
-            public void onPermissionGranted() {
-                pickImage();
-            }
-
-            @Override
-            public void onPermissionDenied() {
-                checkCameraPermission();
-            }
-        };
-        activity.checkPermissionAsynchronously(permission,handler);
-    }
 
 
-    private void pickImage() {
+    @OnClick(R.id.document_icon)
+    protected void pickImage() {
 
         Intent pickIntent = new Intent(Intent.ACTION_PICK);
         pickIntent.setType("image/*");
@@ -143,19 +108,13 @@ public class DocumentsListItem extends Fragment {
             chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent, captureIntent});
 
         } catch (Exception ex) {
-            ex.printStackTrace();
             chooserIntent = Intent.createChooser(new Intent(), "Select Image");
             chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
         }
 
         final Fragment self = this;
         final CustomActivity activity = (CustomActivity)getActivity();
-        activity.startActivityForResult(chooserIntent, CHOOSE_FILE_REQUEST_CODE, new CustomActivity.OnActivityResultListener() {
-            @Override
-            public void onActivityResult(int requestCode, int resultCode, Intent data) {
-                self.onActivityResult(requestCode,resultCode,data);
-            }
-        });
+        activity.startActivityForResult(chooserIntent, CHOOSE_FILE_REQUEST_CODE, self::onActivityResult);
     }
 
     @Override

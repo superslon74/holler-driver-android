@@ -13,15 +13,18 @@
         android:id="@+id/of_message"
         style="@style/OF_Header_Text"
         android:fontFamily="@font/montserrat_bold"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/os_request_message"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"/>
 
     <ImageView
         android:id="@+id/of_marker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingBottom="2dp"
         android:src="@drawable/ic_marker_white"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/of_message" />
@@ -31,10 +34,12 @@
         style="@style/OF_Header_Description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
         android:text="Pinhas Lavos 35, Tel Aviv"
         app:layout_constraintLeft_toRightOf="@id/of_marker"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/of_message" />
+        app:layout_constraintBottom_toBottomOf="@id/of_marker" />
 
     <Button
         android:id="@+id/of_button_cancel"

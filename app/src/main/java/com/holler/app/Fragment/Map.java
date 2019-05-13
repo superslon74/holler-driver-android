@@ -84,7 +84,6 @@ import com.google.android.gms.common.api.Status;
 import com.holler.app.server.OrderServerApi;
 import com.holler.app.utils.CustomActivity;
 import com.holler.app.utils.CustomActivity.RequestPermissionHandler;
-import com.holler.app.utils.CustomActivity.RefactoringException;
 import com.holler.app.utils.GPSTracker;
 import com.squareup.picasso.Picasso;
 import com.holler.app.activity.MainActivity;
@@ -888,21 +887,7 @@ public class Map
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case 1:
-                Exception e1 = new RefactoringException("should invoke initializeMapOnPermissionGranted() instead");
-                e1.printStackTrace();
-                break;
-            case 2:
-                Exception e2 = new RefactoringException("should invoke makeCallOnPermissionGranted() instead");
-                e2.printStackTrace();
-                break;
-            case 3:
-                Exception e3 = new RefactoringException("should invoke makeHelpCallOnPermissionGranted() instead");
-                e3.printStackTrace();
-                break;
-            default:
-        }
+
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 

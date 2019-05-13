@@ -13,6 +13,7 @@ import com.holler.app.di.app.modules.UserStorageModule;
 import com.holler.app.mvp.main.UserModel;
 import com.holler.app.mvp.register.RegisterPresenter;
 import com.holler.app.server.OrderServerApi;
+import com.holler.app.utils.Finishable;
 import com.holler.app.utils.MessageDisplayer;
 import com.holler.app.utils.SpinnerShower;
 import com.holler.app.utils.Validator;
@@ -60,7 +61,7 @@ public class LoginPresenter {
         Throwable validationResult = Validator.validateEmail(credentials.email);
         if(validationResult==null){
             router.goToPasswordScreen();
-            view.onFinish();
+            view.finish();
         }else{
             view.onMessage(validationResult.getMessage());
         }
@@ -68,7 +69,7 @@ public class LoginPresenter {
 
     public void goToEmailView(PendingCredentials newCredentials){
         credentials.merge(newCredentials);
-        view.onFinish();
+        view.finish();
         router.goToEmailScreen();
     }
 
@@ -101,18 +102,18 @@ public class LoginPresenter {
 
     public void goToWelcomeView() {
         credentials.clear();
-        view.onFinish();
+        view.finish();
         router.goToWelcomeScreen();
     }
 
     public void goToRegisterView() {
         router.goToRegisterScreen();
-        view.onFinish();
+        view.finish();
     }
 
     public void goToForgotPasswordView() {
         router.goToForgotPasswordScreen();
-        view.onFinish();
+        view.finish();
     }
 
     public static class PendingCredentials{
@@ -145,8 +146,7 @@ public class LoginPresenter {
         }
     }
 
-    public interface View extends SpinnerShower, MessageDisplayer {
+    public interface View extends SpinnerShower, MessageDisplayer, Finishable {
         void setupFields(PendingCredentials credentials);
-        void onFinish();
     }
 }

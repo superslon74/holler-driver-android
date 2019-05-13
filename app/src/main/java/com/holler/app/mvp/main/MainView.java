@@ -39,6 +39,7 @@ import javax.inject.Inject;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -152,17 +153,17 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         Glide
                 .with(MainView.this)
                 .load(avatarUrl)
-                .error(R.drawable.splash_drawable_bottom)
+                .error(R.drawable.avatar)
                 .into(headerViewHolder.userPhotoView);
 
     }
 
     @OnClick(R.id.ma_map_nav_open_button)
     public void toggleNavigationMenu() {
-        if (drawerView.isDrawerOpen(Gravity.LEFT)) {
+        if (drawerView.isDrawerOpen(GravityCompat.START)) {
             drawerView.closeDrawers();
         } else {
-            drawerView.openDrawer(Gravity.LEFT);
+            drawerView.openDrawer(GravityCompat.START);
         }
     }
 
@@ -421,6 +422,7 @@ public class MainView extends CustomActivity implements MainPresenter.View {
 
     @Override
     public void setRidingState() {
+        fragmentRouter.closeOffline();
         runOnUiThread(() -> {
             offlineStatusTooggle.setRiding();
             headerViewHolder.statusToggle.setRiding();

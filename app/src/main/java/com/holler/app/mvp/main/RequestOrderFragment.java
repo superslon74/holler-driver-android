@@ -30,12 +30,15 @@ public class RequestOrderFragment extends Fragment{
     public ProgressBar progressbar;
     @BindView(R.id.of_progress_counter)
     public TextView counterView;
+    @BindView(R.id.of_message)
+    public TextView bigAddressView;
     @BindView(R.id.of_address)
-    public TextView addressView;
+    public TextView smallAddressView;
     
     public Subject<Boolean> source;
     private CountDownTimer timer;
-    private String address;
+    private String addressBig;
+    private String addressSmall;
     private int time = 0;
 
     public RequestOrderFragment() {
@@ -43,21 +46,26 @@ public class RequestOrderFragment extends Fragment{
     }
 
 
-    private static final String ARG_ADDRESS = "address";
+    private static final String ARG_ADDRESS_BIG = "address_big";
+    private static final String ARG_ADDRESS_SMALL = "address_small";
     private static final String ARG_TIME = "time";
 
     public static RequestOrderFragment newInstance(String address, int time) {
         RequestOrderFragment fragment = new RequestOrderFragment();
         Bundle args = new Bundle();
         String[] addressValues = address.split(",");
-        String parsedAddress = "";
+        String street = "";
+        String town = "";
         try{
-            parsedAddress = addressValues[0]+", "+addressValues[1]+", "+addressValues[2];
+            street = addressValues[0]+", "+addressValues[1];
+            town = addressValues[2];
         }catch (IndexOutOfBoundsException e){
-            parsedAddress = AndarApplication.getInstance().getApplicationContext().getString(R.string.something_went_wrong);
+            street = AndarApplication.getInstance().getApplicationContext().getString(R.string.something_went_wrong);
+            town = AndarApplication.getInstance().getApplicationContext().getString(R.string.something_went_wrong);
             Logger.e("Wrong address..",e);
         }
-        args.putString(ARG_ADDRESS, parsedAddress);
+        args.putString(ARG_ADDRESS_BIG, street);
+        args.putString(ARG_ADDRESS_SMALL, town);
         args.putInt(ARG_TIME, time);
         fragment.setArguments(args);
         return fragment;
@@ -69,7 +77,8 @@ public class RequestOrderFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            address = getArguments().getString(ARG_ADDRESS);
+            addressBig = getArguments().getString(ARG_ADDRESS_BIG);
+            addressSmall = getArguments().getString(ARG_ADDRESS_SMALL);
             time = getArguments().getInt(ARG_TIME);
         }
     }
@@ -79,7 +88,8 @@ public class RequestOrderFragment extends Fragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_map_order_request, container, false);
         ButterKnife.bind(this,view);
-        addressView.setText(address);
+        bigAddressView.setText(addressBig);
+        smallAddressView.setText(addressSmall);
         initTimer(time);
 
         return view;

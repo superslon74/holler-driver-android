@@ -95,9 +95,4 @@ public class PasswordView extends CustomActivity implements LoginPresenter.View 
         passwordView.setText(credentials.getPassword());
     }
 
-    @Override
-    public void onFinish() {
-        finish();
-    }
-
 }

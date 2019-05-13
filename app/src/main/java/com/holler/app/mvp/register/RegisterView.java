@@ -152,21 +152,8 @@ public class RegisterView
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PHONE_VERIFICATION_REQUEST_CODE) {
             if(data == null){
-                onMessage("Verification failed");
+                onMessage(getBaseContext().getString(R.string.error_account_kit_verification));
                 return;
-            }
-            AccountKitLoginResult verificationResult = data.getParcelableExtra(AccountKitLoginResult.RESULT_KEY);
-            //TODO: remove
-            if (verificationResult != null) {
-                SharedHelper.putKey(this, "account_kit", getString(R.string.True));
-            } else {
-                SharedHelper.putKey(this, "account_kit", getString(R.string.False));
-            }
-            if(verificationResult!=null && verificationResult.getAccessToken() != null){
-                String accountKitAccessToken = verificationResult.getAccessToken().toString();
-                SharedHelper.putKey(this, "account_kit", accountKitAccessToken);
-            }else{
-                SharedHelper.putKey(this, "account_kit", "");
             }
 
 
