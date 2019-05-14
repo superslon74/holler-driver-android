@@ -17,6 +17,7 @@ import com.holler.app.di.app.modules.UserStorageModule;
 import com.holler.app.mvp.main.OrderModel;
 import com.holler.app.mvp.main.UserModel;
 import com.holler.app.mvp.welcome.WelcomeView;
+import com.holler.app.utils.FragmentHeaderMini;
 import com.holler.app.utils.GPSTracker;
 
 import javax.inject.Singleton;
@@ -40,6 +41,7 @@ public interface AppComponent {
     void inject(GPSTracker tracker);
 
     void inject(WelcomeView welcomeView);
+    void inject(FragmentHeaderMini headerMiniView);
     //TODO: remove shit above
     void inject(Map mapFragment);
     void inject(Offline offlineFragment);

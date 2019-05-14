@@ -75,22 +75,20 @@ public class SplashPresenter implements Presenter {
 
         userModel
                 .login()
-//                .doOnSubscribe(disposable -> view.showSpinner())
                 .flatMap(isLogged -> {
                     return GPSTracker.serviceConnection(context);
                 })
                 .flatMap(service -> {
                     service.startTracking();
-                    router.goToMainScreen();
+                    //TODO: test
+                    router.goToEditProfileScreen();
+//                    router.goToMainScreen();
                     return Observable.empty();
                 })
                 .doOnError(throwable -> {
                     throwable.printStackTrace();
                     router.goToWelcomeScreen();
                 })
-//                .doOnComplete(() -> view.hideSpinner())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
                 .subscribe();
     }
 

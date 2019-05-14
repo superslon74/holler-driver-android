@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string translatable="false" name="epas_title">Edit Profile</string>
+
+    <string translatable="false" name="epas_last_name_caption">Last Name</string>
+    <string translatable="false" name="epas_first_name_caption">First Name</string>
+    <string translatable="false" name="epas_gender_caption">Gender</string>
+
+    <string translatable="false" name="epas_gender_option_male">Male</string>
+    <string translatable="false" name="epas_gender_option_female">Female</string>
+
+    <string translatable="false" name="epas_phone_caption">Phone</string>
+
+
+</resources>

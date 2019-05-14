@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <declare-styleable name="FragmentHeaderMini">
+        <attr name="hm_title" format="reference|string" />
+    </declare-styleable>
+
     <attr name="ciii_image" format="reference"/>
 
     <declare-styleable name="UserStatusToggle">

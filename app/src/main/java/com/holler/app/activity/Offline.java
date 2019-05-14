@@ -34,7 +34,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import javax.inject.Inject;
 
-
+@Deprecated
 public class Offline extends Fragment {
 
     Activity activity;

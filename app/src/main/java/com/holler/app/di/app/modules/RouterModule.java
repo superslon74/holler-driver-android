@@ -5,14 +5,16 @@ import android.content.Intent;
 
 import com.holler.app.activity.ActivitySocialLogin;
 import com.holler.app.activity.DocumentsActivity;
-import com.holler.app.activity.MainActivity;
 import com.holler.app.mvp.login.EmailView;
 import com.holler.app.mvp.login.PasswordView;
 import com.holler.app.mvp.main.MainView;
 import com.holler.app.mvp.password.ChangePasswordView;
 import com.holler.app.mvp.password.ForgotPasswordView;
+import com.holler.app.mvp.profile.EditProfileView;
 import com.holler.app.mvp.register.RegisterView;
 import com.holler.app.mvp.welcome.WelcomeView;
+
+import java.util.Stack;
 
 import javax.inject.Singleton;
 
@@ -31,20 +33,31 @@ public class RouterModule {
 
     public class Router {
         private Context context;
+        private Stack<Intent> routingHistory;
 
         public Router(Context context) {
             this.context = context;
+            routingHistory = new Stack<>();
         }
 
         public void goToWelcomeScreen(){
             Intent i = new Intent(context, WelcomeView.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            saveToHistory(i);
             context.startActivity(i);
         }
 
         public void goToMainScreen(){
             Intent i = new Intent(context, MainView.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            saveToHistory(i);
+            context.startActivity(i);
+        }
+
+        public void goToEditProfileScreen(){
+            Intent i = new Intent(context, EditProfileView.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            saveToHistory(i);
             context.startActivity(i);
         }
 
@@ -52,6 +65,7 @@ public class RouterModule {
         public void goToLoginScreen(){
             Intent i = new Intent(context, EmailView.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            saveToHistory(i);
             context.startActivity(i);
         }
 
@@ -59,6 +73,7 @@ public class RouterModule {
             Intent i = new Intent(context, RegisterView.class);
             i.putExtra("signup", true).putExtra("viewpager", "yes");
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            saveToHistory(i);
             context.startActivity(i);
         }
 
@@ -66,37 +81,52 @@ public class RouterModule {
         public void gotoSocialLogin(){
             Intent i = new Intent(context, ActivitySocialLogin.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            saveToHistory(i);
             context.startActivity(i);
         }
 
         public void goToPasswordScreen(){
             Intent i = new Intent(context, PasswordView.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            saveToHistory(i);
             context.startActivity(i);
         }
 
         public void goToEmailScreen(){
             Intent i = new Intent(context, EmailView.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            saveToHistory(i);
             context.startActivity(i);
         }
 
         public void goToForgotPasswordScreen(){
             Intent i = new Intent(context, ForgotPasswordView.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            saveToHistory(i);
             context.startActivity(i);
         }
 
         public void goToChangePasswordScreen() {
             Intent i = new Intent(context, ChangePasswordView.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            saveToHistory(i);
             context.startActivity(i);
         }
 
         public void goToDocuments() {
             Intent i = new Intent(context, DocumentsActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            saveToHistory(i);
             context.startActivity(i);
+        }
+
+        public void goBack(){
+            Intent i = routingHistory.pop();
+            context.startActivity(i);
+        }
+
+        private void saveToHistory(Intent i){
+            routingHistory.push(i);
         }
     }
 

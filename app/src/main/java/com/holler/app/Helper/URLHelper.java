@@ -1,6 +1,6 @@
 package com.holler.app.Helper;
 
-
+@Deprecated
 public class URLHelper {
     public static final String base = "https://api.holler.taxi/";
     //public static final String base = "http://6586b14b.ngrok.io/";

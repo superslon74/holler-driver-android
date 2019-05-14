@@ -67,6 +67,7 @@ import androidx.core.content.ContextCompat;
 
 import static com.holler.app.AndarApplication.trimMessage;
 
+@Deprecated
 public class EditProfile extends CustomActivity implements RadioGroup.OnCheckedChangeListener {
 
     private static final String TAG = "EditProfile";

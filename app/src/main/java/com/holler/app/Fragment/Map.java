@@ -140,6 +140,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 
 
+@Deprecated
 public class Map
         extends Fragment
         implements
