@@ -56,13 +56,19 @@ public class RequestOrderFragment extends Fragment{
         String[] addressValues = address.split(",");
         String street = "";
         String town = "";
-        try{
-            street = addressValues[0]+", "+addressValues[1];
-            town = addressValues[2];
-        }catch (IndexOutOfBoundsException e){
-            street = AndarApplication.getInstance().getApplicationContext().getString(R.string.something_went_wrong);
-            town = AndarApplication.getInstance().getApplicationContext().getString(R.string.something_went_wrong);
-            Logger.e("Wrong address..",e);
+        switch (addressValues.length){
+            case 2:
+                street = addressValues[0];
+                town = addressValues[1];
+                break;
+            case 3:
+                street = addressValues[0]+", "+addressValues[1];
+                town = addressValues[2];
+                break;
+            default:
+                street = AndarApplication.getInstance().getApplicationContext().getString(R.string.something_went_wrong);
+                town = AndarApplication.getInstance().getApplicationContext().getString(R.string.something_went_wrong);
+                break;
         }
         args.putString(ARG_ADDRESS_BIG, street);
         args.putString(ARG_ADDRESS_SMALL, town);

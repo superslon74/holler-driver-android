@@ -13,7 +13,9 @@ import com.holler.app.mvp.password.ForgotPasswordView;
 import com.holler.app.mvp.profile.EditProfileView;
 import com.holler.app.mvp.register.RegisterView;
 import com.holler.app.mvp.welcome.WelcomeView;
+import com.orhanobut.logger.Logger;
 
+import java.util.EmptyStackException;
 import java.util.Stack;
 
 import javax.inject.Singleton;
@@ -113,7 +115,7 @@ public class RouterModule {
             context.startActivity(i);
         }
 
-        public void goToDocuments() {
+        public void goToDocumentsScreen() {
             Intent i = new Intent(context, DocumentsActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             saveToHistory(i);
@@ -121,11 +123,21 @@ public class RouterModule {
         }
 
         public void goBack(){
-            Intent i = routingHistory.pop();
-            context.startActivity(i);
+            try {
+                Intent last = routingHistory.pop();
+                if(last.equals(currentIntent))
+                    last = routingHistory.pop();
+                currentIntent=last;
+                context.startActivity(last);
+            }catch (EmptyStackException e){
+                Logger.e("Can't go back");
+            }
         }
 
+        private Intent currentIntent;
+
         private void saveToHistory(Intent i){
+            currentIntent = i;
             routingHistory.push(i);
         }
     }

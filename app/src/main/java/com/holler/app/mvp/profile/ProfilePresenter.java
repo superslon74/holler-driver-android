@@ -2,6 +2,7 @@ package com.holler.app.mvp.profile;
 
 import android.content.Context;
 
+import com.holler.app.di.User;
 import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.mvp.main.UserModel;
 import com.holler.app.utils.Finishable;
@@ -24,9 +25,37 @@ public class ProfilePresenter {
         this.view = view;
         this.router = router;
         this.userModel = userModel;
+
     }
 
-    public interface View extends SpinnerShower, MessageDisplayer, Finishable {
+    public void init(){
+        view.setFields(userModel.getProfileData());
+    }
 
+    public void goToForgotPassword() {
+        router.goToForgotPasswordScreen();
+    }
+
+    public void sendChanges(String avatar, String firstName, String lastName, String gender) {
+        User profileData = userModel.getProfileData();
+
+        profileData.avatar = avatar;
+        profileData.firstName = firstName;
+        profileData.lastName = lastName;
+        profileData.gender=gender;
+
+        userModel
+                .updateProfile(profileData)
+                .doOnSubscribe(disposable -> view.showSpinner())
+                .doOnNext(profileChanged -> {
+                    view.setFields(userModel.getProfileData());
+                })
+                .doFinally(() -> {view.hideSpinner();})
+                .subscribe();
+    }
+
+
+    public interface View extends SpinnerShower, MessageDisplayer, Finishable {
+        void setFields(User user);
     }
 }

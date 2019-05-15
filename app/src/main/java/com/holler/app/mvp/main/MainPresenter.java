@@ -3,7 +3,6 @@ package com.holler.app.mvp.main;
 import android.content.Context;
 import android.location.Location;
 
-import com.google.gson.JsonArray;
 import com.holler.app.R;
 import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.di.app.modules.RouterModule;
@@ -15,7 +14,6 @@ import com.holler.app.utils.SpinnerShower;
 import com.orhanobut.logger.Logger;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
@@ -58,7 +56,7 @@ public class MainPresenter {
                     return statusRequesting();
                 })
                 .flatMap(checkStatusResponse -> {
-                    Logger.d(checkStatusResponse.toString());
+//                    Logger.d(checkStatusResponse.toString());
                     userModel.updateStatus(checkStatusResponse);
                     orderModel.updateRequestOrder(checkStatusResponse.requests);
                     processStatus(checkStatusResponse);
@@ -109,31 +107,31 @@ public class MainPresenter {
                         new HashMap<OrderModel.Status, FiniteStateMachine.State>() {{
                             put(OrderModel.Status.SEARCHING, () -> {
                                 view.setSearchingState(orderModel.createOrderFromRequest(currentRequest));
-                                Logger.w("enter order SEARCHING");
+//                                Logger.w("enter order SEARCHING");
                             });
                             put(OrderModel.Status.STARTED, () -> {
                                 view.setStartedState(orderModel.createOrderFromRequest(currentRequest));
-                                Logger.w("enter order STARTED");
+//                                Logger.w("enter order STARTED");
                             });
                             put(OrderModel.Status.COMPLETED, () -> {
                                 view.setCompletedState(orderModel.createOrderFromRequest(currentRequest));
-                                Logger.w("enter order COMPLETED");
+//                                Logger.w("enter order COMPLETED");
                             });
                             put(OrderModel.Status.RATE, () -> {
                                 view.setRateState(orderModel.createOrderFromRequest(currentRequest));
-                                Logger.w("enter order RATE");
+//                                Logger.w("enter order RATE");
                             });
                         }}) {
                     @Override
                     public void onPrepare() {
-                        Logger.w("prepare service RIDING");
+//                        Logger.w("prepare service RIDING");
                         currentState=null;
                         view.setRidingState();
                     }
 
                     @Override
                     public void onEnter() {
-                        Logger.w("enter service RIDING");
+//                        Logger.w("enter service RIDING");
                         processStatus(currentOrderStatus);
                     }
                 };
@@ -143,24 +141,24 @@ public class MainPresenter {
                         new HashMap<UserModel.Status.ServiceStatus, FiniteStateMachine.State>() {{
                             put(UserModel.Status.ServiceStatus.ONLINE, () -> {
                                 view.setOnlineState();
-                                Logger.w("enter service ONLINE");
+//                                Logger.w("enter service ONLINE");
                             });
                             put(UserModel.Status.ServiceStatus.OFFLINE, () -> {
                                 view.setOfflineState();
-                                Logger.w("enter service OFFLINE");
+//                                Logger.w("enter service OFFLINE");
                             });
                             put(UserModel.Status.ServiceStatus.RIDING, order);
                         }}) {
                     @Override
                     public void onPrepare() {
-                        Logger.w("prepare account APPROVED");
+//                        Logger.w("prepare account APPROVED");
                         view.setApprovedState();
                         currentState = null;
                     }
 
                     @Override
                     public void onEnter() {
-                        Logger.w("enter account APPROVED");
+//                        Logger.w("enter account APPROVED");
                         processStatus(currentServiceStatus);
                     }
                 };
@@ -169,16 +167,16 @@ public class MainPresenter {
                 new FiniteStateMachine.StateOwner<UserModel.Status.AccountStatus>(
                         new HashMap<UserModel.Status.AccountStatus, FiniteStateMachine.State>() {{
                             put(UserModel.Status.AccountStatus.NEW, () -> {
-                                router.goToDocuments();
-                                Logger.w("enter account NEW");
+                                router.goToDocumentsScreen();
+//                                Logger.w("enter account NEW");
                             });
                             put(UserModel.Status.AccountStatus.DISAPPROVED, () -> {
-                                router.goToDocuments();
-                                Logger.w("enter account DISAPPROVED");
+                                router.goToDocumentsScreen();
+//                                Logger.w("enter account DISAPPROVED");
                             });
                             put(UserModel.Status.AccountStatus.BLOCKED, () -> {
                                 view.setBlockedState();
-                                Logger.w("enter account BLOCKED");
+//                                Logger.w("enter account BLOCKED");
                             });
                             put(UserModel.Status.AccountStatus.APPROVED, service);
                         }}) {
@@ -189,7 +187,7 @@ public class MainPresenter {
 
                     @Override
                     public void onEnter() {
-                        Logger.w("enter state machine");
+//                        Logger.w("enter state machine");
                         processStatus(currentAccountStatus);
                     }
                 };
@@ -271,6 +269,16 @@ public class MainPresenter {
         currentServiceStatus = null;
         currentOrderStatus = null;
         account.resetState();
+    }
+
+    public void goToEditProfileScreen() {
+        router.goToEditProfileScreen();
+        view.finish();
+    }
+
+    public void goToDocumentsScreen() {
+        router.goToDocumentsScreen();
+        view.finish();
     }
 
     public interface View extends SpinnerShower, MessageDisplayer, Finishable {

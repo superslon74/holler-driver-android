@@ -456,12 +456,7 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         }
 
         public void openProfile() {
-//            Intent i = new Intent(MainView.this, ShowProfile.class);
-//            i.putExtra("user", presenter.userModel.getProfileData());
-//            startActivity(i);
-            Intent i = new Intent(MainView.this, EditProfile.class);
-            startActivity(i);
-//            finish();
+            presenter.goToEditProfileScreen();
         }
 
         public void openHelp() {
@@ -494,9 +489,8 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         }
 
         public void openDocuments() {
-            Intent i = new Intent(MainView.this, DocumentsActivity.class);
-            startActivity(i);
-            finish();
+            presenter.goToDocumentsScreen();
+
         }
 
         public void openTrips() {

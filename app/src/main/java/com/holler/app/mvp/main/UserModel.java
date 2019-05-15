@@ -1,6 +1,7 @@
 package com.holler.app.mvp.main;
 
 import android.content.Context;
+import android.net.wifi.aware.WifiAwareSession;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -15,6 +16,7 @@ import com.holler.app.di.app.modules.UserStorageModule;
 import com.holler.app.mvp.register.RegisterPresenter;
 import com.orhanobut.logger.Logger;
 
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
@@ -29,6 +31,9 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.HttpException;
 import retrofit2.Response;
 
@@ -57,6 +62,50 @@ public class UserModel {
 
     public void clearState() {
         currentStatus=new Status();
+    }
+
+    public Subject<Boolean> updateProfile(User profile) {
+        Subject<Boolean> source = PublishSubject.create();
+
+        MultipartBody.Part fileData;
+        if(profile.avatar!=null){
+            File photo = new File(profile.avatar);
+            RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), photo);
+            String filename = photo.getName();
+            fileData = MultipartBody.Part.createFormData("avatar", filename, requestFile);
+        }else{
+            fileData = MultipartBody.Part.createFormData("avatar","");
+        }
+
+        serverAPI
+                .updateProfile(
+                        getAuthHeader(),
+                        profile.firstName,
+                        profile.lastName,
+                        profile.email,
+                        profile.mobile,
+                        profile.gender,
+                        fileData
+                )
+                .flatMap(jsonObject -> {
+                    return serverAPI.getUserProfile(getAuthHeader())
+                            .doOnSuccess(user1 -> {
+                                userStorage.putUser(user1);
+                            });
+                })
+                .doOnSuccess(jsonObject -> {
+                    source.onNext(true);
+                    source.onComplete();
+                })
+                .doOnError(throwable -> {
+                    source.onError(throwable);
+                    source.onComplete();
+                })
+                .subscribe();
+
+
+
+        return source;
     }
 
     public static class Status {

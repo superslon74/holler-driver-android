@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.holler.app.Helper.URLHelper;
+import com.holler.app.activity.DocumentsActivity;
 import com.holler.app.di.User;
 import com.holler.app.mvp.main.OrderModel;
 import com.holler.app.server.OrderServerApi;
@@ -30,8 +31,10 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.ConnectionPool;
 import okhttp3.EventListener;
 import okhttp3.Interceptor;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -45,7 +48,9 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.HeaderMap;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -130,6 +135,7 @@ public class RetrofitModule {
         Single<AccessTokenResponseBody> getAccessToken(
                 @Body AccessTokenRequestBody user
         );
+
 
         class AccessTokenRequestBody {
             @Expose
@@ -562,6 +568,23 @@ public class RetrofitModule {
                 this.id = id;
             }
         }
+
+        //profile
+        @Multipart
+        @POST("api/provider/profile")
+        Single<JsonObject> updateProfile(
+                @Header(HEADER_KEY_AUTHORIZATION) String authHeader,
+                @Part("first_name") String fn,
+                @Part("last_name") String ln,
+                @Part("email") String e,
+                @Part("mobile") String m,
+                @Part("gender") String g,
+                @Part MultipartBody.Part avatar
+        );
+
+
+
+
         //trash
 
 

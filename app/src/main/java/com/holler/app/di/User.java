@@ -5,8 +5,13 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.holler.app.di.app.modules.RetrofitModule;
 
 public class User implements Parcelable {
+    public static final String GENDER_MALE="MALE";
+    public static final String GENDER_FEMALE="FEMALE";
+
+
     @Expose
     @SerializedName("id")
     public String id;
@@ -144,5 +149,12 @@ public class User implements Parcelable {
         return "$";
     }
 
+    public String getAvatarUrl(){
+        return RetrofitModule.ServerAPI.BASE_URL + "storage/" + this.avatar;
+    }
+
+    public boolean isMale(){
+        return GENDER_MALE.equals(gender);
+    }
 
 }

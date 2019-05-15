@@ -9,7 +9,11 @@
     <string translatable="false" name="epas_gender_option_male">Male</string>
     <string translatable="false" name="epas_gender_option_female">Female</string>
 
-    <string translatable="false" name="epas_phone_caption">Phone</string>
+    <string translatable="false" name="epas_phone_caption">Phone number</string>
+    <string translatable="false" name="epas_email_caption">Email</string>
+    <string translatable="false" name="epas_service_caption">Service</string>
 
+    <string translatable="false" name="epas_button_save">Save</string>
+    <string translatable="false" name="epas_button_changePassword">Looking for change password</string>
 
 </resources>

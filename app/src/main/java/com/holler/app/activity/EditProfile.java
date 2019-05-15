@@ -217,7 +217,6 @@ public class EditProfile extends CustomActivity implements RadioGroup.OnCheckedC
                     }
                     setProviderDetails();
 
-
                 }
             }, new Response.ErrorListener() {
                 @Override

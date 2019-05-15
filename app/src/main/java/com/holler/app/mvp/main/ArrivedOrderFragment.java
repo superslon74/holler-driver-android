@@ -49,13 +49,19 @@ public class ArrivedOrderFragment extends Fragment {
         String[] addressValues = address.split(",");
         String addressBig = "";
         String addressSmall = "";
-        try{
-            addressBig = addressValues[0]+", "+addressValues[1];
-            addressSmall = addressValues[2];
-        }catch (IndexOutOfBoundsException e){
-            addressBig = AndarApplication.getInstance().getApplicationContext().getString(R.string.something_went_wrong);
-            addressSmall = "";
-            Logger.e("Wrong address..",e);
+        switch (addressValues.length){
+            case 2:
+                addressBig = addressValues[0];
+                addressSmall = addressValues[1];
+                break;
+            case 3:
+                addressBig = addressValues[0]+", "+addressValues[1];
+                addressSmall = addressValues[2];
+                break;
+            default:
+                addressBig = AndarApplication.getInstance().getApplicationContext().getString(R.string.something_went_wrong);
+                addressSmall = AndarApplication.getInstance().getApplicationContext().getString(R.string.something_went_wrong);
+                break;
         }
         args.putString(ARG_ADDRESS, address);
         args.putString(ARG_ADDRESS_BIG, addressBig);

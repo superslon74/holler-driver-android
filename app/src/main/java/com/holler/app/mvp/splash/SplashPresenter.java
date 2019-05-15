@@ -81,8 +81,8 @@ public class SplashPresenter implements Presenter {
                 .flatMap(service -> {
                     service.startTracking();
                     //TODO: test
-                    router.goToEditProfileScreen();
-//                    router.goToMainScreen();
+//                    router.goToEditProfileScreen();
+                    router.goToMainScreen();
                     return Observable.empty();
                 })
                 .doOnError(throwable -> {
