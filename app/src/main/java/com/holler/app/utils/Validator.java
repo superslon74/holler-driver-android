@@ -26,6 +26,8 @@ public class Validator {
 
     public static final Throwable VALIDATION_ERROR_NAME_EMPTY =
             createByStringResId(R.string.error_validation_name_empty);
+    public static final Throwable VALIDATION_ERROR_NAME =
+            createByStringResId(R.string.error_validation_name);
 
     public static final Throwable VALIDATION_ERROR_OTP_MISMATCHED =
             createByStringResId(R.string.error_validation_otp_empty);
@@ -33,6 +35,7 @@ public class Validator {
             createByStringResId(R.string.error_validation_otp_mismatched);
 
     public static final Pattern PASSWORD_PATTERN = Pattern.compile("(?=.*[a-z])(?=.*[\\d]).{8,16}");
+    public static final Pattern NAME_PATTERN = Pattern.compile("\\p{L}+");
     public static final Pattern EMAIL_PATTERN = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
 
 
@@ -75,7 +78,8 @@ public class Validator {
     public static Throwable validateName(String name) {
         if(name==null || name.length()==0)
             return VALIDATION_ERROR_NAME_EMPTY;
-
+        if(!NAME_PATTERN.matcher(name).matches())
+            return VALIDATION_ERROR_NAME;
         return null;
 
     }

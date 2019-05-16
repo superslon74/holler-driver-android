@@ -128,6 +128,7 @@ public class RouterModule {
                 if(last.equals(currentIntent))
                     last = routingHistory.pop();
                 currentIntent=last;
+                saveToHistory(last);
                 context.startActivity(last);
             }catch (EmptyStackException e){
                 Logger.e("Can't go back");

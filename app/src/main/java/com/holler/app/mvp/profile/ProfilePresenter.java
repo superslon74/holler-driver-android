@@ -8,6 +8,7 @@ import com.holler.app.mvp.main.UserModel;
 import com.holler.app.utils.Finishable;
 import com.holler.app.utils.MessageDisplayer;
 import com.holler.app.utils.SpinnerShower;
+import com.holler.app.utils.Validator;
 
 public class ProfilePresenter {
 
@@ -43,6 +44,17 @@ public class ProfilePresenter {
         profileData.firstName = firstName;
         profileData.lastName = lastName;
         profileData.gender=gender;
+
+        Throwable firstNameValidationResult = Validator.validateName(firstName);
+        if(firstNameValidationResult!=null){
+            view.onMessage(firstNameValidationResult.getMessage());
+            return;
+        }
+        Throwable lastNameValidationResult = Validator.validateName(lastName);
+        if(lastNameValidationResult!=null){
+            view.onMessage(lastNameValidationResult.getMessage());
+            return;
+        }
 
         userModel
                 .updateProfile(profileData)

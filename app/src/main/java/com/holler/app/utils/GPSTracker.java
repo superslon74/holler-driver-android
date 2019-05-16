@@ -35,6 +35,7 @@ import com.google.gson.JsonObject;
 import com.holler.app.AndarApplication;
 import com.holler.app.activity.MainActivity;
 import com.holler.app.di.app.modules.RetrofitModule;
+import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.di.app.modules.UserStorageModule;
 import com.holler.app.server.OrderServerApi;
 import com.orhanobut.logger.Logger;
@@ -57,7 +58,7 @@ public class GPSTracker
         implements Executor {
 
 
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 5;
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1;
     private static final long MIN_TIME_BW_UPDATES = 1000 * 3;
 
     private Location lastLocation;
@@ -73,6 +74,8 @@ public class GPSTracker
     public RetrofitModule.ServerAPI serverAPI;
     @Inject
     public UserStorageModule.UserStorage userStorage;
+    @Inject
+    public RouterModule.Router router;
 
     private GPSTrackerBinder binder;
     private LocationCallback locationCallback;
@@ -112,7 +115,7 @@ public class GPSTracker
 
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(5 * 1000);
+        locationRequest.setInterval(500);
         locationRequest.setFastestInterval(500);
 
         LocationSettingsRequest locationSettingsRequest = new LocationSettingsRequest.Builder()

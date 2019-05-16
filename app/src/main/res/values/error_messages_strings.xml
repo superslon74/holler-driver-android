@@ -8,6 +8,7 @@
     <string translatable="false" name="error_validation_password_mismatched">Please repeat password for confirmation</string>
 
     <string translatable="false" name="error_validation_name_empty">Please, enter your name</string>
+    <string translatable="false" name="error_validation_name">Name should contain only letters</string>
 
     <string translatable="false" name="error_validation_otp_empty">Please enter code</string>
     <string translatable="false" name="error_validation_otp_mismatched">Wrong code</string>

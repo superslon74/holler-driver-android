@@ -447,11 +447,17 @@ public class MainView extends CustomActivity implements MainPresenter.View {
 
                 String s = ((MapFragment) currentFragment).toString();
             } catch (ClassCastException | NullPointerException e) {
-                currentFragment = new MapFragment();
-                fragmentManager
-                        .beginTransaction()
-                        .replace(content.getId(), currentFragment)
-                        .commit();
+                //TODO: refact
+                try{
+                    currentFragment = new MapFragment();
+                    fragmentManager
+                            .beginTransaction()
+                            .replace(content.getId(), currentFragment)
+                            .commit();
+                }catch (Exception e1){
+
+                }
+
             }
         }
 

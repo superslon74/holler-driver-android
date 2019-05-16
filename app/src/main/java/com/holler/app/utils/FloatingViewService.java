@@ -29,10 +29,13 @@ import com.holler.app.FloatingViewService.FloatingViewListener;
 import com.holler.app.FloatingViewService.FloatingViewManager;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.R;
+import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.mvp.main.MainView;
 import com.holler.app.server.OrderServerApi;
 
 import java.util.HashMap;
+
+import javax.inject.Inject;
 
 import androidx.annotation.Nullable;
 import okhttp3.ResponseBody;
@@ -47,6 +50,9 @@ public class FloatingViewService extends Service implements FloatingViewListener
     private View icon;
     private boolean orderButtonLocked = false;
 
+    @Inject
+    protected RouterModule.Router router;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (mFloatingViewManager == null) {
@@ -54,6 +60,10 @@ public class FloatingViewService extends Service implements FloatingViewListener
         }
 
         return flags;
+    }
+
+    public FloatingViewService() {
+        AndarApplication.getInstance().component().inject(this);
     }
 
     private void initLayout() {
@@ -77,9 +87,7 @@ public class FloatingViewService extends Service implements FloatingViewListener
                             getLocation();
                         break;
                     case R.id.collapsed_iv:
-                        Intent intent = new Intent(FloatingViewService.this, MainView.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
+                        router.goToMainScreen();
                         break;
                     default:
                         Log.d("AZAZA", v.getId() + "");

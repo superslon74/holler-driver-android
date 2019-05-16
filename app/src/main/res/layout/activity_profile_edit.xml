@@ -48,6 +48,8 @@
             <EditText
                 style="@style/Input"
                 android:id="@+id/ep_firstName_input"
+                android:inputType="textCapWords"
+                android:imeOptions="actionDone"
                 app:layout_constraintStart_toStartOf="@id/ep_firstName_caption"
                 app:layout_constraintEnd_toEndOf="@id/ep_firstName_caption"
                 app:layout_constraintTop_toBottomOf="@id/ep_firstName_caption"
@@ -67,6 +69,8 @@
             <EditText
                 style="@style/Input"
                 android:id="@+id/ep_lastName_input"
+                android:inputType="textCapWords"
+                android:imeOptions="actionDone"
                 app:layout_constraintStart_toStartOf="@id/ep_lastName_caption"
                 app:layout_constraintEnd_toEndOf="@id/ep_lastName_caption"
                 app:layout_constraintTop_toBottomOf="@id/ep_lastName_caption"

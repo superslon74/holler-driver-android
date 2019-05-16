@@ -26,6 +26,7 @@ import com.holler.app.utils.GPSTracker;
 import com.holler.app.utils.ReactiveServiceBindingFactory;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.CsvFormatStrategy;
+import com.orhanobut.logger.DiskLogAdapter;
 import com.orhanobut.logger.FormatStrategy;
 import com.orhanobut.logger.LogcatLogStrategy;
 import com.orhanobut.logger.Logger;
@@ -109,6 +110,7 @@ public class AndarApplication extends Application implements  ComponentCallbacks
 //        Logger.addLogAdapter(new DiskLogAdapter(cvsFormat));
         Logger.addLogAdapter(new AndroidLogAdapter(prettyFormat));
 
+        Logger.i("STARTING APPLICATION");
         Logger.i("STARTING APPLICATION");
     }
 

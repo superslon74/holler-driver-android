@@ -22,6 +22,6 @@
     <string translatable="false" name="ma_logout_alert_button_confirm">Yes</string>
     <string translatable="false" name="ma_logout_alert_button_cancel">No</string>
 
-    <string translatable="false" name="ma_map_pas_it_on">pass it on</string>
+    <string translatable="false" name="ma_map_pas_it_on">pass\nit on</string>
 
 </resources>
