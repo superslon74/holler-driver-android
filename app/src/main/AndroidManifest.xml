@@ -111,6 +111,9 @@
         <meta-data
             android:name="com.facebook.accountkit.ClientToken"
             android:value="@string/ACCOUNT_KIT_CLIENT_TOKEN" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="d3f23650f9fce2175f3030b56d6ea10a28370593" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

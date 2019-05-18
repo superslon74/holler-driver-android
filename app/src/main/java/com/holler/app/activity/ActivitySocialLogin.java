@@ -90,7 +90,7 @@ import androidx.core.content.ContextCompat;
 
 import static com.holler.app.AndarApplication.trimMessage;
 
-
+@Deprecated
 public class ActivitySocialLogin extends CustomActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     private static final int REQ_SIGN_IN_REQUIRED = 100;

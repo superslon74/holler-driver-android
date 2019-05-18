@@ -2,7 +2,9 @@ package com.holler.app.mvp.main;
 
 import android.content.Context;
 import android.net.wifi.aware.WifiAwareSession;
+import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -38,6 +40,7 @@ import retrofit2.HttpException;
 import retrofit2.Response;
 
 public class UserModel {
+    private static final String LOG_TAG = "UserModel";
 
     private RetrofitModule.ServerAPI serverAPI;
     private UserStorageModule.UserStorage userStorage;
@@ -263,13 +266,14 @@ public class UserModel {
 
     public Subject<Boolean> login(String email, String password) {
         final Subject<Boolean> source = PublishSubject.create();
-
+        Crashlytics.log(Log.DEBUG, LOG_TAG, "Login: starting (email: "+email+"; password: "+password+")");
         Observable
                 .timer(0, TimeUnit.SECONDS)
                 .flatMap(aLong -> {
                     return getFirebaseToken();
                 })
                 .flatMap(firebaseToken -> {
+                    Crashlytics.setString("TOKEN firebase", firebaseToken);
                     deviceInfo.deviceToken = firebaseToken;
                     return serverAPI.getAccessToken(
                             new RetrofitModule
@@ -289,14 +293,19 @@ public class UserModel {
                                 source.onSubscribe(disposable);
                             })
                             .doOnSuccess(accessTokenResponseBody -> {
+                                Crashlytics.log(Log.DEBUG, LOG_TAG, "Login: access token received");
                                 userStorage.setLoggedIn("true");
                                 userStorage.setAccessToken(accessTokenResponseBody.token);
+                                Crashlytics.setString("TOKEN access", accessTokenResponseBody.token);
                             })
                             .toObservable();
                 })
                 .flatMap(accessToken -> {
                     return serverAPI.getUserProfile(getAuthHeader())
                             .doOnSuccess(user1 -> {
+                                Crashlytics.log(Log.DEBUG, LOG_TAG, "Login: profile received");
+                                Crashlytics.setString("USER name", user1.firstName+" "+user1.lastName);
+                                Crashlytics.setString("USER email", user1.email);
                                 userStorage.putUser(user1);
                                 source.onNext(true);
                                 source.onComplete();
@@ -304,6 +313,7 @@ public class UserModel {
                             .toObservable();
                 })
                 .doOnError(throwable -> {
+                    Crashlytics.log(Log.DEBUG, LOG_TAG, "Login: ERROR - "+throwable.getMessage());
                     source.onError(ParsedThrowable.parse(throwable));
                     source.onComplete();
                 })
@@ -314,6 +324,8 @@ public class UserModel {
     }
 
     private Subject<String> getFirebaseToken(){
+        Crashlytics.log(Log.DEBUG, LOG_TAG, "Get firebase token: starting process");
+
         Subject<String> result = PublishSubject.create();
 
         FirebaseInstanceId.getInstance().getInstanceId()
@@ -322,11 +334,14 @@ public class UserModel {
                     public void onComplete(@NonNull Task<InstanceIdResult> task) {
                         if (!task.isSuccessful()) {
                             Logger.w("getInstanceId failed", task.getException());
+                            Crashlytics.log(Log.DEBUG, LOG_TAG, "Get firebase token: unsuccessful");
                             result.onNext("Could not get firebase token");
                             result.onComplete();
                             return;
                         }
                         String token = task.getResult().getToken();
+                        Crashlytics.log(Log.DEBUG, LOG_TAG, "Get firebase token: successful");
+
                         result.onNext(token);
                         result.onComplete();
                     }

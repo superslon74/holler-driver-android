@@ -1,6 +1,8 @@
+
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'idea'
+apply plugin: 'io.fabric'
 //apply plugin: 'com.android.library'
 //apply plugin: 'com.jakewharton.butterknife'
 
@@ -10,7 +12,15 @@ idea{
         downloadSources = true
     }
 }
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
 
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
 android {
     compileSdkVersion 28
     buildToolsVersion "28.0.3"
@@ -65,6 +75,7 @@ repositories {
     mavenCentral()
     google()
     maven { url "https://maven.google.com" }
+    maven { url 'https://maven.fabric.io/public' }
 }
 
 dependencies {
@@ -123,5 +134,9 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.1.13'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
+
+    //crash reports and logs
+    implementation 'com.google.firebase:firebase-core:16.0.9'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.0'
 
 }

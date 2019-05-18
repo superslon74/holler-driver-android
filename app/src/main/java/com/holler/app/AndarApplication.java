@@ -11,6 +11,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.Crashlytics;
 import com.holler.app.Utilities.FontsOverride;
 import com.holler.app.di.app.AppComponent;
 import com.holler.app.di.app.DaggerAppComponent;
@@ -39,6 +40,7 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 import androidx.multidex.MultiDex;
+import io.fabric.sdk.android.Fabric;
 import io.reactivex.disposables.Disposable;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
@@ -51,6 +53,7 @@ public class AndarApplication extends Application implements  ComponentCallbacks
         initLogger();
         setupDependencyGraph();
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         /**********************/
         mInstance = this;
         FontsOverride.setDefaultFont(this, "MONOSPACE", "ClanPro-NarrBook.otf");

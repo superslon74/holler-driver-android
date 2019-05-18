@@ -2,6 +2,9 @@ package com.holler.app.mvp.welcome;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,7 +61,14 @@ public class WelcomeViewSlideFragment extends Fragment {
         headerView.setText(headerResource);
         descriptionView.setText(descriptionResource);
         imageView.setImageResource(imageResource);
+        ButterKnife.bind(this,v);
         return v;
     }
+//
+//    @OnClick(R.id.ma_image)
+//    public void crash(){
+//        throw new RuntimeException("Testing crash reports");
+//    }
+
 
 }
