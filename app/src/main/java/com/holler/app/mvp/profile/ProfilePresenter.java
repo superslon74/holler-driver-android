@@ -47,12 +47,12 @@ public class ProfilePresenter {
 
         Throwable firstNameValidationResult = Validator.validateName(firstName);
         if(firstNameValidationResult!=null){
-            view.onMessage(firstNameValidationResult.getMessage());
+            view.showMessage(firstNameValidationResult.getMessage());
             return;
         }
         Throwable lastNameValidationResult = Validator.validateName(lastName);
         if(lastNameValidationResult!=null){
-            view.onMessage(lastNameValidationResult.getMessage());
+            view.showMessage(lastNameValidationResult.getMessage());
             return;
         }
 

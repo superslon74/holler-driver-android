@@ -5,6 +5,8 @@ import android.content.Intent;
 
 import com.holler.app.activity.ActivitySocialLogin;
 import com.holler.app.activity.DocumentsActivity;
+import com.holler.app.activity.WaitingForApproval;
+import com.holler.app.mvp.documents.DocumentsView;
 import com.holler.app.mvp.login.EmailView;
 import com.holler.app.mvp.login.PasswordView;
 import com.holler.app.mvp.main.MainView;
@@ -116,7 +118,15 @@ public class RouterModule {
         }
 
         public void goToDocumentsScreen() {
-            Intent i = new Intent(context, DocumentsActivity.class);
+            Intent i = new Intent(context, DocumentsView.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            saveToHistory(i);
+            context.startActivity(i);
+        }
+
+
+        public void goToWaitingForApprovalScreen() {
+            Intent i = new Intent(context, WaitingForApproval.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             saveToHistory(i);
             context.startActivity(i);
@@ -141,6 +151,7 @@ public class RouterModule {
             currentIntent = i;
             routingHistory.push(i);
         }
+
     }
 
 }

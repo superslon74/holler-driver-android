@@ -11,6 +11,7 @@
     <string translatable="false" name="mas_nav_share">Share</string>
     <string translatable="false" name="mas_nav_documents">Upload Documents</string>
     <string translatable="false" name="mas_nav_logout">Logout</string>
+    <string translatable="false" name="mas_nav_crash">Crash to report</string>
 
     <string translatable="false" name="mas_offline_header">Go Online!</string>
     <string translatable="false" name="mas_offline_header_success">:)</string>

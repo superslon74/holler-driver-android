@@ -12,13 +12,13 @@ import com.holler.app.R;
 import com.holler.app.Services.UserStatusChecker;
 import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.utils.CustomActivity;
-
+@Deprecated
 public class WaitingForApproval extends CustomActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_waiting_for_approval);
 
         Button logoutBtn = (Button) findViewById(R.id.logoutBtn);

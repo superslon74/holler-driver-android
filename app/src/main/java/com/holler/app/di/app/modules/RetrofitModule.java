@@ -1,5 +1,10 @@
 package com.holler.app.di.app.modules;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.Log;
+
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
@@ -56,6 +61,7 @@ import retrofit2.http.Query;
 
 @Module
 public class RetrofitModule {
+    private static final String LOG_TAG = "RETROFIT";
     private static JsonObject STATUS_OFFLINE_JSON;
     private static JsonObject STATUS_ONLINE_JSON;
 
@@ -109,6 +115,9 @@ public class RetrofitModule {
 
         RxJavaPlugins.setErrorHandler(throwable -> {
             Logger.wtf("Rx plugin error handler",throwable);
+            Crashlytics.log(Log.ERROR, LOG_TAG, throwable.getMessage());
+            Crashlytics.logException(throwable);
+
             throwable.printStackTrace();
         });
 
@@ -582,8 +591,85 @@ public class RetrofitModule {
                 @Part MultipartBody.Part avatar
         );
 
+//        documents
 
+        @GET("api/provider/documents")
+        Single<List<Document>> getRequiredDocuments(
+                @Header(HEADER_KEY_AUTHORIZATION) String header,
+                @Query("device_type") String devicetype,
+                @Query("device_id") String deviceId,
+                @Query("device_token") String deviceToken
+        );
 
+        class Document implements Parcelable {
+            @Expose(serialize = false)
+            @SerializedName("id")
+            public String id;
+            @Expose(serialize = false)
+            @SerializedName("name")
+            public String name;
+            @Expose(serialize = false)
+            @SerializedName("url")
+            public String remoteUrl;
+
+            public String localUrl;
+
+            public Document() {
+            }
+
+            public Document(String id, String name, String remoteUrl, String localUrl) {
+                this.id = id;
+                this.name = name;
+                this.remoteUrl = remoteUrl;
+                this.localUrl = localUrl;
+            }
+
+            protected Document(Parcel in) {
+                id = in.readString();
+                name = in.readString();
+                remoteUrl = in.readString();
+                localUrl = in.readString();
+            }
+
+            public static final Creator<Document> CREATOR = new Creator<Document>() {
+                @Override
+                public Document createFromParcel(Parcel in) {
+                    return new Document(in);
+                }
+
+                @Override
+                public Document[] newArray(int size) {
+                    return new Document[size];
+                }
+            };
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeString(id);
+                dest.writeString(name);
+                dest.writeString(remoteUrl);
+                dest.writeString(localUrl);
+            }
+
+        }
+
+        @Multipart
+        @POST("api/provider/documents/{id}")
+        Single<Document> sendDocument(
+                @Header(HEADER_KEY_AUTHORIZATION) String header,
+                @Part("device_type") RequestBody devicetype,
+                @Part("device_id") RequestBody deviceId,
+                @Part("device_token") RequestBody deviceToken,
+
+                @Path("id") String documentId,
+
+                @Part MultipartBody.Part document
+        );
 
         //trash
 

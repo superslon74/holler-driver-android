@@ -117,7 +117,7 @@ public class MainView extends CustomActivity implements MainPresenter.View {
 
         @OnClick(R.id.ma_nav_button_close)
         public void closeNavigation() {
-            drawerView.closeDrawer(Gravity.LEFT);
+            drawerView.closeDrawer(GravityCompat.START);
         }
 
         @OnClick(R.id.ma_nav_user_photo)
@@ -186,8 +186,8 @@ public class MainView extends CustomActivity implements MainPresenter.View {
 
     @Override
     public void onBackPressed() {
-        if (drawerView.isDrawerOpen(Gravity.LEFT)) {
-            drawerView.closeDrawer(Gravity.LEFT);
+        if (drawerView.isDrawerOpen(GravityCompat.START)) {
+            drawerView.closeDrawer(GravityCompat.START);
             return;
         }
 
@@ -249,7 +249,7 @@ public class MainView extends CustomActivity implements MainPresenter.View {
     private void setupNavView() {
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             Logger.i("Menu item selected id: " + menuItem);
-            drawerView.closeDrawer(Gravity.LEFT);
+            drawerView.closeDrawer(GravityCompat.START);
             switch (menuItem.getItemId()) {
                 case R.id.ma_nav_payment:
                     fragmentRouter.openPayment();
@@ -261,9 +261,6 @@ public class MainView extends CustomActivity implements MainPresenter.View {
                     break;
                 case R.id.ma_nav_wallet:
                     fragmentRouter.openWallet();
-                    break;
-                case R.id.ma_nav_settings:
-                    fragmentRouter.openSettings();
                     break;
                 case R.id.ma_nav_help:
                     fragmentRouter.openHelp();
@@ -277,6 +274,8 @@ public class MainView extends CustomActivity implements MainPresenter.View {
                 case R.id.ma_nav_logout:
                     logout();
                     break;
+                case R.id.ma_nav_crash:
+                    throw new RuntimeException("Log crash");
             }
 
             return true;
@@ -431,6 +430,11 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onViewDestroyed();
+    }
 
     protected class FragmentRouter {
         private FragmentManager fragmentManager;

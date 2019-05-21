@@ -8,8 +8,6 @@ import com.holler.app.di.app.modules.DeviceInfoModule;
 import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.di.app.modules.UserStorageModule;
-import com.holler.app.mvp.login.LoginPresenter;
-import com.holler.app.utils.Finishable;
 import com.holler.app.utils.MessageDisplayer;
 import com.holler.app.utils.SpinnerShower;
 import com.holler.app.utils.Validator;
@@ -54,7 +52,7 @@ public class ChangePasswordPresenter {
 
         Throwable validationResult = Validator.validateEmail(email);
         if(validationResult!=null){
-            view.onMessage(validationResult.getMessage());
+            view.showMessage(validationResult.getMessage());
             return;
         }
 
@@ -72,9 +70,9 @@ public class ChangePasswordPresenter {
                     this.code = response.getOtp();
                     view.onFinish();
                     router.goToChangePasswordScreen();
-                    view.onMessage(context.getString(R.string.pas_message_code_sent));
+                    view.showMessage(context.getString(R.string.pas_message_code_sent));
                 },(throwable)->{
-                    view.onMessage(throwable.getMessage());
+                    view.showMessage(throwable.getMessage());
                 });
     }
 
@@ -82,12 +80,12 @@ public class ChangePasswordPresenter {
         Logger.i("Requesting password changing with: " + code + ", " + newPassword + ", "+ passwordConfirmation);
         Throwable passwordValidationResult = Validator.validatePassword(newPassword, passwordConfirmation);
         if(passwordValidationResult!=null){
-            view.onMessage(passwordValidationResult.getMessage());
+            view.showMessage(passwordValidationResult.getMessage());
             return;
         }
         Throwable otpValidationResault = Validator.validateOtp(code, this.code);
         if(otpValidationResault!=null){
-            view.onMessage(otpValidationResault.getMessage());
+            view.showMessage(otpValidationResault.getMessage());
             return;
         }
 
@@ -101,10 +99,10 @@ public class ChangePasswordPresenter {
                 .doFinally(() -> view.hideSpinner())
                 .subscribe((response)->{
                     router.goToWelcomeScreen();
-                    view.onMessage(context.getString(R.string.pas_message_password_changed));
+                    view.showMessage(context.getString(R.string.pas_message_password_changed));
                     view.onFinish();
                 },(throwable)->{
-                    view.onMessage(throwable.getMessage());
+                    view.showMessage(throwable.getMessage());
                 });
 
     }

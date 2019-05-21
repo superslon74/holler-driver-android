@@ -18,6 +18,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.common.api.ResultCallback;
@@ -43,13 +44,17 @@ import com.orhanobut.logger.Logger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.ReplaySubject;
 import io.reactivex.subjects.Subject;
 import retrofit2.Response;
 
@@ -216,6 +221,7 @@ public class GPSTracker
 
     /**
      * Expected a com.google.gson.JsonObject but was com.google.gson.JsonNull
+     *
      * @param intent
      * @return
      */
@@ -242,6 +248,7 @@ public class GPSTracker
     public interface LocationChangingListener {
         void onLocationChanged(Location newLocation);
     }
+
 
     public class GPSTrackerBinder extends Binder {
 
@@ -280,26 +287,65 @@ public class GPSTracker
 
     }
 
-    public static Subject<GPSTrackerBinder> serviceConnection(Context context) {
-        Subject<GPSTracker.GPSTrackerBinder> subject = PublishSubject.create();
-
+    public static ObservableConnection createConnection(Context context) {
         Intent gpsTrackerBinding = new Intent(context, GPSTracker.class);
-        ServiceConnection gpsTrackerConnection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder binder) {
-                GPSTracker.GPSTrackerBinder service = (GPSTracker.GPSTrackerBinder) binder;
-                service.startTracking();
-                subject.onNext(service);
-            }
+        ObservableConnection gpsTrackerConnection = new ObservableConnection();
 
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                subject.onComplete();
-            }
-        };
-        context.bindService(gpsTrackerBinding, gpsTrackerConnection, Context.BIND_AUTO_CREATE);
+        context.bindService(gpsTrackerBinding, gpsTrackerConnection, Context.BIND_IMPORTANT);
 
-        return subject;
+        return gpsTrackerConnection;
     }
 
+    public static class ObservableConnection extends Observable<GPSTrackerBinder> implements ServiceConnection {
+        private static final String LOG_TAG = "GPS TRACKER CONNECTION";
+        ReplaySubject<GPSTrackerBinder> subject;
+
+        public ObservableConnection() {
+            this.subject = ReplaySubject.create();
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            subject.onNext((GPSTracker.GPSTrackerBinder) binder);
+            Crashlytics.log(Log.DEBUG, LOG_TAG, "connected");
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            subject.onError(new Throwable("GPS tracking service disconnected."));
+            Crashlytics.log(Log.DEBUG, LOG_TAG, "disconnected");
+        }
+
+        @Override
+        public void onBindingDied(ComponentName name) {
+            subject.onError(new Throwable("GPS tracking service connection lost."));
+            Crashlytics.log(Log.DEBUG, LOG_TAG, "lost");
+
+        }
+
+        @Override
+        public void onNullBinding(ComponentName name) {
+            subject.onError(new Throwable("GPS tracking connection error."));
+            Crashlytics.log(Log.DEBUG, LOG_TAG, "null");
+
+        }
+
+        @Override
+        protected void subscribeActual(Observer<? super GPSTrackerBinder> observer) {
+            this.subject
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(gpsTrackerBinder -> {
+                        observer.onNext(gpsTrackerBinder);
+                        observer.onComplete();
+                        Crashlytics.log(Log.DEBUG, LOG_TAG, "next");
+                    })
+                    .doOnError(throwable -> {
+                        observer.onError(throwable);
+                        observer.onComplete();
+                        Crashlytics.log(Log.DEBUG, LOG_TAG, "err");
+                    })
+                    .subscribe();
+        }
+    }
 }

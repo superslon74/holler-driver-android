@@ -14,10 +14,8 @@ import com.facebook.accountkit.Account;
 import com.facebook.accountkit.AccountKit;
 import com.facebook.accountkit.AccountKitCallback;
 import com.facebook.accountkit.AccountKitError;
-import com.facebook.accountkit.AccountKitLoginResult;
 import com.facebook.accountkit.PhoneNumber;
 import com.holler.app.AndarApplication;
-import com.holler.app.Helper.SharedHelper;
 import com.holler.app.R;
 import com.holler.app.di.app.AppComponent;
 import com.holler.app.di.app.components.DaggerRegisterComponent;
@@ -152,7 +150,7 @@ public class RegisterView
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PHONE_VERIFICATION_REQUEST_CODE) {
             if(data == null){
-                onMessage(getBaseContext().getString(R.string.error_account_kit_verification));
+                this.showMessage(getBaseContext().getString(R.string.error_account_kit_verification));
                 return;
             }
 
@@ -170,7 +168,7 @@ public class RegisterView
                 @Override
                 public void onError(final AccountKitError error) {
                     Logger.e(error.toString());
-                    onMessage(getBaseContext().getString(R.string.error_account_kit_verification));
+                    RegisterView.this.showMessage(getBaseContext().getString(R.string.error_account_kit_verification));
                 }
             });
 

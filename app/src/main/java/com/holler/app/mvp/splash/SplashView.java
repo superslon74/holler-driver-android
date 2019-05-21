@@ -52,6 +52,8 @@ public class SplashView
         requestPermissions();
     }
 
+
+
     private void requestPermissions(){
         final CustomActivity activity = this;
 
@@ -173,6 +175,7 @@ public class SplashView
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        presenter.onDestroy();
     }
 
 

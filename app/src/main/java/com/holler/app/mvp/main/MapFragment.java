@@ -127,7 +127,7 @@ public class MapFragment extends Fragment {
 
                 //TODO: check location permission
 
-                googleMap.setMyLocationEnabled(false);
+                googleMap.setMyLocationEnabled(true);
                 googleMap.getUiSettings().setMyLocationButtonEnabled(false);
                 googleMap.setBuildingsEnabled(true);
                 googleMap.getUiSettings().setCompassEnabled(false);
@@ -239,7 +239,7 @@ public class MapFragment extends Fragment {
                 })
                 .doOnError(throwable -> {
                     UserModel.ParsedThrowable error = UserModel.ParsedThrowable.parse(throwable);
-//                    ((MainView)getActivity()).onMessage(error.getMessage()); //vahahaha
+//                    ((MainView)getActivity()).showMessage(error.getMessage()); //vahahaha
                 })
                 .doFinally(() -> removeFragment(requestOrderFragment))
                 .subscribe();
@@ -265,7 +265,7 @@ public class MapFragment extends Fragment {
                 })
                 .doOnError(throwable -> {
                     UserModel.ParsedThrowable error = UserModel.ParsedThrowable.parse(throwable);
-//                    ((MainView)getActivity()).onMessage(error.getMessage()); //vahahaha
+//                    ((MainView)getActivity()).showMessage(error.getMessage()); //vahahaha
                 })
                 .doFinally(() -> removeFragment(arrivedOrderFragment))
                 .subscribe();
@@ -283,7 +283,7 @@ public class MapFragment extends Fragment {
                 })
                 .doOnError(throwable -> {
                     UserModel.ParsedThrowable error = UserModel.ParsedThrowable.parse(throwable);
-//                    ((MainView)getActivity()).onMessage(error.getMessage()); //vahahaha
+//                    ((MainView)getActivity()).showMessage(error.getMessage()); //vahahaha
                 })
                 .doFinally(() -> removeFragment(rateOrderFragment))
                 .subscribe();

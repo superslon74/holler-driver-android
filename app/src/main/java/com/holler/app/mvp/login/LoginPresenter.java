@@ -1,25 +1,17 @@
 package com.holler.app.mvp.login;
 
 import android.content.Context;
-import android.net.Credentials;
 
-import com.google.gson.JsonObject;
-import com.holler.app.Helper.SharedHelper;
-import com.holler.app.di.User;
 import com.holler.app.di.app.modules.DeviceInfoModule;
 import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.di.app.modules.UserStorageModule;
 import com.holler.app.mvp.main.UserModel;
-import com.holler.app.mvp.register.RegisterPresenter;
-import com.holler.app.server.OrderServerApi;
 import com.holler.app.utils.Finishable;
 import com.holler.app.utils.MessageDisplayer;
 import com.holler.app.utils.SpinnerShower;
 import com.holler.app.utils.Validator;
 import com.orhanobut.logger.Logger;
-
-import retrofit2.Response;
 
 public class LoginPresenter {
 
@@ -63,7 +55,7 @@ public class LoginPresenter {
             router.goToPasswordScreen();
             view.finish();
         }else{
-            view.onMessage(validationResult.getMessage());
+            view.showMessage(validationResult.getMessage());
         }
     }
 
@@ -79,7 +71,7 @@ public class LoginPresenter {
         if(validationResult==null){
             signIn(credentials.getEmail(), credentials.getPassword());
         }else{
-            view.onMessage(validationResult.getMessage());
+            view.showMessage(validationResult.getMessage());
         }
     }
 
@@ -95,7 +87,7 @@ public class LoginPresenter {
                         Logger.e("Login Presenter user not logged in without error");
                 })
                 .doFinally(() -> view.hideSpinner())
-                .doOnError(throwable -> view.onMessage(((Exception)throwable).getMessage()))
+                .doOnError(throwable -> view.showMessage(((Exception)throwable).getMessage()))
                 .subscribe();
 
     }

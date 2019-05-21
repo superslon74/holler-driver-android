@@ -37,5 +37,9 @@
             android:id="@+id/ma_nav_logout"
             android:checkable="false"
             android:title="@string/mas_nav_logout" />
+        <item
+            android:id="@+id/ma_nav_crash"
+            android:checkable="false"
+            android:title="@string/mas_nav_logout" />
     </group>
 </menu>

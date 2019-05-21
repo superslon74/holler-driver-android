@@ -1,6 +1,7 @@
 package com.holler.app.mvp.main;
 
 import android.content.Context;
+import android.content.ServiceConnection;
 import android.location.Location;
 
 import com.holler.app.R;
@@ -32,6 +33,7 @@ public class MainPresenter {
     private RetrofitModule.ServerAPI serverAPI;
     public UserModel userModel;
     public OrderModel orderModel;
+    private ServiceConnection gpsTrackerServiceConnection;
 
     private GPSTracker.GPSTrackerBinder gpsTrackerService;
     private FiniteStateMachine.StateOwner<UserModel.Status.AccountStatus> account;
@@ -50,9 +52,13 @@ public class MainPresenter {
         this.userModel = userModel;
         this.orderModel = orderModel;
 
-        GPSTracker.serviceConnection(context)
+        GPSTracker.ObservableConnection connection = GPSTracker.createConnection(context);
+        this.gpsTrackerServiceConnection = connection;
+
+        connection
                 .flatMap(service -> {
                     gpsTrackerService = (GPSTracker.GPSTrackerBinder)service;
+                    gpsTrackerService.startTracking();
                     return statusRequesting();
                 })
                 .flatMap(checkStatusResponse -> {
@@ -63,7 +69,7 @@ public class MainPresenter {
                     return Observable.empty();
                 })
                 .doOnError(throwable -> {
-//                    Logger.e("shit2",throwable);
+                    view.showMessage(throwable.getMessage());
                 })
                 .subscribe();
 
@@ -83,6 +89,11 @@ public class MainPresenter {
 
         initStates();
 
+    }
+
+    public void onViewDestroyed(){
+        if (gpsTrackerServiceConnection!=null)
+            context.unbindService(gpsTrackerServiceConnection);
     }
 
     RetrofitModule.ServerAPI.RequestedOrderResponse currentRequest = null;
@@ -254,12 +265,12 @@ public class MainPresenter {
                 .doFinally(() -> view.hideSpinner())
                 .doOnSuccess(creteOrderResponse -> {
                     if(creteOrderResponse.isSuccessfullyCreated()){
-                        view.onMessage(creteOrderResponse.message);
+                        view.showMessage(creteOrderResponse.message);
                     }else{
-                        view.onMessage(creteOrderResponse.message);
+                        view.showMessage(creteOrderResponse.message);
                     }
                 })
-                .doOnError(throwable -> view.onMessage(messageError))
+                .doOnError(throwable -> view.showMessage(messageError))
                 .subscribe();
 
     }

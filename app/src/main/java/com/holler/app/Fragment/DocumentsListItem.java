@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.holler.app.activity.DocumentsActivity;
 import com.holler.app.R;
 import com.bumptech.glide.Glide;
+import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.utils.CustomActivity;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
@@ -39,7 +40,7 @@ public class DocumentsListItem extends Fragment {
     private static final String ARG_TEMP_FILE_URI = "temp";
     private static final int CHOOSE_FILE_REQUEST_CODE = 5113;
 
-    private DocumentsActivity.Document document;
+    private RetrofitModule.ServerAPI.Document document;
 
     private OnDocumentViewInteractions mListener;
 
@@ -55,7 +56,7 @@ public class DocumentsListItem extends Fragment {
     public DocumentsListItem() {
     }
 
-    public static DocumentsListItem newInstance(DocumentsActivity.Document d) {
+    public static DocumentsListItem newInstance(RetrofitModule.ServerAPI.Document d) {
         DocumentsListItem fragment = new DocumentsListItem();
         Bundle args = new Bundle();
         args.putParcelable(ARG_DOCUMENT, d);
@@ -253,7 +254,7 @@ public class DocumentsListItem extends Fragment {
         /**
          * Calls observer method with modified document
          */
-        void onDocumentSelected(DocumentsActivity.Document document);
+        void onDocumentSelected(RetrofitModule.ServerAPI.Document document);
 
     }
 }

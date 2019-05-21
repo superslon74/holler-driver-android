@@ -1,45 +1,18 @@
 package com.holler.app.mvp.splash;
 
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.IBinder;
-import android.os.Looper;
 
-import com.google.gson.JsonObject;
-import com.holler.app.activity.MainActivity;
 import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.mvp.main.UserModel;
-import com.holler.app.mvp.welcome.WelcomeView;
-import com.holler.app.di.app.modules.DeviceInfoModule;
 import com.holler.app.di.Presenter;
 import com.holler.app.di.app.modules.RetrofitModule;
-import com.holler.app.di.User;
-import com.holler.app.di.app.modules.UserStorageModule;
-import com.holler.app.server.OrderServerApi;
-import com.holler.app.utils.CustomActivity;
 import com.holler.app.utils.GPSTracker;
 import com.holler.app.utils.MessageDisplayer;
-import com.holler.app.utils.ReactiveServiceBindingFactory;
 import com.holler.app.utils.SpinnerShower;
-import com.orhanobut.logger.Logger;
 
 import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.Scheduler;
-import io.reactivex.Single;
-import io.reactivex.SingleObserver;
-import io.reactivex.SingleSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.PublishSubject;
-import io.reactivex.subjects.Subject;
-import retrofit2.Response;
 
 public class SplashPresenter implements Presenter {
     private Context context;
@@ -47,6 +20,7 @@ public class SplashPresenter implements Presenter {
     private View view;
     private RetrofitModule.ServerAPI serverAPI;
     private UserModel userModel;
+    private ServiceConnection gpsTrackerServiceConnection;
 
     public SplashPresenter(
             Context context,
@@ -76,20 +50,28 @@ public class SplashPresenter implements Presenter {
         userModel
                 .login()
                 .flatMap(isLogged -> {
-                    return GPSTracker.serviceConnection(context);
+                    GPSTracker.ObservableConnection connection = GPSTracker.createConnection(context);
+                    gpsTrackerServiceConnection = connection;
+                    return connection;
                 })
                 .flatMap(service -> {
                     service.startTracking();
-                    //TODO: test
-//                    router.goToEditProfileScreen();
                     router.goToMainScreen();
                     return Observable.empty();
                 })
                 .doOnError(throwable -> {
-                    throwable.printStackTrace();
-                    router.goToWelcomeScreen();
+                    view.showCompletableMessage(throwable.getMessage())
+                            .doOnComplete(() -> {
+                                router.goToWelcomeScreen();
+                            })
+                            .subscribe();
                 })
                 .subscribe();
+    }
+
+    public void onDestroy() {
+        if (gpsTrackerServiceConnection != null)
+            context.unbindService(gpsTrackerServiceConnection);
     }
 
     public interface View extends SpinnerShower, MessageDisplayer {

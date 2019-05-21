@@ -2,6 +2,7 @@ package com.holler.app;
 
 import android.app.Application;
 import android.content.ComponentCallbacks2;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
@@ -24,10 +25,8 @@ import com.holler.app.di.app.modules.SharedPreferencesModule;
 import com.holler.app.di.app.modules.UserModule;
 import com.holler.app.di.app.modules.UserStorageModule;
 import com.holler.app.utils.GPSTracker;
-import com.holler.app.utils.ReactiveServiceBindingFactory;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.CsvFormatStrategy;
-import com.orhanobut.logger.DiskLogAdapter;
 import com.orhanobut.logger.FormatStrategy;
 import com.orhanobut.logger.LogcatLogStrategy;
 import com.orhanobut.logger.Logger;
@@ -41,7 +40,6 @@ import java.util.Iterator;
 
 import androidx.multidex.MultiDex;
 import io.fabric.sdk.android.Fabric;
-import io.reactivex.disposables.Disposable;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 
@@ -54,8 +52,9 @@ public class AndarApplication extends Application implements  ComponentCallbacks
         setupDependencyGraph();
         super.onCreate();
         Fabric.with(this, new Crashlytics());
+        startService(new Intent(this, GPSTracker.class));
         /**********************/
-        mInstance = this;
+        instance = this;
         FontsOverride.setDefaultFont(this, "MONOSPACE", "ClanPro-NarrBook.otf");
 
     }
@@ -91,10 +90,10 @@ public class AndarApplication extends Application implements  ComponentCallbacks
 
     }
 
-    private static AndarApplication mInstance;
+    private static AndarApplication instance;
 
     public static synchronized AndarApplication getInstance() {
-        return mInstance;
+        return instance;
     }
 
     private void initLogger() {
@@ -110,10 +109,8 @@ public class AndarApplication extends Application implements  ComponentCallbacks
                 .tag("HOLLER_FILE_LOGGER")
                 .build();
 
-//        Logger.addLogAdapter(new DiskLogAdapter(cvsFormat));
         Logger.addLogAdapter(new AndroidLogAdapter(prettyFormat));
 
-        Logger.i("STARTING APPLICATION");
         Logger.i("STARTING APPLICATION");
     }
 

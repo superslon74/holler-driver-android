@@ -60,6 +60,7 @@ public class CustomActivity
         implements SpinnerShower, KeyboardObserver, MessageDisplayer {
 
     private static volatile int runningActivitiesCount = 0;
+    private ServiceConnection gpsTrackerServiceConnection;
 
     @Override
     protected void onPause() {
@@ -117,6 +118,12 @@ public class CustomActivity
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (gpsTrackerServiceConnection != null)
+            unbindService(gpsTrackerServiceConnection);
+    }
 
     public interface OnActivityResultListener {
         void onActivityResult(int requestCode, int resultCode, Intent data);
@@ -259,34 +266,26 @@ public class CustomActivity
                 }
                 break;
             case PERMISSION_ENABLE_LOCATION:
-                //TODO: remove
-                Intent gpsTrackerBinding = new Intent(this, GPSTracker.class);
-                ServiceConnection gpsTrackerConnection = new ServiceConnection() {
-                    @Override
-                    public void onServiceConnected(ComponentName name, IBinder binder) {
-                        GPSTracker.GPSTrackerBinder service = (GPSTracker.GPSTrackerBinder) binder;
+                GPSTracker.ObservableConnection connection = GPSTracker.createConnection(this);
+                this.gpsTrackerServiceConnection = connection;
+                connection
+                        .doOnNext(service -> {
+                            service.connectGoogleApi(
+                                    locationSettingsResponse -> handler.onPermissionGranted(),
+                                    e -> {
+                                        if (e instanceof ResolvableApiException) {
+                                            try {
 
-                        service.connectGoogleApi(
-                                locationSettingsResponse -> handler.onPermissionGranted(),
-                                e -> {
-                                    if (e instanceof ResolvableApiException) {
-                                        try {
-
-                                            ResolvableApiException resolvable = (ResolvableApiException) e;
-                                            resolvable.startResolutionForResult(CustomActivity.this, code);
-                                        } catch (IntentSender.SendIntentException sendEx) {
-                                            handler.onPermissionDenied();
+                                                ResolvableApiException resolvable = (ResolvableApiException) e;
+                                                resolvable.startResolutionForResult(CustomActivity.this, code);
+                                            } catch (IntentSender.SendIntentException sendEx) {
+                                                handler.onPermissionDenied();
+                                            }
                                         }
-                                    }
-                                });
-                    }
+                                    });
+                        })
+                        .subscribe();
 
-                    @Override
-                    public void onServiceDisconnected(ComponentName name) {
-
-                    }
-                };
-                bindService(gpsTrackerBinding, gpsTrackerConnection, Context.BIND_AUTO_CREATE);
                 break;
             case Manifest.permission.INTERNET:
                 if (isInternet()) {
@@ -309,7 +308,7 @@ public class CustomActivity
                     String explanation = permissionExplanation.get(permission);
 
                     if (ActivityCompat.shouldShowRequestPermissionRationale(CustomActivity.this, permission)) {
-                        showMessage(explanation)
+                        showCompletableMessage(explanation)
                                 .doOnComplete(handler::onPermissionDenied)
                                 .subscribe();
                     } else {
@@ -419,13 +418,13 @@ public class CustomActivity
 
 
     @Override
-    public void onMessage(String message) {
+    public void showMessage(String message) {
         Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT)
                 .setAction("Action", null)
                 .show();
     }
 
-    public Completable showMessage(String message) {
+    public Completable showCompletableMessage(String message) {
         return showMessage(message, true);
     }
 

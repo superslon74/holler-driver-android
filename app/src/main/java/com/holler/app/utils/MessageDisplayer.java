@@ -1,5 +1,8 @@
 package com.holler.app.utils;
 
+import io.reactivex.Completable;
+
 public interface MessageDisplayer {
-    void onMessage(String message);
+    void showMessage(String message);
+    Completable showCompletableMessage(String message);
 }

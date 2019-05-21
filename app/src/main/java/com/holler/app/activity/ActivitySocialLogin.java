@@ -123,7 +123,7 @@ public class ActivitySocialLogin extends CustomActivity implements GoogleApiClie
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(getApplication());
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_social);
         helper = new ConnectionHelper(ActivitySocialLogin.this);
         isInternet = helper.isConnectingToInternet();

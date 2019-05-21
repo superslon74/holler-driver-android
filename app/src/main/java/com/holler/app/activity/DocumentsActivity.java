@@ -1,8 +1,6 @@
 package com.holler.app.activity;
 
 import android.content.Intent;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,8 +10,8 @@ import com.holler.app.Fragment.DocumentsListItem;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Helper.URLHelper;
 import com.holler.app.R;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.holler.app.di.app.modules.RetrofitModule;
+import com.holler.app.di.app.modules.RetrofitModule.ServerAPI.Document;
 import com.holler.app.utils.CustomActivity;
 
 import java.io.File;
@@ -48,6 +46,7 @@ import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
+@Deprecated
 public class DocumentsActivity
         extends CustomActivity
         implements DocumentsListItem.OnDocumentViewInteractions {
@@ -157,7 +156,7 @@ public class DocumentsActivity
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Document>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<RetrofitModule.ServerAPI.Document>> call, @NonNull Throwable t) {
                 Log.e("AZAZA", "API Error ", t);
             }
         });
@@ -186,19 +185,19 @@ public class DocumentsActivity
         FragmentManager fm = getSupportFragmentManager();
         for (String dn : documents.keySet()) {
             Document d = documents.get(dn);
-            Fragment f = DocumentsListItem.newInstance(d);
+//            Fragment f = DocumentsListItem.newInstance(d);
             String tag = "documentListItem" + d.id;
             Fragment foundByTag = fm.findFragmentByTag(tag);
             if (foundByTag != null) {
                 fm.beginTransaction().remove(foundByTag).commit();
             }
-            fm.beginTransaction().add(documentsListView.getId(), f, tag).commit();
+//            fm.beginTransaction().add(documentsListView.getId(), f, tag).commit();
 
         }
     }
 
     @Override
-    public void onDocumentSelected(Document document) {
+    public void onDocumentSelected(RetrofitModule.ServerAPI.Document document) {
         documents.put(document.id,document);
     }
 
@@ -278,68 +277,6 @@ public class DocumentsActivity
         return sendingDocumentCall;
     }
 
-
-
-
-
-
-    public static class Document implements Parcelable {
-
-        @Expose(serialize = false)
-        @SerializedName("id")
-        public String id;
-        @Expose(serialize = false)
-        @SerializedName("name")
-        public String name;
-        @Expose(serialize = false)
-        @SerializedName("url")
-        public String remoteUrl;
-
-        public String localUrl;
-
-        public Document() {
-        }
-
-        public Document(String id, String name, String remoteUrl, String localUrl) {
-            this.id = id;
-            this.name = name;
-            this.remoteUrl = remoteUrl;
-            this.localUrl = localUrl;
-        }
-
-        protected Document(Parcel in) {
-            id = in.readString();
-            name = in.readString();
-            remoteUrl = in.readString();
-            localUrl = in.readString();
-        }
-
-        public static final Creator<Document> CREATOR = new Creator<Document>() {
-            @Override
-            public Document createFromParcel(Parcel in) {
-                return new Document(in);
-            }
-
-            @Override
-            public Document[] newArray(int size) {
-                return new Document[size];
-            }
-        };
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(id);
-            dest.writeString(name);
-            dest.writeString(remoteUrl);
-            dest.writeString(localUrl);
-        }
-
-    }
 
     private interface DocumentsServerApi {
 

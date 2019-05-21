@@ -4,8 +4,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.telephony.TelephonyManager;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.facebook.accountkit.AccessToken;
 import com.facebook.accountkit.AccountKit;
@@ -14,35 +12,18 @@ import com.facebook.accountkit.ui.AccountKitActivity;
 import com.facebook.accountkit.ui.AccountKitConfiguration;
 import com.facebook.accountkit.ui.LoginType;
 import com.facebook.accountkit.ui.SkinManager;
-import com.facebook.accountkit.ui.UIManager;
-import com.google.gson.JsonObject;
-import com.holler.app.Helper.SharedHelper;
-import com.holler.app.Models.AccessDetails;
 import com.holler.app.R;
-import com.holler.app.di.User;
 import com.holler.app.di.app.modules.DeviceInfoModule;
 import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.di.app.modules.UserStorageModule;
 import com.holler.app.mvp.main.UserModel;
-import com.holler.app.mvp.welcome.WelcomeView;
-import com.holler.app.server.OrderServerApi;
 import com.holler.app.utils.CustomActivity;
 import com.holler.app.utils.MessageDisplayer;
 import com.holler.app.utils.SpinnerShower;
 import com.holler.app.utils.Validator;
 
-import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import androidx.core.content.ContextCompat;
-import io.reactivex.Flowable;
 import io.reactivex.Observable;
-import retrofit2.Response;
-
-import static com.holler.app.activity.ActivitySocialLogin.APP_REQUEST_CODE;
 
 public class RegisterPresenter {
     private Context context;
@@ -89,7 +70,7 @@ public class RegisterPresenter {
 //            view.onFinish();
 //            router.goToMainScreen();
         } else {
-            view.onMessage(validationResult.getMessage());
+            view.showMessage(validationResult.getMessage());
         }
     }
 
@@ -102,7 +83,7 @@ public class RegisterPresenter {
                     verifyByPhone();
                     return Observable.empty();
                 })
-                .doOnError(throwable -> view.onMessage(throwable.getMessage()))
+                .doOnError(throwable -> view.showMessage(throwable.getMessage()))
                 .doFinally(() -> view.hideSpinner())
                 .subscribe();
     }
@@ -179,7 +160,7 @@ public class RegisterPresenter {
                     router.goToMainScreen();
                     return Observable.empty();
                 })
-                .doOnError(throwable -> view.onMessage(throwable.getMessage()))
+                .doOnError(throwable -> view.showMessage(throwable.getMessage()))
                 .doFinally(() -> view.hideSpinner())
                 .subscribe();
 
