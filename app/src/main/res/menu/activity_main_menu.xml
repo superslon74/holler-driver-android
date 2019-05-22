@@ -40,6 +40,6 @@
         <item
             android:id="@+id/ma_nav_crash"
             android:checkable="false"
-            android:title="@string/mas_nav_logout" />
+            android:title="@string/mas_nav_crash" />
     </group>
 </menu>

@@ -65,6 +65,7 @@ public class GPSTracker
 
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1;
     private static final long MIN_TIME_BW_UPDATES = 1000 * 3;
+    private static final String LOG_TAG = "GPS";
 
     private Location lastLocation;
     private Handler sender;
@@ -121,7 +122,7 @@ public class GPSTracker
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(500);
-        locationRequest.setFastestInterval(500);
+        locationRequest.setFastestInterval(250);
 
         LocationSettingsRequest locationSettingsRequest = new LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest)
@@ -192,6 +193,16 @@ public class GPSTracker
     public void onLocationChanged(Location location) {
 
         if (location != null) {
+            if(lastLocation!=null) {
+                Crashlytics.log(Log.ERROR, LOG_TAG,
+                        "Location: " + location.getProvider()
+                                + " dt=" + (location.getTime() - lastLocation.getTime())
+                                + " dc=[ " + (location.getLatitude() - lastLocation.getLatitude())
+                                + "; " + (location.getLongitude() - lastLocation.getLongitude())
+                                + " ] a=" + location.getBearing());
+            }else{
+                Crashlytics.log(Log.ERROR, LOG_TAG,"Last location is null ");
+            }
 
             this.lastLocation = location;
             for (LocationChangingListener listener : this.locationListeners) {
@@ -259,6 +270,7 @@ public class GPSTracker
             GPSTracker.this.connectGoogleApi(successListener, failureListener);
         }
 
+
         public void startTracking() {
             //TODO: start listenening fo updates
             //TODO: make server calls on each location changed
@@ -298,54 +310,59 @@ public class GPSTracker
 
     public static class ObservableConnection extends Observable<GPSTrackerBinder> implements ServiceConnection {
         private static final String LOG_TAG = "GPS TRACKER CONNECTION";
-        ReplaySubject<GPSTrackerBinder> subject;
+        private Observer<? super GPSTrackerBinder> observer;
+        private GPSTracker.GPSTrackerBinder service;
+        private Throwable error;
 
         public ObservableConnection() {
-            this.subject = ReplaySubject.create();
+
         }
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder binder) {
-            subject.onNext((GPSTracker.GPSTrackerBinder) binder);
-            Crashlytics.log(Log.DEBUG, LOG_TAG, "connected");
+            this.service = (GPSTracker.GPSTrackerBinder) binder;
+            if(observer!=null)
+                observer.onNext(service);
 
+            Crashlytics.log(Log.ERROR, LOG_TAG, "connected");
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            subject.onError(new Throwable("GPS tracking service disconnected."));
-            Crashlytics.log(Log.DEBUG, LOG_TAG, "disconnected");
+            this.error = new Throwable("GPS tracking service disconnected.");
+            if(observer!=null)
+                observer.onError(error);
+
+            Crashlytics.log(Log.ERROR, LOG_TAG, "disconnected");
         }
 
         @Override
         public void onBindingDied(ComponentName name) {
-            subject.onError(new Throwable("GPS tracking service connection lost."));
-            Crashlytics.log(Log.DEBUG, LOG_TAG, "lost");
+            this.error = new Throwable("GPS tracking service connection lost.");
+            if(observer!=null)
+                observer.onError(error);
+            Crashlytics.log(Log.ERROR, LOG_TAG, "lost");
 
         }
 
         @Override
         public void onNullBinding(ComponentName name) {
-            subject.onError(new Throwable("GPS tracking connection error."));
-            Crashlytics.log(Log.DEBUG, LOG_TAG, "null");
-
+            this.error = new Throwable("GPS tracking connection error.");
+            if(observer!=null)
+                observer.onError(error);
+            Crashlytics.log(Log.ERROR, LOG_TAG, "null");
         }
 
         @Override
         protected void subscribeActual(Observer<? super GPSTrackerBinder> observer) {
-            this.subject
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnNext(gpsTrackerBinder -> {
-                        observer.onNext(gpsTrackerBinder);
-                        observer.onComplete();
-                        Crashlytics.log(Log.DEBUG, LOG_TAG, "next");
-                    })
-                    .doOnError(throwable -> {
-                        observer.onError(throwable);
-                        observer.onComplete();
-                        Crashlytics.log(Log.DEBUG, LOG_TAG, "err");
-                    })
-                    .subscribe();
+            this.observer = observer;
+            if(error!=null){
+                observer.onError(error);
+            }else if(service!=null){
+                observer.onNext(service);
+            }
         }
+
+
     }
 }

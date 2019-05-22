@@ -37,6 +37,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.holler.app.R;
 import com.holler.app.activity.MainActivity;
 import com.holler.app.mvp.main.MainView;
+import com.orhanobut.logger.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,6 +54,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
 import io.reactivex.CompletableObserver;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 
 public class CustomActivity
@@ -121,8 +124,11 @@ public class CustomActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (gpsTrackerServiceConnection != null)
+        try {
             unbindService(gpsTrackerServiceConnection);
+        } catch (IllegalArgumentException e) {
+            Logger.e("Can't unbind service.. ");
+        }
     }
 
     public interface OnActivityResultListener {
@@ -266,26 +272,42 @@ public class CustomActivity
                 }
                 break;
             case PERMISSION_ENABLE_LOCATION:
-                GPSTracker.ObservableConnection connection = GPSTracker.createConnection(this);
-                this.gpsTrackerServiceConnection = connection;
-                connection
-                        .doOnNext(service -> {
-                            service.connectGoogleApi(
-                                    locationSettingsResponse -> handler.onPermissionGranted(),
-                                    e -> {
-                                        if (e instanceof ResolvableApiException) {
-                                            try {
+                Intent gpsTrackerBinding = new Intent(this, GPSTracker.class);
 
-                                                ResolvableApiException resolvable = (ResolvableApiException) e;
-                                                resolvable.startResolutionForResult(CustomActivity.this, code);
-                                            } catch (IntentSender.SendIntentException sendEx) {
-                                                handler.onPermissionDenied();
-                                            }
+                this.gpsTrackerServiceConnection = new ServiceConnection() {
+                    @Override
+                    public void onServiceConnected(ComponentName name, IBinder service) {
+
+                        ((GPSTracker.GPSTrackerBinder) service).connectGoogleApi(
+                                locationSettingsResponse -> {
+                                    handler.onPermissionGranted();
+                                    unbindService(CustomActivity.this.gpsTrackerServiceConnection);
+                                },
+                                e -> {
+                                    if (e instanceof ResolvableApiException) {
+                                        try {
+
+                                            ResolvableApiException resolvable = (ResolvableApiException) e;
+                                            resolvable.startResolutionForResult(CustomActivity.this, code);
+                                        } catch (IntentSender.SendIntentException sendEx) {
+                                            handler.onPermissionDenied();
                                         }
-                                    });
-                        })
-                        .subscribe();
+                                    }
+                                    unbindService(CustomActivity.this.gpsTrackerServiceConnection);
+                                });
 
+
+                    }
+
+                    @Override
+                    public void onServiceDisconnected(ComponentName name) {
+                        handler.onPermissionDenied();
+                        unbindService(CustomActivity.this.gpsTrackerServiceConnection);
+                    }
+
+                };
+
+                this.bindService(gpsTrackerBinding, this.gpsTrackerServiceConnection, Context.BIND_IMPORTANT);
                 break;
             case Manifest.permission.INTERNET:
                 if (isInternet()) {

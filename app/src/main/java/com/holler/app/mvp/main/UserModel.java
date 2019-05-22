@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
@@ -268,7 +269,7 @@ public class UserModel {
         final Subject<Boolean> source = PublishSubject.create();
         Crashlytics.log(Log.DEBUG, LOG_TAG, "Login: starting (email: "+email+"; password: "+password+")");
         Observable
-                .timer(0, TimeUnit.SECONDS)
+                .timer(1, TimeUnit.SECONDS)
                 .flatMap(aLong -> {
                     return getFirebaseToken();
                 })
@@ -323,31 +324,31 @@ public class UserModel {
         return source;
     }
 
-    private Subject<String> getFirebaseToken(){
+    private Observable<String> getFirebaseToken(){
         Crashlytics.log(Log.DEBUG, LOG_TAG, "Get firebase token: starting process");
 
-        Subject<String> result = PublishSubject.create();
+        return Observable.create(emitter -> {
+            FirebaseInstanceId.getInstance().getInstanceId()
+                    .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                            if (!task.isSuccessful()) {
+                                Logger.w("getInstanceId failed", task.getException());
+                                Crashlytics.log(Log.DEBUG, LOG_TAG, "Get firebase token: unsuccessful");
+                                emitter.onNext("Could not get firebase token");
+                                emitter.onComplete();
+                                return;
+                            }
+                            String token = task.getResult().getToken();
+                            Crashlytics.log(Log.DEBUG, LOG_TAG, "Get firebase token: successful");
 
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()) {
-                            Logger.w("getInstanceId failed", task.getException());
-                            Crashlytics.log(Log.DEBUG, LOG_TAG, "Get firebase token: unsuccessful");
-                            result.onNext("Could not get firebase token");
-                            result.onComplete();
-                            return;
+                            emitter.onNext(token);
+                            emitter.onComplete();
                         }
-                        String token = task.getResult().getToken();
-                        Crashlytics.log(Log.DEBUG, LOG_TAG, "Get firebase token: successful");
+                    });
+        });
 
-                        result.onNext(token);
-                        result.onComplete();
-                    }
-                });
 
-        return result;
     }
 
     public Subject<Boolean> checkEmailExists(String email) {

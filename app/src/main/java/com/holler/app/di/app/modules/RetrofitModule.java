@@ -78,7 +78,7 @@ public class RetrofitModule {
     @Singleton
     public ServerAPI provideRetrofitServerAPI() {
 
-        ConnectionPool pool = new ConnectionPool(10, 20000, TimeUnit.MILLISECONDS);
+        ConnectionPool pool = new ConnectionPool(20, 20000, TimeUnit.MILLISECONDS);
 
         OkHttpClient httpClient = new OkHttpClient
                 .Builder()

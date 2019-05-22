@@ -6,9 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -27,6 +25,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.holler.app.R;
+import com.holler.app.utils.CustomActivity;
 import com.holler.app.utils.GPSTracker;
 import com.orhanobut.logger.Logger;
 
@@ -51,11 +50,12 @@ public class MapFragment extends Fragment {
     @BindView(R.id.ma_map_pass_button)
     public View passItOnButton;
 
-    private GPSTracker.GPSTrackerBinder gpsTrackerBinder;
+    private GPSTracker.GPSTrackerBinder gpsTrackerService;
     private GoogleMap googleMap;
     private GPSTracker.LocationChangingListener locationListener;
     private static boolean cameraLocked = false;
     private MainPresenter presenter;
+    private ServiceConnection gpsTrackerServiceConnection;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,105 +69,116 @@ public class MapFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main_map, container, false);
         ButterKnife.bind(this, view);
 
-        //TODO: make observables for this
-        initLocationListener();
-        bindGpsTracker();
-        setupGoogleMap();
-        //TODO: fix with observable
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setMapCameraToCurrentPosition(false);
-            }
-        }, 500);
+        bindGpsTrackerService()
+                .doOnSubscribe(disposable -> {
+                    ((CustomActivity) getActivity()).showSpinner();
+                })
+                .flatMap(service -> {
+                    this.gpsTrackerService = service;
+                    this.gpsTrackerService.addLocationListener(newLocation -> setMarker(newLocation));
+                    return setupGoogleMap();
+                })
+                .flatMap(googleMap -> {
+                    MapFragment.this.googleMap = googleMap;
+                    setMapCameraToCurrentPosition(false);
+                    ((CustomActivity) getActivity()).hideSpinner();
+                    return Observable.empty();
+                })
+                .doOnError(throwable -> {
+                    ((CustomActivity) getActivity()).showMessage(throwable.getMessage());
+                })
+                .subscribe();
+
 
         return view;
     }
 
-    private void initLocationListener() {
-        this.locationListener = new GPSTracker.LocationChangingListener() {
-            @Override
-            public void onLocationChanged(Location newLocation) {
-//                if(!cameraLocked)
-                setMarker(newLocation);
-            }
-        };
-    }
 
-    private void bindGpsTracker() {
-        Intent gpsTrackerBinding = new Intent(getActivity(), GPSTracker.class);
-        ServiceConnection gpsTrackerConnection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder binder) {
-                gpsTrackerBinder = (GPSTracker.GPSTrackerBinder) binder;
-                gpsTrackerBinder.addLocationListener(locationListener);
-            }
+    private Observable<GPSTracker.GPSTrackerBinder> bindGpsTrackerService() {
+        return Observable.<GPSTracker.GPSTrackerBinder>create(emitter -> {
+            Intent gpsTrackerBinding = new Intent(getActivity(), GPSTracker.class);
 
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
+            this.gpsTrackerServiceConnection = new ServiceConnection() {
+                @Override
+                public void onServiceConnected(ComponentName name, IBinder service) {
+                    emitter.onNext((GPSTracker.GPSTrackerBinder) service);
+                }
 
+                @Override
+                public void onServiceDisconnected(ComponentName name) {
+                    emitter.onError(new Throwable("Can't enable location tracking"));
+                }
 
-            }
-        };
-        getActivity().bindService(gpsTrackerBinding, gpsTrackerConnection, Context.BIND_AUTO_CREATE);
-    }
+                @Override
+                public void onBindingDied(ComponentName name) {
+                    emitter.onError(new Throwable("Can't enable location tracking"));
+                }
 
-    private void setupGoogleMap() {
-        SupportMapFragment googleMapContainer = (SupportMapFragment)
-                getChildFragmentManager().findFragmentById(R.id.ma_map_google_map_container);
+                @Override
+                public void onNullBinding(ComponentName name) {
+                    emitter.onError(new Throwable("Can't enable location tracking"));
+                }
+            };
 
-
-
-        googleMapContainer.getMapAsync(new OnMapReadyCallback() {
-            @SuppressLint("MissingPermission")
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                MapFragment.this.googleMap = googleMap;
-                googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.style_json));
-
-                //TODO: check location permission
-
-                googleMap.setMyLocationEnabled(true);
-                googleMap.getUiSettings().setMyLocationButtonEnabled(false);
-                googleMap.setBuildingsEnabled(true);
-                googleMap.getUiSettings().setCompassEnabled(false);
-                googleMap.getUiSettings().setRotateGesturesEnabled(false);
-                googleMap.getUiSettings().setTiltGesturesEnabled(false);
-
-                googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
-                    @Override
-                    public void onCameraMove() {
-                        Location location = getCurrentLocation();
-                        if (location == null) return;
-                        LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
-                        boolean isCurrentLocationOut =
-                                !googleMap
-                                        .getProjection()
-                                        .getVisibleRegion()
-                                        .latLngBounds
-                                        .contains(currentPosition);
-                        boolean isZoomOutOfRange = googleMap.getCameraPosition().zoom > 17 || googleMap.getCameraPosition().zoom < 14;
-                        if (isCurrentLocationOut || isZoomOutOfRange) {
-                            currentLocationButton.setVisibility(View.VISIBLE);
-                        } else {
-                            currentLocationButton.setVisibility(View.GONE);
-                        }
-                    }
-                });
-
-
-
-                googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
-//                setMarker(gpsTrackerBinder.getLocation());
-
-            }
+            getActivity().bindService(gpsTrackerBinding, this.gpsTrackerServiceConnection, Context.BIND_IMPORTANT);
         });
     }
 
+    private Observable<GoogleMap> setupGoogleMap() {
+        return Observable.create(emitter -> {
+            SupportMapFragment googleMapContainer = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.ma_map_google_map_container);
+
+            googleMapContainer.getMapAsync(new OnMapReadyCallback() {
+                @SuppressLint("MissingPermission")
+                @Override
+                public void onMapReady(GoogleMap googleMap) {
+                    googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.style_json));
+
+                    googleMap.setMyLocationEnabled(false);
+                    googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+                    googleMap.setBuildingsEnabled(true);
+                    googleMap.getUiSettings().setCompassEnabled(false);
+                    googleMap.getUiSettings().setRotateGesturesEnabled(false);
+                    googleMap.getUiSettings().setTiltGesturesEnabled(false);
+
+                    googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
+                        @Override
+                        public void onCameraMove() {
+                            Location location = getCurrentLocation();
+                            if (location == null) return;
+                            LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
+                            boolean isCurrentLocationOut =
+                                    !googleMap
+                                            .getProjection()
+                                            .getVisibleRegion()
+                                            .latLngBounds
+                                            .contains(currentPosition);
+                            boolean isZoomOutOfRange = googleMap.getCameraPosition().zoom > 17 || googleMap.getCameraPosition().zoom < 14;
+                            if (isCurrentLocationOut || isZoomOutOfRange) {
+                                currentLocationButton.setVisibility(View.VISIBLE);
+                            } else {
+                                currentLocationButton.setVisibility(View.GONE);
+                            }
+                        }
+                    });
+
+
+
+                    googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+                    emitter.onNext(googleMap);
+                }
+            });
+        });
+
+
+
+
+    }
+
     private Location getCurrentLocation() {
-        if (gpsTrackerBinder == null) return null;
-        return gpsTrackerBinder.getLocation();
+        if (gpsTrackerService == null) return null;
+        return gpsTrackerService.getLocation();
     }
 
     @OnClick(R.id.ma_map_to_current_location_button)

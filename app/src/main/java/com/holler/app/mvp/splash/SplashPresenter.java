@@ -1,15 +1,23 @@
 package com.holler.app.mvp.splash;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentSender;
 import android.content.ServiceConnection;
+import android.os.IBinder;
 
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.mvp.main.UserModel;
 import com.holler.app.di.Presenter;
 import com.holler.app.di.app.modules.RetrofitModule;
+import com.holler.app.utils.CustomActivity;
 import com.holler.app.utils.GPSTracker;
 import com.holler.app.utils.MessageDisplayer;
 import com.holler.app.utils.SpinnerShower;
+
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -50,9 +58,33 @@ public class SplashPresenter implements Presenter {
         userModel
                 .login()
                 .flatMap(isLogged -> {
-                    GPSTracker.ObservableConnection connection = GPSTracker.createConnection(context);
-                    gpsTrackerServiceConnection = connection;
-                    return connection;
+                    return Observable.<GPSTracker.GPSTrackerBinder>create(emitter -> {
+                        Intent gpsTrackerBinding = new Intent(context, GPSTracker.class);
+
+                        this.gpsTrackerServiceConnection = new ServiceConnection() {
+                            @Override
+                            public void onServiceConnected(ComponentName name, IBinder service) {
+                                emitter.onNext((GPSTracker.GPSTrackerBinder) service);
+                            }
+
+                            @Override
+                            public void onServiceDisconnected(ComponentName name) {
+                                emitter.onError(new Throwable("Can't enable location tracking"));
+                            }
+
+                            @Override
+                            public void onBindingDied(ComponentName name) {
+                                emitter.onError(new Throwable("Can't enable location tracking"));
+                            }
+
+                            @Override
+                            public void onNullBinding(ComponentName name) {
+                                emitter.onError(new Throwable("Can't enable location tracking"));
+                            }
+                        };
+
+                        context.bindService(gpsTrackerBinding, this.gpsTrackerServiceConnection, Context.BIND_IMPORTANT);
+                    });
                 })
                 .flatMap(service -> {
                     service.startTracking();
