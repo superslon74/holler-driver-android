@@ -158,7 +158,7 @@ public class SplashView
         TextView lblVersion = (TextView) findViewById(R.id.sp_version);
         lblVersion.setText(
                 getResources().getString(R.string.was_powered_by) +"\n "+
-                getResources().getString(R.string.was_version)+ " "+ BuildConfig.VERSION_NAME+" ("+BuildConfig.VERSION_CODE+")");
+                getResources().getString(R.string.was_version)+ " "+ BuildConfig.VERSION_NAME+"."+BuildConfig.VERSION_CODE);
 
         if (Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();

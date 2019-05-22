@@ -56,6 +56,7 @@ public class MapFragment extends Fragment {
     private static boolean cameraLocked = false;
     private MainPresenter presenter;
     private ServiceConnection gpsTrackerServiceConnection;
+    private volatile boolean shouldUpdateMapWithoutAnimation = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,6 +70,13 @@ public class MapFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main_map, container, false);
         ButterKnife.bind(this, view);
 
+        Observable
+                .interval(15,TimeUnit.SECONDS)
+                .doOnNext(aLong -> {
+                    shouldUpdateMapWithoutAnimation = true;
+                })
+                .subscribe();
+
         bindGpsTrackerService()
                 .doOnSubscribe(disposable -> {
                     ((CustomActivity) getActivity()).showSpinner();
@@ -80,7 +88,7 @@ public class MapFragment extends Fragment {
                 })
                 .flatMap(googleMap -> {
                     MapFragment.this.googleMap = googleMap;
-                    setMapCameraToCurrentPosition(false);
+                    setMapCameraToCurrentPosition(false, false);
                     ((CustomActivity) getActivity()).hideSpinner();
                     return Observable.empty();
                 })
@@ -154,7 +162,7 @@ public class MapFragment extends Fragment {
                                             .latLngBounds
                                             .contains(currentPosition);
                             boolean isZoomOutOfRange = googleMap.getCameraPosition().zoom > 17 || googleMap.getCameraPosition().zoom < 14;
-                            if (isCurrentLocationOut || isZoomOutOfRange) {
+                            if (isCurrentLocationOut || isZoomOutOfRange || cameraLocked) {
                                 currentLocationButton.setVisibility(View.VISIBLE);
                             } else {
                                 currentLocationButton.setVisibility(View.GONE);
@@ -183,22 +191,27 @@ public class MapFragment extends Fragment {
 
     @OnClick(R.id.ma_map_to_current_location_button)
     public void toCurrentPosition(){
-        setMapCameraToCurrentPosition(true);
+        setMapCameraToCurrentPosition(true,true);
     }
 
-    public void setMapCameraToCurrentPosition(boolean withAnimation) {
+    public void setMapCameraToCurrentPosition(boolean withAnimation, boolean shouldUpdate) {
         cameraLocked=false;
         if(googleMap==null) return;
         Location location = getCurrentLocation();
         if (location == null) return;
         LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+
         CameraPosition cameraPosition = new CameraPosition
                 .Builder()
                 .target(currentLocation)
                 .bearing(location.getBearing())
                 .zoom(16)
                 .build();
-        if(withAnimation) {
+
+        if(withAnimation && shouldUpdate) {
+            googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            shouldUpdateMapWithoutAnimation = false;
+        }else if(withAnimation && !shouldUpdate){
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }else {
             googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
@@ -225,7 +238,7 @@ public class MapFragment extends Fragment {
         googleMap.addMarker(markerOptions);
 
         if (!cameraLocked) {
-            setMapCameraToCurrentPosition(true);
+            setMapCameraToCurrentPosition(true, shouldUpdateMapWithoutAnimation);
         }
     }
 

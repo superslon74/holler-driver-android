@@ -122,7 +122,7 @@ public class GPSTracker
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(500);
-        locationRequest.setFastestInterval(250);
+        locationRequest.setFastestInterval(100);
 
         LocationSettingsRequest locationSettingsRequest = new LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest)
