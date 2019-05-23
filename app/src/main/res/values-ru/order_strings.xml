@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="os_request_message">Мы нашли Пассажира</string>
+    <string name="os_rate_message">Оценить поездку</string>
+
+    <string name="os_button_cancel">Отменить</string>
+    <string name="os_request_button_pick_up">&#160; взять  &#160;</string>
+    <string name="os_rate_button_submit">Отправить</string>
+    <string name="os_arrived_button_submit">Навигация</string>
+    <string name="os_arrived_button_arrived">Прибыл</string>
+
+</resources>

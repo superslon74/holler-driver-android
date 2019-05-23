@@ -656,6 +656,9 @@ public class RetrofitModule {
                 dest.writeString(localUrl);
             }
 
+            public boolean isRequired() {
+                return this.remoteUrl==null || "".equals(this.remoteUrl);
+            }
         }
 
         @Multipart

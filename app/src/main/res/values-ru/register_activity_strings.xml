@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ras_header">Давай на борт!</string>
+    <string name="ras_name_placeholder">Имя</string>
+    <string name="ras_last_name_placeholder">Фамилия</string>
+    <string name="ras_email_placeholder">E-mail</string>
+    <string name="ras_mobile_placeholder">Моб. телефон</string>
+    <string name="ras_password_placeholder">Пароль</string>
+    <string name="ras_password_confirmation_placeholder">Подтвердить пароль</string>
+    <string name="ras_sign_up_button">РЕГИСТРАЦИЯ</string>
+
+    <string name="ras_sign_up_link">Мне нужно создать аккаунт</string>
+    <string name="ras_forgot_password">Я забыл свой пароль</string>
+
+</resources>

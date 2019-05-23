@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="epas_title">Редактировать профиль</string>
+
+    <string name="epas_last_name_caption">Фамилия</string>
+    <string name="epas_first_name_caption">Имя</string>
+    <string name="epas_gender_caption">Пол</string>
+
+    <string name="epas_gender_option_male">Мужской</string>
+    <string name="epas_gender_option_female">Женский</string>
+
+    <string name="epas_phone_caption">Номер телефона</string>
+    <string name="epas_email_caption">E-mail</string>
+    <string name="epas_service_caption">Сервис</string>
+
+    <string name="epas_button_save">Сохранить</string>
+    <string name="epas_button_changePassword">Хочу сменить пароль</string>
+
+</resources>

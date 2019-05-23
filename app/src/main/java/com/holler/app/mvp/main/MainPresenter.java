@@ -1,8 +1,11 @@
 package com.holler.app.mvp.main;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.location.Location;
+import android.os.IBinder;
 
 import com.holler.app.R;
 import com.holler.app.di.app.modules.RetrofitModule;
@@ -15,6 +18,7 @@ import com.holler.app.utils.SpinnerShower;
 import com.orhanobut.logger.Logger;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
@@ -52,10 +56,7 @@ public class MainPresenter {
         this.userModel = userModel;
         this.orderModel = orderModel;
 
-        GPSTracker.ObservableConnection connection = GPSTracker.createConnection(context);
-        this.gpsTrackerServiceConnection = connection;
-
-        connection
+        createGpsTrackerServiceConnection()
                 .flatMap(service -> {
                     gpsTrackerService = (GPSTracker.GPSTrackerBinder)service;
                     gpsTrackerService.startTracking();
@@ -89,6 +90,42 @@ public class MainPresenter {
 
         initStates();
 
+    }
+
+    private Observable<GPSTracker.GPSTrackerBinder> createGpsTrackerServiceConnection(){
+        return Observable.<GPSTracker.GPSTrackerBinder>create(emitter -> {
+            Intent gpsTrackerBinding = new Intent(context, GPSTracker.class);
+
+            this.gpsTrackerServiceConnection = new ServiceConnection() {
+                @Override
+                public void onServiceConnected(ComponentName name, IBinder service) {
+                    emitter.onNext((GPSTracker.GPSTrackerBinder) service);
+                }
+
+                @Override
+                public void onServiceDisconnected(ComponentName name) {
+                    emitter.onError(new ServiceConnectionError("Can't enable location tracking"));
+                }
+
+                @Override
+                public void onBindingDied(ComponentName name) {
+                    emitter.onError(new ServiceConnectionError("Can't enable location tracking"));
+                }
+
+                @Override
+                public void onNullBinding(ComponentName name) {
+                    emitter.onError(new ServiceConnectionError("Can't enable location tracking"));
+                }
+            };
+
+            context.bindService(gpsTrackerBinding, this.gpsTrackerServiceConnection, Context.BIND_IMPORTANT);
+        });
+    }
+
+    public static class ServiceConnectionError extends Throwable{
+        public ServiceConnectionError(String message) {
+            super(message);
+        }
     }
 
     public void onViewDestroyed(){
@@ -288,8 +325,27 @@ public class MainPresenter {
     }
 
     public void goToDocumentsScreen() {
-        router.goToDocumentsScreen();
-        view.finish();
+        serverAPI
+                .getRequiredDocuments(userModel.getAuthHeader(),"la","bla","lalala")
+                .toObservable()
+                .flatMap(documents -> {
+                    if(checkDocumentsRequired(documents)){
+                        router.goToDocumentsScreen();
+                        view.finish();
+                    }else{
+                        view.showMessage(context.getString(R.string.error_all_documents_exists));
+                    }
+                    return Observable.empty();
+                })
+                .subscribe();
+
+    }
+
+    private boolean checkDocumentsRequired(List<RetrofitModule.ServerAPI.Document> documents){
+        for(RetrofitModule.ServerAPI.Document d: documents){
+            if(d.isRequired()) return true;
+        }
+        return false;
     }
 
     public interface View extends SpinnerShower, MessageDisplayer, Finishable {

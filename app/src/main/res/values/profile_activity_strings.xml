@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string translatable="false" name="epas_title">Edit Profile</string>
+    <string name="epas_title">Edit Profile</string>
 
-    <string translatable="false" name="epas_last_name_caption">Last Name</string>
-    <string translatable="false" name="epas_first_name_caption">First Name</string>
-    <string translatable="false" name="epas_gender_caption">Gender</string>
+    <string name="epas_last_name_caption">Last Name</string>
+    <string name="epas_first_name_caption">First Name</string>
+    <string name="epas_gender_caption">Gender</string>
 
-    <string translatable="false" name="epas_gender_option_male">Male</string>
-    <string translatable="false" name="epas_gender_option_female">Female</string>
+    <string name="epas_gender_option_male">Male</string>
+    <string name="epas_gender_option_female">Female</string>
 
-    <string translatable="false" name="epas_phone_caption">Phone number</string>
-    <string translatable="false" name="epas_email_caption">Email</string>
-    <string translatable="false" name="epas_service_caption">Service</string>
+    <string name="epas_phone_caption">Phone number</string>
+    <string name="epas_email_caption">Email</string>
+    <string name="epas_service_caption">Service</string>
 
-    <string translatable="false" name="epas_button_save">Save</string>
-    <string translatable="false" name="epas_button_changePassword">Looking for change password</string>
+    <string name="epas_button_save">Save</string>
+    <string name="epas_button_changePassword">Looking for change password</string>
 
 </resources>

@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string translatable="false" name="os_request_message">We found a Customer nearby</string>
+    <string name="os_request_message">We found a Customer nearby</string>
+    <string name="os_rate_message">Rate your trip</string>
+
+    <string name="os_button_cancel">Cancel</string>
+    <string name="os_request_button_pick_up">pick up</string>
+    <string name="os_rate_button_submit">submit</string>
+    <string name="os_arrived_button_submit">Navigate</string>
+    <string name="os_arrived_button_arrived">Arrived</string>
+
 
 
 </resources>

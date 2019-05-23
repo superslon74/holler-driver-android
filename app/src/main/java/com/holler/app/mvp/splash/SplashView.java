@@ -23,6 +23,7 @@ import com.holler.app.di.app.components.DaggerSplashComponent;
 import com.holler.app.di.app.components.splash.modules.SplashScreenModule;
 import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.utils.CustomActivity;
+import com.holler.app.utils.GPSTracker;
 import com.orhanobut.logger.Logger;
 
 import javax.inject.Inject;
@@ -49,6 +50,7 @@ public class SplashView
     @Override
     protected void onStart() {
         super.onStart();
+        startService(new Intent(this, GPSTracker.class));
         requestPermissions();
     }
 

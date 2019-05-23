@@ -247,14 +247,17 @@ public class MapFragment extends Fragment {
     private RateOrderFragment rateOrderFragment;
     public void showRequestOrder(OrderModel.Order order) {
         String address = order.data.sAddress;
+
         int time = order.timeToRespond;
+        if(requestOrderFragment!=null){
+            removeFragment(requestOrderFragment);
+        }
         requestOrderFragment = RequestOrderFragment.newInstance(address, time);
 
         requestOrderFragment.source
                 .doOnSubscribe(disposable -> addFragment(requestOrderFragment))
                 .flatMap(isAccepted -> {
                     if(isAccepted){
-
                         return order.accept().toObservable();
                     }else{
 

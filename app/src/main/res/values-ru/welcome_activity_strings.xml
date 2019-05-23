@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--mas = main activity strings-->
+
+    <string name="was_powered_by">Разработано Andar Solutions</string>
+    <string name="was_version">версия </string>
+
+    <string name="was_button_login">войти</string>
+    <string name="was_button_register">регистрация</string>
+    <string name="was_link_social">войти через соц. сеть</string>
+
+    <string name="was_header_welcome">Добро пожаловать в\nHoller!</string>
+    <string name="was_header_find">Найти клиентов\nрядом с тобой</string>
+    <string name="was_header_notify">Уведомить других\nводителей</string>
+
+    <string name="was_description_welcome">Holler уведомляет водителей, когда\nклиенты ищут такси поблизости.\n\n</string>
+    <string name="was_description_find">Holler думает о водителях. Когда водитель\nобнаружит поблизости клиента, которого\nон не может забрать, вы получите\nуведомление!</string>
+    <string name="was_description_notify">Если вы заметили клиента на улице, но не\nможете его забрать, нажмите кнопку «Едь\nсюда», и сободные водители поблизости\nполучат уведомление.</string>
+
+</resources>
