@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 
+import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,15 +30,20 @@ import com.holler.app.FloatingViewService.FloatingViewListener;
 import com.holler.app.FloatingViewService.FloatingViewManager;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.R;
+import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.mvp.main.MainView;
+import com.holler.app.mvp.main.UserModel;
 import com.holler.app.server.OrderServerApi;
 
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import androidx.annotation.Nullable;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
@@ -52,6 +58,10 @@ public class FloatingViewService extends Service implements FloatingViewListener
 
     @Inject
     protected RouterModule.Router router;
+    @Inject
+    protected RetrofitModule.ServerAPI serverAPI;
+    @Inject
+    protected UserModel userModel;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -136,7 +146,7 @@ public class FloatingViewService extends Service implements FloatingViewListener
                 //TODO: update spinner end error handler
             }
         };
-        bindService(gpsTrackerBinding,gpsTrackerConnection,Context.BIND_AUTO_CREATE);
+        bindService(gpsTrackerBinding, gpsTrackerConnection, Context.BIND_AUTO_CREATE);
     }
 
     private void showSpinnerAndLockButton() {
@@ -155,87 +165,73 @@ public class FloatingViewService extends Service implements FloatingViewListener
 
     private void hideSpinnerAndUnlockButton() {
         orderButtonLocked = false;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            orderButtonLocked = true;
-            icon.setAnimation(null);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
+        orderButtonLocked = true;
+        icon.setAnimation(null);
+        Observable
+                .timer(1500, TimeUnit.MILLISECONDS)
+                .doOnComplete(() -> {
                     orderButtonLocked = false;
-                    ((ImageView) icon).setImageDrawable(AndarApplication.getInstance().getDrawable(R.drawable.ic_add_circle_outline_yellow));
-                }
-            }, 1500);
-        }
+                    changeIcon(R.drawable.ic_add_circle_outline_yellow);
+                })
+                .subscribe();
+
+    }
+
+    private void changeIcon(int resourceId){
+        runOnUiThread(() -> {
+            ((ImageView) icon).setImageDrawable(AndarApplication.getInstance().getDrawable(resourceId));
+        });
+    }
+
+    private void showToast(int stringResourceId){
+        runOnUiThread(() -> {
+            String message = AndarApplication.getInstance().getString(stringResourceId);
+            Toast.makeText(AndarApplication.getInstance(), message, Toast.LENGTH_LONG).show();
+        });
     }
 
     private void createAndSendOrder(Location location) {
-        if(location == null){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                ((ImageView)icon).setImageDrawable(AndarApplication.getInstance().getDrawable(R.drawable.ic_close_yellow));
-                Toast.makeText(AndarApplication.getInstance(),"Cant't get location",Toast.LENGTH_LONG).show();
-            }else{
-                Toast.makeText(AndarApplication.getInstance(),"Cant't get location",Toast.LENGTH_LONG).show();
-            }
+        if (location == null) {
+            changeIcon(R.drawable.ic_close_yellow);
+            showToast(R.string.error_no_location);
             hideSpinnerAndUnlockButton();
             return;
         }
 
-        OrderServerApi serverApiClient = OrderServerApi.ApiCreator.createInstance();
-
-        HashMap<String, String> headers = new HashMap<String, String>();
-        headers.put("X-Requested-With", "XMLHttpRequest");
-        headers.put("Authorization", "Bearer " + SharedHelper.getKey(AndarApplication.getInstance(), "access_token"));
-
         OrderServerApi.Order order = new OrderServerApi.Order();
 
-        order.startLatitude = ""+location.getLatitude();
-        order.startLongitude = ""+location.getLongitude();
+        String lat = "" + location.getLatitude();
+        String lon = "" + location.getLongitude();
 
-        serverApiClient
-                .createOrder(headers, order)
-                .enqueue(new OrderServerApi.CallbackErrorHandler<OrderServerApi.CreteOrderResponse>(null) {
-                    private static final String MESSAGE_REQUEST_SUCCESFULL = "New request Created!";
-
-                    @Override
-                    public void onSuccessfulResponse(Response<OrderServerApi.CreteOrderResponse> response) {
-                        String message = response.body().message;
-                        if(MESSAGE_REQUEST_SUCCESFULL.equals(message)) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                ((ImageView) icon).setImageDrawable(AndarApplication.getInstance().getDrawable(R.drawable.ic_check_yellow));
-                            }
-                            Toast.makeText(AndarApplication.getInstance(), message, Toast.LENGTH_LONG).show();
-
-                        }else{
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                ((ImageView)icon).setImageDrawable(AndarApplication.getInstance().getDrawable(R.drawable.ic_close_yellow));
-                            }
-                            Toast.makeText(AndarApplication.getInstance(), message, Toast.LENGTH_LONG).show();
-                        }
-
+        String MESSAGE_REQUEST_SUCCESFULL = "New request Created!";
+        serverAPI.createOrder(userModel.getAuthHeader(),
+                new RetrofitModule.ServerAPI.CreateOrderRequestBody(lat,lon))
+                .toObservable()
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .flatMap(createOrderResponse -> {
+                    if (MESSAGE_REQUEST_SUCCESFULL.equals(createOrderResponse.message)){
+                        changeIcon(R.drawable.ic_check_yellow);
+                        showToast(R.string.successfully_created_order);
+                    }else{
+                        changeIcon(R.drawable.ic_close_yellow);
+                        showToast(R.string.error_creating_order);
                     }
+                    return Observable.empty();
+                })
+                .doOnError(throwable -> {
+                    changeIcon(R.drawable.ic_close_yellow);
+                    showToast(R.string.error_creating_order);
+                })
+                .doOnComplete(() -> {
+                    hideSpinnerAndUnlockButton();
+                })
+                .subscribe();
 
-                    @Override
-                    public void onUnsuccessfulResponse(retrofit2.Response<OrderServerApi.CreteOrderResponse> response) {
-                        super.onUnsuccessfulResponse(response);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            ((ImageView)icon).setImageDrawable(AndarApplication.getInstance().getDrawable(R.drawable.ic_close_yellow));
-                        }else{
-                            Toast.makeText(AndarApplication.getInstance(),"Error, please try again.",Toast.LENGTH_LONG).show();
-                        }
-                    }
+    }
 
-                    @Override
-                    public void onFinishHandling() {
-                        super.onFinishHandling();
-                        hideSpinnerAndUnlockButton();
-                    }
-
-                    @Override
-                    public void onDisplayMessage(String message) {
-                        Toast.makeText(AndarApplication.getInstance(),"Error, please try again.",Toast.LENGTH_LONG).show();
-                    }
-                });
-
+    private void runOnUiThread(Runnable r){
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(r);
     }
 
     @Override
@@ -258,7 +254,7 @@ public class FloatingViewService extends Service implements FloatingViewListener
     @Override
     public void onTouchFinished(boolean isFinished, int x, int y) {
         //save position to shared preferences
-        if(isFinished) return;
+        if (isFinished) return;
         SharedPreferences.Editor positionStorage = getSharedPreferences("floating_view", Context.MODE_PRIVATE).edit();
         positionStorage.putInt(ARG_POSITION_X, x);
         positionStorage.putInt(ARG_POSITION_Y, y);

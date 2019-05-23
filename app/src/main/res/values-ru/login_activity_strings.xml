@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="las_header">С возращением</string>
+    <string name="las_email_placeholder">E-mail</string>
+    <string name="las_password_placeholder">Пароль</string>
+    <string name="las_sign_in_button">ВОЙТИ</string>
+
+    <string name="las_sign_up_link">Мне нужно создать аккаунт</string>
+    <string name="las_forgot_password">Я забыл свой пароль</string>
+
+</resources>

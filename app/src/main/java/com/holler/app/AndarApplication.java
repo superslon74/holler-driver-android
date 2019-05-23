@@ -52,12 +52,13 @@ public class AndarApplication extends Application implements  ComponentCallbacks
         setupDependencyGraph();
         super.onCreate();
         Fabric.with(this, new Crashlytics());
-        startService(new Intent(this, GPSTracker.class));
         /**********************/
         instance = this;
         FontsOverride.setDefaultFont(this, "MONOSPACE", "ClanPro-NarrBook.otf");
 
     }
+
+
 
     private AppComponent component;
     public AppComponent component(){

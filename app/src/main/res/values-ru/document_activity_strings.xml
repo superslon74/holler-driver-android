@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string  name="das_header">Загрузить документ</string>
+    <string  name="das_submit_button">Отправить</string>
+    <string  name="das_document_state_required">Необходимый документ</string>
+    <string  name="das_document_state_uploaded">Загруженный документ</string>
+    <string  name="das_document_state_ready">Готов к загрузке</string>
+    <string  name="das_document_state_info">Нажмите, чтобы выбрать файл</string>
+
+    <string name="error_all_documents_exists">Документы уже загружены</string>
+
+</resources>

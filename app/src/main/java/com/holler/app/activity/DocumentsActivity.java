@@ -6,7 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.holler.app.Fragment.DocumentsListItem;
+import com.holler.app.mvp.documents.DocumentsListItem;
 import com.holler.app.Helper.SharedHelper;
 import com.holler.app.Helper.URLHelper;
 import com.holler.app.R;

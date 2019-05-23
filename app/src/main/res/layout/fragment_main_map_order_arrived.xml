@@ -47,7 +47,7 @@
         style="@style/OF_Link_Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cancel"
+        android:text="@string/os_button_cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -55,7 +55,7 @@
         android:id="@+id/of_button_navigate_caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Navigate"
+        android:text="@string/os_arrived_button_submit"
         android:fontFamily="@font/montserrat"
         android:textColor="@color/white"
         android:textStyle="bold"
@@ -87,7 +87,7 @@
         android:id="@+id/of_button_arrived_caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Arrived"
+        android:text="@string/os_arrived_button_arrived"
         android:fontFamily="@font/montserrat"
         android:textColor="@color/white"
         android:textStyle="bold"

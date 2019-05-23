@@ -299,6 +299,7 @@ public class GPSTracker
 
     }
 
+    @Deprecated
     public static ObservableConnection createConnection(Context context) {
         Intent gpsTrackerBinding = new Intent(context, GPSTracker.class);
         ObservableConnection gpsTrackerConnection = new ObservableConnection();
@@ -308,6 +309,7 @@ public class GPSTracker
         return gpsTrackerConnection;
     }
 
+    @Deprecated
     public static class ObservableConnection extends Observable<GPSTrackerBinder> implements ServiceConnection {
         private static final String LOG_TAG = "GPS TRACKER CONNECTION";
         private Observer<? super GPSTrackerBinder> observer;

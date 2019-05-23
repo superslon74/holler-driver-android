@@ -3,7 +3,6 @@ package com.holler.app.mvp.documents;
 import android.os.Bundle;
 import android.view.View;
 import com.holler.app.AndarApplication;
-import com.holler.app.Fragment.DocumentsListItem;
 import com.holler.app.R;
 import com.holler.app.di.app.AppComponent;
 import com.holler.app.di.app.components.DaggerDocumentsComponent;

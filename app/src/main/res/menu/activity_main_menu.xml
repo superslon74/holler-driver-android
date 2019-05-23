@@ -18,10 +18,6 @@
             android:checkable="false"
             android:title="@string/mas_nav_wallet" />
         <item
-            android:id="@+id/ma_nav_settings"
-            android:checkable="false"
-            android:title="@string/mas_nav_settings" />
-        <item
             android:id="@+id/ma_nav_help"
             android:checkable="false"
             android:title="@string/mas_nav_help" />
