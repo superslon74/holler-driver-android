@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="mas_nav_payment">תשלום</string>
+    <string name="mas_nav_trips">הנסיעות שלך</string>
+    <string name="mas_nav_coupon">קופון</string>
+    <string name="mas_nav_wallet">ארנק</string>
+    <string name="mas_nav_passbook">פנקס</string>
+    <string name="mas_nav_settings">הגדרות</string>
+    <string name="mas_nav_help">עזרה</string>
+    <string name="mas_nav_share">שיתוף</string>
+    <string name="mas_nav_documents">העלאת מסמכים</string>
+    <string name="mas_nav_logout">יציאה</string>
+    <string name="mas_nav_crash">דו"ח שגיאות</string>
+
+    <string name="mas_offline_header">עבור למחובר</string>
+    <string name="mas_offline_header_success">(:</string>
+    <string name="mas_offline_later">אולי מאוחר יותר</string>
+
+
+    <string name="ma_logout_alert_title">יציאה</string>
+    <string name="ma_logout_alert_message">האם ברצונן לצאת מהאפליקציה?</string>
+    <string name="ma_logout_alert_button_confirm">כן</string>
+    <string name="ma_logout_alert_button_cancel">לא</string>
+
+    <string name="ma_map_pas_it_on">שגר</string>
+
+</resources>

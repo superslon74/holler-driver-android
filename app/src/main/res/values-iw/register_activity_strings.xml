@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ras_header">הצטרף</string>
+    <string name="ras_name_placeholder">שם פרטי</string>
+    <string name="ras_last_name_placeholder">שם משפחה</string>
+    <string name="ras_email_placeholder">כתובת דואר אלקטרוני</string>
+    <string name="ras_mobile_placeholder">טלפון סלולרי</string>
+    <string name="ras_password_placeholder">סיסמה</string>
+    <string name="ras_password_confirmation_placeholder">אישור סיסמה</string>
+    <string name="ras_sign_up_button">הצטרפות</string>
+
+    <string name="ras_sign_up_link">צריך ליצור חשבון חדש</string>
+    <string name="ras_forgot_password">שכחתי סיסמה</string>
+
+</resources>

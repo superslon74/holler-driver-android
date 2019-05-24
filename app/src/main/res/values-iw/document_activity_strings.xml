@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="das_header">העלאת מסמכים</string>
+    <string name="das_submit_button">שליחה</string>
+    <string name="das_document_state_required">מסמך נדרש</string>
+    <string name="das_document_state_uploaded">המסמך עלה</string>
+    <string name="das_document_state_ready">מוכן להעלאה</string>
+    <string name="das_document_state_info">לחיצה על הסמל לבחירת קובץ</string>
+
+
+</resources>

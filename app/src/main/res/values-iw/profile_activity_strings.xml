@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="epas_title">ערוך פרטים</string>
+
+    <string name="epas_last_name_caption">שם משפחה</string>
+    <string name="epas_first_name_caption">שם פרטי</string>
+    <string name="epas_gender_caption">מין</string>
+
+    <string name="epas_gender_option_male">זכר</string>
+    <string name="epas_gender_option_female">נקבה</string>
+
+    <string name="epas_phone_caption">מספר טלפון</string>
+    <string name="epas_email_caption">כתובת דואר אלקטרוני</string>
+    <string name="epas_service_caption">שירות</string>
+
+    <string name="epas_button_save">שמירה</string>
+    <string name="epas_button_changePassword">שינוי סיסמה</string>
+
+</resources>
