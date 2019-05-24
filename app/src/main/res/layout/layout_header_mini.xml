@@ -7,7 +7,7 @@
     android:background="@drawable/gradient_header_selector">
 
     <ImageView
-        android:id="@+id/lhm_button_back"
+        android:id="@+id/h_button_back"
         android:src="@drawable/vec_chevron_left_white_24dp"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -15,8 +15,8 @@
         />
 
     <TextView
-        android:id="@+id/hm_title"
-        android:text=""
+        android:id="@+id/h_title"
+        android:text="@string/mas_nav_documents"
         android:gravity="center_vertical"
         android:textSize="18sp"
         android:layout_marginStart="5dp"
@@ -25,6 +25,8 @@
         android:fontFamily="@font/montserrat_bold"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:textAlignment="viewStart"
+
         />
 
 </LinearLayout>

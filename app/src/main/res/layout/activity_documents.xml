@@ -55,7 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/das_submit_button"
-                style="@style/MA_Button"
+                style="@style/Button.ws"
                 android:background="@color/colorPrimary"
                 android:textAllCaps="true"
                 android:gravity="center"

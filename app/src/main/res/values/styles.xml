@@ -111,6 +111,39 @@
     </style>
 
 
+    <style name="Button.ws">
+        <item name="android:minHeight">0dp</item>
+        <item name="android:paddingTop">9dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:textSize">17dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="Button.ws.login">
+        <item name="android:background">@color/colorAccent</item>
+        <item name="android:layout_marginEnd">5dp</item>
+
+    </style>
+    <style name="Button.ws.signin">
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:layout_marginStart">5dp</item>
+    </style>
+
+    <style name="Link.la">
+        <item name="android:textAlignment">textStart</item>
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:layout_marginEnd">10dp</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+
+
+
 <!--TODO: AZAZAZAZAZAZ remove this with new one made accomplish to inheritance principles -->
     <!--Main activity styles-->
     <style name="MA_Header_Text" parent="MA_Page_Padding">
@@ -132,18 +165,8 @@
 
     </style>
 
-    <style name="MA_Button">
-        <item name="android:minHeight">0dp</item>
-        <item name="android:paddingTop">9dp</item>
-        <item name="android:paddingBottom">8dp</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">17dp</item>
-        <item name="android:fontFamily">@font/montserrat</item>
 
-    </style>
-
-    <style name="RA_Button" parent="MA_Button">
+    <style name="RA_Button" parent="Button.ws">
         <item name="android:minHeight">0dp</item>
         <item name="android:paddingTop">9dp</item>
         <item name="android:paddingBottom">8dp</item>
@@ -165,7 +188,7 @@
 
     <!--Side menu styles-->
     <style name="MENU_Header">
-        <item name="android:paddingLeft">25dp</item>
+        <item name="android:paddingStart">25dp</item>
         <item name="android:paddingTop">30dp</item>
         <item name="android:paddingBottom">15dp</item>
 
@@ -244,12 +267,12 @@
     </style>
 
     <style name="OF_Pick_Up_Button">
-        <item name="android:textAlignment">textStart</item>
+        <item name="android:textAlignment">viewStart</item>
         <item name="android:background">@color/yellowLight</item>
         <item name="android:paddingTop">3dp</item>
         <item name="android:paddingBottom">4dp</item>
-        <item name="android:paddingLeft">22dp</item>
-        <item name="android:paddingRight">35dp</item>
+        <item name="android:paddingStart">22dp</item>
+        <item name="android:paddingEnd">35dp</item>
         <item name="android:minHeight">0dp</item>
         <item name="android:textAllCaps">true</item>
 
@@ -271,9 +294,6 @@
         <item name="android:layout_width">60dp</item>
         <item name="android:layout_height">60dp</item>
         <item name="android:src">@drawable/vec_chevron_left_white_24dp</item>
-        <item name="layout_constraintBottom_toBottomOf">parent</item>
-        <item name="layout_constraintStart_toStartOf">parent</item>
-        <item name="layout_constraintTop_toTopOf">parent</item>
     </style>
 
     <style name="MAIN_Header_Title">
@@ -288,12 +308,6 @@
         <item name="layout_constraintTop_toTopOf">parent</item>
     </style>
     <style name="MAIN_Header_Container">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">170dp</item>
-        <item name="android:background">@drawable/gradient_header_selector</item>
-        <item name="layout_constraintEnd_toEndOf">parent</item>
-        <item name="layout_constraintStart_toStartOf">parent</item>
-        <item name="layout_constraintTop_toTopOf">parent</item>
     </style>
 
     <style name="LA_Page_Padding">
@@ -311,16 +325,7 @@
         <item name="android:layout_marginTop">20dp</item>
         <item name="android:fontFamily">@font/montserrat</item>
     </style>
-    <style name="LA_Link_Button">
-        <item name="android:textAlignment">textStart</item>
-        <item name="android:background">@color/transparent</item>
-        <item name="android:layout_marginLeft">10dp</item>
-        <item name="android:layout_marginRight">10dp</item>
-        <item name="android:textColor">@color/colorPrimary</item>
-        <item name="android:textSize">15dp</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="android:fontFamily">@font/montserrat</item>
-    </style>
+
     <style name="LA_Round_Button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

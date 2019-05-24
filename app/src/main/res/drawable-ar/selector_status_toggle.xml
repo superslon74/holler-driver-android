@@ -10,7 +10,7 @@
             <item
                 android:top="5dp"
                 android:bottom="5dp"
-                android:left="20dp"
+                android:right="20dp"
                 android:height="30dp"
                 android:width="35dp">
                 <shape android:shape="rectangle">
@@ -22,7 +22,7 @@
                 android:height="30dp"
                 android:width="30dp"
                 android:top="5dp"
-                android:left="5dp">
+                android:right="5dp">
                 <shape android:shape="oval">
                     <solid android:color="@color/energizedGreen"/>
                 </shape>
@@ -31,7 +31,7 @@
                 android:height="30dp"
                 android:width="30dp"
                 android:top="5dp"
-                android:left="40dp">
+                android:right="40dp">
                 <shape android:shape="oval">
                     <solid android:color="@color/energizedGreen"/>
                 </shape>
@@ -41,8 +41,8 @@
                 android:height="34dp"
                 android:width="34dp"
                 android:top="3dp"
-                android:left="37dp"
-                android:right="20dp">
+                android:right="37dp"
+                android:left="20dp">
                 <shape android:shape="oval">
                     <solid android:color="@color/white"/>
                     <stroke android:width="0.6dp" android:color="@color/colorAccent"/>
@@ -55,7 +55,7 @@
             <item
                 android:top="5dp"
                 android:bottom="5dp"
-                android:left="20dp"
+                android:right="20dp"
                 android:height="30dp"
                 android:width="35dp">
                 <shape android:shape="rectangle">
@@ -67,7 +67,7 @@
                 android:height="30dp"
                 android:width="30dp"
                 android:top="5dp"
-                android:left="5dp">
+                android:right="5dp">
                 <shape android:shape="oval">
                     <solid android:color="@color/energizedOrange"/>
                 </shape>
@@ -76,7 +76,7 @@
                 android:height="30dp"
                 android:width="30dp"
                 android:top="5dp"
-                android:left="40dp">
+                android:right="40dp">
                 <shape android:shape="oval">
                     <solid android:color="@color/energizedOrange"/>
                 </shape>
@@ -86,8 +86,8 @@
                 android:height="34dp"
                 android:width="34dp"
                 android:top="3dp"
-                android:left="5dp"
-                android:right="20dp">
+                android:right="5dp"
+                android:left="20dp">
                 <shape android:shape="oval">
                     <solid android:color="@color/white"/>
                     <stroke android:width="0.6dp" android:color="@color/colorAccent"/>
@@ -100,7 +100,7 @@
             <item
                 android:top="5dp"
                 android:bottom="5dp"
-                android:left="20dp"
+                android:right="20dp"
                 android:height="30dp"
                 android:width="35dp">
                 <shape android:shape="rectangle">
@@ -112,7 +112,7 @@
                 android:height="30dp"
                 android:width="30dp"
                 android:top="5dp"
-                android:left="5dp">
+                android:right="5dp">
                 <shape android:shape="oval">
                     <solid android:color="@color/greyGreen"/>
                 </shape>
@@ -121,7 +121,7 @@
                 android:height="30dp"
                 android:width="30dp"
                 android:top="5dp"
-                android:left="40dp">
+                android:right="40dp">
                 <shape android:shape="oval">
                     <solid android:color="@color/greyGreen"/>
                 </shape>
@@ -131,8 +131,8 @@
                 android:height="34dp"
                 android:width="34dp"
                 android:top="3dp"
-                android:left="20dp"
-                android:right="20dp">
+                android:right="20dp"
+                android:left="20dp">
                 <shape android:shape="oval">
                     <solid android:color="@color/white"/>
                     <stroke android:width="0.6dp" android:color="@color/colorAccent"/>
@@ -145,7 +145,7 @@
             <item
                 android:top="5dp"
                 android:bottom="5dp"
-                android:left="20dp"
+                android:right="20dp"
                 android:height="30dp"
                 android:width="35dp">
                 <shape android:shape="rectangle">
@@ -157,7 +157,7 @@
                 android:height="30dp"
                 android:width="30dp"
                 android:top="5dp"
-                android:left="5dp">
+                android:right="5dp">
                 <shape android:shape="oval">
                     <solid android:color="@color/greyGreen"/>
                 </shape>
@@ -166,7 +166,7 @@
                 android:height="30dp"
                 android:width="30dp"
                 android:top="5dp"
-                android:left="40dp">
+                android:right="40dp">
                 <shape android:shape="oval">
                     <solid android:color="@color/greyGreen"/>
                 </shape>
@@ -176,8 +176,8 @@
                 android:height="34dp"
                 android:width="34dp"
                 android:top="3dp"
-                android:left="20dp"
-                android:right="20dp">
+                android:right="20dp"
+                android:left="20dp">
                 <shape android:shape="oval">
                     <solid android:color="@color/white"/>
                     <stroke android:width="0.6dp" android:color="@color/colorAccent"/>
@@ -190,7 +190,7 @@
             <item
                 android:top="5dp"
                 android:bottom="5dp"
-                android:left="20dp"
+                android:right="20dp"
                 android:height="30dp"
                 android:width="35dp">
                 <shape android:shape="rectangle">
@@ -202,7 +202,7 @@
                 android:height="30dp"
                 android:width="30dp"
                 android:top="5dp"
-                android:left="5dp">
+                android:right="5dp">
                 <shape android:shape="oval">
                     <solid android:color="@color/yellowLight"/>
                 </shape>
@@ -211,7 +211,7 @@
                 android:height="30dp"
                 android:width="30dp"
                 android:top="5dp"
-                android:left="40dp">
+                android:right="40dp">
                 <shape android:shape="oval">
                     <solid android:color="@color/yellowLight"/>
                 </shape>
@@ -221,8 +221,8 @@
                 android:height="34dp"
                 android:width="34dp"
                 android:top="3dp"
-                android:left="20dp"
-                android:right="20dp">
+                android:right="20dp"
+                android:left="20dp">
                 <shape android:shape="oval">
                     <solid android:color="@color/white"/>
                     <stroke android:width="0.6dp" android:color="@color/colorAccent"/>

@@ -266,7 +266,7 @@
         </LinearLayout>
 
         <TextView
-            style="@style/MA_Button"
+            style="@style/Button.ws"
             android:textAlignment="center"
             android:id="@+id/saveBTN"
             android:text="@string/save"

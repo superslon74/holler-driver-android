@@ -24,7 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class FragmentHeaderMini extends Fragment {
+public class FragmentHeaderBig extends Fragment {
 
     @BindView(R.id.h_title)
     protected TextView headerTextView;
@@ -37,7 +37,7 @@ public class FragmentHeaderMini extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.layout_header_mini, container, false);
+        View view = inflater.inflate(R.layout.layout_header_big, container, true);
         ButterKnife.bind(this,view);
         headerTextView.setText(title);
         AndarApplication.getInstance().component().inject(this);
@@ -48,10 +48,10 @@ public class FragmentHeaderMini extends Fragment {
     public void onInflate(Context context, AttributeSet attrs, Bundle savedInstanceState) {
         super.onInflate(context, attrs, savedInstanceState);
 
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FragmentHeaderMini);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FragmentHeaderBig);
 
-        CharSequence string = a.getString(R.styleable.FragmentHeaderMini_hm_title);
-        int reference = a.getResourceId(R.styleable.FragmentHeaderMini_hm_title, -1);
+        CharSequence string = a.getString(R.styleable.FragmentHeaderBig_hb_title);
+        int reference = a.getResourceId(R.styleable.FragmentHeaderBig_hb_title, -1);
         if (string != null) {
             title = string.toString();
             Logger.v("String received, title:  " + title);
@@ -69,7 +69,7 @@ public class FragmentHeaderMini extends Fragment {
         a.recycle();
     }
 
-    @OnClick(R.id.h_button_back)
+    @OnClick(R.id.h_back_button)
     public void goBack(){
         router.goBack();
     }

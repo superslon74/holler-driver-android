@@ -2,9 +2,11 @@ package com.holler.app.mvp.login;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.holler.app.AndarApplication;
@@ -64,6 +66,9 @@ public class PasswordView extends CustomActivity implements LoginPresenter.View 
         animation.setStartOffset(200);
         buttonNext.setAnimation(animation);
         footer.setVisibility(View.GONE);
+
+//        ViewGroup.LayoutParams layoutParams = ((ViewGroup)buttonNext).getLayoutParams();
+//        ((ViewGroup.MarginLayoutParams)layoutParams).bottomMargin = 200;
     }
 
     @Override
@@ -71,13 +76,16 @@ public class PasswordView extends CustomActivity implements LoginPresenter.View 
         super.onKeyboardHidden();
         footer.setAnimation(AnimationUtils.loadAnimation(getApplicationContext(),R.anim.slide_up));
         footer.setVisibility(View.VISIBLE);
+//        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams)((ViewGroup)buttonNext).getLayoutParams();
+//        layoutParams.bottomMargin = 200;
+
     }
 
-    @OnClick(R.id.la_back_button)
-    public void goToEmail() {
-        String password = passwordView.getText().toString();
-        presenter.goToEmailView(new LoginPresenter.PendingCredentials(null, password));
-    }
+//    @OnClick(R.id.h_button_back)
+//    public void goToEmail() {
+//        String password = passwordView.getText().toString();
+//        presenter.goToEmailView(new LoginPresenter.PendingCredentials(null, password));
+//    }
 
     @OnClick(R.id.la_button_next)
     public void goToMain() {

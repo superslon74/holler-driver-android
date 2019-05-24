@@ -13,9 +13,6 @@
         android:paddingTop="25dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="0dp"
         app:layout_constraintBottom_toTopOf="@+id/buttonLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,10 +24,6 @@
 
             android:layout_height="0dp"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:layout_marginEnd="0dp"
-            android:layout_marginBottom="0dp"
             android:background="@color/colorPrimary"
             app:layout_constraintBottom_toTopOf="@+id/tabDots"
             app:layout_constraintEnd_toEndOf="parent"
@@ -44,17 +37,7 @@
             app:tabBackground="@drawable/slider_dots"
             app:tabGravity="center"
             app:tabIndicatorHeight="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
-
-        <!--<LinearLayout-->
-            <!--android:id="@+id/layoutDots"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="30dp"-->
-            <!--android:layout_marginBottom="8dp"-->
-            <!--android:gravity="center"-->
-            <!--android:orientation="horizontal"-->
-            <!--app:layout_constraintBottom_toBottomOf="parent"/>-->
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -69,19 +52,15 @@
 
         <Button
             android:id="@+id/sign_in_btn"
-            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/colorAccent"
-            style="@style/MA_Button"
-            android:layout_marginRight="5dp"
-            android:clickable="true"
+            style="@style/Button.ws.login"
 
             android:text="@string/was_button_login"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:focusable="true" />
+             />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline2"
@@ -90,22 +69,18 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.5" />
 
-        <!--540*146-->
         <Button
             android:id="@+id/sign_up_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            style="@style/MA_Button"
-            android:layout_marginLeft="5dp"
-            android:clickable="true"
+            style="@style/Button.ws.signin"
 
             android:text="@string/was_button_register"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toTopOf="parent"
-            android:focusable="true" />
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

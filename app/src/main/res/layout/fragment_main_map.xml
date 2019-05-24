@@ -4,7 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     >
 
     <fragment
@@ -14,10 +13,6 @@
         android:layout_height="match_parent"
         class="com.holler.app.mvp.main.MapFragment$CustomSupportMapFragment"/>
 
-
-
-
-
     <ImageView
         android:id="@+id/ma_map_to_current_location_button"
         android:layout_width="42dp"
@@ -26,8 +21,8 @@
         android:src="@drawable/ic_my_location_accent"
         android:background="@drawable/shape_white_circle"
         android:layout_marginTop="20dp"
-        android:layout_marginRight="20dp"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
 

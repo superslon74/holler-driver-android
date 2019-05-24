@@ -4,21 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
-    android:paddingLeft="15dp"
+    android:paddingStart="15dp"
     android:paddingTop="25dp"
-    android:paddingRight="15dp"
+    android:paddingEnd="15dp"
     android:paddingBottom="5dp">
 
     <TextView
         android:id="@+id/of_message"
+        android:textAlignment="viewStart"
         style="@style/OF_Header_Text"
         android:fontFamily="@font/montserrat_bold"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/os_request_message"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <ImageView
         android:id="@+id/of_marker"
@@ -26,7 +27,7 @@
         android:layout_height="wrap_content"
         android:paddingBottom="2dp"
         android:src="@drawable/ic_marker_white"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/of_message" />
 
     <TextView
@@ -36,9 +37,11 @@
         android:layout_height="wrap_content"
         android:paddingTop="0dp"
         android:paddingBottom="0dp"
+        android:textAlignment="viewStart"
+
         android:text="Pinhas Lavos 35, Tel Aviv"
-        app:layout_constraintLeft_toRightOf="@id/of_marker"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toEndOf="@id/of_marker"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/of_marker" />
 
     <Button
@@ -46,9 +49,11 @@
         style="@style/OF_Link_Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAlignment="viewStart"
+
         android:text="@string/os_button_cancel"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <TextView
@@ -58,11 +63,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
 
-        android:layout_marginRight="28dp"
+        android:layout_marginEnd="28dp"
         android:layout_marginBottom="15dp"
         android:text="@string/os_request_button_pick_up"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/of_address" />
 
     <ProgressBar
@@ -78,9 +83,9 @@
         android:progressDrawable="@drawable/shape_progress_bar_circular"
         android:animateLayoutChanges="true"
 
-        android:layout_marginLeft="125dp"
+        android:layout_marginStart="125dp"
         app:layout_constraintBottom_toBottomOf="@+id/of_pick_up_button"
-        app:layout_constraintLeft_toLeftOf="@+id/of_pick_up_button"
+        app:layout_constraintStart_toStartOf="@+id/of_pick_up_button"
         app:layout_constraintTop_toTopOf="@+id/of_pick_up_button"
         />
 
@@ -92,9 +97,9 @@
         android:textSize="19dp"
         android:padding="0dp"
         android:text=""
-        app:layout_constraintLeft_toLeftOf="@+id/of_progress_bar"
+        app:layout_constraintStart_toStartOf="@+id/of_progress_bar"
         app:layout_constraintTop_toTopOf="@+id/of_progress_bar"
-        app:layout_constraintRight_toRightOf="@id/of_progress_bar"
+        app:layout_constraintEnd_toEndOf="@id/of_progress_bar"
         app:layout_constraintBottom_toBottomOf="@id/of_progress_bar" />
 
 

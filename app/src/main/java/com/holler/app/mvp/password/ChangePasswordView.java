@@ -52,11 +52,11 @@ public class ChangePasswordView extends CustomActivity implements ChangePassword
         String passwordConfirmation = passwordConfirmationInput.getText().toString();
         presenter.sendNewPassword(code,password,passwordConfirmation);
     }
-
-    @OnClick(R.id.pa_back_button)
-    public void back(){
-        presenter.goToForgotPasswordView();
-    }
+//
+//    @OnClick(R.id.pa_back_button)
+//    public void back(){
+//        presenter.goToForgotPasswordView();
+//    }
 
     @Override
     public void onFinish() {

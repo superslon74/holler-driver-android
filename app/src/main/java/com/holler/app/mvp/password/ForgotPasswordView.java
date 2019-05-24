@@ -54,10 +54,10 @@ public class ForgotPasswordView extends CustomActivity implements ChangePassword
         presenter.sendCodeOnMailAddress(email);
     }
 
-    @OnClick(R.id.pa_back_button)
-    public void back(){
-        presenter.goToLoginPasswordView();
-    }
+//    @OnClick(R.id.pa_back_button)
+//    public void back(){
+//        presenter.goToLoginPasswordView();
+//    }
 
 
     @Override

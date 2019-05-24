@@ -23,6 +23,8 @@
 
         <TextView
             android:text="@string/wallet"
+            android:textAlignment="viewStart"
+
             android:gravity="center_vertical"
             android:textSize="18sp"
             android:layout_marginStart="5dp"

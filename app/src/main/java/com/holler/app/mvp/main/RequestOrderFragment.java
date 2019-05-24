@@ -108,14 +108,12 @@ public class RequestOrderFragment extends Fragment{
     
     @OnClick(R.id.of_button_cancel)
     public void rejectOrder(){
-        timer.dispose();
         emitter.onNext(false);
         emitter.onComplete();
     }
     
     @OnClick({R.id.of_progress_counter, R.id.of_progress_bar, R.id.of_pick_up_button})
     public void acceptOrder(){
-        timer.dispose();
         emitter.onNext(true);
         emitter.onComplete();
     }
@@ -127,7 +125,7 @@ public class RequestOrderFragment extends Fragment{
         return Observable
                 .intervalRange(0,remainingTime,0,interval, TimeUnit.MILLISECONDS)
                 .doOnNext(pastTime -> {
-                    if (time==pastTime){
+                    if (time<=pastTime){
                         timer.dispose();
                     }
                     runOnUiThread(() -> {

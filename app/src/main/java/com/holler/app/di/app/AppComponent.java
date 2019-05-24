@@ -18,6 +18,7 @@ import com.holler.app.mvp.main.OrderModel;
 import com.holler.app.mvp.main.UserModel;
 import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.utils.FloatingViewService;
+import com.holler.app.utils.FragmentHeaderBig;
 import com.holler.app.utils.FragmentHeaderMini;
 import com.holler.app.utils.GPSTracker;
 
@@ -43,6 +44,7 @@ public interface AppComponent {
     void inject(FloatingViewService floating);
 
     void inject(WelcomeView welcomeView);
+    void inject(FragmentHeaderBig headerBigView);
     void inject(FragmentHeaderMini headerMiniView);
     //TODO: remove shit above
     void inject(Map mapFragment);

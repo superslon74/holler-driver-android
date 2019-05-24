@@ -30,6 +30,8 @@
                 android:src="@drawable/back_icon" />
 
             <com.holler.app.Utilities.MyBoldTextView
+                android:textAlignment="viewStart"
+
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/_10sdp"

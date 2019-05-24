@@ -136,10 +136,10 @@ public class RegisterView
         presenter.signUp(credentials);
     }
 
-    @OnClick(R.id.ra_back_button)
-    public void goToWelcomeScreen(){
-        presenter.goToWelcome();
-    }
+//    @OnClick(R.id.ra_back_button)
+//    public void goToWelcomeScreen(){
+//        presenter.goToWelcome();
+//    }
 
 
     @Override

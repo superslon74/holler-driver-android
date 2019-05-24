@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
@@ -74,10 +73,6 @@ public class EmailView extends CustomActivity implements LoginPresenter.View{
         footer.setVisibility(View.VISIBLE);
     }
 
-    @OnClick(R.id.la_back_button)
-    public void goToWelcome(){
-        presenter.goToWelcomeView();
-    }
 
     @OnClick(R.id.la_button_next)
     public void goToPassword(){

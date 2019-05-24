@@ -5,6 +5,10 @@
         <attr name="hm_title" format="reference|string" />
     </declare-styleable>
 
+    <declare-styleable name="FragmentHeaderBig">
+        <attr name="hb_title" format="reference|string" />
+    </declare-styleable>
+
     <attr name="ciii_image" format="reference"/>
 
     <declare-styleable name="UserStatusToggle">

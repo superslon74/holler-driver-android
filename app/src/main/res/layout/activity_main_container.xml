@@ -58,18 +58,18 @@
 
                         <com.holler.app.mvp.main.UserStatusToggle
                             android:id="@+id/ma_offline_status_toggle"
+                            style="@style/MENU_Header_Toggle"
                             android:layout_width="75dp"
                             android:layout_height="40dp"
+                            android:layout_marginTop="40dp"
+                            android:background="@drawable/selector_status_toggle"
                             android:scaleX="1.5"
                             android:scaleY="1.5"
-                            style="@style/MENU_Header_Toggle"
-                            android:background="@drawable/selector_status_toggle"
-
-                            android:layout_marginTop="40dp"
-                            app:ust_disapproved="true"
+                            app:chainUseRtl="false"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/ma_offline_header"
+                            app:ust_disapproved="true"
 
                             />
 
@@ -100,8 +100,8 @@
                 android:padding="5dp"
                 app:srcCompat="@drawable/ic_hamburger"
                 android:layout_marginTop="20dp"
-                android:layout_marginLeft="20dp"
-                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginStart="20dp"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 />
 
@@ -113,7 +113,7 @@
                 app:usd_has_border="false"
                 android:background="@drawable/selector_status_dot"
                 android:layout_marginTop="3dp"
-                android:layout_marginLeft="26dp"
+                android:layout_marginStart="26dp"
                 app:layout_constraintLeft_toLeftOf="@id/ma_map_nav_open_button"
                 app:layout_constraintTop_toTopOf="@id/ma_map_nav_open_button"
                 />

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string translatable="false" name="las_header">ברוכים השבים</string>
+    <string translatable="false" name="las_email_placeholder">כתובת דואר אלקטרוני</string>
+    <string translatable="false" name="las_password_placeholder">סיסמה</string>
+    <string translatable="false" name="las_sign_in_button">כניסה</string>
+
+    <string translatable="false" name="las_sign_up_link">פתח חשבון חדש</string>
+    <string translatable="false" name="las_forgot_password">שכחתי סיסמה</string>
+
+</resources>

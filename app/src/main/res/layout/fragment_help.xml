@@ -24,6 +24,7 @@
             />
 
         <TextView
+            android:textAlignment="viewStart"
 
             android:gravity="center_vertical"
             android:textSize="18sp"
