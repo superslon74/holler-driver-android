@@ -14,7 +14,7 @@
     <string translatable="false" name="mas_nav_crash">דו"ח שגיאות</string>
 
     <string translatable="false" name="mas_offline_header">עבור למחובר</string>
-    <string translatable="false" name="mas_offline_header_success">:)</string>
+    <string translatable="false" name="mas_offline_header_success">(:</string>
     <string translatable="false" name="mas_offline_later">אולי מאוחר יותר</string>
 
 
