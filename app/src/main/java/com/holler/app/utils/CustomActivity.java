@@ -58,10 +58,16 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 
+
 public class CustomActivity
         extends AppCompatActivity
         implements SpinnerShower, KeyboardObserver, MessageDisplayer {
 
+
+
+    /*
+
+    */
     private static volatile int runningActivitiesCount = 0;
     private ServiceConnection gpsTrackerServiceConnection;
 

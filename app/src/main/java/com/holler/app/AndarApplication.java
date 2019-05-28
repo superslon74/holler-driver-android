@@ -59,7 +59,6 @@ public class AndarApplication extends Application implements  ComponentCallbacks
     }
 
 
-
     private AppComponent component;
     public AppComponent component(){
         return component;

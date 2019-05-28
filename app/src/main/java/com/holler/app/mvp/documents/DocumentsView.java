@@ -59,12 +59,6 @@ public class DocumentsView extends CustomActivity
         presenter.uploadDocuments();
     }
 
-    @OnClick(R.id.da_back_button)
-    public void goBack(){
-        onBackPressed();
-    }
-
-
 
     public void displayList(Map<String, RetrofitModule.ServerAPI.Document> documents) {
         FragmentManager fm = getSupportFragmentManager();

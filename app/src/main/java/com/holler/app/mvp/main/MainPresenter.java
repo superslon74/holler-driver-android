@@ -290,6 +290,10 @@ public class MainPresenter {
     public void createAndSendOrder(){
 
         Location location = gpsTrackerService.getLocation();
+        if (location ==null){
+            view.showMessage(context.getString(R.string.error_no_location));
+            return;
+        }
         String latitude = ""+location.getLatitude();
         String longitude = ""+location.getLongitude();
 
@@ -297,15 +301,12 @@ public class MainPresenter {
         String messageError = context.getString(R.string.error_creating_order);
 
         serverAPI
-                .createOrder(userModel.getAuthHeader(), new RetrofitModule.ServerAPI.CreateOrderRequestBody(latitude,longitude))
+                .createOrder(userModel.getAuthHeader(),
+                        new RetrofitModule.ServerAPI.CreateOrderRequestBody(latitude,longitude))
                 .doOnSubscribe(disposable -> view.showSpinner())
                 .doFinally(() -> view.hideSpinner())
                 .doOnSuccess(creteOrderResponse -> {
-                    if(creteOrderResponse.isSuccessfullyCreated()){
-                        view.showMessage(creteOrderResponse.message);
-                    }else{
-                        view.showMessage(creteOrderResponse.message);
-                    }
+                    view.showMessage(creteOrderResponse.message);
                 })
                 .doOnError(throwable -> view.showMessage(messageError))
                 .subscribe();
@@ -371,8 +372,6 @@ public class MainPresenter {
 
         void setRidingState();
     }
-
-
 
 
 }

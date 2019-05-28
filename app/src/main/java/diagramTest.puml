@@ -1,0 +1,40 @@
+@startuml
+scale max 600 width
+namespace utils #DDDDDD {
+class CustomActivity{
+    {static} runningActivityCounter
+    ..Lifecircle methods overriding..
+}
+
+interface MessageDisplayer{
+    showMessage(String message);
+    Completable showCompletableMessage(String message);
+}
+interface SpinnerShower{
+    showSpinner()
+    hideSpinner()
+}
+interface Finishable{
+    finish();
+}
+interface KeyboardObserver{
+    onKeyBoardShown()
+    onKeyBoardHidden()
+}
+class AppCompatActivity{
+    ..Lifecircle meshods..
+}
+
+AppCompatActivity <|-- CustomActivity
+
+CustomActivity --|> MessageDisplayer
+CustomActivity --|> SpinnerShower
+CustomActivity --|> Finishable
+CustomActivity --|> KeyboardObserver
+}
+
+class Activity as "Any view"
+
+utils.CustomActivity <|-- Activity
+
+@enduml

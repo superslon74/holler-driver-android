@@ -7,24 +7,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/da_header"
-        style="@style/MAIN_Header_Container"
-        tools:ignore="MissingConstraints">
+    <fragment
+        android:id="@+id/header"
+        android:name="com.holler.app.utils.FragmentHeaderBig"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        app:hb_title="@string/das_header"
+        tools:ignore="MissingConstraints" />
 
-        <ImageView
-            android:id="@+id/da_back_button"
-            style="@style/MAIN_Header_Back_Button"
-            tools:ignore="MissingConstraints" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/das_header"
-            style="@style/MAIN_Header_Title"
-            tools:ignore="MissingConstraints" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -32,7 +23,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/da_header">
+        app:layout_constraintTop_toBottomOf="@+id/header">
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"

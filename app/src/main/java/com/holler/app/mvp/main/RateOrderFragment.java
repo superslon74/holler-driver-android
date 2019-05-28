@@ -34,7 +34,7 @@ public class RateOrderFragment extends Fragment{
 
     public Subject<Integer> source;
     private ArrayList<ImageView> stars;
-    private int rate=0;
+    private int rate=1;
 
     public RateOrderFragment() {
         this.source = PublishSubject.create();
@@ -53,7 +53,7 @@ public class RateOrderFragment extends Fragment{
         stars.add(star4);
         stars.add(star5);
 
-        fillStars(1);
+        fillStars(rate);
         return view;
     }
     
