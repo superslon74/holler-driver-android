@@ -90,11 +90,11 @@ public class DocumentsActivity
         }
         uploadDocuments(toUpload);
     }
-
-    @OnClick(R.id.da_back_button)
-    public void goBack(){
-        onBackPressed();
-    }
+//
+//    @OnClick(R.id.da_back_button)
+//    public void goBack(){
+//        onBackPressed();
+//    }
 
     //TODO: remove with di
     private void initUserData(){

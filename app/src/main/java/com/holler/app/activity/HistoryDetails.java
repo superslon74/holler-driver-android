@@ -455,7 +455,7 @@ public class HistoryDetails extends CustomActivity {
                                     @Override
                                     public void onClick(View v) {
                                         JSONObject jsonObject = res.optJSONObject(0).optJSONObject("user");
-
+                                        if(jsonObject==null) return;
                                         User user = new User();
                                         user.setFirstName(jsonObject.optString("first_name"));
                                         user.setLastName(jsonObject.optString("last_name"));
