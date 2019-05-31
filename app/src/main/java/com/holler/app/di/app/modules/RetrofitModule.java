@@ -511,6 +511,8 @@ public class RetrofitModule {
             }
         }
 
+
+
         @POST("api/provider/trip/{id}")
         Single<JsonElement> acceptOrder(
                 @Header(HEADER_KEY_AUTHORIZATION) String authHeader,

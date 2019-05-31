@@ -182,7 +182,7 @@
                 android:id="@+id/ep_button_save"
                 style="@style/Button.ep_save"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@color/colorPrimary"
                 android:text="@string/epas_button_save"
                 app:layout_constraintTop_toBottomOf="@+id/ep_service_input" />

@@ -135,7 +135,7 @@ public class OrderModel {
         currentRequest=null;
     }
 
-    class Order {
+    public class Order {
         public int timeToRespond;
         public Status status;
         public RetrofitModule.ServerAPI.OrderResponse data;

@@ -57,6 +57,7 @@ public class DocumentsActivity
     private Map<String, Document> documents;
 
 
+
     DocumentsServerApi serverApiClient;
 
     private String authToken;
