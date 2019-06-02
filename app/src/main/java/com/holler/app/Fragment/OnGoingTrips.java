@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
 import com.holler.app.activity.HistoryDetails;
+import com.holler.app.mvp.details.DetailsView;
 import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.Helper.ConnectionHelper;
 import com.holler.app.Helper.SharedHelper;
@@ -229,14 +230,14 @@ public class OnGoingTrips extends Fragment {
 //        TODO: move it to begin screen
 
         Bundle arguments = new Bundle();
-        arguments.putString("post_value", orderId);
-        arguments.putString("tag", "upcoming_trips");
+        arguments.putString(DetailsView.ARG_ID, orderId);
+        arguments.putString(DetailsView.ARG_TYPE, DetailsView.TYPE_UPCOMING_TRIPS);
 
         int notificationId = (int)(Long.parseLong(orderId));
 
 
         new Notificator(context)
-                .buildPendingIntent(HistoryDetails.class, arguments, notificationId)
+                .buildPendingIntent(DetailsView.class, arguments, notificationId)
                 .buildNotification(Notificator.generateTextBasedOnWarningMode())
                 .scheduleNotification(notificationId, scheduledDate);
 
@@ -336,10 +337,10 @@ public class OnGoingTrips extends Fragment {
                     public void onClick(View view) {
 
                         if (helper.isConnectingToInternet()) {
-                            Intent intent = new Intent(getActivity(), HistoryDetails.class);
+                            Intent intent = new Intent(getActivity(), DetailsView.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intent.putExtra("post_value", orders.get(getAdapterPosition()).id);
-                            intent.putExtra("tag", "upcoming_trips");
+                            intent.putExtra(DetailsView.ARG_ID, orders.get(getAdapterPosition()).id);
+                            intent.putExtra(DetailsView.ARG_TYPE, DetailsView.TYPE_UPCOMING_TRIPS);
                             startActivity(intent);
                         } else {
                             Toast.makeText(context, "Oops, Connect your internet", Toast.LENGTH_LONG).show();

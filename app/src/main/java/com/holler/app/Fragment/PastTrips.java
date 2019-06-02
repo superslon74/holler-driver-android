@@ -24,6 +24,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
 import com.holler.app.activity.HistoryDetails;
+import com.holler.app.mvp.details.DetailsView;
 import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.AndarApplication;
 import com.holler.app.Helper.ConnectionHelper;
@@ -301,11 +302,11 @@ public class PastTrips extends Fragment {
                     public void onClick(View view) {
 
                         if (helper.isConnectingToInternet()){
-                            Intent intent = new Intent(activity, HistoryDetails.class);
+                            Intent intent = new Intent(activity, DetailsView.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             String id = jsonArray.optJSONObject(getAdapterPosition()).optString("id");
-                            intent.putExtra("post_value", id);
-                            intent.putExtra("tag", "past_trips");
+                            intent.putExtra(DetailsView.ARG_ID, id);
+                            intent.putExtra(DetailsView.ARG_TYPE, DetailsView.TYPE_PAST_TRIPS);
                             activity.startActivity(intent);
                         }else {
                             Toast.makeText(context,"Oops, Connect your internet",Toast.LENGTH_LONG).show();

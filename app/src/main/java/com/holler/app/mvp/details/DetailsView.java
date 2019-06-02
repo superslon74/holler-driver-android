@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.holler.app.AndarApplication;
 import com.holler.app.R;
 import com.holler.app.di.app.AppComponent;
+import com.holler.app.di.app.components.DaggerDetailsComponent;
 import com.holler.app.di.app.components.details.mudules.DetailsModule;
 import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.utils.CustomActivity;
@@ -16,10 +17,10 @@ import butterknife.ButterKnife;
 
 public class DetailsView extends CustomActivity implements DetailsPresenter.View {
 
-    public static String ARG_TYPE = "type";
-    public static String ARG_ID = "id";
-    public static String TYPE_PAST_TRIPS = "past_trips";
-    public static String TYPE_UPCOMING_TRIPS = "upcoming_trips";
+    public static final String ARG_TYPE = "type";
+    public static final String ARG_ID = "id";
+    public static final String TYPE_PAST_TRIPS = "past_trips";
+    public static final String TYPE_UPCOMING_TRIPS = "upcoming_trips";
 
     @Inject protected DetailsPresenter presenter;
 
@@ -45,7 +46,7 @@ public class DetailsView extends CustomActivity implements DetailsPresenter.View
         AppComponent component = AndarApplication.getInstance().component();
         DaggerDetailsComponent.builder()
                 .appComponent(component)
-                .documentsModule(new DetailsModule(this))
+                .detailsModule(new DetailsModule(this))
                 .build()
                 .inject(this);
     }

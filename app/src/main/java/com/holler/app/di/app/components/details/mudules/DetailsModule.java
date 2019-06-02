@@ -31,8 +31,9 @@ public class DetailsModule {
                                              DetailsPresenter.View view,
                                              RouterModule.Router router,
                                              DeviceInfoModule.DeviceInfo deviceInfo,
+                                             UserModel userModel,
                                              RetrofitModule.ServerAPI serverAPI){
 
-        return new DetailsPresenter(context,view,router,deviceInfo, serverAPI);
+        return new DetailsPresenter(context,view,router,deviceInfo, userModel, serverAPI);
     }
 }

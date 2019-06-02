@@ -511,7 +511,14 @@ public class RetrofitModule {
             }
         }
 
-
+        String ORDER_DETAILS_TYPE_PAST = "history";
+        String ORDER_DETAILS_TYPE_UPCOMING = "upcoming";
+        @GET("api/provider/requests/{type}/details")
+        Single<List<OrderResponse>> getOrderDetails(
+                @Header(HEADER_KEY_AUTHORIZATION) String authHeader,
+                @Path("type") String type,
+                @Query("request_id") String id
+        );
 
         @POST("api/provider/trip/{id}")
         Single<JsonElement> acceptOrder(
