@@ -183,7 +183,7 @@ public class Notificator {
         Uri soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.alert_tone);
         AudioAttributes soundAttributes = new AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .build();
 
         NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);

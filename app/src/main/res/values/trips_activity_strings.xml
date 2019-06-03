@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="detas_header">Trip details</string>
+    <string name="detas_header_your_trips">Your Trips</string>
+    <string name="detas_header_past_trips">Past Trips</string>
+    <string name="detas_header_upcoming_trips">Upcoming Trips</string>
+    <string name="detas_button_receipt">View receipt</string>
+    <string name="detas_button_start">Start ride</string>
+    <string name="detas_button_cancel">Cancel ride</string>
+    <string name="detas_caption_booking">Booking ID</string>
+    <string name="detas_caption_payment">Payment Method</string>
+    <string name="detas_caption_comments">Comments</string>
+    <string name="detas_caption_invoice">Invoice</string>
+
+    <string name="detas_caption_distance">Distance Travelled</string>
+    <string name="detas_caption_time">Time Taken</string>
+    <string name="detas_caption_base_fare">Base Fare</string>
+    <string name="detas_caption_distance_fare">Distance Fare</string>
+    <string name="detas_caption_tax">Tax</string>
+    <string name="detas_caption_total">Total</string>
+    <string name="detas_caption_amount">Amount Paid</string>
+
+    <string name="detas_button_close">Close</string>
+
+    <string name="detas_no_comment">No comment available</string>
+
+    <string name="tas_empty_list">No Upcoming trips available.</string>
+
+</resources>

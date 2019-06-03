@@ -70,7 +70,7 @@
     <TextView
         android:id="@+id/of_submit_button"
         style="@style/OF_Pick_Up_Button"
-        android:paddingEnd="22dp"
+        android:paddingEnd="40dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -80,6 +80,38 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/of_star_1" />
+
+    <ProgressBar
+        android:id="@+id/of_progress_bar"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:indeterminate="false"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:secondaryProgress="100"
+        android:max="100"
+        android:progress="100"
+        android:background="@drawable/shape_progress_bar_background"
+        android:progressDrawable="@drawable/shape_progress_bar_circular"
+        android:animateLayoutChanges="true"
+
+        android:layout_marginStart="115dp"
+        app:layout_constraintBottom_toBottomOf="@+id/of_submit_button"
+        app:layout_constraintStart_toStartOf="@+id/of_submit_button"
+        app:layout_constraintTop_toTopOf="@+id/of_submit_button"
+        />
+
+    <TextView
+        android:id="@+id/of_progress_counter"
+        style="@style/OF_Header_Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="19dp"
+        android:padding="0dp"
+        android:text=""
+        app:layout_constraintStart_toStartOf="@+id/of_progress_bar"
+        app:layout_constraintTop_toTopOf="@+id/of_progress_bar"
+        app:layout_constraintEnd_toEndOf="@id/of_progress_bar"
+        app:layout_constraintBottom_toBottomOf="@id/of_progress_bar" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

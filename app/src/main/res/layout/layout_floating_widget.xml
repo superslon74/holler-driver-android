@@ -37,7 +37,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_margin="5dp"
-        android:src="@drawable/ic_add_circle_outline_yellow"
+        android:src="@drawable/ic_rocket"
         android:visibility="visible"
         tools:ignore="ContentDescription" />
 

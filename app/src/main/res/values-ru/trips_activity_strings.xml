@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="detas_header">Описание заказов</string>
+    <string name="detas_header_your_trips">Ваши Поездки</string>
+    <string name="detas_header_past_trips">Выполненые Заказы</string>
+    <string name="detas_header_upcoming_trips">Принятые Заказы</string>
+    <string name="detas_button_receipt">Детальние</string>
+    <string name="detas_button_start">Начать</string>
+    <string name="detas_button_cancel">Отменить</string>
+    <string name="detas_caption_booking">Код заказа</string>
+    <string name="detas_caption_payment">Способ оплаты</string>
+    <string name="detas_caption_comments">Коментарий</string>
+    <string name="detas_caption_invoice">Финансы</string>
+
+    <string name="detas_caption_distance">Дистанция</string>
+    <string name="detas_caption_time">Время</string>
+    <string name="detas_caption_base_fare">Посадка</string>
+    <string name="detas_caption_distance_fare">Проезд</string>
+    <string name="detas_caption_tax">Налог</string>
+    <string name="detas_caption_total">Итого</string>
+    <string name="detas_caption_amount">Внесено</string>
+
+    <string name="detas_button_close">Закрыть</string>
+
+    <string name="detas_no_comment">Коментарий недоступен</string>
+
+    <string name="tas_empty_list">Список пуст</string>
+
+
+
+</resources>

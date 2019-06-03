@@ -99,6 +99,10 @@
             android:name=".mvp.details.DetailsView"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".mvp.details.TripsView"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".activity.DocumentsActivity"
@@ -232,7 +236,8 @@
 
         <activity
             android:name="com.facebook.accountkit.ui.AccountKitActivity"
-            android:screenOrientation="portrait" /> <!-- Firebase Notifications -->
+            android:screenOrientation="portrait" />
+        <!-- Firebase Notifications -->
         <service android:name=".FCM.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

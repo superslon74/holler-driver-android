@@ -21,6 +21,7 @@ public class OrderModel {
     private UserStorageModule.UserStorage userStorage;
     private DeviceInfoModule.DeviceInfo deviceInfo;
     private UserModel userModel;
+    private List<RetrofitModule.ServerAPI.OrderResponse> actualRequests;
 
     public OrderModel(RetrofitModule.ServerAPI serverAPI,
                       UserStorageModule.UserStorage userStorage,
@@ -135,6 +136,14 @@ public class OrderModel {
         currentRequest=null;
     }
 
+    public void updateRequestInSearching(List<RetrofitModule.ServerAPI.OrderResponse> requestsInSearching) {
+        actualRequests = requestsInSearching;
+    }
+
+    public List<RetrofitModule.ServerAPI.OrderResponse> getRequestsInSearching(){
+        return actualRequests;
+    }
+
     public class Order {
         public int timeToRespond;
         public Status status;
@@ -191,7 +200,7 @@ public class OrderModel {
             if(this.data.user!=null){
                 status = "ARRIVED";
             }else{
-                status = "COMPLETE";
+                status = "COMPLETED";
             }
             return serverAPI
                     .updateOrder(

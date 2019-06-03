@@ -190,6 +190,31 @@
         <item name="layout_constraintEnd_toEndOf">parent</item>
     </style>
 
+    <!--trip list item -->
+
+    <style name="Avatar.tlif">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="civ_border_width">1dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+
+    </style>
+
+    <style name="Button.tlif">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:colorBackground">@color/colorPrimary</item>
+    </style>
+
+    <style name="TextAppearance.Regular.tlif">
+        <item name="android:textSize">12dp</item>
+    </style>
+
 <!--TODO: AZAZAZAZAZAZ remove this with new one made accomplish to inheritance principles -->
     <!--Main activity styles-->
     <style name="MA_Header_Text" parent="MA_Page_Padding">

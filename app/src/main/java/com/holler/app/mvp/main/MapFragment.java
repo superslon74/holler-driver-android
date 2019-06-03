@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.location.Location;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.LayoutInflater;
@@ -25,15 +27,18 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.holler.app.R;
+import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.utils.CustomActivity;
 import com.holler.app.utils.GPSTracker;
 import com.orhanobut.logger.Logger;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -57,11 +62,14 @@ public class MapFragment extends Fragment {
     private MainPresenter presenter;
     private ServiceConnection gpsTrackerServiceConnection;
     private volatile boolean shouldUpdateMapWithoutAnimation = false;
+    private MediaPlayer passItOnSound;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.presenter = ((MainView) getActivity()).presenter;
+        passItOnSound = MediaPlayer.create(getContext(), R.raw.pass_it_on);
     }
 
     @Nullable
@@ -71,7 +79,7 @@ public class MapFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         Observable
-                .interval(15,TimeUnit.SECONDS)
+                .interval(15, TimeUnit.SECONDS)
                 .doOnNext(aLong -> {
                     shouldUpdateMapWithoutAnimation = true;
                 })
@@ -171,15 +179,12 @@ public class MapFragment extends Fragment {
                     });
 
 
-
                     googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
                     emitter.onNext(googleMap);
                 }
             });
         });
-
-
 
 
     }
@@ -190,13 +195,13 @@ public class MapFragment extends Fragment {
     }
 
     @OnClick(R.id.ma_map_to_current_location_button)
-    public void toCurrentPosition(){
-        setMapCameraToCurrentPosition(true,true);
+    public void toCurrentPosition() {
+        setMapCameraToCurrentPosition(true, true);
     }
 
     public void setMapCameraToCurrentPosition(boolean withAnimation, boolean shouldUpdate) {
-        cameraLocked=false;
-        if(googleMap==null) return;
+        cameraLocked = false;
+        if (googleMap == null) return;
         Location location = getCurrentLocation();
         if (location == null) return;
         LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
@@ -208,20 +213,21 @@ public class MapFragment extends Fragment {
                 .zoom(16)
                 .build();
 
-        if(withAnimation && shouldUpdate) {
+        if (withAnimation && shouldUpdate) {
             googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             shouldUpdateMapWithoutAnimation = false;
-        }else if(withAnimation && !shouldUpdate){
+        } else if (withAnimation && !shouldUpdate) {
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        }else {
+        } else {
             googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }
 
     }
 
     @OnClick(R.id.ma_map_pass_button)
-    public void createOrder(){
+    public void createOrder() {
         presenter.createAndSendOrder();
+        passItOnSound.start();
 //        showRequestOrder();
     }
 
@@ -230,6 +236,20 @@ public class MapFragment extends Fragment {
         if (location == null) return;
 
         googleMap.clear();
+        List<RetrofitModule.ServerAPI.OrderResponse> requestsInSearching = presenter.orderModel.getRequestsInSearching();
+        try {
+            for (RetrofitModule.ServerAPI.OrderResponse order : requestsInSearching) {
+                LatLng position = new LatLng(Double.parseDouble(order.sLatitude), Double.parseDouble(order.sLatitude));
+                MarkerOptions markerOptions = new MarkerOptions()
+                        .position(position)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.holler_marker));
+                googleMap.addMarker(markerOptions);
+            }
+        } catch (NumberFormatException | NullPointerException e) {
+            Logger.e(e.getMessage(),e);
+        }
+
+
         LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
 
         MarkerOptions markerOptions = new MarkerOptions()
@@ -245,11 +265,12 @@ public class MapFragment extends Fragment {
     private RequestOrderFragment requestOrderFragment;
     private ArrivedOrderFragment arrivedOrderFragment;
     private RateOrderFragment rateOrderFragment;
+
     public void showRequestOrder(OrderModel.Order order) {
         String address = order.data.sAddress;
 
         int time = order.timeToRespond;
-        if(requestOrderFragment!=null){
+        if (requestOrderFragment != null) {
             removeFragment(requestOrderFragment);
         }
         requestOrderFragment = RequestOrderFragment.newInstance(address, time);
@@ -257,9 +278,9 @@ public class MapFragment extends Fragment {
         requestOrderFragment.source
                 .doOnSubscribe(disposable -> addFragment(requestOrderFragment))
                 .flatMap(isAccepted -> {
-                    if(isAccepted){
+                    if (isAccepted) {
                         return order.accept().toObservable();
-                    }else{
+                    } else {
 
                         return order.reject().toObservable();
                     }
@@ -272,19 +293,27 @@ public class MapFragment extends Fragment {
                 .subscribe();
     }
 
-    public void showArrivedOrder(OrderModel.Order order){
+    public void showArrivedOrder(OrderModel.Order order) {
         String address = order.data.sAddress;
 
         arrivedOrderFragment = ArrivedOrderFragment.newInstance(address);
 
-        arrivedOrderFragment.source
+        arrivedOrderFragment
+                .source
                 .doOnSubscribe(disposable -> addFragment(arrivedOrderFragment))
+                .flatMap(aBoolean -> {
+                    return Observable
+                            .timer(1, TimeUnit.SECONDS)
+                            .flatMap(aLong -> {
+                                return Observable.just(aBoolean);
+                            });
+                })
                 .flatMap(isAccepted -> {
-                    if(isAccepted){
+                    if (isAccepted) {
                         return order
                                 .arrived()
                                 .toObservable();
-                    }else{
+                    } else {
                         return order
                                 .cancel()
                                 .toObservable();
@@ -298,8 +327,9 @@ public class MapFragment extends Fragment {
                 .subscribe();
     }
 
-    public void showRateOrder(OrderModel.Order order){
+    public void showRateOrder(OrderModel.Order order) {
         rateOrderFragment = new RateOrderFragment();
+
 
         rateOrderFragment.source
                 .doOnSubscribe(disposable -> addFragment(rateOrderFragment))
@@ -316,29 +346,30 @@ public class MapFragment extends Fragment {
                 .subscribe();
     }
 
-    private void addFragment(Fragment f){
+    private void addFragment(Fragment f) {
         try {
             getActivity()
                     .getSupportFragmentManager()
                     .beginTransaction()
                     .add(ordersContainer.getId(), f)
                     .commit();
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             Observable.timer(3, TimeUnit.SECONDS).flatMap(aLong -> {
                 addFragment(f);
                 return Observable.empty();
             }).subscribe();
         }
     }
-    private void removeFragment(Fragment f){
-        if (f==null) return;
-        try{
+
+    private void removeFragment(Fragment f) {
+        if (f == null) return;
+        try {
             getActivity()
                     .getSupportFragmentManager()
                     .beginTransaction()
                     .remove(f)
                     .commit();
-        }catch (Exception e){
+        } catch (Exception e) {
             Logger.e("Can't remove fragment");
         }
 
@@ -350,19 +381,20 @@ public class MapFragment extends Fragment {
 //        removeFragments();
     }
 
-    public void removeFragments(){
+    public void removeFragments() {
         removeFragment(requestOrderFragment);
         removeFragment(arrivedOrderFragment);
         removeFragment(rateOrderFragment);
     }
 
     public void hidePassItOnButton() {
-        try{
+        try {
             passItOnButton.setVisibility(View.GONE);
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
 
         }
     }
+
     public void showPassItOnButton() {
         passItOnButton.setVisibility(View.VISIBLE);
     }
@@ -384,6 +416,7 @@ public class MapFragment extends Fragment {
             return mOriginalContentView;
         }
     }
+
     public static class TouchableWrapper extends FrameLayout {
 
         public TouchableWrapper(Context context) {

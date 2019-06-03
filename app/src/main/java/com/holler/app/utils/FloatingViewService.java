@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -57,11 +58,16 @@ public class FloatingViewService extends Service implements FloatingViewListener
     private boolean orderButtonLocked = false;
 
     @Inject
+    protected Context context;
+    @Inject
     protected RouterModule.Router router;
     @Inject
     protected RetrofitModule.ServerAPI serverAPI;
     @Inject
     protected UserModel userModel;
+
+    private MediaPlayer passItOnSound;
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -74,6 +80,7 @@ public class FloatingViewService extends Service implements FloatingViewListener
 
     public FloatingViewService() {
         AndarApplication.getInstance().component().inject(this);
+        passItOnSound = MediaPlayer.create(context, R.raw.pass_it_on);
     }
 
     private void initLayout() {
@@ -86,7 +93,6 @@ public class FloatingViewService extends Service implements FloatingViewListener
         icon = mFloatingView.findViewById(R.id.order_icon);
         View openAppButton = mFloatingView.findViewById(R.id.collapsed_iv);
         View orderButton = mFloatingView.findViewById(R.id.orderbtn);
-
 
         View.OnClickListener handler = new View.OnClickListener() {
             @Override
@@ -171,7 +177,7 @@ public class FloatingViewService extends Service implements FloatingViewListener
                 .timer(1500, TimeUnit.MILLISECONDS)
                 .doOnComplete(() -> {
                     orderButtonLocked = false;
-                    changeIcon(R.drawable.ic_add_circle_outline_yellow);
+                    changeIcon(R.drawable.ic_rocket);
                 })
                 .subscribe();
 
@@ -198,6 +204,7 @@ public class FloatingViewService extends Service implements FloatingViewListener
             return;
         }
 
+        passItOnSound.start();
         OrderServerApi.Order order = new OrderServerApi.Order();
 
         String lat = "" + location.getLatitude();
@@ -223,6 +230,9 @@ public class FloatingViewService extends Service implements FloatingViewListener
                     showToast(R.string.error_creating_order);
                 })
                 .doOnComplete(() -> {
+                    hideSpinnerAndUnlockButton();
+                })
+                .doFinally(() -> {
                     hideSpinnerAndUnlockButton();
                 })
                 .subscribe();

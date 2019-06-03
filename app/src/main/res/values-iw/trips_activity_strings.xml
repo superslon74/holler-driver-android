@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="detas_header">פרטי נסיעות</string>
+    <string name="detas_header_your_trips">הנסיעות שלך</string>
+    <string name="detas_header_past_trips">היסטוריית נסיעות</string>
+    <string name="detas_header_upcoming_trips">נסיעות עתידיות</string>
+    <string name="detas_button_receipt">צפייה בקבלה</string>
+    <string name="detas_button_start">תחילת נסיעה</string>
+    <string name="detas_button_cancel">ביטול נסיעה</string>
+    <string name="detas_caption_booking">קוד הזמנה</string>
+    <string name="detas_caption_payment">שיטת תשלום</string>
+    <string name="detas_caption_comments">הערות</string>
+    <string name="detas_caption_invoice">חשבונית</string>
+
+    <string name="detas_caption_distance">מרחק הנסיעות</string>
+    <string name="detas_caption_time">הזמן שלקח</string>
+    <string name="detas_caption_base_fare">תעריף בסיסי</string>
+    <string name="detas_caption_distance_fare">תעריף למרחק</string>
+    <string name="detas_caption_tax">מס</string>
+    <string name="detas_caption_total">סך הכול</string>
+    <string name="detas_caption_amount">שכום ששולם</string>
+
+    <string name="detas_button_close">לסגור</string>
+
+    <string name="detas_no_comment">אין הערות</string>
+
+    <string name="tas_empty_list">אין נסיעות זמינות</string>
+
+
+
+</resources>

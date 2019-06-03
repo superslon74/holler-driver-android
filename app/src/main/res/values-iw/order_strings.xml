@@ -6,7 +6,7 @@
 
     <string name="os_button_cancel">בטל</string>
     <string name="os_request_button_pick_up">&#160;&#160;&#160;&#160;אסוף&#160;&#160;&#160;&#160;&#160;</string>
-    <string name="os_rate_button_submit">שלח</string>
+    <string name="os_rate_button_submit">&#160;&#160;&#160;&#160;&#160;שלח&#160;&#160;</string>
     <string name="os_arrived_button_submit">נווט</string>
     <string name="os_arrived_button_arrived">הגעתי</string>
 

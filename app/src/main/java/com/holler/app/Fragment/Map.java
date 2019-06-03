@@ -1647,7 +1647,7 @@ public class Map
             public void onTick(long millisUntilFinished) {
                 txt01Timer.setText("" + millisUntilFinished / 1000);
                 if (mPlayer == null) {
-                    mPlayer = MediaPlayer.create(context, R.raw.alert_tone);
+
                 } else {
                     if (!mPlayer.isPlaying()) {
                         mPlayer.start();

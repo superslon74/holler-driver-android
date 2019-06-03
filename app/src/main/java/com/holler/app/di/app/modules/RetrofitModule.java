@@ -285,6 +285,10 @@ public class RetrofitModule {
             @Expose(deserialize = false)
             @SerializedName("requests")
             public List<RequestedOrderResponse> requests;
+            @Expose(deserialize = false)
+            @SerializedName("serching")
+            public List<OrderResponse> requestsInSearching;
+
         }
         class RequestedOrderResponse {
             @Expose(deserialize = false)
@@ -317,10 +321,13 @@ public class RetrofitModule {
                 }
             }
         }
-        class OrderResponse {
+        class OrderResponse implements Parcelable{
             @Expose(deserialize = false)
             @SerializedName("id")
             public String id;
+            @Expose(deserialize = false)
+            @SerializedName("static_map")
+            public String mapImage;
             @Expose(deserialize = false)
             @SerializedName("booking_id")
             public String bookingId;
@@ -434,17 +441,354 @@ public class RetrofitModule {
             public String createdAt;
             @Expose(deserialize = false)
             @SerializedName("updated_at")
-
             public String updatedAtw;
             @Expose(deserialize = false)
             @SerializedName("user")
-            public JsonElement user;
+            public OrderResponseUser user;
             @Expose(deserialize = false)
             @SerializedName("payment")
-            public String payment;
+            public Payment payment;
+            @Expose(deserialize = false)
+            @SerializedName("tax")
+            public String tax;
+            @Expose(deserialize = false)
+            @SerializedName("rating")
+            public Rating rating;
+            @Expose(serialize = false)
+            @SerializedName("service_type")
+            public Service service;
 
 
+            protected OrderResponse(Parcel in) {
+                id = in.readString();
+                mapImage = in.readString();
+                bookingId = in.readString();
+                providerSend = in.readString();
+                userId = in.readString();
+                providerId = in.readString();
+                currentProviderId = in.readString();
+                serviceTypeId = in.readString();
+                rentalHours = in.readString();
+                status = in.readString();
+                cancelledBy = in.readString();
+                cancelReason = in.readString();
+                isTrack = in.readString();
+                paid = in.readString();
+                paymentMode = in.readString();
+                distance = in.readString();
+                travelTime = in.readString();
+                sAddress = in.readString();
+                dAddress = in.readString();
+                sLatitude = in.readString();
+                sLongitude = in.readString();
+                otp = in.readString();
+                otp_required = in.readString();
+                dLatitude = in.readString();
+                trackDistance = in.readString();
+                trackLatitude = in.readString();
+                trackLongitude = in.readString();
+                dLongitude = in.readString();
+                assignedAt = in.readString();
+                scheduleAt = in.readString();
+                finishedAt = in.readString();
+                startedAt = in.readString();
+                userRated = in.readString();
+                providerRated = in.readString();
+                useWallet = in.readString();
+                surge = in.readString();
+                routeKey = in.readString();
+                deletedAt = in.readString();
+                createdAt = in.readString();
+                updatedAtw = in.readString();
+                user = in.readParcelable(OrderResponseUser.class.getClassLoader());
+                payment = in.readParcelable(Payment.class.getClassLoader());
+                tax = in.readString();
+                rating = in.readParcelable(Rating.class.getClassLoader());
+                service = in.readParcelable(Service.class.getClassLoader());
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeString(id);
+                dest.writeString(mapImage);
+                dest.writeString(bookingId);
+                dest.writeString(providerSend);
+                dest.writeString(userId);
+                dest.writeString(providerId);
+                dest.writeString(currentProviderId);
+                dest.writeString(serviceTypeId);
+                dest.writeString(rentalHours);
+                dest.writeString(status);
+                dest.writeString(cancelledBy);
+                dest.writeString(cancelReason);
+                dest.writeString(isTrack);
+                dest.writeString(paid);
+                dest.writeString(paymentMode);
+                dest.writeString(distance);
+                dest.writeString(travelTime);
+                dest.writeString(sAddress);
+                dest.writeString(dAddress);
+                dest.writeString(sLatitude);
+                dest.writeString(sLongitude);
+                dest.writeString(otp);
+                dest.writeString(otp_required);
+                dest.writeString(dLatitude);
+                dest.writeString(trackDistance);
+                dest.writeString(trackLatitude);
+                dest.writeString(trackLongitude);
+                dest.writeString(dLongitude);
+                dest.writeString(assignedAt);
+                dest.writeString(scheduleAt);
+                dest.writeString(finishedAt);
+                dest.writeString(startedAt);
+                dest.writeString(userRated);
+                dest.writeString(providerRated);
+                dest.writeString(useWallet);
+                dest.writeString(surge);
+                dest.writeString(routeKey);
+                dest.writeString(deletedAt);
+                dest.writeString(createdAt);
+                dest.writeString(updatedAtw);
+                dest.writeParcelable(user, flags);
+                dest.writeParcelable(payment, flags);
+                dest.writeString(tax);
+                dest.writeParcelable(rating, flags);
+                dest.writeParcelable(service, flags);
+            }
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            public static final Creator<OrderResponse> CREATOR = new Creator<OrderResponse>() {
+                @Override
+                public OrderResponse createFromParcel(Parcel in) {
+                    return new OrderResponse(in);
+                }
+
+                @Override
+                public OrderResponse[] newArray(int size) {
+                    return new OrderResponse[size];
+                }
+            };
+
+            public boolean hasUser() {
+                return user!=null;
+            }
+
+            public String getFormatedDate() {
+                return createdAt;
+            }
+
+            public boolean hasStartAddress() {
+                return sAddress!=null && !"".equals(sAddress);
+            }
+
+            public boolean hasFinishAddress() {
+                return dAddress!=null && !"".equals(dAddress);
+            }
+
+            public boolean hasComment() {
+                return rating!=null && rating.comment!=null && !"".equals(rating.comment);
+            }
+
+            public boolean hasPayment() {
+                return payment!=null;
+            }
+
+
+            public boolean isScheduled() {
+                return scheduleAt!=null && !"".equals(scheduleAt);
+            }
+
+            public boolean hasService() {
+                return service!=null;
+            }
+
+            public boolean hasRating() {
+                return user!=null && user.rating != null && user.getRating()>=0;
+            }
         }
+        class Payment implements Parcelable{
+            @Expose(deserialize = false)
+            @SerializedName("fixed")
+            public String fixed;
+            @Expose(deserialize = false)
+            @SerializedName("distance")
+            public String distance;
+            @Expose(deserialize = false)
+            @SerializedName("discount")
+            public String discount;
+            @Expose(deserialize = false)
+            @SerializedName("wallet")
+            public String wallet;
+            @Expose(deserialize = false)
+            @SerializedName("total")
+            public String total;
+            @Expose(deserialize = false)
+            @SerializedName("payable")
+            public String payable;
+
+            protected Payment(Parcel in) {
+                fixed = in.readString();
+                distance = in.readString();
+                discount = in.readString();
+                wallet = in.readString();
+                total = in.readString();
+                payable = in.readString();
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeString(fixed);
+                dest.writeString(distance);
+                dest.writeString(discount);
+                dest.writeString(wallet);
+                dest.writeString(total);
+                dest.writeString(payable);
+            }
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            public static final Creator<Payment> CREATOR = new Creator<Payment>() {
+                @Override
+                public Payment createFromParcel(Parcel in) {
+                    return new Payment(in);
+                }
+
+                @Override
+                public Payment[] newArray(int size) {
+                    return new Payment[size];
+                }
+            };
+        }
+        class Rating implements Parcelable{
+            @Expose(deserialize = false)
+            @SerializedName("user_comment")
+            public String comment;
+
+            protected Rating(Parcel in) {
+                comment = in.readString();
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeString(comment);
+            }
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            public static final Creator<Rating> CREATOR = new Creator<Rating>() {
+                @Override
+                public Rating createFromParcel(Parcel in) {
+                    return new Rating(in);
+                }
+
+                @Override
+                public Rating[] newArray(int size) {
+                    return new Rating[size];
+                }
+            };
+        }
+        class Service implements Parcelable{
+            @Expose(serialize = false)
+            @SerializedName("name")
+            public String name;
+            @Expose(serialize = false)
+            @SerializedName("image")
+            public String image;
+
+            protected Service(Parcel in) {
+                name = in.readString();
+                image = in.readString();
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeString(name);
+                dest.writeString(image);
+            }
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            public static final Creator<Service> CREATOR = new Creator<Service>() {
+                @Override
+                public Service createFromParcel(Parcel in) {
+                    return new Service(in);
+                }
+
+                @Override
+                public Service[] newArray(int size) {
+                    return new Service[size];
+                }
+            };
+        }
+        class OrderResponseUser implements Parcelable{
+            @Expose(deserialize = false)
+            @SerializedName("first_name")
+            public String firstName;
+            @Expose(deserialize = false)
+            @SerializedName("last_name")
+            public String lastName;
+            @Expose(deserialize = false)
+            @SerializedName("picture")
+            public String avatar;
+            @Expose(deserialize = false)
+            @SerializedName("rating")
+            public String rating;
+
+            protected OrderResponseUser(Parcel in) {
+                firstName = in.readString();
+                lastName = in.readString();
+                avatar = in.readString();
+                rating = in.readString();
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeString(firstName);
+                dest.writeString(lastName);
+                dest.writeString(avatar);
+                dest.writeString(rating);
+            }
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            public static final Creator<OrderResponseUser> CREATOR = new Creator<OrderResponseUser>() {
+                @Override
+                public OrderResponseUser createFromParcel(Parcel in) {
+                    return new OrderResponseUser(in);
+                }
+
+                @Override
+                public OrderResponseUser[] newArray(int size) {
+                    return new OrderResponseUser[size];
+                }
+            };
+
+            public float getRating() {
+                try {
+                    return Float.parseFloat(rating);
+                }catch (NumberFormatException e){
+                    return -1;
+                }
+            }
+        }
+
+
 
         @POST("api/provider/profile/available")
         Single<JsonObject> sendStatus(
@@ -474,6 +818,13 @@ public class RetrofitModule {
         );
 
 //        ORDER
+
+        @GET("api/provider/requests/upcoming")
+        Single<List<OrderResponse>> getUpcomingTrips(
+                @Header(HEADER_KEY_AUTHORIZATION) String authHeader);
+        @GET("api/provider/requests/history")
+        Single<List<OrderResponse>> getPastTrips(
+                @Header(HEADER_KEY_AUTHORIZATION) String authHeader);
 
         @POST("api/provider/trip/send_request")
         Single<CreateOrderResponse> createOrder(
@@ -524,6 +875,25 @@ public class RetrofitModule {
         Single<JsonElement> acceptOrder(
                 @Header(HEADER_KEY_AUTHORIZATION) String authHeader,
                 @Path("id") String id);
+
+        @POST("/api/provider/trip/{id}/started")
+        Single<JsonElement> startOrder(
+                @Header(HEADER_KEY_AUTHORIZATION) String authHeader,
+                @Path("id") String id);
+
+//        @POST("api/provider/cancel")
+//        Call<JsonObject> cancelOrder(
+//                @Header(HEADER_KEY_AUTHORIZATION) String authHeader,
+//                @Body CancelOrderRequestBody id);
+//
+//        class CancelOrderRequestBody {
+//            @Expose
+//            @SerializedName("id")
+//            public String id;
+//            @Expose(deserialize = false)
+//            @SerializedName("cancel_reason")
+//            public String cancelReason;
+//        }
 
         @DELETE("api/provider/trip/{id}")
         Single<JsonElement> rejectOrder(

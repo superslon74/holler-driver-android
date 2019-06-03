@@ -2,9 +2,6 @@ package com.holler.app.mvp.main;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -18,12 +15,6 @@ import com.holler.app.Fragment.SummaryFragment;
 import com.holler.app.Fragment.Wallet;
 import com.holler.app.R;
 import com.holler.app.activity.ActivitySettings;
-import com.holler.app.activity.DocumentsActivity;
-import com.holler.app.activity.EditProfile;
-import com.holler.app.activity.HistoryActivity;
-import com.holler.app.activity.MainActivity;
-import com.holler.app.activity.Offline;
-import com.holler.app.activity.ShowProfile;
 import com.holler.app.di.User;
 import com.holler.app.di.app.AppComponent;
 import com.holler.app.di.app.components.DaggerMainComponent;
@@ -47,10 +38,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.Subject;
 import io.reactivex.subjects.UnicastSubject;
@@ -58,26 +46,17 @@ import io.reactivex.subjects.UnicastSubject;
 
 public class MainView extends CustomActivity implements MainPresenter.View {
 
-    @Inject
-    public MainPresenter presenter;
+    @Inject public MainPresenter presenter;
 
-    @BindView(R.id.ma_nav)
-    public NavigationView navigationView;
-    @BindView(R.id.ma_drawer)
-    public DrawerLayout drawerView;
-    @BindView(R.id.ma_content)
-    public View content;
-    @BindView(R.id.ma_content_overflow)
-    public View contentOverflow;
-    @BindView(R.id.ma_map_nav_open_dot)
-    public UserStatusDot openMenuUserStatusDot;
-    @BindView(R.id.ma_map_nav_open_button)
-    public ImageView gamburger;
+    @BindView(R.id.ma_nav) protected NavigationView navigationView;
+    @BindView(R.id.ma_drawer) protected DrawerLayout drawerView;
+    @BindView(R.id.ma_content) protected View content;
+    @BindView(R.id.ma_content_overflow) protected View contentOverflow;
+    @BindView(R.id.ma_map_nav_open_dot) protected UserStatusDot openMenuUserStatusDot;
+    @BindView(R.id.ma_map_nav_open_button) protected ImageView gamburger;
 
-    @BindView(R.id.ma_offline_header)
-    public TextView offlineHeader;
-    @BindView(R.id.ma_offline_status_toggle)
-    public UserStatusToggle offlineStatusTooggle;
+    @BindView(R.id.ma_offline_header) protected TextView offlineHeader;
+    @BindView(R.id.ma_offline_status_toggle) protected UserStatusToggle offlineStatusTooggle;
 
     private FragmentRouter fragmentRouter;
 
@@ -386,6 +365,7 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         try{
             ((MapFragment) fragmentRouter.currentFragment).showRequestOrder(newOrder);
         }catch (ClassCastException | NullPointerException e){
+            fragmentRouter.openMap();
             Logger.e("Can't set order state");
             e.printStackTrace();
         }
@@ -396,7 +376,9 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         try{
             ((MapFragment) fragmentRouter.currentFragment).showArrivedOrder(newOrder);
         }catch (ClassCastException | NullPointerException e){
+            fragmentRouter.openMap();
             Logger.e("Can't set order state");
+            e.printStackTrace();
         }
     }
 
@@ -405,6 +387,7 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         try{
             ((MapFragment) fragmentRouter.currentFragment).showRateOrder(newOrder);
         }catch (ClassCastException | NullPointerException e){
+            fragmentRouter.openMap();
             Logger.e("Can't set order state");
         }
     }
@@ -459,7 +442,7 @@ public class MainView extends CustomActivity implements MainPresenter.View {
                             .replace(content.getId(), currentFragment)
                             .commit();
                 }catch (Exception e1){
-
+                    e1.printStackTrace();
                 }
 
             }
@@ -504,7 +487,7 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         }
 
         public void openTrips() {
-            startActivity(new Intent(MainView.this, HistoryActivity.class));
+            presenter.goToTripsScreen();
         }
 
         public void openShare() {

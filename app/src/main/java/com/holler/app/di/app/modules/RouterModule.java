@@ -4,8 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.holler.app.activity.ActivitySocialLogin;
-import com.holler.app.activity.DocumentsActivity;
 import com.holler.app.activity.WaitingForApproval;
+import com.holler.app.mvp.details.DetailsView;
+import com.holler.app.mvp.details.TripsView;
 import com.holler.app.mvp.documents.DocumentsView;
 import com.holler.app.mvp.login.EmailView;
 import com.holler.app.mvp.login.PasswordView;
@@ -124,10 +125,27 @@ public class RouterModule {
             context.startActivity(i);
         }
 
+        public void goToTripsScreen() {
+            Intent i = new Intent(context, TripsView.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            saveToHistory(i);
+            context.startActivity(i);
+        }
+
 
         public void goToWaitingForApprovalScreen() {
             Intent i = new Intent(context, WaitingForApproval.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            saveToHistory(i);
+            context.startActivity(i);
+        }
+
+
+        public void goToDetailsScreen(String type, String orderId) {
+            Intent i = new Intent(context, DetailsView.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.putExtra(DetailsView.ARG_TYPE, type);
+            i.putExtra(DetailsView.ARG_ID, orderId);
             saveToHistory(i);
             context.startActivity(i);
         }

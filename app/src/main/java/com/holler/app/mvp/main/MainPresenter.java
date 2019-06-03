@@ -66,6 +66,7 @@ public class MainPresenter {
 //                    Logger.d(checkStatusResponse.toString());
                     userModel.updateStatus(checkStatusResponse);
                     orderModel.updateRequestOrder(checkStatusResponse.requests);
+                    orderModel.updateRequestInSearching(checkStatusResponse.requestsInSearching);
                     processStatus(checkStatusResponse);
                     return Observable.empty();
                 })
@@ -120,6 +121,11 @@ public class MainPresenter {
 
             context.bindService(gpsTrackerBinding, this.gpsTrackerServiceConnection, Context.BIND_IMPORTANT);
         });
+    }
+
+    public void goToTripsScreen() {
+        router.goToTripsScreen();
+        view.finish();
     }
 
     public static class ServiceConnectionError extends Throwable{
