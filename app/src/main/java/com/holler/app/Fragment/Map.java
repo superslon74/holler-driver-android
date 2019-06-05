@@ -298,7 +298,7 @@ public class Map
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        AndarApplication.getInstance().component().inject(this);
+//        AndarApplication.getInstance().component().inject(this);
         Intent gpsTrackerBinding = new Intent(appContext, GPSTracker.class);
         ServiceConnection gpsTrackerConnection = new ServiceConnection() {
             @Override
