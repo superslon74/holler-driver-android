@@ -11,20 +11,52 @@
     android:visibility="visible">
 
 
-    <ImageView
-        android:id="@+id/orderbtn"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/fw_order_button_container"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@mipmap/float_order"
-        android:layout_marginBottom="10dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="visible"
-        tools:ignore="ContentDescription" />
+        >
+        <ImageView
+            android:id="@+id/fw_order_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/shape_blue_circle_tiny_border"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="visible"
+            tools:ignore="ContentDescription"
+            />
+        <ImageView
+            android:id="@+id/fw_order_icon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="7dp"
+            android:visibility="visible"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/fw_order_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ma_map_pas_it_on"
+            style="@style/TextAppearance.Bold"
+            android:fontFamily="@font/montserrat_extrabold"
+            android:textSize="13dp"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textAlignment="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <ImageView
-        android:id="@+id/collapsed_iv"
-        android:layout_below="@id/orderbtn"
+        android:id="@+id/fw_app_button"
+        android:layout_below="@id/fw_order_button_container"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:clickable="true"
@@ -32,14 +64,7 @@
         android:src="@mipmap/ic_launcher"
         tools:ignore="ContentDescription" />
 
-    <ImageView
-        android:id="@+id/order_icon"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_margin="5dp"
-        android:src="@drawable/ic_rocket"
-        android:visibility="visible"
-        tools:ignore="ContentDescription" />
+
 
 
 

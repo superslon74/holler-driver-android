@@ -286,7 +286,7 @@ public class RetrofitModule {
             @SerializedName("requests")
             public List<RequestedOrderResponse> requests;
             @Expose(deserialize = false)
-            @SerializedName("serching")
+            @SerializedName("searching")
             public List<OrderResponse> requestsInSearching;
 
         }

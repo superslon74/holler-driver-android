@@ -238,17 +238,16 @@ public class MapFragment extends Fragment {
         googleMap.clear();
         List<RetrofitModule.ServerAPI.OrderResponse> requestsInSearching = presenter.orderModel.getRequestsInSearching();
         try {
-            for (RetrofitModule.ServerAPI.OrderResponse order : requestsInSearching) {
-                LatLng position = new LatLng(Double.parseDouble(order.sLatitude), Double.parseDouble(order.sLatitude));
-                MarkerOptions markerOptions = new MarkerOptions()
-                        .position(position)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.holler_marker));
-                googleMap.addMarker(markerOptions);
+            for (RetrofitModule.ServerAPI.OrderResponse o : requestsInSearching) {
+                LatLng p = new LatLng(Double.parseDouble(o.sLatitude), Double.parseDouble(o.sLongitude));
+                MarkerOptions m = new MarkerOptions()
+                        .position(p)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.user_marker));
+                googleMap.addMarker(m);
             }
         } catch (NumberFormatException | NullPointerException e) {
             Logger.e(e.getMessage(),e);
         }
-
 
         LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
 

@@ -204,7 +204,7 @@ public class MainActivity extends CustomActivity {
         txtName = (TextView) navHeader.findViewById(R.id.usernameTxt);
         approvaltxt = (TextView) navHeader.findViewById(R.id.status_txt);
         imgProfile = (ImageView) navHeader.findViewById(R.id.img_profile);
-        status = (ImageView) navHeader.findViewById(R.id.status);
+//        status = (ImageView) navHeader.findViewById(R.id.status);
     }
 
     private void setUpNavigationView() {
@@ -334,15 +334,15 @@ public class MainActivity extends CustomActivity {
         if (SharedHelper.getKey(context, "approval_status").equals("new") || SharedHelper.getKey(context, "approval_status").equals("onboarding")) {
             approvaltxt.setTextColor(Color.YELLOW);
             approvaltxt.setText(getText(R.string.waiting_for_approval));
-            status.setImageResource(R.drawable.newuser);
+//            status.setImageResource(R.drawable.newuser);
         } else if (SharedHelper.getKey(context, "approval_status").equals("banned")) {
             approvaltxt.setTextColor(Color.RED);
             approvaltxt.setText(getText(R.string.banned));
-            status.setImageResource(R.drawable.banned);
+//            status.setImageResource(R.drawable.banned);
         } else {
             approvaltxt.setTextColor(Color.GREEN);
             approvaltxt.setText(getText(R.string.approved));
-            status.setImageResource(R.drawable.approved);
+//            status.setImageResource(R.drawable.approved);
         }
 
 

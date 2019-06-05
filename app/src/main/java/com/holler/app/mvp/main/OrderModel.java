@@ -183,7 +183,7 @@ public class OrderModel {
             Logger.w("REJECTING ");
             String header = userModel.getAuthHeader();
             String orderId = this.data.id;
-
+            currentRequest=null;
             return serverAPI.rejectOrder(header, orderId)
                     .doOnSuccess(jsonElement -> {
                         Logger.w("REJECTING  true ");

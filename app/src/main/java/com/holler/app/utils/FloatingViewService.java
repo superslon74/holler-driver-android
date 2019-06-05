@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -22,6 +23,7 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
@@ -43,6 +45,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import androidx.annotation.Nullable;
+
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import okhttp3.ResponseBody;
@@ -55,6 +58,7 @@ public class FloatingViewService extends Service implements FloatingViewListener
     private static final String ARG_POSITION_Y = "floating_view_position_y";
 
     private View icon;
+    private View text;
     private boolean orderButtonLocked = false;
 
     @Inject
@@ -90,19 +94,25 @@ public class FloatingViewService extends Service implements FloatingViewListener
         final LayoutInflater inflater = LayoutInflater.from(this);
 
         View mFloatingView = inflater.inflate(R.layout.layout_floating_widget, null);
-        icon = mFloatingView.findViewById(R.id.order_icon);
-        View openAppButton = mFloatingView.findViewById(R.id.collapsed_iv);
-        View orderButton = mFloatingView.findViewById(R.id.orderbtn);
+        icon = mFloatingView.findViewById(R.id.fw_order_icon);
+        text = mFloatingView.findViewById(R.id.fw_order_text);
+        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/montserrat_extrabold.ttf");
+        ((TextView)text).setTypeface(face);
+        View openAppButton = mFloatingView.findViewById(R.id.fw_app_button);
+        View orderButton = mFloatingView.findViewById(R.id.fw_order_button);
 
         View.OnClickListener handler = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switch (v.getId()) {
-                    case R.id.orderbtn:
+                    case R.id.fw_order_icon:
+                    case R.id.fw_order_text:
+                    case R.id.fw_order_button:
+                    case R.id.fw_order_button_container:
                         if (!orderButtonLocked)
                             getLocation();
                         break;
-                    case R.id.collapsed_iv:
+                    case R.id.fw_app_button:
                         router.goToMainScreen();
                         break;
                     default:
@@ -116,9 +126,6 @@ public class FloatingViewService extends Service implements FloatingViewListener
         openAppButton.setOnClickListener(handler);
         orderButton.setOnClickListener(handler);
         mFloatingView.setOnClickListener(handler);
-
-//        mFloatingView.setOnClickListener();
-
 
         mFloatingViewManager = new FloatingViewManager(this, this);
         mFloatingViewManager.setFixedTrashIconImage(R.drawable.ic_cancel);
@@ -157,16 +164,14 @@ public class FloatingViewService extends Service implements FloatingViewListener
 
     private void showSpinnerAndLockButton() {
         orderButtonLocked = true;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ((ImageView) icon).setImageDrawable(AndarApplication.getInstance().getDrawable(R.drawable.ic_autorenew_black_24dp));
+//            ((ImageView) icon).setImageDrawable(AndarApplication.getInstance().getDrawable(R.drawable.ic_autorenew_black_24dp));
+        changeIcon(R.drawable.ic_autorenew_black_24dp);
+        RotateAnimation animation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        animation.setInterpolator(new LinearInterpolator());
+        animation.setRepeatCount(Animation.INFINITE);
+        animation.setDuration(1300);
 
-            RotateAnimation animation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-            animation.setInterpolator(new LinearInterpolator());
-            animation.setRepeatCount(Animation.INFINITE);
-            animation.setDuration(1300);
-
-            icon.startAnimation(animation);
-        }
+        icon.startAnimation(animation);
     }
 
     private void hideSpinnerAndUnlockButton() {
@@ -177,19 +182,25 @@ public class FloatingViewService extends Service implements FloatingViewListener
                 .timer(1500, TimeUnit.MILLISECONDS)
                 .doOnComplete(() -> {
                     orderButtonLocked = false;
-                    changeIcon(R.drawable.ic_rocket);
+                    changeIcon(0);
                 })
                 .subscribe();
 
     }
 
-    private void changeIcon(int resourceId){
+    private void changeIcon(int resourceId) {
         runOnUiThread(() -> {
+            if (resourceId == 0) {
+                ((ImageView) icon).setImageDrawable(null);
+                ((TextView) text).setText(context.getString(R.string.ma_map_pas_it_on));
+                return;
+            }
             ((ImageView) icon).setImageDrawable(AndarApplication.getInstance().getDrawable(resourceId));
+            ((TextView) text).setText("");
         });
     }
 
-    private void showToast(int stringResourceId){
+    private void showToast(int stringResourceId) {
         runOnUiThread(() -> {
             String message = AndarApplication.getInstance().getString(stringResourceId);
             Toast.makeText(AndarApplication.getInstance(), message, Toast.LENGTH_LONG).show();
@@ -212,17 +223,20 @@ public class FloatingViewService extends Service implements FloatingViewListener
 
         String MESSAGE_REQUEST_SUCCESFULL = "New request Created!";
         serverAPI.createOrder(userModel.getAuthHeader(),
-                new RetrofitModule.ServerAPI.CreateOrderRequestBody(lat,lon))
+                new RetrofitModule.ServerAPI.CreateOrderRequestBody(lat, lon))
                 .toObservable()
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .flatMap(createOrderResponse -> {
-                    if (MESSAGE_REQUEST_SUCCESFULL.equals(createOrderResponse.message)){
+                    if (MESSAGE_REQUEST_SUCCESFULL.equals(createOrderResponse.message)) {
                         changeIcon(R.drawable.ic_check_yellow);
-                        showToast(R.string.successfully_created_order);
-                    }else{
+//                        showToast(R.string.successfully_created_order);
+                    } else {
                         changeIcon(R.drawable.ic_close_yellow);
-                        showToast(R.string.error_creating_order);
+//                        showToast(R.string.error_creating_order);
                     }
+                    runOnUiThread(() -> {
+                        Toast.makeText(AndarApplication.getInstance(), createOrderResponse.message, Toast.LENGTH_LONG).show();
+                    });
                     return Observable.empty();
                 })
                 .doOnError(throwable -> {
@@ -239,7 +253,7 @@ public class FloatingViewService extends Service implements FloatingViewListener
 
     }
 
-    private void runOnUiThread(Runnable r){
+    private void runOnUiThread(Runnable r) {
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(r);
     }

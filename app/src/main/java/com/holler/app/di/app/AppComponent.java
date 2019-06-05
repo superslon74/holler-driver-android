@@ -47,8 +47,6 @@ public interface AppComponent {
     void inject(FragmentHeaderBig headerBigView);
     void inject(FragmentHeaderMini headerMiniView);
     //TODO: remove shit above
-    void inject(Map mapFragment);
-    void inject(Offline offlineFragment);
 
 
     Context getContext();
