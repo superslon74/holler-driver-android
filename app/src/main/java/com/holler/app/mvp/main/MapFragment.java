@@ -33,6 +33,8 @@ import com.holler.app.utils.GPSTracker;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
@@ -272,10 +274,12 @@ public class MapFragment extends Fragment {
         if (requestOrderFragment != null) {
             removeFragment(requestOrderFragment);
         }
-        requestOrderFragment = RequestOrderFragment.newInstance(address, time);
 
-        requestOrderFragment.source
-                .doOnSubscribe(disposable -> addFragment(requestOrderFragment))
+        RequestOrderFragment fragment = RequestOrderFragment.newInstance(address, time);
+        requestOrderFragment = fragment;
+
+        fragment.source
+                .doOnSubscribe(disposable -> addFragment(fragment))
                 .flatMap(isAccepted -> {
                     if (isAccepted) {
                         return order.accept().toObservable();
@@ -288,7 +292,10 @@ public class MapFragment extends Fragment {
                     UserModel.ParsedThrowable error = UserModel.ParsedThrowable.parse(throwable);
 //                    ((MainView)getActivity()).showMessage(error.getMessage()); //vahahaha
                 })
-                .doFinally(() -> removeFragment(requestOrderFragment))
+                .doFinally(() -> {
+                    removeFragment(fragment);
+                    presenter.resetState();
+                })
                 .subscribe();
     }
 

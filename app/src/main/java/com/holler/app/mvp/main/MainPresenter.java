@@ -247,7 +247,6 @@ public class MainPresenter {
                 };
     }
 
-
     private Subject<RetrofitModule.ServerAPI.CheckStatusResponse> statusRequesting() {
         final Subject<RetrofitModule.ServerAPI.CheckStatusResponse> subject = UnicastSubject.create();
 

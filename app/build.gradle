@@ -139,6 +139,8 @@ dependencies {
     //dependency injection lib
     implementation 'com.google.dagger:dagger:2.23.1'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.23.1'
+    testAnnotationProcessor 'com.google.dagger:dagger-compiler:2.23.1'
+    androidTestAnnotationProcessor'com.google.dagger:dagger-compiler:2.23.1'
     compileOnly 'javax.annotation:jsr250-api:1.0'
     implementation 'javax.inject:javax.inject:1'
     //layout binder
