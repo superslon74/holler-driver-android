@@ -28,12 +28,14 @@ android {
         applicationId "com.holler.app"
         minSdkVersion 23
         targetSdkVersion 28
-        versionCode 31
+        versionCode 33
 /*change-list
 v31:
 - hands on map
 - fw button passiton
-
+v33:
+- order stream fixed
+- test for creating orders added
  */
         versionName "1.0"
         multiDexEnabled true

@@ -3,6 +3,7 @@ package com.holler.app.di.app;
 import android.app.Instrumentation;
 import android.content.Context;
 
+import androidx.test.filters.LargeTest;
 import androidx.test.filters.SmallTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
@@ -45,11 +46,11 @@ import javax.inject.Inject;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 
-@SmallTest
+@LargeTest
 public class CreateOrderFromDriverTest {
 
-    private static final String userEmail = "dennis.eideland@gmail.com";
-    private static final String userPassword = "dennis132";
+    private static final String userEmail = "a@a.com";
+    private static final String userPassword = "1aaaaaaaa";
 
     @Inject protected Context context;
     @Inject protected UserModel userModel;
