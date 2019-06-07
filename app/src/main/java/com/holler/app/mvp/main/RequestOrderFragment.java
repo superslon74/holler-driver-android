@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -80,6 +81,9 @@ public class RequestOrderFragment extends Fragment{
         return fragment;
     }
 
+    protected boolean onTouchEvent (MotionEvent me) {
+        return true;
+    }
 
 
     @Override
@@ -100,7 +104,7 @@ public class RequestOrderFragment extends Fragment{
         bigAddressView.setText(addressBig);
         smallAddressView.setText(addressSmall);
         timer = createTimer(time).subscribe();
-
+        view.setOnTouchListener((v, event) -> true);
         return view;
     }
     

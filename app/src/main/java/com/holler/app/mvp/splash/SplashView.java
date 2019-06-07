@@ -4,24 +4,18 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.holler.app.BuildConfig;
 import com.holler.app.FCM.ForceUpdateChecker;
 import com.holler.app.Models.AccessDetails;
 import com.holler.app.AndarApplication;
 import com.holler.app.R;
-import com.holler.app.activity.MainActivity;
 import com.holler.app.di.Presenter;
 import com.holler.app.di.app.AppComponent;
 import com.holler.app.di.app.components.DaggerSplashComponent;
 import com.holler.app.di.app.components.splash.modules.SplashScreenModule;
-import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.utils.CustomActivity;
 import com.holler.app.utils.GPSTracker;
 import com.orhanobut.logger.Logger;
@@ -30,6 +24,10 @@ import javax.inject.Inject;
 
 import androidx.appcompat.app.AlertDialog;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 
 public class SplashView
         extends CustomActivity
@@ -37,6 +35,9 @@ public class SplashView
 
     @Inject
     public Presenter presenter;
+
+    @BindView(R.id.sp_version) protected TextView versionView;
+//    @BindView(R.id.sp_update_button) protected TextView updateButton;
 
     private void setupComponent(){
         AppComponent appComponent = (AppComponent) AndarApplication.getInstance().component();
@@ -147,25 +148,24 @@ public class SplashView
     }
 
     private void onAllPermissionsGranted(){
-        presenter.onResume();
+        presenter.checkVersion();
     }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_splash);
+        ButterKnife.bind(this);
 
-        TextView lblVersion = (TextView) findViewById(R.id.sp_version);
-        lblVersion.setText(
+        versionView.setText(
                 getResources().getString(R.string.was_powered_by) +"\n "+
                 getResources().getString(R.string.was_version)+ " "+ BuildConfig.VERSION_NAME+"."+BuildConfig.VERSION_CODE);
 
-        if (Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-        }
+//        if (Build.VERSION.SDK_INT > 9) {
+//            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+//            StrictMode.setThreadPolicy(policy);
+//        }
 
         setupComponent();
 
@@ -202,6 +202,36 @@ public class SplashView
                         })
                 .create();
         dialog.show();
+    }
+
+    private String appUrl;
+    @Override
+    public void showAppLinkDialog(String appUrl){
+        final AlertDialog updateDialog = new AlertDialog
+                .Builder(this)
+                .setTitle(getString(R.string.sp_update_title))
+                .setMessage(getString(R.string.sp_update_message))
+                .setPositiveButton(R.string.sp_update_title_button_confirm, (dialog, which) -> {
+                    goToPlayStore();
+                    dialog.dismiss();
+                })
+                .setNegativeButton(R.string.sp_update_title_button_cancel, (dialog, which) -> {
+                    presenter.goAhead();
+                    dialog.dismiss();
+                })
+                .setCancelable(false)
+                .create();
+        updateDialog.show();
+    }
+
+//    @OnClick(R.id.sp_update_button)
+    public void goToPlayStore(){
+        final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+        } catch (android.content.ActivityNotFoundException anfe) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+        }
     }
 
     private void redirectStore(String updateUrl) {

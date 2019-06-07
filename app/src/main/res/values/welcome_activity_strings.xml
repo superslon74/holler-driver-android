@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--mas = main activity strings-->
-
     <string name="was_powered_by">Powered by Andar Solutions</string>
     <string name="was_version">version </string>
 
@@ -16,5 +14,10 @@
     <string name="was_description_welcome">Holler notifies taxi drivers when customers are hailing taxis near them.\n\n</string>
     <string name="was_description_find">Holler is all about drivers helping drivers (and customers!). When nearby taxi drivers spot customers they can\'t pick up, you will get notified!</string>
     <string name="was_description_notify">If you notice hailing costumers on the street but cannot pick them up, press the Holler button and free drivers nearby will\n get a notification.</string>
+
+    <string name="sp_update_title">New Version Available</string>
+    <string name="sp_update_message">To use the application, you need to upgrade it to the latest version available on Google play. </string>
+    <string name="sp_update_title_button_confirm">UPDATE NOW</string>
+    <string name="sp_update_title_button_cancel">Cancel</string>
 
 </resources>

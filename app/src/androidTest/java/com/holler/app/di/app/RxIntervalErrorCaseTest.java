@@ -12,11 +12,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 
 @LargeTest
 public class RxIntervalErrorCaseTest {
 
-    private static final long TIME_LIMIT = 10;
+    private static final long TIME_LIMIT = 4;
     private static final long DEFAULT_TIME = 10;
 
     @Test
@@ -25,24 +26,35 @@ public class RxIntervalErrorCaseTest {
         Observable
                 .interval(1, TimeUnit.SECONDS)
                 .flatMap(time -> {
-                    return wrapTime(time);
+                    return Observable.<Long>create(emitter -> {
+                        try {
+                            wrapTime(time)
+                                    .doOnNext(result -> {
+                                        emitter.onNext(result);
+                                    })
+                                    .subscribe();
+                        }catch (TimeoutException e){
+                            emitter.onNext(DEFAULT_TIME);
+                        }
+                    });
                 })
-                .onErrorResumeNext(observer -> {
-                    observer.onNext(DEFAULT_TIME);
+
+                .flatMap(limitedTime -> {
+                    Logger.i("TIME" + limitedTime);
+                    return Observable.empty();
                 })
                 .doOnError(throwable -> {
-                    Logger.e(throwable.getMessage(),throwable);
+                    Logger.e(throwable.getMessage(), throwable);
                 })
                 .subscribe();
         signal.await();
     }
 
     private Observable<Long> wrapTime(long time) throws TimeoutException {
-        if (time>TIME_LIMIT){
+        if (time > TIME_LIMIT) {
             throw new TimeoutException("Time out");
         }
         return Observable.just(time);
-
     }
 
 }

@@ -236,11 +236,11 @@ public class MainView extends CustomActivity implements MainPresenter.View {
                 case R.id.ma_nav_trips:
                     fragmentRouter.openTrips();
                     break;
-                case R.id.ma_nav_coupon:
-                    break;
-                case R.id.ma_nav_wallet:
-                    fragmentRouter.openWallet();
-                    break;
+//                case R.id.ma_nav_coupon:
+//                    break;
+//                case R.id.ma_nav_wallet:
+//                    fragmentRouter.openWallet();
+//                    break;
                 case R.id.ma_nav_help:
                     fragmentRouter.openHelp();
                     break;
@@ -253,8 +253,8 @@ public class MainView extends CustomActivity implements MainPresenter.View {
                 case R.id.ma_nav_logout:
                     logout();
                     break;
-                case R.id.ma_nav_crash:
-                    throw new RuntimeException("Log crash");
+//                case R.id.ma_nav_crash:
+//                    throw new RuntimeException("Log crash");
             }
 
             return true;
@@ -414,6 +414,15 @@ public class MainView extends CustomActivity implements MainPresenter.View {
     }
 
     @Override
+    public void sendShareIntent(String appLink){
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, appLink);
+        sendIntent.setType("text/plain");
+        startActivity(sendIntent);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         presenter.onViewDestroyed();
@@ -490,20 +499,11 @@ public class MainView extends CustomActivity implements MainPresenter.View {
             presenter.goToTripsScreen();
         }
 
-        public void openShare() {
-            //TODO: insert sharing app url
-            //TODO: create chooser to share url
-            String appSharingUrl = "https://www.google.com";
-            Intent sendIntent = new Intent();
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, appSharingUrl);
-            sendIntent.setType("text/plain");
-            startActivity(sendIntent);
-        }
 
-        public void openSettings() {
-            //TODO: remove with router
-            startActivity(new Intent(MainView.this, ActivitySettings.class));
+
+        public void openShare() {
+            presenter
+                    .getApplicationUrl();
         }
 
         public void openOffline() {

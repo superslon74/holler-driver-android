@@ -17,4 +17,8 @@
     <string name="was_description_find">הולר הוא הכול למען נהג המונית, לעזור לנהגי המונית\n(וגם ללקוחות) כאשר נצפה לקוח המחפש מונית\nברחוב,הולר מודיע לך על כך.\n</string>
     <string name="was_description_notify">אם אתה רואה לקוח ברחוב המחפש מונית, ואתה\nלא יכול לאסוף אותו, לחץ על הכפתור של הולר\nבאפליקציה על מנת שנהגים קרובים ידעו על הלקוח,\nויוכלו לספק שירות.</string>
 
+    <string name="sp_update_title">גרסה חדשה זמינה</string>
+    <string name="sp_update_message">כדי להשתמש ביישום, עליך לשדרג אותו לגרסה העדכנית ביותר הזמינה ב- Google Play.</string>
+    <string name="sp_update_title_button_confirm">עדכן כעת</string>
+    <string name="sp_update_title_button_cancel">בטל</string>
 </resources>

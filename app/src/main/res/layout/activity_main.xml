@@ -26,7 +26,7 @@
             app:itemTextColor="@color/red"
             app:headerLayout="@layout/nav_header_main"
             app:menu="@menu/activity_main_drawer"
-            android:theme="@style/MENU_List_Item"/>
+            android:theme="@style/TextAppearance.Regular.menu"/>
 
 
 

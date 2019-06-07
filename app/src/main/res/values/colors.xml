@@ -20,6 +20,7 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="semiTransparentWhite">#99FFFFFF</color>
     <color name="semiTransparentBlack">#7f000000</color>
+    <color name="semiTransparentBlueLight">#7f37b3ba</color>
 
     <!--old theme-->
     <color name="colorPrimary">@color/blueDark</color>

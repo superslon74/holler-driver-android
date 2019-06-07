@@ -1,6 +1,7 @@
 package com.holler.app.di;
 
 public interface Presenter {
-    void onResume();
+    void checkVersion();
     void onDestroy();
+    void goAhead();
 }

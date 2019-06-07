@@ -128,6 +128,15 @@ public class MainPresenter {
         view.finish();
     }
 
+    public void getApplicationUrl() {
+        serverAPI
+                .getApplicationLink()
+                .doOnSuccess(response -> {
+                    view.sendShareIntent(response.link);
+                })
+                .subscribe();
+    }
+
     public static class ServiceConnectionError extends Throwable{
         public ServiceConnectionError(String message) {
             super(message);
@@ -247,25 +256,32 @@ public class MainPresenter {
                 };
     }
 
-    private Subject<RetrofitModule.ServerAPI.CheckStatusResponse> statusRequesting() {
-        final Subject<RetrofitModule.ServerAPI.CheckStatusResponse> subject = UnicastSubject.create();
+    private Observable<RetrofitModule.ServerAPI.CheckStatusResponse> statusRequesting() {
 
-        Flowable
+        return Observable
                 .interval(1, TimeUnit.SECONDS)
-                .flatMapSingle(time -> {
+                .flatMap(time -> {
                     Location location = gpsTrackerService.getLocation();
                     String authHeader = userModel.getAuthHeader();
                     String latitude = "" + location.getLatitude();
                     String longitude = "" + location.getLongitude();
 
-                    return serverAPI
-                            .checkStatus(authHeader, latitude, longitude)
-                            .doOnSuccess(subject::onNext)
-                            .onErrorReturnItem(new RetrofitModule.ServerAPI.CheckStatusResponse());
-                })
-                .subscribe();
+                    return Observable.<RetrofitModule.ServerAPI.CheckStatusResponse>create(emitter -> {
+                        RetrofitModule.ServerAPI.CheckStatusResponse emptyResponse = new RetrofitModule.ServerAPI.CheckStatusResponse();
+                        try {
+                            serverAPI
+                                    .checkStatus(authHeader, latitude, longitude)
+                                    .doOnSuccess(checkStatusResponse -> {
+                                        emitter.onNext(checkStatusResponse);
+                                    })
+                                    .onErrorReturnItem(emptyResponse)
+                                    .subscribe();
+                        }catch (Exception e){
+                            emitter.onNext(emptyResponse);
+                        }
+                    });
+                });
 
-        return subject;
     }
 
     public void goOffline() {
@@ -358,6 +374,8 @@ public class MainPresenter {
 
         void onStatusChanged(UserModel.Status newStatus);
         void onOrderChanged(OrderModel.Order order);
+
+        void sendShareIntent(String url);
 
         void setBlockedState();
 

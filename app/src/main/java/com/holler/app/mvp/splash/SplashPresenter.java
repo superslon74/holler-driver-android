@@ -3,24 +3,19 @@ package com.holler.app.mvp.splash;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
-import com.google.android.gms.common.api.ResolvableApiException;
 import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.mvp.main.UserModel;
 import com.holler.app.di.Presenter;
 import com.holler.app.di.app.modules.RetrofitModule;
-import com.holler.app.utils.CustomActivity;
 import com.holler.app.utils.GPSTracker;
 import com.holler.app.utils.MessageDisplayer;
 import com.holler.app.utils.SpinnerShower;
-
-import java.util.concurrent.TimeUnit;
+import com.holler.app.utils.UpdateChecker;
 
 import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class SplashPresenter implements Presenter {
     private Context context;
@@ -44,17 +39,24 @@ public class SplashPresenter implements Presenter {
     }
 
     @Override
-    public void onResume() {
-        if (userModel.isLoggedIn()) {
-            updateUserData();
-        } else {
-            router.goToWelcomeScreen();
-        }
+    public void checkVersion() {
+        new UpdateChecker(context)
+                .checkForNewVersion()
+                .doOnNext(updateNeeded -> {
+                    if(updateNeeded){
+                        view.showAppLinkDialog("la");
+                    }else{
+                        checkLogin();
+                    }
+                })
+                .subscribe();
 
     }
 
-    private void updateUserData() {
-
+    private void checkLogin() {
+        if (!userModel.isLoggedIn()) {
+            router.goToWelcomeScreen();
+        }
         userModel
                 .login()
                 .flatMap(isLogged -> {
@@ -106,8 +108,12 @@ public class SplashPresenter implements Presenter {
             context.unbindService(gpsTrackerServiceConnection);
     }
 
-    public interface View extends SpinnerShower, MessageDisplayer {
+    public void goAhead(){
+        checkLogin();
+    }
 
+    public interface View extends SpinnerShower, MessageDisplayer {
+        void showAppLinkDialog(String appUrl);
     }
 
 }

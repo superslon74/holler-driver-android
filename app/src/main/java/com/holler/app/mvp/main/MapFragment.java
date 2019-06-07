@@ -45,6 +45,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
 
 public class MapFragment extends Fragment {
 
@@ -61,6 +62,7 @@ public class MapFragment extends Fragment {
     private GoogleMap googleMap;
     private GPSTracker.LocationChangingListener locationListener;
     private static boolean cameraLocked = false;
+    private static Disposable moveToCurrentLocationTimer = null;
     private MainPresenter presenter;
     private ServiceConnection gpsTrackerServiceConnection;
     private volatile boolean shouldUpdateMapWithoutAnimation = false;
@@ -172,11 +174,11 @@ public class MapFragment extends Fragment {
                                             .latLngBounds
                                             .contains(currentPosition);
                             boolean isZoomOutOfRange = googleMap.getCameraPosition().zoom > 17 || googleMap.getCameraPosition().zoom < 14;
-                            if (isCurrentLocationOut || isZoomOutOfRange || cameraLocked) {
-                                currentLocationButton.setVisibility(View.VISIBLE);
-                            } else {
-                                currentLocationButton.setVisibility(View.GONE);
-                            }
+//                            if (isCurrentLocationOut || isZoomOutOfRange || cameraLocked) {
+//                                currentLocationButton.setVisibility(View.VISIBLE);
+//                            } else {
+//                                currentLocationButton.setVisibility(View.GONE);
+//                            }
                         }
                     });
 
@@ -248,7 +250,7 @@ public class MapFragment extends Fragment {
                 googleMap.addMarker(m);
             }
         } catch (NumberFormatException | NullPointerException e) {
-            Logger.e(e.getMessage(),e);
+            Logger.e(e.getMessage(), e);
         }
 
         LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
@@ -436,6 +438,14 @@ public class MapFragment extends Fragment {
 
                 case MotionEvent.ACTION_DOWN:
                     MapFragment.cameraLocked = true;
+                    if (MapFragment.moveToCurrentLocationTimer != null)
+                        MapFragment.moveToCurrentLocationTimer.dispose();
+                    MapFragment.moveToCurrentLocationTimer = Observable
+                            .timer(3, TimeUnit.SECONDS)
+                            .doOnNext(aLong -> {
+                                cameraLocked = false;
+                            })
+                            .subscribe();
                     break;
 
             }

@@ -49,8 +49,8 @@ import io.reactivex.Observable;
 @LargeTest
 public class CreateOrderFromDriverTest {
 
-    private static final String userEmail = "a@a.com";
-    private static final String userPassword = "1aaaaaaaa";
+    private static final String userEmail = "dennis.eideland@gmail.com";
+    private static final String userPassword = "dennis132";
 
     @Inject protected Context context;
     @Inject protected UserModel userModel;

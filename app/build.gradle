@@ -39,7 +39,7 @@ v33:
  */
         versionName "1.0"
         multiDexEnabled true
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
     compileOptions {
@@ -65,9 +65,7 @@ v33:
     testOptions {
         unitTests.returnDefaultValues = true
     }
-    defaultConfig{
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
+
 
 //    flavorDimensions "testDimension"
 //    productFlavors{

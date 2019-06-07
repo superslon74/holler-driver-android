@@ -288,10 +288,9 @@
     </style>
 
 
-    <style name="MENU_List_Item">
+    <style name="TextAppearance.Regular.menu">
         <item name="android:textSize">15dp</item>
-        <item name="android:textColor">@color/colorAccent</item>
-        <item name="android:fontFamily">@font/montserrat</item>
+        <item name="android:textColor">@drawable/selector_menu_item</item>
         <item name="android:paddingTop">5dp</item>
         <item name="android:paddingBottom">5dp</item>
 
