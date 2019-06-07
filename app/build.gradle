@@ -28,7 +28,7 @@ android {
         applicationId "com.holler.app"
         minSdkVersion 23
         targetSdkVersion 28
-        versionCode 33
+        versionCode 34
 /*change-list
 v31:
 - hands on map
