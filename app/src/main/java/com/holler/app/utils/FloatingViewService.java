@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.media.MediaPlayer;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -26,6 +27,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseApp;
 import com.google.gson.JsonObject;
 import com.holler.app.activity.MainActivity;
 import com.holler.app.AndarApplication;
@@ -39,13 +44,16 @@ import com.holler.app.mvp.main.MainView;
 import com.holler.app.mvp.main.UserModel;
 import com.holler.app.server.OrderServerApi;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import androidx.annotation.Nullable;
 
+import io.fabric.sdk.android.Fabric;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import okhttp3.ResponseBody;
@@ -60,34 +68,33 @@ public class FloatingViewService extends Service implements FloatingViewListener
     private View icon;
     private View text;
     private boolean orderButtonLocked = false;
+    private List<View> buttons;
 
-    @Inject
-    protected Context context;
-    @Inject
-    protected RouterModule.Router router;
-    @Inject
-    protected RetrofitModule.ServerAPI serverAPI;
-    @Inject
-    protected UserModel userModel;
+    @Inject protected Context context;
+    @Inject protected RouterModule.Router router;
+    @Inject protected RetrofitModule.ServerAPI serverAPI;
+    @Inject protected UserModel userModel;
 
     private MediaPlayer passItOnSound;
 
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        FirebaseApp.initializeApp(this) ;
         if (mFloatingViewManager == null) {
             initLayout();
         }
 
-        return flags;
+        return START_REDELIVER_INTENT;
     }
 
     public FloatingViewService() {
+//        FirebaseApp firebaseApp = FirebaseApp.initializeApp(this);
         AndarApplication.getInstance().component().inject(this);
-        passItOnSound = MediaPlayer.create(context, R.raw.pass_it_on);
+        passItOnSound = MediaPlayer.create(context, R.raw .pass_it_on);
     }
 
     private void initLayout() {
+        buttons = new ArrayList<>();
         final DisplayMetrics metrics = new DisplayMetrics();
         final WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(metrics);
@@ -100,6 +107,10 @@ public class FloatingViewService extends Service implements FloatingViewListener
         ((TextView)text).setTypeface(face);
         View openAppButton = mFloatingView.findViewById(R.id.fw_app_button);
         View orderButton = mFloatingView.findViewById(R.id.fw_order_button);
+        View orderButtonContainer = mFloatingView.findViewById(R.id.fw_order_button_container);
+
+        buttons.add(openAppButton);
+        buttons.add(orderButtonContainer);
 
         View.OnClickListener handler = new View.OnClickListener() {
             @Override
@@ -267,7 +278,7 @@ public class FloatingViewService extends Service implements FloatingViewListener
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return new FloatingViewBinder();
     }
 
     @Override
@@ -290,6 +301,21 @@ public class FloatingViewService extends Service implements FloatingViewListener
             mFloatingViewManager.removeAllViewToWindow();
             mFloatingViewManager = null;
         }
+    }
+
+    public class FloatingViewBinder extends Binder {
+
+        public void showButtons(){
+            for(View b : buttons){
+                b.setVisibility(View.VISIBLE);
+            }
+        }
+        public void hideButtons(){
+            for(View b : buttons){
+                b.setVisibility(View.GONE);
+            }
+        }
+
     }
 
 

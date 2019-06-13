@@ -8,5 +8,10 @@
     <string name="das_document_state_info">Tap icon to select file</string>
 
     <string name="error_all_documents_exists">All documents exists</string>
+    <string name="error_documents_required">Documents required</string>
+    <string name="das_image_chooser">Select image</string>
+    <string name="das_image_required">Document required. Tap icon to select file..</string>
+    <string name="das_image_uploaded">Uploaded</string>
+    <string name="das_image_ready">Ready to upload</string>
 
 </resources>

@@ -48,7 +48,12 @@ v33:
 
     }
     buildTypes {
+        debug{
+            versionNameSuffix "-debug"
+
+        }
         release {
+            versionNameSuffix "-release"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -64,6 +69,19 @@ v33:
     }
     testOptions {
         unitTests.returnDefaultValues = true
+    }
+
+    flavorDimensions "dimension-test"
+    productFlavors{
+        "dependency-injection-dagger-android-test"{
+            dimension "dimension-test"
+            versionNameSuffix "-test"
+        }
+
+        "holler-driver"{
+            dimension "dimension-test"
+            versionNameSuffix "-product"
+        }
     }
 
 
@@ -139,6 +157,9 @@ dependencies {
     //dependency injection lib
     implementation 'com.google.dagger:dagger:2.23.1'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.23.1'
+    implementation 'com.google.dagger:dagger-android:2.23.1'
+    implementation 'com.google.dagger:dagger-android-support:2.23.1' // if you use the support libraries
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.23.1'
     testAnnotationProcessor 'com.google.dagger:dagger-compiler:2.23.1'
     androidTestAnnotationProcessor'com.google.dagger:dagger-compiler:2.23.1'
     compileOnly 'javax.annotation:jsr250-api:1.0'
@@ -155,7 +176,6 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.1.13'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
-
     //crash reports and logs
     implementation 'com.google.firebase:firebase-core:16.0.9'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.0'

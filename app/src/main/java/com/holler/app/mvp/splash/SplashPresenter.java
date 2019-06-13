@@ -6,10 +6,10 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
-import com.holler.app.di.app.modules.RouterModule;
-import com.holler.app.mvp.main.UserModel;
 import com.holler.app.di.Presenter;
 import com.holler.app.di.app.modules.RetrofitModule;
+import com.holler.app.di.app.modules.RouterModule;
+import com.holler.app.mvp.main.UserModel;
 import com.holler.app.utils.GPSTracker;
 import com.holler.app.utils.MessageDisplayer;
 import com.holler.app.utils.SpinnerShower;

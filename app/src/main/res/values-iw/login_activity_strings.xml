@@ -9,4 +9,6 @@
     <string name="las_sign_up_link">פתח חשבון חדש</string>
     <string name="las_forgot_password">שכחתי סיסמה</string>
 
+    <string name="las_next_caption">הבא</string>
+    <string name="las_back_caption">לאחור</string>
 </resources>

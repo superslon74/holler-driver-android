@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.holler.app.R;
 import com.holler.app.activity.DocumentsActivity;
 import com.holler.app.activity.WaitingForApproval;
 import com.holler.app.di.app.modules.DeviceInfoModule;
@@ -15,6 +16,7 @@ import com.holler.app.utils.MessageDisplayer;
 import com.holler.app.utils.SpinnerShower;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,10 +25,17 @@ import java.util.Stack;
 
 import androidx.annotation.NonNull;
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.Observer;
 import io.reactivex.Single;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okio.Buffer;
+import okio.BufferedSink;
+import okio.ForwardingSink;
+import okio.Okio;
+import okio.Sink;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -113,24 +122,24 @@ public class DocumentsPresenter {
         Observable
                 .fromIterable(toUpload)
                 .flatMap(document -> {
-                    return generateDocumentUploadingSource(document).toObservable();
+                    return generateDocumentUploadingSource(document, view.showProgress(document)).toObservable();
                 })
                 .flatMap(uploadedDocument -> {
                     documents.put(uploadedDocument.id, uploadedDocument);
                     return Observable.empty();
                 })
                 .doFinally(() -> {
-                    view.hideSpinner();
+                    view.hideProgress();
                     view.displayList(documents);
                     if(checkAllDocumentsUploaded()){
                         router.goToWaitingForApprovalScreen();
                         view.finish();
                     }else{
-                        view.showMessage("Documents required");
+                        view.showMessage(context.getString(R.string.error_documents_required));
                     }
                 })
                 .doOnSubscribe(disposable -> {
-                    view.showSpinner();
+//                    view.showSpinner();
                 })
                 .doOnError(throwable -> {
                     view.showMessage(throwable.getMessage());
@@ -141,7 +150,7 @@ public class DocumentsPresenter {
 
     }
 
-    private Single<RetrofitModule.ServerAPI.Document> generateDocumentUploadingSource(RetrofitModule.ServerAPI.Document document){
+    private Single<RetrofitModule.ServerAPI.Document> generateDocumentUploadingSource(RetrofitModule.ServerAPI.Document document, ObservableEmitter<Double> progressListener){
 
         RequestBody deviceType = RequestBody.create(MediaType.parse("text/plain"), deviceInfo.deviceType);
         RequestBody deviceId = RequestBody.create(MediaType.parse("text/plain"), deviceInfo.deviceId);
@@ -149,8 +158,12 @@ public class DocumentsPresenter {
 
         File photo = new File(document.localUrl);
         RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), photo);
+        CountingRequestBody countingBody = new CountingRequestBody(requestFile, (bytesWritten, contentLength) -> {
+            double progress = (1.0 * bytesWritten) / contentLength;
+            progressListener.onNext(progress);
+        });
         String filename = photo.getName();
-        MultipartBody.Part fileData = MultipartBody.Part.createFormData("document", filename, requestFile);
+        MultipartBody.Part fileData = MultipartBody.Part.createFormData("document", filename, countingBody);
 
         Single<RetrofitModule.ServerAPI.Document> sendingDocumentSource = serverAPI.sendDocument(
                 userModel.getAuthHeader(),
@@ -160,6 +173,8 @@ public class DocumentsPresenter {
                 document.id,
                 fileData
         );
+
+
 
         return sendingDocumentSource;
     }
@@ -171,5 +186,77 @@ public class DocumentsPresenter {
 
     public interface View extends MessageDisplayer, Finishable, SpinnerShower {
         void displayList(Map<String, RetrofitModule.ServerAPI.Document> documents);
+        ObservableEmitter<Double> showProgress(RetrofitModule.ServerAPI.Document document);
+        void hideProgress();
+    }
+
+    public static class CountingRequestBody extends RequestBody {
+
+        protected RequestBody delegate;
+        protected Listener listener;
+
+        protected CountingSink countingSink;
+
+        public CountingRequestBody(RequestBody delegate, Listener listener)
+        {
+            this.delegate = delegate;
+            this.listener = listener;
+        }
+
+        @Override
+        public MediaType contentType()
+        {
+            return delegate.contentType();
+        }
+
+        @Override
+        public long contentLength()
+        {
+            try
+            {
+                return delegate.contentLength();
+            } catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+            return -1;
+        }
+
+        @Override
+        public void writeTo(BufferedSink sink) throws IOException
+        {
+            countingSink = new CountingSink(sink);
+            BufferedSink bufferedSink = Okio.buffer(countingSink);
+
+            delegate.writeTo(bufferedSink);
+
+            bufferedSink.flush();
+        }
+
+        protected final class CountingSink extends ForwardingSink
+        {
+
+            private long bytesWritten = 0;
+
+            public CountingSink(Sink delegate)
+            {
+                super(delegate);
+            }
+
+            @Override
+            public void write(Buffer source, long byteCount) throws IOException
+            {
+                super.write(source, byteCount);
+
+                bytesWritten += byteCount;
+                listener.onRequestProgress(bytesWritten, contentLength());
+            }
+
+        }
+
+        public static interface Listener
+        {
+            public void onRequestProgress(long bytesWritten, long contentLength);
+        }
     }
 }

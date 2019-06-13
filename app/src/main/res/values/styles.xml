@@ -397,13 +397,12 @@
     </style>
 
     <style name="LA_Round_Button">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">60dp</item>
+        <item name="android:layout_height">60dp</item>
         <item name="android:layout_marginTop">8dp</item>
         <item name="android:layout_marginEnd">15dp</item>
         <item name="android:layout_marginBottom">8dp</item>
-        <item name="android:background">@color/transparent</item>
-        <item name="android:src">@drawable/next_button_round</item>
+        <item name="android:background">@drawable/next_button_round</item>
     </style>
 
 

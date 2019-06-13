@@ -8,5 +8,7 @@
 
     <string name="las_sign_up_link">Мне нужно создать аккаунт</string>
     <string name="las_forgot_password">Я забыл свой пароль</string>
+    <string name="las_next_caption">Далее</string>
+    <string name="las_back_caption">Назад</string>
 
 </resources>

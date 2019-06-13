@@ -64,12 +64,10 @@ public class CustomActivity
         implements SpinnerShower, KeyboardObserver, MessageDisplayer {
 
 
-
-    /*
-
-    */
     private static volatile int runningActivitiesCount = 0;
     private ServiceConnection gpsTrackerServiceConnection;
+    private ServiceConnection floatingViewServiceConnection;
+//    private FloatingViewService.FloatingViewBinder floatingView;
 
     @Override
     protected void onPause() {
@@ -90,6 +88,8 @@ public class CustomActivity
     }
 
     private void toggleFloatingViewService(boolean isActivityRunning) {
+//        if(floatingView==null)return;
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (Settings.canDrawOverlays(CustomActivity.this)) {
                 final Intent intent = new Intent(this, FloatingViewService.class);
@@ -133,7 +133,12 @@ public class CustomActivity
         try {
             unbindService(gpsTrackerServiceConnection);
         } catch (IllegalArgumentException e) {
-            Logger.e("Can't unbind service.. ");
+            Logger.e("Can't unbind gps service.. ");
+        }
+        try {
+            unbindService(floatingViewServiceConnection);
+        } catch (IllegalArgumentException e) {
+            Logger.e("Can't unbind floating service.. ");
         }
     }
 
@@ -182,7 +187,21 @@ public class CustomActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initKeyboardObserver();
-        // for home listen
+        this.floatingViewServiceConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+//                floatingView = (FloatingViewService.FloatingViewBinder) service;
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        };
+//        Intent flaotingViewBinding = new Intent(this, FloatingViewService.class);
+//        this.bindService(flaotingViewBinding, this.floatingViewServiceConnection, Context.BIND_IMPORTANT);
+
+//        for home listen
 //        InnerRecevier innerReceiver = new InnerRecevier();
 //        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
 //        registerReceiver(innerReceiver, intentFilter);
@@ -312,6 +331,8 @@ public class CustomActivity
                     }
 
                 };
+
+
 
                 this.bindService(gpsTrackerBinding, this.gpsTrackerServiceConnection, Context.BIND_IMPORTANT);
                 break;

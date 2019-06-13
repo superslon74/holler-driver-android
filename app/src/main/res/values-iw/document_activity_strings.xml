@@ -7,5 +7,10 @@
     <string name="das_document_state_ready">מוכן להעלאה</string>
     <string name="das_document_state_info">לחיצה על הסמל לבחירת קובץ</string>
 
-
+    <string name="error_all_documents_exists">כל המסמכים קיימים</string>
+    <string name="error_documents_required">מסמכים דרושים</string>
+    <string name="das_image_chooser">בחר תמונה</string>
+    <string name="das_image_required">נדרש מסמך. הקש על הסמל כדי לבחור קובץ ..</string>
+    <string name="das_image_uploaded">הועלה</string>
+    <string name="das_image_ready">מוכן להעלאה</string>
 </resources>

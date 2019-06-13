@@ -101,11 +101,11 @@ public class DocumentsListItem extends Fragment {
 
             captureIntent.putExtra(MediaStore.EXTRA_OUTPUT,photoUri);
 
-            chooserIntent = Intent.createChooser(new Intent(), "Select Image");
+            chooserIntent = Intent.createChooser(new Intent(), getString(R.string.das_image_chooser));
             chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent, captureIntent});
 
         } catch (Exception ex) {
-            chooserIntent = Intent.createChooser(new Intent(), "Select Image");
+            chooserIntent = Intent.createChooser(new Intent(), getString(R.string.das_image_chooser));
             chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
         }
 
@@ -152,14 +152,14 @@ public class DocumentsListItem extends Fragment {
         if (document.remoteUrl == null && document.localUrl == null) {
             imageView.setImageResource(R.drawable.photo);
             imageView.setBackgroundColor(getResources().getColor(R.color.transparent,getActivity().getTheme()));
-            fileNameView.setText("Document required. Tap icon to select file..");
+            fileNameView.setText(getString(R.string.das_image_required));
         } else if (document.remoteUrl != null) {
             Glide
                     .with(getActivity())
                     .load(document.remoteUrl)
                     .centerCrop()
                     .into(imageView);
-            fileNameView.setText("Uploaded");
+            fileNameView.setText(getString(R.string.das_image_uploaded));
 
             imageView.setMaxHeight(200);
             imageView.setPadding(0, 0, 0, 0);
@@ -171,7 +171,7 @@ public class DocumentsListItem extends Fragment {
                     .centerCrop()
                     .into(imageView);
 
-            fileNameView.setText("Ready to upload");
+            fileNameView.setText(getString(R.string.das_image_ready));
             imageView.setMaxHeight(200);
             imageView.setPadding(0, 0, 0, 0);
         }

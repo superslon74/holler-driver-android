@@ -1,16 +1,19 @@
 package com.holler.app.mvp.splash;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+
+import com.holler.app.AndarApplication;
 import com.holler.app.BuildConfig;
 import com.holler.app.FCM.ForceUpdateChecker;
 import com.holler.app.Models.AccessDetails;
-import com.holler.app.AndarApplication;
 import com.holler.app.R;
 import com.holler.app.di.Presenter;
 import com.holler.app.di.app.AppComponent;
@@ -22,20 +25,15 @@ import com.orhanobut.logger.Logger;
 
 import javax.inject.Inject;
 
-import androidx.appcompat.app.AlertDialog;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-
+import dagger.android.AndroidInjection;
 
 public class SplashView
         extends CustomActivity
-        implements ForceUpdateChecker.OnUpdateNeededListener, SplashPresenter.View {
+        implements ForceUpdateChecker.OnUpdateNeededListener, SplashPresenter.View{
 
-    @Inject
-    public Presenter presenter;
-
+    @Inject public Presenter presenter;
     @BindView(R.id.sp_version) protected TextView versionView;
 //    @BindView(R.id.sp_update_button) protected TextView updateButton;
 
@@ -68,7 +66,7 @@ public class SplashView
         };
 
         chain
-                .next(new RequestPermissionChain(activity,Manifest.permission.SYSTEM_ALERT_WINDOW))
+                .next(new RequestPermissionChain(activity, Manifest.permission.SYSTEM_ALERT_WINDOW))
                 .next(new RequestPermissionChain(activity,Manifest.permission.ACCESS_FINE_LOCATION))
                 .next(new RequestPermissionChain(activity,Manifest.permission.INTERNET))
                 .next(new RequestPermissionChain(activity,Manifest.permission.CAMERA))
@@ -162,10 +160,6 @@ public class SplashView
                 getResources().getString(R.string.was_powered_by) +"\n "+
                 getResources().getString(R.string.was_version)+ " "+ BuildConfig.VERSION_NAME+"."+BuildConfig.VERSION_CODE);
 
-//        if (Build.VERSION.SDK_INT > 9) {
-//            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-//            StrictMode.setThreadPolicy(policy);
-//        }
 
         setupComponent();
 
@@ -224,7 +218,7 @@ public class SplashView
         updateDialog.show();
     }
 
-//    @OnClick(R.id.sp_update_button)
+    //    @OnClick(R.id.sp_update_button)
     public void goToPlayStore(){
         final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
         try {
@@ -239,5 +233,6 @@ public class SplashView
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
+
 
 }

@@ -1,6 +1,9 @@
 package com.holler.app.mvp.password;
 
 import android.os.Bundle;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 
 import com.holler.app.AndarApplication;
@@ -26,6 +29,8 @@ public class ChangePasswordView extends CustomActivity implements ChangePassword
     public EditText passwordInput;
     @BindView(R.id.pa_password_confirmation)
     public EditText passwordConfirmationInput;
+    @BindView(R.id.pa_button_next)
+    public View buttonNext;
 
     private void setupComponent() {
         AppComponent appComponent = (AppComponent) AndarApplication.getInstance().component();
@@ -51,6 +56,19 @@ public class ChangePasswordView extends CustomActivity implements ChangePassword
         String password = passwordInput.getText().toString();
         String passwordConfirmation = passwordConfirmationInput.getText().toString();
         presenter.sendNewPassword(code,password,passwordConfirmation);
+    }
+
+    @Override
+    public void onKeyboardShown() {
+        super.onKeyboardShown();
+        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up);
+        animation.setStartOffset(200);
+        buttonNext.setAnimation(animation);
+    }
+
+    @Override
+    public void onKeyboardHidden() {
+        super.onKeyboardHidden();
     }
 //
 //    @OnClick(R.id.pa_back_button)

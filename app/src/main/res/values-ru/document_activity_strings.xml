@@ -8,5 +8,9 @@
     <string  name="das_document_state_info">Нажмите, чтобы выбрать файл</string>
 
     <string name="error_all_documents_exists">Документы уже загружены</string>
-
+    <string name="error_documents_required">Загрузите документы</string>
+    <string name="das_image_chooser">Выберите фото</string>
+    <string name="das_image_required">Ожидается документ, нажмите на иконку чтобы выбрать файл</string>
+    <string name="das_image_uploaded">Загружен</string>
+    <string name="das_image_ready">Готов к загрузке</string>
 </resources>

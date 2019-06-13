@@ -13,6 +13,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
+import com.google.firebase.FirebaseApp;
 import com.holler.app.Utilities.FontsOverride;
 import com.holler.app.di.app.AppComponent;
 import com.holler.app.di.app.DaggerAppComponent;
@@ -24,6 +25,7 @@ import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.di.app.modules.SharedPreferencesModule;
 import com.holler.app.di.app.modules.UserModule;
 import com.holler.app.di.app.modules.UserStorageModule;
+import com.holler.app.utils.FloatingViewService;
 import com.holler.app.utils.GPSTracker;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.CsvFormatStrategy;
@@ -51,12 +53,17 @@ public class AndarApplication extends Application implements  ComponentCallbacks
         initLogger();
         setupDependencyGraph();
         super.onCreate();
+
+//        final Intent intent = new Intent(this, FloatingViewService.class);
+//        startService(intent);
+
         Fabric.with(this, new Crashlytics());
         /**********************/
         instance = this;
         FontsOverride.setDefaultFont(this, "MONOSPACE", "ClanPro-NarrBook.otf");
-
     }
+
+
 
 
     private AppComponent component;
@@ -83,6 +90,7 @@ public class AndarApplication extends Application implements  ComponentCallbacks
                 .build();
         component.inject(this);
         Logger.d("Dependency Graph Set Up");
+
 
 //        Disposable serviceSubscriber = new ReactiveServiceBindingFactory()
 //                .bind(getApplicationContext(),new Intent(getApplicationContext(), GPSTracker.class))
@@ -116,8 +124,7 @@ public class AndarApplication extends Application implements  ComponentCallbacks
 
     /******************************************************************************************/
 
-    public static final String TAG = AndarApplication.class
-            .getSimpleName();
+    public static final String TAG = AndarApplication.class.getSimpleName();
 
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
