@@ -28,7 +28,7 @@ android {
         applicationId "com.holler.app"
         minSdkVersion 23
         targetSdkVersion 28
-        versionCode 34
+        versionCode 1
 /*change-list
 v31:
 - hands on map
@@ -49,11 +49,9 @@ v33:
     }
     buildTypes {
         debug{
-            versionNameSuffix "-debug"
 
         }
         release {
-            versionNameSuffix "-release"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -75,12 +73,10 @@ v33:
     productFlavors{
         "dependency-injection-dagger-android-test"{
             dimension "dimension-test"
-            versionNameSuffix "-test"
         }
 
         "holler-driver"{
             dimension "dimension-test"
-            versionNameSuffix "-product"
         }
     }
 
