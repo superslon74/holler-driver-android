@@ -67,6 +67,7 @@ public class CustomActivity
     private static volatile int runningActivitiesCount = 0;
     private ServiceConnection gpsTrackerServiceConnection;
     private ServiceConnection floatingViewServiceConnection;
+    private LoadingView loadingView;
 //    private FloatingViewService.FloatingViewBinder floatingView;
 
     @Override
@@ -120,6 +121,7 @@ public class CustomActivity
     @Override
     protected void onStart() {
         super.onStart();
+        loadingView = findViewById(R.id.loading_view);
         synchronized (CustomActivity.class) {
             runningActivitiesCount++;
             toggleFloatingViewService(isRunning());
@@ -187,6 +189,7 @@ public class CustomActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initKeyboardObserver();
+        loadingView = findViewById(R.id.loading_view);
         this.floatingViewServiceConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
@@ -549,18 +552,17 @@ public class CustomActivity
     @Override
     public void showSpinner() {
         runOnUiThread(() -> {
-            if (spinner == null) {
-                spinner = new LoadingProgress(this);
+            if (loadingView != null) {
+                loadingView.show();
             }
-            spinner.startLoading();
         });
     }
 
     @Override
     public void hideSpinner() {
         runOnUiThread(() -> {
-            if (spinner != null) {
-                spinner.stopLoading();
+            if (loadingView != null) {
+                loadingView.hide();
             }
         });
     }

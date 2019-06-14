@@ -308,12 +308,12 @@ public class MainPresenter {
         view.finish();
     }
 
-    public void createAndSendOrder(){
+    public Observable<Boolean> createAndSendOrder(){
 
         Location location = gpsTrackerService.getLocation();
         if (location ==null){
             view.showMessage(context.getString(R.string.error_no_location));
-            return;
+            return Observable.just(false);
         }
         String latitude = ""+location.getLatitude();
         String longitude = ""+location.getLongitude();
@@ -321,16 +321,31 @@ public class MainPresenter {
         String messageSuccess = context.getString(R.string.successfully_created_order);
         String messageError = context.getString(R.string.error_creating_order);
 
-        serverAPI
-                .createOrder(userModel.getAuthHeader(),
-                        new RetrofitModule.ServerAPI.CreateOrderRequestBody(latitude,longitude))
-                .doOnSubscribe(disposable -> view.showSpinner())
-                .doFinally(() -> view.hideSpinner())
-                .doOnSuccess(creteOrderResponse -> {
-                    view.showMessage(creteOrderResponse.message);
-                })
-                .doOnError(throwable -> view.showMessage(messageError))
-                .subscribe();
+        return Observable.<Boolean>create(emitter -> {
+            serverAPI
+                    .createOrder(userModel.getAuthHeader(),
+                            new RetrofitModule.ServerAPI.CreateOrderRequestBody(latitude,longitude))
+                    .doOnSubscribe(disposable -> view.showSpinner())
+                    .doFinally(() -> view.hideSpinner())
+                    .doOnSuccess(creteOrderResponse -> {
+                        view.showMessage(creteOrderResponse.message);
+                        if(creteOrderResponse.isSuccessfullyCreated()){
+                            emitter.onNext(true);
+                            emitter.onComplete();
+                        }else{
+                            emitter.onNext(false);
+                            emitter.onComplete();
+                        }
+
+                    })
+                    .doOnError(throwable -> {
+                        view.showMessage(messageError);
+                        emitter.onNext(false);
+                        emitter.onComplete();
+                    })
+                    .subscribe();
+        });
+
 
     }
 
@@ -394,6 +409,7 @@ public class MainPresenter {
         void setApprovedState();
 
         void setRidingState();
+
     }
 
 

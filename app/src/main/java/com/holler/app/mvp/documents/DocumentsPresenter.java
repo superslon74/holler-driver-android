@@ -121,15 +121,18 @@ public class DocumentsPresenter {
         
         Observable
                 .fromIterable(toUpload)
+                .doOnSubscribe(disposable -> {
+                    view.showSpinner();
+                })
                 .flatMap(document -> {
-                    return generateDocumentUploadingSource(document, view.showProgress(document)).toObservable();
+                    return generateDocumentUploadingSource(document).toObservable();
                 })
                 .flatMap(uploadedDocument -> {
                     documents.put(uploadedDocument.id, uploadedDocument);
                     return Observable.empty();
                 })
                 .doFinally(() -> {
-                    view.hideProgress();
+                    view.hideSpinner();
                     view.displayList(documents);
                     if(checkAllDocumentsUploaded()){
                         router.goToWaitingForApprovalScreen();
@@ -137,9 +140,6 @@ public class DocumentsPresenter {
                     }else{
                         view.showMessage(context.getString(R.string.error_documents_required));
                     }
-                })
-                .doOnSubscribe(disposable -> {
-//                    view.showSpinner();
                 })
                 .doOnError(throwable -> {
                     view.showMessage(throwable.getMessage());
@@ -150,7 +150,7 @@ public class DocumentsPresenter {
 
     }
 
-    private Single<RetrofitModule.ServerAPI.Document> generateDocumentUploadingSource(RetrofitModule.ServerAPI.Document document, ObservableEmitter<Double> progressListener){
+    private Single<RetrofitModule.ServerAPI.Document> generateDocumentUploadingSource(RetrofitModule.ServerAPI.Document document){
 
         RequestBody deviceType = RequestBody.create(MediaType.parse("text/plain"), deviceInfo.deviceType);
         RequestBody deviceId = RequestBody.create(MediaType.parse("text/plain"), deviceInfo.deviceId);
@@ -158,12 +158,12 @@ public class DocumentsPresenter {
 
         File photo = new File(document.localUrl);
         RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), photo);
-        CountingRequestBody countingBody = new CountingRequestBody(requestFile, (bytesWritten, contentLength) -> {
-            double progress = (1.0 * bytesWritten) / contentLength;
-            progressListener.onNext(progress);
-        });
+//        CountingRequestBody countingBody = new CountingRequestBody(requestFile, (bytesWritten, contentLength) -> {
+//            double progress = (1.0 * bytesWritten) / contentLength;
+//            progressListener.onNext(progress);
+//        });
         String filename = photo.getName();
-        MultipartBody.Part fileData = MultipartBody.Part.createFormData("document", filename, countingBody);
+        MultipartBody.Part fileData = MultipartBody.Part.createFormData("document", filename, requestFile);
 
         Single<RetrofitModule.ServerAPI.Document> sendingDocumentSource = serverAPI.sendDocument(
                 userModel.getAuthHeader(),

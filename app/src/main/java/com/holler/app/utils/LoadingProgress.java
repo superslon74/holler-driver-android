@@ -17,8 +17,9 @@ public class LoadingProgress extends Toast {
     public LoadingProgress(CustomActivity activity) {
         super(activity.getApplicationContext());
         LayoutInflater inflater = (LayoutInflater) activity.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.loding_spinner, null);
+        View view = inflater.inflate(R.layout.loding_spinner, activity.findViewById(R.id.content));
         setView(view);
+        setDuration(LENGTH_LONG);
         setGravity(Gravity.CENTER, 0, 0);
     }
 

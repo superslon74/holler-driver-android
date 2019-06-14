@@ -56,6 +56,7 @@ public class SplashPresenter implements Presenter {
     private void checkLogin() {
         if (!userModel.isLoggedIn()) {
             router.goToWelcomeScreen();
+            return;
         }
         userModel
                 .login()

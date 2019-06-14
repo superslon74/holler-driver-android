@@ -44,6 +44,7 @@ import com.holler.app.mvp.main.MainView;
 import com.holler.app.mvp.main.UserModel;
 import com.holler.app.server.OrderServerApi;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -76,6 +77,7 @@ public class FloatingViewService extends Service implements FloatingViewListener
     @Inject protected UserModel userModel;
 
     private MediaPlayer passItOnSound;
+    private MediaPlayer errorSound;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -90,7 +92,8 @@ public class FloatingViewService extends Service implements FloatingViewListener
     public FloatingViewService() {
 //        FirebaseApp firebaseApp = FirebaseApp.initializeApp(this);
         AndarApplication.getInstance().component().inject(this);
-        passItOnSound = MediaPlayer.create(context, R.raw .pass_it_on);
+        passItOnSound = MediaPlayer.create(context, R.raw.pass_tone);
+        errorSound = MediaPlayer.create(context, R.raw.error_tone);
     }
 
     private void initLayout() {
@@ -226,7 +229,6 @@ public class FloatingViewService extends Service implements FloatingViewListener
             return;
         }
 
-        passItOnSound.start();
         OrderServerApi.Order order = new OrderServerApi.Order();
 
         String lat = "" + location.getLatitude();
@@ -238,13 +240,14 @@ public class FloatingViewService extends Service implements FloatingViewListener
                 .toObservable()
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .flatMap(createOrderResponse -> {
-                    if (MESSAGE_REQUEST_SUCCESFULL.equals(createOrderResponse.message)) {
+                    if(createOrderResponse.isSuccessfullyCreated()){
                         changeIcon(R.drawable.ic_check_yellow);
-//                        showToast(R.string.successfully_created_order);
-                    } else {
+                        restartSuccessSound();
+                    }else{
                         changeIcon(R.drawable.ic_close_yellow);
-//                        showToast(R.string.error_creating_order);
+                        restartErrorSound();
                     }
+
                     runOnUiThread(() -> {
                         Toast.makeText(AndarApplication.getInstance(), createOrderResponse.message, Toast.LENGTH_LONG).show();
                     });
@@ -262,6 +265,18 @@ public class FloatingViewService extends Service implements FloatingViewListener
                 })
                 .subscribe();
 
+    }
+
+    private void restartSuccessSound() throws IOException {
+        passItOnSound.stop();
+        passItOnSound = MediaPlayer.create(context, R.raw.pass_tone);
+        passItOnSound.start();
+    }
+
+    private void restartErrorSound() {
+        errorSound.stop();
+        errorSound = MediaPlayer.create(context, R.raw.error_tone);
+        errorSound.start();
     }
 
     private void runOnUiThread(Runnable r) {

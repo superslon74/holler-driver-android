@@ -256,7 +256,6 @@ public class UserModel {
                 })
                 .subscribe();
 
-
         return source;
     }
 

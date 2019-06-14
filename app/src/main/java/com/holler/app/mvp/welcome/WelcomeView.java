@@ -9,6 +9,7 @@ import com.holler.app.R;
 import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.utils.CustomActivity;
 import com.holler.app.utils.LoadingProgress;
+import com.holler.app.utils.LoadingView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -26,6 +29,8 @@ public class WelcomeView extends CustomActivity {
 
     @Inject
     public RouterModule.Router router;
+    @BindView(R.id.loading_view)
+    protected LoadingView loadingView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,24 +49,24 @@ public class WelcomeView extends CustomActivity {
     }
 
     @OnClick(R.id.sign_up_btn)
-    public void gotoRegistration(){
+    public void gotoRegistration() {
         router.goToRegisterScreen();
     }
 
     @OnClick(R.id.social_layout)
-    public void gotoSocialLogin(){
+    public void gotoSocialLogin() {
         router.gotoSocialLogin();
     }
 
-    private void initSlider(){
+    private void initSlider() {
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabDots);
         tabLayout.setupWithViewPager(viewPager, true);
 
         List<Fragment> slides = new ArrayList<>();
-        slides.add(WelcomeViewSlideFragment.newInstance(R.string.was_header_welcome,R.string.was_description_welcome,R.drawable.welcome_sample));
-        slides.add(WelcomeViewSlideFragment.newInstance(R.string.was_header_find,R.string.was_description_find,R.drawable.drive_sample));
-        slides.add(WelcomeViewSlideFragment.newInstance(R.string.was_header_notify,R.string.was_description_notify,R.drawable.earn_sample));
+        slides.add(WelcomeViewSlideFragment.newInstance(R.string.was_header_welcome, R.string.was_description_welcome, R.drawable.welcome_sample));
+        slides.add(WelcomeViewSlideFragment.newInstance(R.string.was_header_find, R.string.was_description_find, R.drawable.drive_sample));
+        slides.add(WelcomeViewSlideFragment.newInstance(R.string.was_header_notify, R.string.was_description_notify, R.drawable.earn_sample));
 
         viewPager.setAdapter(new SliderAdapter(getSupportFragmentManager(), slides));
     }
@@ -80,7 +85,7 @@ public class WelcomeView extends CustomActivity {
         }
 
         @Override
-        public int getCount()  {
+        public int getCount() {
             return fragments.size();
         }
 

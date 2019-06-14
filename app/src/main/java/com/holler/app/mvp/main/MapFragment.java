@@ -32,6 +32,7 @@ import com.holler.app.utils.CustomActivity;
 import com.holler.app.utils.GPSTracker;
 import com.orhanobut.logger.Logger;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -67,13 +68,15 @@ public class MapFragment extends Fragment {
     private ServiceConnection gpsTrackerServiceConnection;
     private volatile boolean shouldUpdateMapWithoutAnimation = false;
     private MediaPlayer passItOnSound;
+    private MediaPlayer errorSound;
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.presenter = ((MainView) getActivity()).presenter;
-        passItOnSound = MediaPlayer.create(getContext(), R.raw.pass_it_on);
+        passItOnSound = MediaPlayer.create(getContext(), R.raw.pass_tone);
+        errorSound = MediaPlayer.create(getContext(), R.raw.error_tone);
     }
 
     @Nullable
@@ -230,9 +233,34 @@ public class MapFragment extends Fragment {
 
     @OnClick(R.id.ma_map_pass_button)
     public void createOrder() {
-        presenter.createAndSendOrder();
-        passItOnSound.start();
+        presenter
+                .createAndSendOrder()
+                .doOnSubscribe(disposable -> {
+                })
+                .doOnNext(orderCreated -> {
+                    if(!orderCreated){
+                        restartErrorSound();
+                    }else{
+                        restartSuccessSound();
+                    }
+                })
+                .doOnError(throwable -> {
+                    restartErrorSound();
+                })
+                .subscribe();
 //        showRequestOrder();
+    }
+
+    private void restartSuccessSound() throws IOException {
+        passItOnSound.stop();
+        passItOnSound = MediaPlayer.create(getContext(), R.raw.pass_tone);
+        passItOnSound.start();
+    }
+
+    private void restartErrorSound() {
+        errorSound.stop();
+        errorSound = MediaPlayer.create(getContext(), R.raw.error_tone);
+        errorSound.start();
     }
 
     private void setMarker(Location location) {
