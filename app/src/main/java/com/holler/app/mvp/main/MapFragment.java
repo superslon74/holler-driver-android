@@ -363,11 +363,12 @@ public class MapFragment extends Fragment {
                 .subscribe();
     }
 
+    private Disposable rateFragmentSubscription;
     public void showRateOrder(OrderModel.Order order) {
         rateOrderFragment = new RateOrderFragment();
 
-
-        rateOrderFragment.source
+        rateFragmentSubscription = rateOrderFragment
+                .source
                 .doOnSubscribe(disposable -> addFragment(rateOrderFragment))
                 .flatMap(rating -> {
                     return order
@@ -380,6 +381,12 @@ public class MapFragment extends Fragment {
                 })
                 .doFinally(() -> removeFragment(rateOrderFragment))
                 .subscribe();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        rateFragmentSubscription.dispose();
     }
 
     private void addFragment(Fragment f) {

@@ -19,7 +19,7 @@
 
 
     <string name="ma_logout_alert_title">יציאה</string>
-    <string name="ma_logout_alert_message">האם ברצונן לצאת מהאפליקציה?</string>
+    <string name="ma_logout_alert_message">האם ברצונך לצאת מהאפליקציה?</string>
     <string name="ma_logout_alert_button_confirm">כן</string>
     <string name="ma_logout_alert_button_cancel">לא</string>
 
