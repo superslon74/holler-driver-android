@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -87,7 +88,7 @@ public class Help extends Fragment implements View.OnClickListener {
         webImg = (ImageView) view.findViewById(R.id.img_web);
         mailImg = (ImageView) view.findViewById(R.id.img_mail);
         title_txt = (TextView) view.findViewById(R.id.title_txt);
-        title_txt.setText(AccessDetails.siteTitle+" "+ getString(R.string.help));
+        title_txt.setText(AccessDetails.siteTitle + " " + getString(R.string.help));
     }
 
     @Override
@@ -107,45 +108,18 @@ public class Help extends Fragment implements View.OnClickListener {
 //                startActivity(Intent.createChooser(intent, "Send Email"));
 
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                        "mailto",email, null));
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, AccessDetails.siteTitle+" - "+getString(R.string.help));
+                        "mailto", email, null));
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, AccessDetails.siteTitle + " - " + getString(R.string.help));
                 emailIntent.putExtra(Intent.EXTRA_TEXT, "Hello team");
                 startActivity(Intent.createChooser(emailIntent, "Send email..."));
                 break;
             case R.id.img_phone:
-                if (phone != null && !phone.equalsIgnoreCase("null") && !phone.equalsIgnoreCase("") && phone.length() > 0) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 1);
-                    } else {
-                        Intent intentCall = new Intent(Intent.ACTION_CALL);
-                        intentCall.setData(Uri.parse("tel:" + phone));
-                        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                            // TODO: Consider calling
-                            //    ActivityCompat#requestPermissions
-                            // here to request the missing permissions, and then overriding
-                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                            //                                          int[] grantResults)
-                            // to handle the case where the user grants the permission. See the documentation
-                            // for ActivityCompat#requestPermissions for more details.
-                            return;
-                        }
-                        startActivity(intentCall);
-                    }
-                } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle(getString(R.string.app_name))
-                            .setIcon(AccessDetails.site_icon)
-                            .setMessage(getString(R.string.sorry_for_inconvinent))
-                            .setCancelable(false)
-                            .setPositiveButton("ok",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            dialog.dismiss();
-                                        }
-                                    });
-                    AlertDialog alert1 = builder.create();
-                    alert1.show();
+                try {
+                    openWhatsup();
+                } catch (Exception e) {
+                    openPhone();
                 }
+
 
                 break;
             case R.id.img_web:
@@ -154,6 +128,49 @@ public class Help extends Fragment implements View.OnClickListener {
                 break;
         }
     }
+
+    private void openPhone() {
+        if (phone != null &&
+                !phone.equalsIgnoreCase("null") &&
+                !phone.equalsIgnoreCase("") &&
+                phone.length() > 0) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 1);
+            } else {
+                Intent intentCall = new Intent(Intent.ACTION_CALL);
+                intentCall.setData(Uri.parse("tel:" + phone));
+                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                startActivity(intentCall);
+            }
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(getString(R.string.app_name))
+                    .setIcon(AccessDetails.site_icon)
+                    .setMessage(getString(R.string.sorry_for_inconvinent))
+                    .setCancelable(false)
+                    .setPositiveButton("ok",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                }
+                            });
+            AlertDialog alert1 = builder.create();
+            alert1.show();
+        }
+    }
+
+    private void openWhatsup() throws PackageManager.NameNotFoundException {
+        String contact = phone; // use country code with your phone number
+        String url = "https://api.whatsapp.com/send?phone=" + contact;
+        PackageManager pm = getContext().getPackageManager();
+        pm.getPackageInfo("com.whatsapp", PackageManager.GET_ACTIVITIES);
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(url));
+        startActivity(i);
+    }
+
 
     @Deprecated
     @TargetApi(Build.VERSION_CODES.M)
@@ -266,8 +283,8 @@ public class Help extends Fragment implements View.OnClickListener {
         SharedHelper.putKey(getContext(), "loggedIn", getString(R.string.False));
         Intent goToLogin;
 
-            goToLogin = new Intent(getContext(), WelcomeView.class);
-        goToLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+        goToLogin = new Intent(getContext(), WelcomeView.class);
+        goToLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(goToLogin);
         getActivity().finish();
     }

@@ -386,7 +386,11 @@ public class MapFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        rateFragmentSubscription.dispose();
+        try {
+            rateFragmentSubscription.dispose();
+        }catch (Exception e){
+
+        }
     }
 
     private void addFragment(Fragment f) {
