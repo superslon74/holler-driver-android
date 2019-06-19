@@ -115,6 +115,7 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_container);
         ButterKnife.bind(this);
+        displayGamburger(false);
 
         headerViewHolder = new HeaderViewHolder(navigationView.getHeaderView(0));
 
@@ -123,6 +124,7 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         setupNavView();
 
         fragmentRouter = new FragmentRouter();
+        fragmentRouter.openMap();
 
         buildComponent();
 
@@ -451,9 +453,6 @@ public class MainView extends CustomActivity implements MainPresenter.View {
 
         public void openMap() {
             try {
-                //how about this?
-                displayGamburger(true);
-
                 String s = ((MapFragment) currentFragment).toString();
             } catch (ClassCastException | NullPointerException e) {
                 //TODO: refact

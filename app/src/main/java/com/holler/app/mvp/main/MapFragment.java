@@ -105,10 +105,12 @@ public class MapFragment extends Fragment {
                     MapFragment.this.googleMap = googleMap;
                     setMapCameraToCurrentPosition(false, false);
                     ((CustomActivity) getActivity()).hideSpinner();
+                    ((MainView) getActivity()).displayGamburger(true);
                     return Observable.empty();
                 })
                 .doOnError(throwable -> {
                     ((CustomActivity) getActivity()).showMessage(throwable.getMessage());
+                    ((MainView) getActivity()).displayGamburger(false);
                 })
                 .subscribe();
 
