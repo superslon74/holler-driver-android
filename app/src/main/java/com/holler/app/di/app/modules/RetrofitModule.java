@@ -139,12 +139,22 @@ public class RetrofitModule {
         JsonObject STATUS_OFFLINE = STATUS_OFFLINE_JSON;
         JsonObject STATUS_ONLINE = STATUS_ONLINE_JSON;
 
+        //server config
+
         @GET("api/provider/playStoreLink")
         Single<ApplicationLinkResponse> getApplicationLink();
         class ApplicationLinkResponse{
             @Expose
             @SerializedName("link")
             public String link;
+        }
+
+        @GET("api/provider/socialLoginStatus")
+        Single<SocialLoginStatusResponse> getSocialLoginStatus();
+        class SocialLoginStatusResponse{
+            @Expose
+            @SerializedName("isEnabled")
+            public boolean isEnabled;
         }
 
         //      auth

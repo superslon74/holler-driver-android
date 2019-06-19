@@ -1,11 +1,13 @@
 package com.holler.app.mvp.welcome;
 
 import android.os.Bundle;
+import android.view.View;
 
 
 import com.google.android.material.tabs.TabLayout;
 import com.holler.app.AndarApplication;
 import com.holler.app.R;
+import com.holler.app.di.app.modules.RetrofitModule;
 import com.holler.app.di.app.modules.RouterModule;
 import com.holler.app.utils.CustomActivity;
 import com.holler.app.utils.LoadingProgress;
@@ -27,19 +29,39 @@ import butterknife.OnClick;
 
 public class WelcomeView extends CustomActivity {
 
-    @Inject
-    public RouterModule.Router router;
+    @Inject public RouterModule.Router router;
+    @Inject public RetrofitModule.ServerAPI serverAPI;
+
     @BindView(R.id.loading_view)
     protected LoadingView loadingView;
+
+    @BindView(R.id.social_layout)
+    protected View socialLayoutView;
+
+    private boolean isSocialEnabled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AndarApplication.getInstance().component().inject(this);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_screen);
         overridePendingTransition(R.anim.slide_in_right, R.anim.anim_nothing);
         ButterKnife.bind(this);
+
+        serverAPI
+                .getSocialLoginStatus()
+                .doOnSubscribe(disposable -> showSpinner())
+                .doOnSuccess(response -> {
+                    isSocialEnabled = response.isEnabled;
+                    if(isSocialEnabled){
+                        socialLayoutView.setVisibility(View.VISIBLE);
+                    }else{
+                        socialLayoutView.setVisibility(View.INVISIBLE);
+                    }
+                })
+                .doFinally(() -> hideSpinner())
+                .subscribe();
+
         initSlider();
     }
 
@@ -55,7 +77,9 @@ public class WelcomeView extends CustomActivity {
 
     @OnClick(R.id.social_layout)
     public void gotoSocialLogin() {
-        router.gotoSocialLogin();
+        if(isSocialEnabled){
+            router.gotoSocialLogin();
+        }
     }
 
     private void initSlider() {

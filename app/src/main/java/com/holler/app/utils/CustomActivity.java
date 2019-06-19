@@ -343,8 +343,12 @@ public class CustomActivity
                 if (isInternet()) {
                     handler.onPermissionGranted();
                 } else {
-                    final Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
-                    startActivityForResult(intent, code);
+                    showCompletableMessage("Please turn on internet..")
+                            .doOnComplete(() -> {
+                                final Intent intent = new Intent(Settings.ACTION_SETTINGS);
+                                startActivityForResult(intent, code);
+                            })
+                            .subscribe();
                 }
                 break;
             case Manifest.permission.LOCATION_HARDWARE:

@@ -6,6 +6,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -35,6 +39,7 @@ public class SplashView
 
     @Inject public Presenter presenter;
     @BindView(R.id.sp_version) protected TextView versionView;
+    @BindView(R.id.sp_logo) protected ImageView logoView;
 //    @BindView(R.id.sp_update_button) protected TextView updateButton;
 
     private void setupComponent(){
@@ -160,6 +165,12 @@ public class SplashView
                 getResources().getString(R.string.was_powered_by) +"\n "+
                 getResources().getString(R.string.was_version)+ " "+ BuildConfig.VERSION_NAME+"."+BuildConfig.VERSION_CODE);
 
+        RotateAnimation animation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        animation.setInterpolator(new LinearInterpolator());
+        animation.setRepeatCount(Animation.INFINITE);
+        animation.setDuration(5000);
+
+        logoView.startAnimation(animation);
 
         setupComponent();
 

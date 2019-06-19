@@ -63,6 +63,9 @@ public class ProfilePresenter {
                     view.setFields(userModel.getProfileData());
                 })
                 .doFinally(() -> {view.hideSpinner();})
+                .doOnError(throwable -> {
+                    view.showMessage(UserModel.ParsedThrowable.parse(throwable).getMessage());
+                })
                 .subscribe();
     }
 

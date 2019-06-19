@@ -81,16 +81,17 @@ public class FloatingViewService extends Service implements FloatingViewListener
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        FirebaseApp.initializeApp(this) ;
         if (mFloatingViewManager == null) {
-            initLayout();
+            if(userModel.isLoggedIn())
+                initLayout();
+            else
+                stopSelf();
         }
 
         return START_REDELIVER_INTENT;
     }
 
     public FloatingViewService() {
-//        FirebaseApp firebaseApp = FirebaseApp.initializeApp(this);
         AndarApplication.getInstance().component().inject(this);
         passItOnSound = MediaPlayer.create(context, R.raw.pass_tone);
         errorSound = MediaPlayer.create(context, R.raw.error_tone);

@@ -1,5 +1,6 @@
 package com.holler.app.mvp.main;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -114,6 +115,7 @@ public class MainView extends CustomActivity implements MainPresenter.View {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_container);
         ButterKnife.bind(this);
+
         headerViewHolder = new HeaderViewHolder(navigationView.getHeaderView(0));
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -317,12 +319,23 @@ public class MainView extends CustomActivity implements MainPresenter.View {
     @Override
     protected void onResume() {
         super.onResume();
-        presenter.resetState();
-        try{
-            ((MapFragment)fragmentRouter.currentFragment).removeFragments();
-        }catch (ClassCastException | NullPointerException e){
-            Logger.e("Can't reset map fragments");
-        }
+        checkPermissionAsynchronously(Manifest.permission.INTERNET, new RequestPermissionHandler() {
+            @Override
+            public void onPermissionGranted() {
+                presenter.resetState();
+                try{
+                    ((MapFragment)fragmentRouter.currentFragment).removeFragments();
+                }catch (ClassCastException | NullPointerException e){
+                    Logger.e("Can't reset map fragments");
+                }
+
+            }
+
+            @Override
+            public void onPermissionDenied() {
+
+            }
+        });
     }
 
     @Override
