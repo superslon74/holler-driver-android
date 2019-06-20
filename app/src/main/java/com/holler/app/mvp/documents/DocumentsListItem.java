@@ -1,8 +1,10 @@
 package com.holler.app.mvp.documents;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -83,6 +85,10 @@ public class DocumentsListItem extends Fragment {
 
     @OnClick(R.id.document_icon)
     protected void pickImage() {
+        if(getActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ((CustomActivity)getActivity()).showMessage(getActivity().getString(R.string.error_permission_denied));
+            return;
+        }
 
         Intent pickIntent = new Intent(Intent.ACTION_PICK);
         pickIntent.setType("image/*");
@@ -104,6 +110,9 @@ public class DocumentsListItem extends Fragment {
             chooserIntent = Intent.createChooser(new Intent(), getString(R.string.das_image_chooser));
             chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent, captureIntent});
 
+            if(getActivity().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+                throw new Exception("Camera permission denied");
+            }
         } catch (Exception ex) {
             chooserIntent = Intent.createChooser(new Intent(), getString(R.string.das_image_chooser));
             chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});

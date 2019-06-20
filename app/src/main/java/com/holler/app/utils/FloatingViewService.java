@@ -1,11 +1,13 @@
 package com.holler.app.utils;
 
+import android.Manifest;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.media.MediaPlayer;
@@ -223,6 +225,11 @@ public class FloatingViewService extends Service implements FloatingViewListener
     }
 
     private void createAndSendOrder(Location location) {
+        if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            showToast(R.string.error_permission_denied);
+            return;
+        }
+
         if (location == null) {
             changeIcon(R.drawable.ic_close_yellow);
             showToast(R.string.error_no_location);
@@ -230,16 +237,13 @@ public class FloatingViewService extends Service implements FloatingViewListener
             return;
         }
 
-        OrderServerApi.Order order = new OrderServerApi.Order();
 
         String lat = "" + location.getLatitude();
         String lon = "" + location.getLongitude();
 
-        String MESSAGE_REQUEST_SUCCESFULL = "New request Created!";
         serverAPI.createOrder(userModel.getAuthHeader(),
                 new RetrofitModule.ServerAPI.CreateOrderRequestBody(lat, lon))
                 .toObservable()
-                .subscribeOn(AndroidSchedulers.mainThread())
                 .flatMap(createOrderResponse -> {
                     if(createOrderResponse.isSuccessfullyCreated()){
                         changeIcon(R.drawable.ic_check_yellow);

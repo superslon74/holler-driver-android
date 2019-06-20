@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
@@ -65,8 +66,20 @@ public class SplashView
 
         RequestPermissionChain chain = new RequestPermissionChain(){
             @Override
-            protected void onFinished() {
-                onAllPermissionsGranted();
+            protected void onFinished(boolean allPermissionGranted) {
+                if(allPermissionGranted)
+                    onAllPermissionsGranted();
+                else{
+                    showCompletableMessage("Please add all permissions")
+                            .doOnComplete(() -> {
+                                Intent intent = new Intent();
+                                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                Uri uri = Uri.fromParts("package", getPackageName(), null);
+                                intent.setData(uri);
+                                startActivity(intent);
+                            })
+                            .subscribe();
+                }
             }
         };
 
@@ -87,6 +100,7 @@ public class SplashView
         private CustomActivity activity;
         private RequestPermissionChain next;
         private RequestPermissionChain chain;
+        private boolean allPermissionGranted = true;
 
         /**
          * use to build new chain
@@ -108,29 +122,30 @@ public class SplashView
 
         public void call(){
             if(this.activity == null){
-                onGranted();
+                onChecked();
                 return;
             }
 
             RequestPermissionHandler handler = new RequestPermissionHandler() {
                 @Override
                 public void onPermissionGranted() {
-                    onGranted();
+                    onChecked();
                 }
 
                 @Override
                 public void onPermissionDenied() {
                     Logger.d("Permission denied, repeating request");
-                    onGranted();
+                    chain.allPermissionGranted=false;
+                    onChecked();
                 }
             };
 
             activity.checkPermissionAsynchronously(permission,handler);
         }
 
-        private void onGranted(){
+        private void onChecked(){
             if(next == null){
-                onFinished();
+                onFinished(this.allPermissionGranted);
                 return;
             }
             next.call();
@@ -142,8 +157,8 @@ public class SplashView
             return next;
         }
 
-        protected void onFinished(){
-            chain.onFinished();
+        protected void onFinished(boolean allPermissionGranted){
+            chain.onFinished(chain.allPermissionGranted);
         }
 
 

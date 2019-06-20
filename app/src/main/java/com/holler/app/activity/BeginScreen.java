@@ -47,7 +47,6 @@ import com.holler.app.mvp.welcome.WelcomeView;
 import com.holler.app.utils.CustomActivity;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
-import com.splunk.mint.Mint;
 import com.holler.app.AndarApplication;
 import com.holler.app.Helper.ConnectionHelper;
 import com.holler.app.Helper.SharedHelper;
@@ -97,8 +96,6 @@ public class BeginScreen extends CustomActivity implements GoogleApiClient.OnCon
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
-        Mint.setApplicationEnvironment(Mint.appEnvironmentStaging);
-        Mint.initAndStartSession(this.getApplication(), "2753c547");
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_begin);
         helper = new ConnectionHelper(BeginScreen.this);

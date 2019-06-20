@@ -89,6 +89,7 @@ public class DocumentsView extends CustomActivity
         }
     }
 
+    @Deprecated
     @Override
     public ObservableEmitter<Double> showProgress(RetrofitModule.ServerAPI.Document document) {
         uploadingContainer.setVisibility(View.VISIBLE);
@@ -150,6 +151,7 @@ public class DocumentsView extends CustomActivity
         return (int) res;
     }
 
+    @Deprecated
     @Override
     public void hideProgress() {
         runOnUiThread(() -> {

@@ -134,7 +134,6 @@ dependencies {
     implementation 'com.google.maps.android:android-maps-utils:0.4+'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
     implementation 'com.koushikdutta.ion:ion:2.+'
-    implementation 'com.splunk:mint-android-sdk:5.1.0'
     implementation 'com.daasuu:CountAnimationTextView:0.1.1'
     implementation 'com.facebook.android:account-kit-sdk:4.39.0'
     implementation 'me.philio:pinentryview:1.0.6'

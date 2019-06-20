@@ -34,3 +34,10 @@ build/
 
 #NDK
 obj/
+
+#Some resources for this project
+project-resources/
+
+#Custom git repo
+.git_full/
+.git_tracker/

@@ -96,26 +96,30 @@ public class MainPresenter {
     private Observable<GPSTracker.GPSTrackerBinder> createGpsTrackerServiceConnection(){
         return Observable.<GPSTracker.GPSTrackerBinder>create(emitter -> {
             Intent gpsTrackerBinding = new Intent(context, GPSTracker.class);
-
+            String errorMessage = "Can't enable location tracking";
             this.gpsTrackerServiceConnection = new ServiceConnection() {
                 @Override
                 public void onServiceConnected(ComponentName name, IBinder service) {
+
                     emitter.onNext((GPSTracker.GPSTrackerBinder) service);
                 }
 
                 @Override
                 public void onServiceDisconnected(ComponentName name) {
-                    emitter.onError(new ServiceConnectionError("Can't enable location tracking"));
+                    ServiceConnectionError e = new ServiceConnectionError(errorMessage);
+                    emitter.onError(e);
                 }
 
                 @Override
                 public void onBindingDied(ComponentName name) {
-                    emitter.onError(new ServiceConnectionError("Can't enable location tracking"));
+                    ServiceConnectionError e = new ServiceConnectionError(errorMessage);
+                    emitter.onError(e);
                 }
 
                 @Override
                 public void onNullBinding(ComponentName name) {
-                    emitter.onError(new ServiceConnectionError("Can't enable location tracking"));
+                    ServiceConnectionError e = new ServiceConnectionError(errorMessage);
+                    emitter.onError(e);
                 }
             };
 
@@ -309,6 +313,29 @@ public class MainPresenter {
     }
 
     public Observable<Boolean> createAndSendOrder(){
+
+        if(gpsTrackerService == null){
+            return Observable.<Boolean>create(emitter -> {
+                createGpsTrackerServiceConnection()
+                        .flatMap(service -> {
+                            gpsTrackerService = (GPSTracker.GPSTrackerBinder)service;
+                            gpsTrackerService.startTracking();
+                            return createAndSendOrder();
+                        })
+                        .flatMap(isCreated -> {
+                            emitter.onNext(isCreated);
+                            emitter.onComplete();
+                            return Observable.empty();
+                        })
+                        .doOnError(throwable -> {
+                            emitter.onNext(false);
+                            emitter.onComplete();
+                            view.showMessage(throwable.getMessage());
+                        })
+                        .subscribe();
+            });
+        }
+
 
         Location location = gpsTrackerService.getLocation();
         if (location ==null){

@@ -314,7 +314,11 @@ public class UserModel {
                 })
                 .doOnError(throwable -> {
                     Crashlytics.log(Log.DEBUG, LOG_TAG, "Login: ERROR - "+throwable.getMessage());
-                    source.onError(ParsedThrowable.parse(throwable));
+                    ParsedThrowable error = ParsedThrowable.parse(throwable);
+                    if(error instanceof WrongPasswordError){
+                        userStorage.setLoggedIn("false");
+                    }
+                    source.onError(error);
                     source.onComplete();
                 })
                 .subscribe();
@@ -454,11 +458,18 @@ public class UserModel {
                     case 503:
                         return new ParsedThrowable(context.getString(R.string.error_response_unreachable_server), throwable);
                     case 401:
-                        return new ParsedThrowable(context.getString(R.string.error_response_unauthenticated), throwable);
+                        return new WrongPasswordError(context.getString(R.string.error_response_unauthenticated),throwable);
                 }
             }
 
             return new ParsedThrowable(context.getString(R.string.error_unexpected_error), throwable);
+        }
+    }
+
+    public static class WrongPasswordError extends ParsedThrowable{
+
+        public WrongPasswordError(String message,Throwable origin) {
+            super(message, origin);
         }
     }
 

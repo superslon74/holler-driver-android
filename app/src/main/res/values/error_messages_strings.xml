@@ -27,6 +27,7 @@
     <string name="error_unexpected_error">Unexpected error.</string>
 
     <string translatable="false" name="error_no_location">Can\'t get location</string>
+    <string translatable="false" name="error_permission_denied">Permission denied.</string>
     <string name="error_creating_order">Error, please try again.</string>
     <string name="successfully_created_order">Order successfully created.</string>
 
