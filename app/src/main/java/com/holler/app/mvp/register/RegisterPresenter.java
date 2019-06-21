@@ -157,7 +157,7 @@ public class RegisterPresenter {
                             .login(credentials.email,credentials.password);
                 })
                 .flatMap(loggedIn -> {
-                    router.goToMainScreen();
+                    router.goToDocumentsScreen();
                     return Observable.empty();
                 })
                 .doOnError(throwable -> view.showMessage(throwable.getMessage()))
