@@ -85,7 +85,7 @@ public class DocumentsListItem extends Fragment {
 
     @OnClick(R.id.document_icon)
     protected void pickImage() {
-        if(getActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+        if(getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
             ((CustomActivity)getActivity()).showMessage(getActivity().getString(R.string.error_permission_denied));
             return;
         }
