@@ -13,6 +13,7 @@ import android.location.Location;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 
@@ -29,10 +30,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.JsonObject;
 import com.holler.app.activity.MainActivity;
 import com.holler.app.AndarApplication;
@@ -61,6 +64,8 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
+
+import static com.facebook.accountkit.internal.AccountKitController.Logger.logEvent;
 
 public class FloatingViewService extends Service implements FloatingViewListener {
 
@@ -100,6 +105,8 @@ public class FloatingViewService extends Service implements FloatingViewListener
     }
 
     private void initLayout() {
+        Crashlytics.setUserEmail(userModel.getProfileData().email);
+
         buttons = new ArrayList<>();
         final DisplayMetrics metrics = new DisplayMetrics();
         final WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
@@ -253,12 +260,21 @@ public class FloatingViewService extends Service implements FloatingViewListener
                         restartErrorSound();
                     }
 
+                    Crashlytics.log(Log.ERROR,Crashlytics.TAG, createOrderResponse.isSuccessfullyCreated() + " lat: "+lat+" lon: "+lon);
+                    Crashlytics.getInstance().crash();
+
+
                     runOnUiThread(() -> {
                         Toast.makeText(AndarApplication.getInstance(), createOrderResponse.message, Toast.LENGTH_LONG).show();
                     });
+
                     return Observable.empty();
                 })
                 .doOnError(throwable -> {
+                    Crashlytics.log(Log.ERROR,Crashlytics.TAG,"CreateOrderError");
+                    Crashlytics.logException(throwable);
+                    Crashlytics.getInstance().crash();
+
                     changeIcon(R.drawable.ic_close_yellow);
                     showToast(R.string.error_creating_order);
                 })

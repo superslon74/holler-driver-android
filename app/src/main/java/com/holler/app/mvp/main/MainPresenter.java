@@ -96,7 +96,7 @@ public class MainPresenter {
     private Observable<GPSTracker.GPSTrackerBinder> createGpsTrackerServiceConnection(){
         return Observable.<GPSTracker.GPSTrackerBinder>create(emitter -> {
             Intent gpsTrackerBinding = new Intent(context, GPSTracker.class);
-            String errorMessage = "Can't enable location tracking";
+            String errorMessage = ((Context)view).getString(R.string.error_no_location);
             this.gpsTrackerServiceConnection = new ServiceConnection() {
                 @Override
                 public void onServiceConnected(ComponentName name, IBinder service) {

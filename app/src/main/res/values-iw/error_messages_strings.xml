@@ -29,4 +29,14 @@
     <string name="error_creating_order">תקלה,נא לנסות שנית.</string>
     <string name="successfully_created_order">ההזמנה בוצעה בהצלחה.</string>
 
+    <string name="error_no_location">לא ניתן לזהות מיקום</string>
+    <string name="error_permission_denied">ההרשאה נדחתה</string>
+    <string name="error_permission_explanation_contacts">האפליקציה זקוקה לאנשי קשר</string>
+    <string name="error_permission_explanation_gps">היישום צריך גישה כדי לקבל מיקום גיאוגרפי</string>
+    <string name="error_permission_explanation_phone">היישום צריך אישור לבצע שיחות טלפון</string>
+    <string name="error_permission_explanation_storage">האפליקציה זקוקה להרשאות לקריאה ולכתיבה לאחסון חיצוני</string>
+    <string name="error_permission_explanation_camera">היישום צריך הרשאות למצלמה</string>
+    <string name="error_permission_required">הפעל את כל ההרשאות</string>
+    <string name="error_disabled_internet">אנא הפעל את האינטרנט ..</string>
+
 </resources>

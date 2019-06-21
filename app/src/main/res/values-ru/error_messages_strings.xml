@@ -29,4 +29,13 @@
     <string name="error_creating_order">Ошибка, пожалуйста, попробуйте еще раз</string>
     <string name="successfully_created_order">Заказ успешно создан</string>
 
+    <string name="error_no_location">Невозможно получить данные местоположения</string>
+    <string name="error_permission_denied">Отказано в доступе</string>
+    <string name="error_permission_explanation_contacts">Приложению необходим доступ к контактам</string>
+    <string name="error_permission_explanation_gps">Приложению необходим доступ к GPS</string>
+    <string name="error_permission_explanation_phone">Приложению необходим доступ к телефонии</string>
+    <string name="error_permission_explanation_storage">Приложению необходим доступ на чтение и запись во внешние хранилище</string>
+    <string name="error_permission_explanation_camera">Приложению необходим доступ к камере</string>
+    <string name="error_permission_required">Пожалуйста, включите разрешения</string>
+    <string name="error_disabled_internet">Пожалуйста установите соединение с интернетом</string>
 </resources>

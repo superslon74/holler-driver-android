@@ -70,7 +70,7 @@ public class SplashView
                 if(allPermissionGranted)
                     onAllPermissionsGranted();
                 else{
-                    showCompletableMessage("Please add all permissions")
+                    showCompletableMessage(getString(R.string.error_permission_required))
                             .doOnComplete(() -> {
                                 Intent intent = new Intent();
                                 intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -84,7 +84,7 @@ public class SplashView
         };
 
         chain
-                .next(new RequestPermissionChain(activity, Manifest.permission.SYSTEM_ALERT_WINDOW))
+                .next(new RequestPermissionChain(activity,Manifest.permission.SYSTEM_ALERT_WINDOW))
                 .next(new RequestPermissionChain(activity,Manifest.permission.ACCESS_FINE_LOCATION))
                 .next(new RequestPermissionChain(activity,Manifest.permission.INTERNET))
                 .next(new RequestPermissionChain(activity,Manifest.permission.CAMERA))

@@ -58,6 +58,7 @@ public class AndarApplication extends Application implements  ComponentCallbacks
 //        startService(intent);
 
         Fabric.with(this, new Crashlytics());
+
         /**********************/
         instance = this;
         FontsOverride.setDefaultFont(this, "MONOSPACE", "ClanPro-NarrBook.otf");

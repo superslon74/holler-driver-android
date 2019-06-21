@@ -188,6 +188,7 @@ public class CustomActivity
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initPermissionData(this);
         initKeyboardObserver();
         loadingView = findViewById(R.id.loading_view);
         this.floatingViewServiceConnection = new ServiceConnection() {
@@ -250,9 +251,16 @@ public class CustomActivity
 
     public static final String PERMISSION_ENABLE_LOCATION = "com.holler.app.ACCESS_LOCATION";
 
-    private static Map<String, Integer> permissionRequestCodes = new HashMap<>();
 
-    static {
+    private static Map<String, Integer> permissionRequestCodes;
+
+    private static Map<Integer, RequestPermissionHandler> permissionHandlers;
+    private static Map<String, String> permissionExplanation;
+
+    private static void initPermissionData(Context context){
+        if(permissionRequestCodes!=null && permissionExplanation!=null) return;
+        permissionRequestCodes = new HashMap<>();
+
         permissionRequestCodes.put(Manifest.permission.READ_CONTACTS, CODE_REQUEST_READ_CONTACTS);
         permissionRequestCodes.put(Manifest.permission.ACCESS_FINE_LOCATION, CODE_REQUEST_ACCESS_FINE_LOCATION);
         permissionRequestCodes.put(Manifest.permission.CALL_PHONE, CODE_REQUEST_CALL_PHONE);
@@ -262,23 +270,23 @@ public class CustomActivity
         permissionRequestCodes.put(Manifest.permission.INTERNET, CODE_REQUEST_INTERNET);
         permissionRequestCodes.put(Manifest.permission.LOCATION_HARDWARE, CODE_REQUEST_LOCATION);
         permissionRequestCodes.put(PERMISSION_ENABLE_LOCATION, CODE_ENABLE_LOCATION);
-    }
 
-    private static Map<Integer, RequestPermissionHandler> permissionHandlers = new HashMap<>();
-    private static Map<String, String> permissionExplanation = new HashMap<>();
+        permissionHandlers = new HashMap<>();
 
-    //TODO: to strings
-    static {
-        permissionExplanation.put(Manifest.permission.READ_CONTACTS, "App needs access to contact to provide some feature");
-        permissionExplanation.put(Manifest.permission.ACCESS_FINE_LOCATION, "App needs access to gps");
-        permissionExplanation.put(Manifest.permission.CALL_PHONE, "App needs access to phone calls");
+        permissionExplanation = new HashMap<>();
+
+        permissionExplanation.put(Manifest.permission.READ_CONTACTS, context.getString(R.string.error_permission_explanation_contacts));
+        permissionExplanation.put(Manifest.permission.ACCESS_FINE_LOCATION, context.getString(R.string.error_permission_explanation_gps));
+        permissionExplanation.put(Manifest.permission.CALL_PHONE, context.getString(R.string.error_permission_explanation_phone));
         permissionExplanation.put(Manifest.permission.SYSTEM_ALERT_WINDOW, "");
-        permissionExplanation.put(Manifest.permission.READ_EXTERNAL_STORAGE, "App needs permissions to read external storage");
-        permissionExplanation.put(Manifest.permission.CAMERA, "App needs permissions to read camera");
+        permissionExplanation.put(Manifest.permission.READ_EXTERNAL_STORAGE, context.getString(R.string.error_permission_explanation_storage));
+        permissionExplanation.put(Manifest.permission.CAMERA, context.getString(R.string.error_permission_explanation_camera));
         permissionExplanation.put(Manifest.permission.INTERNET, "");
-        permissionExplanation.put(Manifest.permission.LOCATION_HARDWARE, "App needs permissions to gps");
+        permissionExplanation.put(Manifest.permission.LOCATION_HARDWARE, context.getString(R.string.error_permission_explanation_gps));
         permissionExplanation.put(PERMISSION_ENABLE_LOCATION, "");
     }
+
+
 
     public void checkPermissionAsynchronously(String permission, final RequestPermissionHandler handler) {
 
@@ -343,7 +351,7 @@ public class CustomActivity
                 if (isInternet()) {
                     handler.onPermissionGranted();
                 } else {
-                    showCompletableMessage("Please turn on internet..")
+                    showCompletableMessage(getString(R.string.error_disabled_internet))
                             .doOnComplete(() -> {
                                 final Intent intent = new Intent(Settings.ACTION_SETTINGS);
                                 startActivityForResult(intent, code);
