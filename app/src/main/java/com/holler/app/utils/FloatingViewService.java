@@ -265,19 +265,19 @@ public class FloatingViewService extends Service implements FloatingViewListener
                     runOnUiThread(() -> {
                         Toast.makeText(AndarApplication.getInstance(), createOrderResponse.message, Toast.LENGTH_LONG).show();
                     });
-
-                    Crashlytics.log(Log.ERROR,Crashlytics.TAG, createOrderResponse.isSuccessfullyCreated() + " lat: "+lat+" lon: "+lon);
-                    Crashlytics.getInstance().crash();
+//
+//                    Crashlytics.log(Log.ERROR,Crashlytics.TAG, createOrderResponse.isSuccessfullyCreated() + " lat: "+lat+" lon: "+lon);
+//                    Crashlytics.getInstance().crash();
 
                     return Observable.empty();
                 })
                 .doOnError(throwable -> {
                     changeIcon(R.drawable.ic_close_yellow);
                     showToast(R.string.error_creating_order);
-
-                    Crashlytics.log(Log.ERROR,Crashlytics.TAG,"CreateOrderError");
-                    Crashlytics.logException(throwable);
-                    Crashlytics.getInstance().crash();
+//
+//                    Crashlytics.log(Log.ERROR,Crashlytics.TAG,"CreateOrderError");
+//                    Crashlytics.logException(throwable);
+//                    Crashlytics.getInstance().crash();
                 })
                 .doOnComplete(() -> {
                     hideSpinnerAndUnlockButton();
