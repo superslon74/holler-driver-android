@@ -64,9 +64,7 @@ public class DocumentsView extends CustomActivity
         buildComponent();
 
         presenter.requestDocumentsList();
-
     }
-
 
     @OnClick(R.id.da_button_submit)
     public void submitUploading(){

@@ -120,7 +120,7 @@ public class RouterModule {
 
         public void goToDocumentsScreen() {
             Intent i = new Intent(context, DocumentsView.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
             saveToHistory(i);
             context.startActivity(i);
         }
