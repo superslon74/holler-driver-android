@@ -1,13 +1,13 @@
-package com.holler.app.di;
+package com.pnrhunter.di;
 
 
 import android.content.Context;
 
-import com.holler.app.di.app.modules.RetrofitModule;
-import com.holler.app.di.app.modules.RouterModule;
-import com.holler.app.mvp.TestView;
-import com.holler.app.mvp.main.UserModel;
-import com.holler.app.mvp.splash.SplashPresenter;
+import com.pnrhunter.di.app.modules.RetrofitModule;
+import com.pnrhunter.di.app.modules.RouterModule;
+import com.pnrhunter.mvp.TestView;
+import com.pnrhunter.mvp.main.UserModel;
+import com.pnrhunter.mvp.splash.SplashPresenter;
 
 import dagger.Binds;
 import dagger.Module;

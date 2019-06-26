@@ -1,0 +1,76 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:elevation="@dimen/_5sdp"
+        android:background="@drawable/gradient_header_selector"
+
+        >
+        <ImageView
+            android:id="@+id/backArrow"
+
+            android:src="@drawable/vec_chevron_left_white_24dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="9dp"
+            />
+
+        <TextView
+            android:text="@string/wallet"
+            android:textAlignment="viewStart"
+
+            android:gravity="center_vertical"
+            android:textSize="18sp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="0dp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/montserrat_bold"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <ImageView
+            android:src="@drawable/money"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center_vertical|center_horizontal|center"
+            android:layout_marginTop="50dp"/>
+
+        <com.pnrhunter.Utilities.MyTextView
+            android:text="@string/your_wallet_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical|center_horizontal|center"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            />
+
+        <com.pnrhunter.Utilities.MyTextView
+            android:id="@+id/walletAmt"
+            android:text="@string/sample_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical|center_horizontal|center"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            />
+    </LinearLayout>
+
+</LinearLayout>
+

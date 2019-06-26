@@ -1,6 +1,6 @@
 
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.gms.google-services'
 apply plugin: 'idea'
 apply plugin: 'io.fabric'
 //apply plugin: 'com.android.library'
@@ -69,14 +69,19 @@ v33:
         unitTests.returnDefaultValues = true
     }
 
-    flavorDimensions "dimension-test"
+    flavorDimensions "AS-dimension"
     productFlavors{
         "dependency-injection-dagger-android-test"{
-            dimension "dimension-test"
+            dimension "AS-dimension"
         }
 
         "holler-driver"{
-            dimension "dimension-test"
+            dimension "AS-dimension"
+        }
+
+        "tracker-driver"{
+            dimension "AS-dimension"
+            applicationId "com.tracker.driver.app"
         }
     }
 

@@ -1,4 +1,4 @@
-package com.holler.app.di;
+package com.pnrhunter.di;
 
 import com.holler.app.TestApplication;
 

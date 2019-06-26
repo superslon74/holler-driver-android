@@ -18,7 +18,7 @@
         >
 
         <activity
-            android:name=".mvp.TestView"
+            android:name="com.pnrhunter.mvp.TestView"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

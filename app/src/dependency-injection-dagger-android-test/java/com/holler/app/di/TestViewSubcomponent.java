@@ -1,7 +1,7 @@
-package com.holler.app.di;
+package com.pnrhunter.di;
 
-import com.holler.app.mvp.TestView;
-import com.holler.app.mvp.splash.SplashView;
+import com.pnrhunter.mvp.TestView;
+import com.pnrhunter.mvp.splash.SplashView;
 
 import dagger.Subcomponent;
 import dagger.android.AndroidInjector;

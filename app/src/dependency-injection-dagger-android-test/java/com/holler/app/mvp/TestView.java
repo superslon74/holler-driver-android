@@ -1,12 +1,12 @@
-package com.holler.app.mvp;
+package com.pnrhunter.mvp;
 
 import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
-import com.holler.app.R;
-import com.holler.app.di.DummyDataModule;
+import com.pnrhunter.R;
+import com.pnrhunter.di.DummyDataModule;
 import com.orhanobut.logger.Logger;
 
 import javax.inject.Inject;

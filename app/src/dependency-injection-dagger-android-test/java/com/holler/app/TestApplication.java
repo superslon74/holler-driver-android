@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 
 import com.crashlytics.android.Crashlytics;
-import com.holler.app.di.DaggerTestAppComponent;
+import com.pnrhunter.di.DaggerTestAppComponent;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.CsvFormatStrategy;
 import com.orhanobut.logger.FormatStrategy;
