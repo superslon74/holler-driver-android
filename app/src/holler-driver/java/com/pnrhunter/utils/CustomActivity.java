@@ -45,50 +45,17 @@ public class CustomActivity
         implements SpinnerShower, KeyboardObserver, MessageDisplayer {
 
 
-    private static volatile int runningActivitiesCount = 0;
-    private ServiceConnection gpsTrackerServiceConnection;
-    private ServiceConnection floatingViewServiceConnection;
+//    private ServiceConnection floatingViewServiceConnection;
     private LoadingView loadingView;
 //    private FloatingViewService.FloatingViewBinder floatingView;
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
+    private FloatingViewSwitcher switcher ;
+    private PermissionChecker checker ;
 
     @Override
     protected void onStop() {
         super.onStop();
-        synchronized (CustomActivity.class) {
-            runningActivitiesCount--;
-            toggleFloatingViewService(isRunning());
-        }
-    }
-
-    private boolean isRunning() {
-        return runningActivitiesCount > 0;
-    }
-
-    private void toggleFloatingViewService(boolean isActivityRunning) {
-//        if(floatingView==null)return;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (Settings.canDrawOverlays(CustomActivity.this)) {
-                final Intent intent = new Intent(this, FloatingViewService.class);
-                if ((!isActivityRunning)) {
-                    startService(intent);
-                } else {
-                    stopService(intent);
-                }
-            }
-        } else {
-            final Intent intent = new Intent(this, FloatingViewService.class);
-            if ((!isActivityRunning)) {
-                startService(intent);
-            } else {
-                stopService(intent);
-            }
-        }
+        switcher.onActivityCountDecreased();
     }
 
     @Override
@@ -103,26 +70,23 @@ public class CustomActivity
     protected void onStart() {
         super.onStart();
         loadingView = findViewById(R.id.loading_view);
-        synchronized (CustomActivity.class) {
-            runningActivitiesCount++;
-            toggleFloatingViewService(isRunning());
-        }
+        switcher.onActivityCountIncreased();
 
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        try {
-            unbindService(gpsTrackerServiceConnection);
-        } catch (IllegalArgumentException e) {
-            Logger.e("Can't unbind gps service.. ");
-        }
-        try {
-            unbindService(floatingViewServiceConnection);
-        } catch (IllegalArgumentException e) {
-            Logger.e("Can't unbind floating service.. ");
-        }
+//        try {
+////            unbindService(gpsTrackerServiceConnection);
+//        } catch (IllegalArgumentException e) {
+//            Logger.e("Can't unbind gps service.. ");
+//        }
+//        try {
+////            unbindService(floatingViewServiceConnection);
+//        } catch (IllegalArgumentException e) {
+//            Logger.e("Can't unbind floating service.. ");
+//        }
     }
 
     public interface OnActivityResultListener {
@@ -141,10 +105,7 @@ public class CustomActivity
     public void startIntentSenderForResult(IntentSender intent, int requestCode, @Nullable Intent fillInIntent, int flagsMask, int flagsValues, int extraFlags) throws IntentSender.SendIntentException {
         super.startIntentSenderForResult(intent, requestCode, fillInIntent, flagsMask, flagsValues, extraFlags);
         if (requestCode != -1) {
-            synchronized (CustomActivity.class) {
-                runningActivitiesCount++;
-                toggleFloatingViewService(isRunning());
-            }
+            switcher.onActivityCountDecreased();
         }
     }
 
@@ -152,10 +113,7 @@ public class CustomActivity
     public void startActivityForResult(Intent intent, int requestCode) {
         super.startActivityForResult(intent, requestCode);
         if (requestCode != -1) {
-            synchronized (CustomActivity.class) {
-                runningActivitiesCount++;
-                toggleFloatingViewService(isRunning());
-            }
+            switcher.onActivityCountIncreased();
         }
     }
 
@@ -169,20 +127,21 @@ public class CustomActivity
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initPermissionData(this);
+        switcher = new FloatingViewSwitcher(this);
+        checker = new PermissionChecker(this);
         initKeyboardObserver();
         loadingView = findViewById(R.id.loading_view);
-        this.floatingViewServiceConnection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-//                floatingView = (FloatingViewService.FloatingViewBinder) service;
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-
-            }
-        };
+//        this.floatingViewServiceConnection = new ServiceConnection() {
+//            @Override
+//            public void onServiceConnected(ComponentName name, IBinder service) {
+////                floatingView = (FloatingViewService.FloatingViewBinder) service;
+//            }
+//
+//            @Override
+//            public void onServiceDisconnected(ComponentName name) {
+//
+//            }
+//        };
 //        Intent flaotingViewBinding = new Intent(this, FloatingViewService.class);
 //        this.bindService(flaotingViewBinding, this.floatingViewServiceConnection, Context.BIND_IMPORTANT);
 
@@ -194,195 +153,38 @@ public class CustomActivity
 
 
     // for home listen
-    class InnerRecevier extends BroadcastReceiver {
-
-        final String SYSTEM_DIALOG_REASON_KEY = "reason";
-        final String SYSTEM_DIALOG_REASON_HOME_KEY = "homekey";
-        final String SYSTEM_DIALOG_REASON_RECENTAPPS = "recentapps";
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (Intent.ACTION_CLOSE_SYSTEM_DIALOGS.equals(action)) {
-                String reason = intent.getStringExtra(SYSTEM_DIALOG_REASON_KEY);
-                if (reason != null) {
-                    if (reason.equals(SYSTEM_DIALOG_REASON_HOME_KEY) || reason.equals((SYSTEM_DIALOG_REASON_RECENTAPPS))) {
-//                        startFloatingViewService();
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Checking permissions asynchronously with handler
-     */
-    public static final int PERMISSION_GRANTED = 1;
-    public static final int PERMISSION_DENID = 2;
-
-    private static final int CODE_REQUEST_READ_CONTACTS = 6027;
-    private static final int CODE_REQUEST_ACCESS_FINE_LOCATION = 7064;
-    private static final int CODE_REQUEST_CALL_PHONE = 6311;
-    private static final int CODE_REQUEST_SYSTEM_ALERT_WINDOW = 5757;
-    private static final int CODE_REQUEST_READ_EXTERNAL_STORAGE = 7349;
-    private static final int CODE_REQUEST_CAMERA = 6482;
-    private static final int CODE_REQUEST_INTERNET = 14737;
-    private static final int CODE_REQUEST_LOCATION = 1064;
-    private static final int CODE_ENABLE_LOCATION = 1450;
-
-    public static final String PERMISSION_ENABLE_LOCATION = "com.holler.app.ACCESS_LOCATION";
+//    class InnerRecevier extends BroadcastReceiver {
+//
+//        final String SYSTEM_DIALOG_REASON_KEY = "reason";
+//        final String SYSTEM_DIALOG_REASON_HOME_KEY = "homekey";
+//        final String SYSTEM_DIALOG_REASON_RECENTAPPS = "recentapps";
+//
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//            if (Intent.ACTION_CLOSE_SYSTEM_DIALOGS.equals(action)) {
+//                String reason = intent.getStringExtra(SYSTEM_DIALOG_REASON_KEY);
+//                if (reason != null) {
+//                    if (reason.equals(SYSTEM_DIALOG_REASON_HOME_KEY) || reason.equals((SYSTEM_DIALOG_REASON_RECENTAPPS))) {
+////                        startFloatingViewService();
+//                    }
+//                }
+//            }
+//        }
+//    }
 
 
-    private static Map<String, Integer> permissionRequestCodes;
 
-    private static Map<Integer, RequestPermissionHandler> permissionHandlers;
-    private static Map<String, String> permissionExplanation;
-
-    private static void initPermissionData(Context context){
-        if(permissionRequestCodes!=null && permissionExplanation!=null) return;
-        permissionRequestCodes = new HashMap<>();
-
-        permissionRequestCodes.put(Manifest.permission.READ_CONTACTS, CODE_REQUEST_READ_CONTACTS);
-        permissionRequestCodes.put(Manifest.permission.ACCESS_FINE_LOCATION, CODE_REQUEST_ACCESS_FINE_LOCATION);
-        permissionRequestCodes.put(Manifest.permission.CALL_PHONE, CODE_REQUEST_CALL_PHONE);
-        permissionRequestCodes.put(Manifest.permission.SYSTEM_ALERT_WINDOW, CODE_REQUEST_SYSTEM_ALERT_WINDOW);
-        permissionRequestCodes.put(Manifest.permission.READ_EXTERNAL_STORAGE, CODE_REQUEST_READ_EXTERNAL_STORAGE);
-        permissionRequestCodes.put(Manifest.permission.CAMERA, CODE_REQUEST_CAMERA);
-        permissionRequestCodes.put(Manifest.permission.INTERNET, CODE_REQUEST_INTERNET);
-        permissionRequestCodes.put(Manifest.permission.LOCATION_HARDWARE, CODE_REQUEST_LOCATION);
-        permissionRequestCodes.put(PERMISSION_ENABLE_LOCATION, CODE_ENABLE_LOCATION);
-
-        permissionHandlers = new HashMap<>();
-
-        permissionExplanation = new HashMap<>();
-
-        permissionExplanation.put(Manifest.permission.READ_CONTACTS, context.getString(R.string.error_permission_explanation_contacts));
-        permissionExplanation.put(Manifest.permission.ACCESS_FINE_LOCATION, context.getString(R.string.error_permission_explanation_gps));
-        permissionExplanation.put(Manifest.permission.CALL_PHONE, context.getString(R.string.error_permission_explanation_phone));
-        permissionExplanation.put(Manifest.permission.SYSTEM_ALERT_WINDOW, "");
-        permissionExplanation.put(Manifest.permission.READ_EXTERNAL_STORAGE, context.getString(R.string.error_permission_explanation_storage));
-        permissionExplanation.put(Manifest.permission.CAMERA, context.getString(R.string.error_permission_explanation_camera));
-        permissionExplanation.put(Manifest.permission.INTERNET, "");
-        permissionExplanation.put(Manifest.permission.LOCATION_HARDWARE, context.getString(R.string.error_permission_explanation_gps));
-        permissionExplanation.put(PERMISSION_ENABLE_LOCATION, "");
-    }
 
 
 
     public void checkPermissionAsynchronously(String permission, final RequestPermissionHandler handler) {
-
-        final int code = permissionRequestCodes.get(permission);
-        permissionHandlers.put(code, handler);
-
-        ///
-        switch (permission) {
-            case Manifest.permission.SYSTEM_ALERT_WINDOW:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (!Settings.canDrawOverlays(CustomActivity.this)) {
-                        final Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + CustomActivity.this.getPackageName()));
-                        startActivityForResult(intent, code);
-                    } else {
-                        handler.onPermissionGranted();
-                    }
-                } else {
-                    handler.onPermissionDenied();
-                }
-                break;
-            case PERMISSION_ENABLE_LOCATION:
-                Intent gpsTrackerBinding = new Intent(this, GPSTracker.class);
-
-                this.gpsTrackerServiceConnection = new ServiceConnection() {
-                    @Override
-                    public void onServiceConnected(ComponentName name, IBinder service) {
-
-                        ((GPSTracker.GPSTrackerBinder) service).connectGoogleApi(
-                                locationSettingsResponse -> {
-                                    handler.onPermissionGranted();
-                                    unbindService(CustomActivity.this.gpsTrackerServiceConnection);
-                                },
-                                e -> {
-                                    if (e instanceof ResolvableApiException) {
-                                        try {
-
-                                            ResolvableApiException resolvable = (ResolvableApiException) e;
-                                            resolvable.startResolutionForResult(CustomActivity.this, code);
-                                        } catch (IntentSender.SendIntentException sendEx) {
-                                            handler.onPermissionDenied();
-                                        }
-                                    }
-                                    unbindService(CustomActivity.this.gpsTrackerServiceConnection);
-                                });
-
-
-                    }
-
-                    @Override
-                    public void onServiceDisconnected(ComponentName name) {
-                        handler.onPermissionDenied();
-                        unbindService(CustomActivity.this.gpsTrackerServiceConnection);
-                    }
-
-                };
-
-
-
-                this.bindService(gpsTrackerBinding, this.gpsTrackerServiceConnection, Context.BIND_IMPORTANT);
-                break;
-            case Manifest.permission.INTERNET:
-                if (isInternet()) {
-                    handler.onPermissionGranted();
-                } else {
-                    showCompletableMessage(getString(R.string.error_disabled_internet))
-                            .doOnComplete(() -> {
-                                final Intent intent = new Intent(Settings.ACTION_SETTINGS);
-                                startActivityForResult(intent, code);
-                            })
-                            .subscribe();
-                }
-                break;
-            case Manifest.permission.LOCATION_HARDWARE:
-                if (isGPSEnabled()) {
-                    handler.onPermissionGranted();
-                } else {
-                    final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivityForResult(intent, code);
-                }
-                break;
-            default:
-                if (ContextCompat.checkSelfPermission(CustomActivity.this, permission) != PackageManager.PERMISSION_GRANTED) {
-                    String explanation = permissionExplanation.get(permission);
-
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(CustomActivity.this, permission)) {
-                        showCompletableMessage(explanation)
-                                .doOnComplete(handler::onPermissionDenied)
-                                .subscribe();
-                    } else {
-                        ActivityCompat.requestPermissions(CustomActivity.this, new String[]{permission}, code);
-                    }
-                } else {
-                    handler.onPermissionGranted();
-                }
-        }
-
+        checker.checkPermissionAsynchronously(permission,handler);
+        return ;
 
     }
 
-    private boolean isGPSEnabled() {
-        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            return false;
-        }
-        return true;
-    }
 
-    private boolean isInternet() {
-        ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = manager.getActiveNetworkInfo();
-        if (netInfo == null) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -393,66 +195,14 @@ public class CustomActivity
         if (listener != null) {
             listener.onActivityResult(requestCode, resultCode, data);
         }
-        synchronized (CustomActivity.class) {
-            runningActivitiesCount--;
-            toggleFloatingViewService(isRunning());
-        }
-        RequestPermissionHandler handler = permissionHandlers.get(requestCode);
-        String requestedPermission = "";
-        for (String s : permissionRequestCodes.keySet()) {
-            if (requestCode == permissionRequestCodes.get(s)) {
-                requestedPermission = s;
-                break;
-            }
-        }
-        if (Manifest.permission.SYSTEM_ALERT_WINDOW.equals(requestedPermission)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (Settings.canDrawOverlays(CustomActivity.this)) {
-                    handler.onPermissionGranted();
-                } else {
-                    handler.onPermissionDenied();
-                }
-            } else {
-                handler.onPermissionDenied();
-            }
-        }
-        if (Manifest.permission.INTERNET.equals(requestedPermission)) {
-            if (isInternet()) {
-                handler.onPermissionGranted();
-            } else {
-                handler.onPermissionDenied();
-            }
-        }
-        if (Manifest.permission.LOCATION_HARDWARE.equals(requestedPermission)) {
-            if (isGPSEnabled()) {
-                handler.onPermissionGranted();
-            } else {
-                handler.onPermissionDenied();
-            }
-        }
-        if (PERMISSION_ENABLE_LOCATION.equals(requestedPermission)) {
-            if (isGPSEnabled()) {
-                handler.onPermissionGranted();
-            } else {
-                handler.onPermissionDenied();
-            }
-        }
+        switcher.onActivityCountDecreased();
+        checker.onActivityResult(requestCode,resultCode,data);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        for (int i = 0; i < permissions.length; i++) {
-            String permission = permissions[i];
-            if (permissionRequestCodes.get(permission) == requestCode) {
-                RequestPermissionHandler handler = permissionHandlers.get(requestCode);
-                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                    handler.onPermissionGranted();
-                } else {
-                    handler.onPermissionDenied();
-                }
-            }
-        }
+        checker.onRequestPermissionResult(requestCode,permissions,grantResults);
     }
 
     public static abstract class RequestPermissionHandler {

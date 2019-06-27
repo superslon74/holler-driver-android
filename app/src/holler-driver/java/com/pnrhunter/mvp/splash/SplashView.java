@@ -26,6 +26,7 @@ import com.pnrhunter.di.app.components.splash.modules.SplashScreenModule;
 import com.pnrhunter.utils.CustomActivity;
 import com.pnrhunter.utils.GPSTracker;
 import com.orhanobut.logger.Logger;
+import com.pnrhunter.utils.PermissionChecker;
 
 import javax.inject.Inject;
 
@@ -87,7 +88,7 @@ public class SplashView
                 .next(new RequestPermissionChain(activity,Manifest.permission.INTERNET))
                 .next(new RequestPermissionChain(activity,Manifest.permission.CAMERA))
                 .next(new RequestPermissionChain(activity,Manifest.permission.READ_EXTERNAL_STORAGE))
-                .next(new RequestPermissionChain(activity,CustomActivity.PERMISSION_ENABLE_LOCATION));
+                .next(new RequestPermissionChain(activity,PermissionChecker.PERMISSION_ENABLE_LOCATION));
 
         chain.call();
     }

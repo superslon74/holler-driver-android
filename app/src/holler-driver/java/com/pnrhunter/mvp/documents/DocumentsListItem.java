@@ -121,6 +121,7 @@ public class DocumentsListItem extends Fragment {
 
         final Fragment self = this;
         final CustomActivity activity = (CustomActivity)getActivity();
+//        activity.startActivityForResult(chooserIntent, CHOOSE_FILE_REQUEST_CODE, self::onActivityResult);
         activity.startActivityForResult(chooserIntent, CHOOSE_FILE_REQUEST_CODE, self::onActivityResult);
     }
 
