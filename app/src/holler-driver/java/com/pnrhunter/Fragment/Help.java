@@ -89,7 +89,6 @@ public class Help extends Fragment implements View.OnClickListener {
         webImg = (ImageView) view.findViewById(R.id.img_web);
         mailImg = (ImageView) view.findViewById(R.id.img_mail);
         title_txt = (TextView) view.findViewById(R.id.title_txt);
-        title_txt.setText(AccessDetails.siteTitle + " " + getString(R.string.help));
     }
 
     @Override
