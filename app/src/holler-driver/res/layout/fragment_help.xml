@@ -37,15 +37,16 @@
             android:text="@string/help" />
     </LinearLayout>
 
-    <com.pnrhunter.Utilities.MyBoldTextView
+    <TextView
         android:id="@+id/title_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_20sdp"
         android:layout_centerHorizontal="true"
-        android:textSize="@dimen/_20sdp"
+        style="@style/TextAppearance.Medium"
+        android:textSize="35dp"
         android:layout_below="@+id/lnrTitle"
-        android:text="@string/help_title"
+        android:text="@string/ma_help_title"
         android:textColor="@color/black_text_color"/>
 
 
@@ -74,7 +75,8 @@
             android:layout_height="@dimen/_50sdp"
             android:layout_centerVertical="true"
             android:layout_toStartOf="@+id/img_mail"
-            android:src="@drawable/help_call"
+            android:padding="15dp"
+            android:background="@drawable/ic_whatsapp_yellow"
             android:visibility="visible" />
 
         <ImageView
@@ -85,7 +87,10 @@
             android:layout_centerHorizontal="true"
             android:layout_marginStart="@dimen/_20sdp"
             android:layout_marginEnd="@dimen/_20sdp"
-            android:src="@drawable/help_mail" />
+            android:padding="15dp"
+            android:background="@drawable/shape_yellow_circle"
+            android:src="@drawable/ic_post_black_24dp"
+            />
 
         <ImageView
             android:id="@+id/img_web"
@@ -93,18 +98,24 @@
             android:layout_height="@dimen/_50sdp"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@+id/img_mail"
-            android:src="@drawable/help_web" />
+
+            android:padding="15dp"
+            android:background="@drawable/shape_yellow_circle"
+            android:src="@drawable/ic_earth_white_24dp"
+            />
     </LinearLayout>
-    <com.pnrhunter.Utilities.MyBoldTextView
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/lnrIcons"
         android:layout_marginTop="@dimen/_50sdp"
-        android:gravity="center"
-        android:text="@string/help_msg"
+        style="@style/TextAppearance.Bold"
+        android:paddingLeft="35dp"
+        android:paddingRight="35dp"
+        android:textAlignment="center"
+        android:text="@string/ma_help_team"
         android:lineSpacingMultiplier="1.2"
-        android:textSize="@dimen/_14sdp"
-        android:textStyle="bold"
+        android:textSize="25dp"
         android:textColor="@color/colorAccent"/>
 
 </RelativeLayout>

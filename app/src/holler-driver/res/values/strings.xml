@@ -211,7 +211,7 @@
     <string name="canceled_rides">CANCELLED &ridescap;</string>
     <string name="rides">Rides</string>
     <string name="upcoming_rides">Upcoming &rides;</string>
-    <string name="help_msg">Our team person contact\n you soon!</string>
+    <string name="help_msg">Our team person contact\nyou soon!</string>
     <string name="no_address">No address available</string>
     <string name="email_exist">The email has already been taken</string>
     <string name="first_name_no_number">First name do not accept numbers</string>

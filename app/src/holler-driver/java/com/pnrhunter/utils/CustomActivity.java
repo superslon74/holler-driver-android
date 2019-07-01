@@ -38,6 +38,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
 
 
 public class CustomActivity
@@ -45,9 +47,7 @@ public class CustomActivity
         implements SpinnerShower, KeyboardObserver, MessageDisplayer {
 
 
-//    private ServiceConnection floatingViewServiceConnection;
     private LoadingView loadingView;
-//    private FloatingViewService.FloatingViewBinder floatingView;
 
     private FloatingViewSwitcher switcher ;
     private PermissionChecker checker ;
@@ -61,8 +61,6 @@ public class CustomActivity
     @Override
     protected void onResume() {
         super.onResume();
-//        new Notificator(this)
-//                .cancelAllNotifications();
 
     }
 
@@ -77,16 +75,6 @@ public class CustomActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        try {
-////            unbindService(gpsTrackerServiceConnection);
-//        } catch (IllegalArgumentException e) {
-//            Logger.e("Can't unbind gps service.. ");
-//        }
-//        try {
-////            unbindService(floatingViewServiceConnection);
-//        } catch (IllegalArgumentException e) {
-//            Logger.e("Can't unbind floating service.. ");
-//        }
     }
 
     public interface OnActivityResultListener {
@@ -131,67 +119,17 @@ public class CustomActivity
         checker = new PermissionChecker(this);
         initKeyboardObserver();
         loadingView = findViewById(R.id.loading_view);
-//        this.floatingViewServiceConnection = new ServiceConnection() {
-//            @Override
-//            public void onServiceConnected(ComponentName name, IBinder service) {
-////                floatingView = (FloatingViewService.FloatingViewBinder) service;
-//            }
-//
-//            @Override
-//            public void onServiceDisconnected(ComponentName name) {
-//
-//            }
-//        };
-//        Intent flaotingViewBinding = new Intent(this, FloatingViewService.class);
-//        this.bindService(flaotingViewBinding, this.floatingViewServiceConnection, Context.BIND_IMPORTANT);
-
-//        for home listen
-//        InnerRecevier innerReceiver = new InnerRecevier();
-//        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-//        registerReceiver(innerReceiver, intentFilter);
-    }
-
-
-    // for home listen
-//    class InnerRecevier extends BroadcastReceiver {
-//
-//        final String SYSTEM_DIALOG_REASON_KEY = "reason";
-//        final String SYSTEM_DIALOG_REASON_HOME_KEY = "homekey";
-//        final String SYSTEM_DIALOG_REASON_RECENTAPPS = "recentapps";
-//
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            String action = intent.getAction();
-//            if (Intent.ACTION_CLOSE_SYSTEM_DIALOGS.equals(action)) {
-//                String reason = intent.getStringExtra(SYSTEM_DIALOG_REASON_KEY);
-//                if (reason != null) {
-//                    if (reason.equals(SYSTEM_DIALOG_REASON_HOME_KEY) || reason.equals((SYSTEM_DIALOG_REASON_RECENTAPPS))) {
-////                        startFloatingViewService();
-//                    }
-//                }
-//            }
-//        }
-//    }
-
-
-
-
-
-
-    public void checkPermissionAsynchronously(String permission, final RequestPermissionHandler handler) {
-        checker.checkPermissionAsynchronously(permission,handler);
-        return ;
 
     }
 
 
+    public Observable<Boolean> checkPermissionAsynchronously(String permission) {
+        return checker.checkPermissionAsynchronously(permission);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        if(requestCode == SETTINGS_REQUEST_LOCATION)return;
-
-//        TODO: shitcode here
         if (listener != null) {
             listener.onActivityResult(requestCode, resultCode, data);
         }
@@ -203,12 +141,6 @@ public class CustomActivity
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         checker.onRequestPermissionResult(requestCode,permissions,grantResults);
-    }
-
-    public static abstract class RequestPermissionHandler {
-        public abstract void onPermissionGranted();
-
-        public abstract void onPermissionDenied();
     }
 
 

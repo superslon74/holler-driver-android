@@ -26,6 +26,9 @@ import com.pnrhunter.R;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+
 public class PermissionChecker {
 
     private Activity context;
@@ -46,7 +49,7 @@ public class PermissionChecker {
 
     private static Map<String, Integer> permissionRequestCodes;
 
-    private static Map<Integer, CustomActivity.RequestPermissionHandler> permissionHandlers;
+    private static Map<Integer, ObservableEmitter<Boolean>> permissionHandlers;
     private static Map<String, String> permissionExplanation;
 
     private static void initPermissionData(Context context){
@@ -83,107 +86,130 @@ public class PermissionChecker {
         initPermissionData(context);
     }
 
-    public void checkPermissionAsynchronously(String permission, final CustomActivity.RequestPermissionHandler handler) {
+    public Observable<Boolean> checkPermissionAsynchronously(String permission) {
 
         final int code = permissionRequestCodes.get(permission);
-        permissionHandlers.put(code, handler);
 
-        ///
-        switch (permission) {
-            case Manifest.permission.SYSTEM_ALERT_WINDOW:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (!Settings.canDrawOverlays(context)) {
-                        final Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + context.getPackageName()));
-                        context.startActivityForResult(intent, code);
-                    } else {
-                        handler.onPermissionGranted();
-                    }
-                } else {
-                    handler.onPermissionDenied();
-                }
-                break;
-            case PERMISSION_ENABLE_LOCATION:
-                Intent gpsTrackerBinding = new Intent(context, GPSTracker.class);
+        Observable<Boolean> handler = Observable.create(emitter -> {
+            switch (permission) {
+                case Manifest.permission.SYSTEM_ALERT_WINDOW:
+                    requestSystemAlertSettings(code,emitter);
+                    break;
+                case PERMISSION_ENABLE_LOCATION:
+                    requestEnableLocation(code, emitter);
+                    break;
+                case Manifest.permission.INTERNET:
+                    requestInternetConnection(code, emitter);
+                    break;
+                case Manifest.permission.LOCATION_HARDWARE:
+                    requestLocationPermission(code, emitter);
+                    break;
+                default:
+                    requestPermission(code, permission, emitter);
+            }
 
-                this.gpsTrackerServiceConnection = new ServiceConnection() {
-                    @Override
-                    public void onServiceConnected(ComponentName name, IBinder service) {
+            permissionHandlers.put(code, emitter);
+        });
 
-                        ((GPSTracker.GPSTrackerBinder) service).connectGoogleApi(
-                                locationSettingsResponse -> {
-                                    handler.onPermissionGranted();
-                                    context.unbindService(PermissionChecker.this.gpsTrackerServiceConnection);
-                                },
-                                e -> {
-                                    if (e instanceof ResolvableApiException) {
-                                        try {
+        return handler;
+    }
 
-                                            ResolvableApiException resolvable = (ResolvableApiException) e;
-                                            resolvable.startResolutionForResult(context, code);
-                                        } catch (IntentSender.SendIntentException sendEx) {
-                                            handler.onPermissionDenied();
-                                        }
-                                    }
-                                    context.unbindService(PermissionChecker.this.gpsTrackerServiceConnection);
-                                });
-
-
-                    }
-
-                    @Override
-                    public void onServiceDisconnected(ComponentName name) {
-                        handler.onPermissionDenied();
-                        context.unbindService(PermissionChecker.this.gpsTrackerServiceConnection);
-                    }
-
-                };
-
-
-
-                context.bindService(gpsTrackerBinding, this.gpsTrackerServiceConnection, Context.BIND_IMPORTANT);
-                break;
-            case Manifest.permission.INTERNET:
-                if (isInternet()) {
-                    handler.onPermissionGranted();
-                } else {
-                    ((CustomActivity)context).showCompletableMessage(context.getString(R.string.error_disabled_internet))
-                            .doOnComplete(() -> {
-                                final Intent intent = new Intent(Settings.ACTION_SETTINGS);
-                                context.startActivityForResult(intent, code);
-                            })
-                            .subscribe();
-                }
-                break;
-            case Manifest.permission.LOCATION_HARDWARE:
-                if (isGPSEnabled()) {
-                    handler.onPermissionGranted();
-                } else {
-                    final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    context.startActivityForResult(intent, code);
-                }
-                break;
-            default:
-                if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    String explanation = permissionExplanation.get(permission);
-
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(context, permission)) {
-                        ((CustomActivity)context).showCompletableMessage(explanation)
-                                .doOnComplete(handler::onPermissionDenied)
-                                .subscribe();
-                    } else {
-                        ActivityCompat.requestPermissions(context, new String[]{permission}, code);
-                    }
-                } else {
-                    handler.onPermissionGranted();
-                }
+    private void requestSystemAlertSettings(int code, ObservableEmitter<Boolean> emitter){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.canDrawOverlays(context)) {
+                final Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + context.getPackageName()));
+                context.startActivityForResult(intent, code);
+            } else {
+                emitter.onNext(true);
+            }
+        } else {
+            emitter.onNext(false);
         }
+    }
+
+    private void requestEnableLocation(int code, ObservableEmitter<Boolean> emitter){
+        Intent gpsTrackerBinding = new Intent(context, GPSTracker.class);
+
+        this.gpsTrackerServiceConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+
+                ((GPSTracker.GPSTrackerBinder) service).connectGoogleApi(
+                        locationSettingsResponse -> {
+                            emitter.onNext(true);
+                            context.unbindService(PermissionChecker.this.gpsTrackerServiceConnection);
+                        },
+                        e -> {
+                            if (e instanceof ResolvableApiException) {
+                                try {
+
+                                    ResolvableApiException resolvable = (ResolvableApiException) e;
+                                    resolvable.startResolutionForResult(context, code);
+                                } catch (IntentSender.SendIntentException sendEx) {
+                                    emitter.onNext(false);
+                                }
+                            }
+                            context.unbindService(PermissionChecker.this.gpsTrackerServiceConnection);
+                        });
 
 
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                emitter.onNext(false);
+                context.unbindService(PermissionChecker.this.gpsTrackerServiceConnection);
+            }
+
+        };
+
+        context.bindService(gpsTrackerBinding, this.gpsTrackerServiceConnection, Context.BIND_IMPORTANT);
+    }
+
+    private void requestInternetConnection(int code, ObservableEmitter<Boolean> emitter){
+        if (isInternet()) {
+            emitter.onNext(true);
+        } else {
+            ((CustomActivity)context).showCompletableMessage(context.getString(R.string.error_disabled_internet))
+                    .doOnComplete(() -> {
+                        final Intent intent = new Intent(Settings.ACTION_SETTINGS);
+                        context.startActivityForResult(intent, code);
+                    })
+                    .subscribe();
+        }
+    }
+
+    private void requestLocationPermission(int code, ObservableEmitter<Boolean> emitter){
+        if (isGPSEnabled()) {
+            emitter.onNext(true);
+        } else {
+            final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            context.startActivityForResult(intent, code);
+        }
+    }
+
+    private void requestPermission(int code, String permission, ObservableEmitter<Boolean> emitter ){
+        if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+            String explanation = permissionExplanation.get(permission);
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(context, permission)) {
+                ((CustomActivity)context).showCompletableMessage(explanation)
+                        .doOnComplete(() -> {
+                            emitter.onNext(false);
+                        })
+                        .subscribe();
+            } else {
+                ActivityCompat.requestPermissions(context, new String[]{permission}, code);
+            }
+        } else {
+            emitter.onNext(true);
+        }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data){
 
-        CustomActivity.RequestPermissionHandler handler = permissionHandlers.get(requestCode);
+        ObservableEmitter<Boolean> handler = permissionHandlers.get(requestCode);
+
         String requestedPermission = "";
         for (String s : permissionRequestCodes.keySet()) {
             if (requestCode == permissionRequestCodes.get(s)) {
@@ -194,33 +220,33 @@ public class PermissionChecker {
         if (Manifest.permission.SYSTEM_ALERT_WINDOW.equals(requestedPermission)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (Settings.canDrawOverlays(context)) {
-                    handler.onPermissionGranted();
+                    handler.onNext(true);
                 } else {
-                    handler.onPermissionDenied();
+                    handler.onNext(false);
                 }
             } else {
-                handler.onPermissionDenied();
+                handler.onNext(false);
             }
         }
         if (Manifest.permission.INTERNET.equals(requestedPermission)) {
             if (isInternet()) {
-                handler.onPermissionGranted();
+                handler.onNext(true);
             } else {
-                handler.onPermissionDenied();
+                handler.onNext(false);
             }
         }
         if (Manifest.permission.LOCATION_HARDWARE.equals(requestedPermission)) {
             if (isGPSEnabled()) {
-                handler.onPermissionGranted();
+                handler.onNext(true);
             } else {
-                handler.onPermissionDenied();
+                handler.onNext(false);
             }
         }
         if (PERMISSION_ENABLE_LOCATION.equals(requestedPermission)) {
             if (isGPSEnabled()) {
-                handler.onPermissionGranted();
+                handler.onNext(true);
             } else {
-                handler.onPermissionDenied();
+                handler.onNext(false);
             }
         }
     }
@@ -229,11 +255,11 @@ public class PermissionChecker {
         for (int i = 0; i < permissions.length; i++) {
             String permission = permissions[i];
             if (permissionRequestCodes.get(permission) == requestCode) {
-                CustomActivity.RequestPermissionHandler handler = permissionHandlers.get(requestCode);
+                ObservableEmitter<Boolean> handler = permissionHandlers.get(requestCode);
                 if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                    handler.onPermissionGranted();
+                    handler.onNext(true);
                 } else {
-                    handler.onPermissionDenied();
+                    handler.onNext(false);
                 }
             }
         }

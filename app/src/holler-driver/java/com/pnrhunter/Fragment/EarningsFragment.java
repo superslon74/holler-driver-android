@@ -412,17 +412,16 @@ public class EarningsFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int id) {
                         alert.dismiss();
                         CustomActivity activity = (CustomActivity) getActivity();
-                        activity.checkPermissionAsynchronously(Manifest.permission.INTERNET, new CustomActivity.RequestPermissionHandler() {
-                            @Override
-                            public void onPermissionGranted() {
-                                Log.d("AZAZA","wifi enabled ");
-                            }
-
-                            @Override
-                            public void onPermissionDenied() {
-                                showDialog();
-                            }
-                        });
+                        activity
+                                .checkPermissionAsynchronously(Manifest.permission.INTERNET)
+                                .doOnNext(granted -> {
+                                    if(granted){
+                                        Log.d("AZAZA","wifi enabled ");
+                                    }else{
+                                        showDialog();
+                                    }
+                                })
+                                .subscribe();
                     }
                 })
                 .setNegativeButton(getString(R.string.quit), new DialogInterface.OnClickListener() {

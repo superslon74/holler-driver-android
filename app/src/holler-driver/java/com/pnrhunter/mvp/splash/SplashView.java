@@ -28,10 +28,14 @@ import com.pnrhunter.utils.GPSTracker;
 import com.orhanobut.logger.Logger;
 import com.pnrhunter.utils.PermissionChecker;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
 
 public class SplashView
         extends CustomActivity
@@ -61,111 +65,49 @@ public class SplashView
 
 
     private void requestPermissions(){
-        final CustomActivity activity = this;
-
-        RequestPermissionChain chain = new RequestPermissionChain(){
-            @Override
-            protected void onFinished(boolean allPermissionGranted) {
-                if(allPermissionGranted)
-                    onAllPermissionsGranted();
-                else{
-                    showCompletableMessage(getString(R.string.error_permission_required))
-                            .doOnComplete(() -> {
-                                Intent intent = new Intent();
-                                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                Uri uri = Uri.fromParts("package", getPackageName(), null);
-                                intent.setData(uri);
-                                startActivity(intent);
-                            })
-                            .subscribe();
-                }
-            }
-        };
-
-        chain
-                .next(new RequestPermissionChain(activity,Manifest.permission.SYSTEM_ALERT_WINDOW))
-                .next(new RequestPermissionChain(activity,Manifest.permission.ACCESS_FINE_LOCATION))
-                .next(new RequestPermissionChain(activity,Manifest.permission.INTERNET))
-                .next(new RequestPermissionChain(activity,Manifest.permission.CAMERA))
-                .next(new RequestPermissionChain(activity,Manifest.permission.READ_EXTERNAL_STORAGE))
-                .next(new RequestPermissionChain(activity,PermissionChecker.PERMISSION_ENABLE_LOCATION));
-
-        chain.call();
-    }
-
-    private class RequestPermissionChain {
-
-        private String permission;
-        private CustomActivity activity;
-        private RequestPermissionChain next;
-        private RequestPermissionChain chain;
-        private boolean allPermissionGranted = true;
-
-        /**
-         * use to build new chain
-         */
-        public RequestPermissionChain() {
-            chain = this;
-        }
-
-        /**
-         * use to add to chain
-         * @param activity
-         * @param permission
-         */
-        public RequestPermissionChain(final CustomActivity activity, String permission) {
-            this.permission = permission;
-            this.activity = activity;
-
-        }
-
-        public void call(){
-            if(this.activity == null){
-                onChecked();
-                return;
-            }
-
-            RequestPermissionHandler handler = new RequestPermissionHandler() {
-                @Override
-                public void onPermissionGranted() {
-                    onChecked();
-                }
-
-                @Override
-                public void onPermissionDenied() {
-                    Logger.d("Permission denied, repeating request");
-                    chain.allPermissionGranted=false;
-                    onChecked();
-                }
-            };
-
-            activity.checkPermissionAsynchronously(permission,handler);
-        }
-
-        private void onChecked(){
-            if(next == null){
-                onFinished(this.allPermissionGranted);
-                return;
-            }
-            next.call();
-        }
-
-        public RequestPermissionChain next(RequestPermissionChain next){
-            next.chain = this.chain;
-            this.next = next;
-            return next;
-        }
-
-        protected void onFinished(boolean allPermissionGranted){
-            chain.onFinished(chain.allPermissionGranted);
-        }
-
-
-
-    }
-
-    private void onAllPermissionsGranted(){
-        presenter.checkVersion();
+        List<Boolean> grantPermissionsResult = new ArrayList<>();
+        checkPermissionAsynchronously(Manifest.permission.SYSTEM_ALERT_WINDOW)
+                .flatMap(granted -> {
+                    grantPermissionsResult.add(granted);
+                    return checkPermissionAsynchronously(Manifest.permission.ACCESS_FINE_LOCATION);
+                })//ACCESS_FINE_LOCATION
+                .flatMap(granted -> {
+                    grantPermissionsResult.add(granted);
+                    return checkPermissionAsynchronously(Manifest.permission.INTERNET);
+                })//INTERNET
+//                .flatMap(granted -> {
+//                    grantPermissionsResult.add(granted);
+//                    return checkPermissionAsynchronously(Manifest.permission.CAMERA);
+//                })
+//                .flatMap(granted -> {
+//                    grantPermissionsResult.add(granted);
+//                    return checkPermissionAsynchronously(Manifest.permission.READ_EXTERNAL_STORAGE);
+//                })
+                .flatMap(granted -> {
+                    grantPermissionsResult.add(granted);
+                    return checkPermissionAsynchronously(PermissionChecker.PERMISSION_ENABLE_LOCATION);
+                })//PERMISSION_ENABLE_LOCATION
+                .flatMap(granted -> {
+                    grantPermissionsResult.add(granted);
+                    boolean allPermissionsGranted = !grantPermissionsResult.contains(false);
+                    return Observable.just(allPermissionsGranted);
+                })
+                .doOnNext(allPermissionsGranted -> {
+                    if(allPermissionsGranted)
+                        presenter.checkVersion();
+                    else{
+                        showCompletableMessage(getString(R.string.error_permission_required))
+                                .doOnComplete(() -> {
+                                    Intent intent = new Intent();
+                                    intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                    Uri uri = Uri.fromParts("package", getPackageName(), null);
+                                    intent.setData(uri);
+                                    startActivity(intent);
+                                })
+                                .subscribe();
+                    }
+                })
+                .subscribe();
     }
 
 

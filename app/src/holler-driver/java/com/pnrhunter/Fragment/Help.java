@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,7 @@ import com.pnrhunter.Helper.SharedHelper;
 import com.pnrhunter.Helper.URLHelper;
 import com.pnrhunter.Models.AccessDetails;
 import com.pnrhunter.R;
+import com.pnrhunter.utils.CustomActivity;
 
 import org.json.JSONObject;
 
@@ -133,16 +135,25 @@ public class Help extends Fragment implements View.OnClickListener {
                 !phone.equalsIgnoreCase("null") &&
                 !phone.equalsIgnoreCase("") &&
                 phone.length() > 0) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 1);
-            } else {
-                Intent intentCall = new Intent(Intent.ACTION_CALL);
-                intentCall.setData(Uri.parse("tel:" + phone));
-                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
-                startActivity(intentCall);
-            }
+            CustomActivity activity = (CustomActivity) getActivity();
+            activity.checkPermissionAsynchronously(Manifest.permission.CALL_PHONE)
+                    .doOnNext(granted -> {
+                        if(granted){
+                            Intent intentCall = new Intent(Intent.ACTION_CALL);
+                            intentCall.setData(Uri.parse("tel:" + phone));
+                            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                                return;
+                            }
+                            startActivity(intentCall);
+                        }else{
+                            Intent intent = new Intent();
+                            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
+                            intent.setData(uri);
+                            startActivity(intent);
+                        }
+                    })
+                    .subscribe();
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(getString(R.string.app_name))

@@ -10,6 +10,7 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,8 @@ import com.pnrhunter.utils.CustomActivity;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
@@ -32,6 +35,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.Observable;
 
 public class DocumentsListItem extends Fragment {
 
@@ -82,15 +86,52 @@ public class DocumentsListItem extends Fragment {
         return view;
     }
 
-
+    private Observable<Boolean> checkPermissions(){
+        return Observable.<Boolean>create(emitter -> {
+            CustomActivity activity = (CustomActivity) getActivity();
+            Map<String, Boolean> permissions = new HashMap<>();
+            activity
+                    .checkPermissionAsynchronously(Manifest.permission.CAMERA)
+                    .flatMap(granted -> {
+                        permissions.put(Manifest.permission.CAMERA, granted);
+                        return activity.checkPermissionAsynchronously(Manifest.permission.READ_EXTERNAL_STORAGE);
+                    })
+                    .flatMap(granted ->{
+                        permissions.put(Manifest.permission.READ_EXTERNAL_STORAGE, granted);
+                        return Observable.just(!permissions.values().contains(false));
+                    })//<Boolean> allPermissionsGranted
+                    .doOnNext(emitter::onNext)
+                    .doOnError(emitter::onError)
+                    .subscribe();
+        });
+    }
 
     @OnClick(R.id.document_icon)
-    protected void pickImage() {
-        if(getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            ((CustomActivity)getActivity()).showMessage(getActivity().getString(R.string.error_permission_denied));
-            return;
-        }
+    protected void onDocumentPhotoClick() {
 
+        checkPermissions()
+                .doOnNext(allPermissionsGranted -> {
+                    if(allPermissionsGranted){
+                        pickImage();
+                    }else{
+                        CustomActivity activity = (CustomActivity) getActivity();
+                        activity
+                                .showCompletableMessage(activity.getString(R.string.error_permission_required))
+                                .doOnComplete(() -> {
+                                    Intent intent = new Intent();
+                                    intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                    Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
+                                    intent.setData(uri);
+                                    startActivity(intent);
+                                })
+                                .subscribe();
+                    }
+                })
+                .subscribe();
+
+    }
+
+    private void pickImage(){
         Intent pickIntent = new Intent(Intent.ACTION_PICK);
         pickIntent.setType("image/*");
         String[] mimeTypes = {"image/jpeg", "image/jpg", "image/png"};
@@ -103,7 +144,7 @@ public class DocumentsListItem extends Fragment {
             capturedPhoto = createTemporaryFile();
             Uri photoUri = FileProvider.getUriForFile(
                     getActivity(),
-                     "com.holler.app.FileProvider",
+                    "com.holler.app.FileProvider",
                     capturedPhoto);
 
             captureIntent.putExtra(MediaStore.EXTRA_OUTPUT,photoUri);
@@ -121,7 +162,7 @@ public class DocumentsListItem extends Fragment {
 
         final Fragment self = this;
         final CustomActivity activity = (CustomActivity)getActivity();
-//        activity.startActivityForResult(chooserIntent, CHOOSE_FILE_REQUEST_CODE, self::onActivityResult);
+
         activity.startActivityForResult(chooserIntent, CHOOSE_FILE_REQUEST_CODE, self::onActivityResult);
     }
 

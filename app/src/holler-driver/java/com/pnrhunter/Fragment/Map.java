@@ -83,7 +83,6 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.pnrhunter.server.OrderServerApi;
 import com.pnrhunter.utils.CustomActivity;
-import com.pnrhunter.utils.CustomActivity.RequestPermissionHandler;
 import com.pnrhunter.utils.GPSTracker;
 import com.squareup.picasso.Picasso;
 import com.pnrhunter.activity.MainActivity;
@@ -345,7 +344,6 @@ public class Map
         //permission to access location
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // Android M Permission check
-            initializeMapOnPermissionGranted();
         } else {
             setUpMapIfNeeded();
             MapsInitializer.initialize(activity);
@@ -475,7 +473,6 @@ public class Map
             public void onClick(View view) {
                 String mobile = SharedHelper.getKey(context, "provider_mobile_no");
                 if (mobile != null && !mobile.equalsIgnoreCase("null") && mobile.length() > 0) {
-                    makeCallOnPermissionGranted();
                 } else {
                     displayMessage(context.getResources().getString(R.string.user_no_mobile));
                 }
@@ -826,64 +823,7 @@ public class Map
         }
     }
 
-    private void initializeMapOnPermissionGranted(){
-        final CustomActivity activity = (CustomActivity) getActivity();
-        String permission = Manifest.permission.ACCESS_FINE_LOCATION;
-        RequestPermissionHandler handler = new RequestPermissionHandler() {
-            @Override
-            public void onPermissionGranted() {
-                if (mGoogleApiClient == null) {
-                    buildGoogleApiClient();
-                }
-                setUpMapIfNeeded();
-                MapsInitializer.initialize(activity);
-            }
 
-            @Override
-            public void onPermissionDenied() {
-                initializeMapOnPermissionGranted();
-            }
-        };
-        activity.checkPermissionAsynchronously(permission,handler);
-    }
-
-    private void makeCallOnPermissionGranted(){
-        final CustomActivity activity = (CustomActivity) getActivity();
-        String permission = Manifest.permission.CALL_PHONE;
-        RequestPermissionHandler handler = new RequestPermissionHandler() {
-            @Override
-            public void onPermissionGranted() {
-                Intent intent = new Intent(Intent.ACTION_CALL);
-                intent.setData(Uri.parse("tel:" + SharedHelper.getKey(context, "provider_mobile_no")));
-                startActivity(intent);
-            }
-
-            @Override
-            public void onPermissionDenied() {
-                makeCallOnPermissionGranted();
-            }
-        };
-        activity.checkPermissionAsynchronously(permission,handler);
-    }
-
-    private void makeHelpCallOnPermissionGranted(){
-        final CustomActivity activity = (CustomActivity) getActivity();
-        String permission = Manifest.permission.CALL_PHONE;
-        RequestPermissionHandler handler = new RequestPermissionHandler() {
-            @Override
-            public void onPermissionGranted() {
-                Intent intent = new Intent(Intent.ACTION_CALL);
-                intent.setData(Uri.parse("tel:" + SharedHelper.getKey(context, "sos")));
-                startActivity(intent);
-            }
-
-            @Override
-            public void onPermissionDenied() {
-                makeHelpCallOnPermissionGranted();
-            }
-        };
-        activity.checkPermissionAsynchronously(permission,handler);
-    }
 
     @TargetApi(Build.VERSION_CODES.M)
     @Override
@@ -1028,14 +968,12 @@ public class Map
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //Prompt the user once explanation has been shown
-                                initializeMapOnPermissionGranted();
                             }
                         })
                         .create()
                         .show();
             } else {
                 // No explanation needed, we can request the permission.
-                initializeMapOnPermissionGranted();
             }
         }
     }
@@ -2378,7 +2316,6 @@ public class Map
                 dialog.dismiss();
                 String mobile = SharedHelper.getKey(context, "sos");
                 if (mobile != null && !mobile.equalsIgnoreCase("null") && mobile.length() > 0) {
-                    makeHelpCallOnPermissionGranted();
                 } else {
                     displayMessage(context.getResources().getString(R.string.user_no_mobile));
                 }

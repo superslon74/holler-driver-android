@@ -320,23 +320,18 @@ public class MainView extends CustomActivity implements MainPresenter.View {
     @Override
     protected void onResume() {
         super.onResume();
-        checkPermissionAsynchronously(Manifest.permission.INTERNET, new RequestPermissionHandler() {
-            @Override
-            public void onPermissionGranted() {
-                presenter.resetState();
-                try{
-                    ((MapFragment)fragmentRouter.currentFragment).removeFragments();
-                }catch (ClassCastException | NullPointerException e){
-                    Logger.e("Can't reset map fragments");
-                }
-
-            }
-
-            @Override
-            public void onPermissionDenied() {
-
-            }
-        });
+        checkPermissionAsynchronously(Manifest.permission.INTERNET)
+                .doOnNext(granted ->{
+                    if(granted) {
+                        presenter.resetState();
+                        try {
+                            ((MapFragment) fragmentRouter.currentFragment).removeFragments();
+                        } catch (ClassCastException | NullPointerException e) {
+                            Logger.e("Can't reset map fragments");
+                        }
+                    }
+                })
+                .subscribe();
     }
 
     @Override
