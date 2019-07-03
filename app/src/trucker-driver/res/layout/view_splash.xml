@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/gradient_bl_tr">
+    android:background="@color/themeSecondaryAccent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
@@ -16,22 +16,25 @@
         >
         <ImageView
             android:id="@+id/sp_logo"
-            android:layout_width="200dp"
+            android:layout_width="wrap_content"
             android:layout_height="200dp"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/logo"
+            android:scaleType="fitCenter"
+            android:paddingStart="35dp"
+            android:paddingEnd="35dp"
+            android:src="@mipmap/sp_logo"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             />
         <TextView
+            android:visibility="gone"
             android:id="@+id/sp_app_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/TextAppearance.Bold"
             android:textSize="40dp"
             android:textAlignment="center"
-            android:text="Holler"
+            android:text="@string/app_name"
             android:textColor="@color/green"
             app:layout_constraintTop_toBottomOf="@id/sp_logo"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -44,13 +47,16 @@
         android:id="@+id/sp_version"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/TextAppearance.Bold"
         android:text=""
+        android:paddingLeft="35dp"
+        android:paddingRight="35dp"
+        android:textAlignment="center"
         android:gravity="center"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/_30sdp"
-        android:fontFamily="@font/montserrat_regular"
-        android:textColor="@color/blue"
-        android:textSize="17dp"
+        android:textColor="@color/white"
+        android:textSize="19dp"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

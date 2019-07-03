@@ -8,10 +8,15 @@
     <color name="black">#000000</color>
     <color name="transparent">#FFFFFFFF</color>
 
+    <color name="darkBlue">#2776a8</color>
+    <color name="lightGreen">#3bd0a0</color>
+    <color name="darkYellow">#fad900</color>
+
 
     <!--color definition-->
-    <color name="themePrimary">@color/blue</color>
-    <color name="themePrimaryDark">@color/red</color>
-    <color name="themeAccent">@color/green</color>
+    <color name="themePrimary">@color/darkBlue</color>
+    <color name="themePrimaryDark">@color/black</color>
+    <color name="themeAccent">@color/lightGreen</color>
+    <color name="themeSecondaryAccent">@color/darkYellow</color>
 
 </resources>

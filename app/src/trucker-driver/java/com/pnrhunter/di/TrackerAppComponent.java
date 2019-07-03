@@ -1,6 +1,7 @@
 package com.pnrhunter.di;
 
-import com.pnrhunter.TrackerDriverApp;
+
+import com.pnrhunter.TruckerDriverApp;
 
 import javax.inject.Singleton;
 
@@ -15,8 +16,8 @@ import dagger.android.AndroidInjector;
         AppModule.class,
         DummyDataModule.class
 })
-public interface TrackerAppComponent extends AndroidInjector<TrackerDriverApp> {
+public interface TrackerAppComponent extends AndroidInjector<TruckerDriverApp> {
 
     @Component.Builder
-    abstract class Builder extends AndroidInjector.Builder<TrackerDriverApp> {}
+    abstract class Builder extends AndroidInjector.Builder<TruckerDriverApp> {}
 }

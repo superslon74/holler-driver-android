@@ -19,7 +19,7 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
 import io.fabric.sdk.android.Fabric;
 
-public class TrackerDriverApp extends Application implements HasActivityInjector {
+public class TruckerDriverApp extends Application implements HasActivityInjector {
 
     @Inject
     DispatchingAndroidInjector<Activity> dispatchingActivityInjector;

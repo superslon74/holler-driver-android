@@ -2,7 +2,7 @@
 apply plugin: 'com.android.application'
 //apply plugin: 'com.google.gms.google-services'
 apply plugin: 'idea'
-apply plugin: 'io.fabric'
+//apply plugin: 'io.fabric'
 //apply plugin: 'com.android.library'
 //apply plugin: 'com.jakewharton.butterknife'
 
@@ -25,19 +25,8 @@ android {
     compileSdkVersion 28
     buildToolsVersion "28.0.3"
     defaultConfig {
-        applicationId "com.holler.app"
         minSdkVersion 23
         targetSdkVersion 28
-        versionCode 1
-/*change-list
-v31:
-- hands on map
-- fw button passiton
-v33:
-- order stream fixed
-- test for creating orders added
- */
-        versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -77,27 +66,26 @@ v33:
 
         "holler-driver"{
             dimension "AS-dimension"
+            applicationId "com.holler.app"
+            versionCode 1
+            versionName "1.0"
         }
 
-        "tracker-driver"{
+        "trucker-driver"{
             dimension "AS-dimension"
-            applicationId "com.tracker.driver.app"
+            applicationId "com.trucker.driver.app"
+            versionCode 2
+            versionName "1.0"
+        }
+
+        "trucker-client"{
+            dimension "AS-dimension"
+            applicationId "com.trucker.client.app"
+            versionCode 3
+            versionName "1.0"
         }
     }
 
-
-//    flavorDimensions "testDimension"
-//    productFlavors{
-//        origin{
-//            dimension "testDimension" sourceCompatibility JavaVersion.VERSION_1_8
-//            targetCompatibility JavaVersion.VERSION_1_8
-//            versionNameSuffix "-origin"
-//        }
-//        order{
-//            dimension "testDimension"
-//            versionNameSuffix "-order"
-//        }
-//    }
 }
 
 repositories {

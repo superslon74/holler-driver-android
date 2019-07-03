@@ -27,7 +27,7 @@
     <uses-feature android:name="android.hardware.camera" />
 
     <application
-        android:name="com.pnrhunter.TrackerDriverApp"
+        android:name="com.pnrhunter.TruckerDriverApp"
         android:allowBackup="false"
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
