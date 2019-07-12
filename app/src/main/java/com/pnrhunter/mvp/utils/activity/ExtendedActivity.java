@@ -1,56 +1,46 @@
-package com.pnrhunter.utils;
+package com.pnrhunter.mvp.utils.activity;
 
-import android.Manifest;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
 import android.graphics.Rect;
-import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.provider.Settings;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
 
-import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.material.snackbar.Snackbar;
 import com.pnrhunter.R;
-import com.pnrhunter.mvp.main.MainView;
-import com.orhanobut.logger.Logger;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
+import javax.inject.Inject;
+
+import dagger.android.DaggerActivity;
+import dagger.android.support.DaggerAppCompatActivity;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
 
 
-public class CustomActivity
-        extends AppCompatActivity
+public class ExtendedActivity
+        extends DaggerAppCompatActivity
         implements SpinnerShower, KeyboardObserver, MessageDisplayer {
 
 
     private LoadingView loadingView;
 
-    private FloatingViewSwitcher switcher ;
-    private PermissionChecker checker ;
+    @Inject protected FloatingViewSwitcherInterface switcher ;
+    @Inject protected PermissionChecker checker ;
+
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        switcher = new FloatingViewSwitcher(this);
+//        checker = new PermissionChecker(this);
+        initKeyboardObserver();
+        loadingView = findViewById(R.id.loading_view);
+
+    }
 
     @Override
     protected void onStop() {
@@ -108,20 +98,11 @@ public class CustomActivity
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if (CustomActivity.this instanceof MainView) {
-            moveTaskToBack(true);
-        }
+        //TODO: on back pressed processing move to main view class
+//        if (ExtendedActivity.this instanceof MainView) {
+//            moveTaskToBack(true);
+//        }
     }
-
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        switcher = new FloatingViewSwitcher(this);
-        checker = new PermissionChecker(this);
-        initKeyboardObserver();
-        loadingView = findViewById(R.id.loading_view);
-
-    }
-
 
     public Observable<Boolean> checkPermissionAsynchronously(String permission) {
         return checker.checkPermissionAsynchronously(permission);
@@ -221,8 +202,6 @@ public class CustomActivity
     public void onKeyboardHidden() {
 
     }
-
-    private static volatile LoadingProgress spinner;
 
     @Override
     public void showSpinner() {

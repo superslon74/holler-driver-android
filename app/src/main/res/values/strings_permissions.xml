@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_permission_denied">Permission denied.</string>
+    <string name="error_permission_explanation_contacts">App needs access to contacts</string>
+    <string name="error_permission_explanation_gps">App needs access to get geolocation</string>
+    <string name="error_permission_explanation_phone">App needs permission to make phone calls</string>
+    <string name="error_permission_explanation_storage">App needs permissions to read and write external storage</string>
+    <string name="error_permission_explanation_camera">App needs permissions to read camera</string>
+    <string name="error_permission_required">Please enable all permissions</string>
+    <string name="error_disabled_internet">Please turn on internet..</string>
+</resources>

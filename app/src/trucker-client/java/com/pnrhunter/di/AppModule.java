@@ -3,7 +3,7 @@ package com.pnrhunter.di;
 
 import android.app.Application;
 
-import com.pnrhunter.TruckerDriverApp;
+import com.pnrhunter.TruckerClientApp;
 import com.pnrhunter.mvp.SplashView;
 
 import javax.inject.Singleton;
@@ -19,7 +19,7 @@ public abstract class AppModule {
 
     @Binds
     @Singleton
-    abstract Application application(TruckerDriverApp app);
+    abstract Application application(TruckerClientApp app);
 
     @ActivityScope
     @ContributesAndroidInjector(modules = {SplashPresenterModule.class})

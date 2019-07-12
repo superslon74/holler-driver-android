@@ -78,4 +78,47 @@
         <item name="civ_shadow_color">#FFFFFF</item>
     </style>
 
+    <!--Welcome screen-->
+    <style name="Container.ws">
+        <item name="android:paddingLeft">35dp</item>
+        <item name="android:paddingRight">35dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+    </style>
+    <style name="Button.ws">
+        <item name="android:minHeight">0dp</item>
+        <item name="android:paddingTop">9dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:textSize">17dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+    </style>
+    <style name="Button.ws.login">
+        <item name="android:background">@color/themeAccent</item>
+        <item name="android:layout_marginEnd">5dp</item>
+    </style>
+    <style name="Button.ws.signin">
+        <item name="android:background">@color/themePrimary</item>
+        <item name="android:layout_marginStart">5dp</item>
+    </style>
+
+    <style name="TextAppearance.Bold.ws" parent="Container.ws">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:textSize">21sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">@font/montserrat</item>
+
+    </style>
+
+    <style name="TextAppearance.Medium.ws" parent="Container.ws">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginBottom">8sp</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">@font/montserrat</item>
+
+    </style>
 </resources>

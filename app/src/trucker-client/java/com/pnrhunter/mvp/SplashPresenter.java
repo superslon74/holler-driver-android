@@ -6,13 +6,11 @@ import com.orhanobut.logger.Logger;
 
 public class SplashPresenter {
 
-    private Context context;
-
     public SplashPresenter() {
         Logger.d("SplashPresenter created");
     }
 
     public SplashPresenter(Context context) {
-
+        Logger.d("SplashPresenter created with context");
     }
 }

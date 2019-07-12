@@ -47,23 +47,13 @@
         android:id="@+id/sp_version"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TextAppearance.Bold"
         android:text=""
-        android:paddingLeft="35dp"
-        android:paddingRight="35dp"
-        android:textAlignment="center"
         android:gravity="center"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/_30sdp"
-        android:textColor="@color/white"
-        android:textSize="19dp"
+        android:fontFamily="@font/montserrat_regular"
+        android:textColor="@color/blue"
+        android:textSize="17dp"
         app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <com.pnrhunter.mvp.utils.activity.LoadingView
-        android:id="@+id/loading_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </com.pnrhunter.mvp.utils.activity.LoadingView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
