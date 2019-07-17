@@ -101,7 +101,7 @@ public class TruckerDriverApp extends DaggerApplication {
             Log.d("LOL",o);
         }
     }
-
+@Override
     public void test(){
         new SomeLibrary().method(StringExtraBehaviourWrapper.applySomeSpecificModification("smth"));
         new SomeLibrary().method(new StringExtraBehaviourWrapper("smth").applySomeSpecificModification().getString());

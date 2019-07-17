@@ -1,35 +1,35 @@
 package com.pnrhunter.mvp.welcome;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-
-
-import com.google.android.material.tabs.TabLayout;
-import com.pnrhunter.HollerApplication;
-import com.pnrhunter.R;
-import com.pnrhunter.di.app.modules.RetrofitModule;
-import com.pnrhunter.di.app.modules.RouterModule;
-import com.pnrhunter.utils.CustomActivity;
-import com.pnrhunter.utils.LoadingView;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.tabs.TabLayout;
+import com.pnrhunter.R;
+import com.pnrhunter.mvp.utils.activity.ExtendedActivity;
+import com.pnrhunter.mvp.utils.activity.LoadingView;
+import com.pnrhunter.mvp.utils.router.AbstractRouter;
+import com.pnrhunter.mvp.utils.router.DriverRouter;
+import com.pnrhunter.mvp.utils.server.ServerConfigurationInterface;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class WelcomeView extends CustomActivity {
+public class WelcomeView extends ExtendedActivity {
 
-    @Inject public RouterModule.Router router;
-    @Inject public RetrofitModule.ServerAPI serverAPI;
+    @Inject protected AbstractRouter router;
+    @Inject protected ServerConfigurationInterface serverConfig;
 
     @BindView(R.id.loading_view)
     protected LoadingView loadingView;
@@ -41,18 +41,17 @@ public class WelcomeView extends CustomActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        HollerApplication.getInstance().component().inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_screen);
-        overridePendingTransition(R.anim.slide_in_right, R.anim.anim_nothing);
+//        overridePendingTransition(R.anim.slide_in_right, R.anim.anim_nothing);
         ButterKnife.bind(this);
 
-        serverAPI
-                .getSocialLoginStatus()
+        serverConfig
+                .checkSocialLoginIsEnabled()
                 .doOnSubscribe(disposable -> showSpinner())
-                .doOnSuccess(response -> {
-                    isSocialEnabled = response.isEnabled;
-                    if(isSocialEnabled){
+                .doOnSuccess(isEnabled -> {
+                    isSocialEnabled = isEnabled;
+                    if(isEnabled){
                         socialLayoutView.setVisibility(View.VISIBLE);
                     }else{
                         socialLayoutView.setVisibility(View.INVISIBLE);
@@ -66,18 +65,18 @@ public class WelcomeView extends CustomActivity {
 
     @OnClick(R.id.sign_in_btn)
     public void gotoLogin(){
-        router.goToEmailScreen();
+        router.goTo(DriverRouter.ROUTE_LOGIN_EMAIL);
     }
 
     @OnClick(R.id.sign_up_btn)
     public void gotoRegistration() {
-        router.goToRegisterScreen();
+        router.goTo(DriverRouter.ROUTE_REGISTRATION);
     }
 
     @OnClick(R.id.social_layout)
     public void gotoSocialLogin() {
         if(isSocialEnabled){
-            router.gotoSocialLogin();
+            router.goTo(DriverRouter.ROUTE_LOGIN_SOCIAL);
         }
     }
 
@@ -87,11 +86,11 @@ public class WelcomeView extends CustomActivity {
         tabLayout.setupWithViewPager(viewPager, true);
 
         List<Fragment> slides = new ArrayList<>();
-        slides.add(WelcomeViewSlideFragment.newInstance(R.string.was_header_welcome, R.string.was_description_welcome, R.drawable.welcome_sample));
-        slides.add(WelcomeViewSlideFragment.newInstance(R.string.was_header_find, R.string.was_description_find, R.drawable.drive_sample));
-        slides.add(WelcomeViewSlideFragment.newInstance(R.string.was_header_notify, R.string.was_description_notify, R.drawable.earn_sample));
+        slides.add(WelcomeViewSlideFragment.newInstance(R.string.was_header_overview, R.string.was_description_overview, R.mipmap.welcome_overview));
+        slides.add(WelcomeViewSlideFragment.newInstance(R.string.was_header_find, R.string.was_description_find, R.mipmap.welcome_find));
+        slides.add(WelcomeViewSlideFragment.newInstance(R.string.was_header_notify, R.string.was_description_notify, R.mipmap.welcome_notify));
 
-        viewPager.setAdapter(new SliderAdapter(getSupportFragmentManager(), slides));
+        viewPager.setAdapter(new SliderAdapter(this.getSupportFragmentManager(), slides));
     }
 
     @Override
@@ -120,4 +119,3 @@ public class WelcomeView extends CustomActivity {
     }
 
 }
-
