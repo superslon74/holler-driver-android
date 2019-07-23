@@ -53,15 +53,42 @@
         <activity
             android:name=".mvp.welcome.WelcomeView"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
-
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".mvp.main.MainView"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".mvp.authorization.EmailView"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".mvp.authorization.PasswordView"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".mvp.authorization.RegistrationView"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
 
+        <!--TODO: remove tests-->
+        <activity
+            android:name=".mvp.authorization.RegistrationViewTest"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".mvp.documents.DocumentsView"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".mvp.documents.WaitingForApprovalView"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyCaa69Jj1TpigWNDX24nB7Wt0bu8ug8ok0" />
         <!--<meta-data-->
             <!--android:name="io.fabric.ApiKey"-->
             <!--android:value="d3f23650f9fce2175f3030b56d6ea10a28370593" />-->

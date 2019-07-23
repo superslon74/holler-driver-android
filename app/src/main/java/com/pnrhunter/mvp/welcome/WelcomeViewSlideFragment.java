@@ -63,11 +63,6 @@ public class WelcomeViewSlideFragment extends Fragment {
         ButterKnife.bind(this,v);
         return v;
     }
-//
-//    @OnClick(R.id.ma_image)
-//    public void crash(){
-//        throw new RuntimeException("Testing crash reports");
-//    }
 
 
 }

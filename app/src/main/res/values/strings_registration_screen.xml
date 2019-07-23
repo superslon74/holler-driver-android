@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ras_header">Get on Board</string>
+    <string name="ras_name_placeholder">Name</string>
+    <string name="ras_last_name_placeholder">Last Name</string>
+    <string name="ras_email_placeholder">Email</string>
+    <string name="ras_mobile_placeholder">Mobile</string>
+    <string name="ras_password_placeholder">Password</string>
+    <string name="ras_password_confirmation_placeholder">Confirm Password</string>
+    <string name="ras_sign_up_button">SIGN UP</string>
+
+    <string name="ras_sign_up_link">I need to create an account</string>
+    <string name="ras_forgot_password">I forgot my password</string>
+
+</resources>

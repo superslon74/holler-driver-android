@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    >
+
+    <item custom:usd_online="true" custom:usd_has_border="true">
+        <shape
+            android:shape="oval">
+            <solid android:color="@color/userStatusOnline"/>
+            <stroke android:color="@color/white" android:width="2dp"/>
+        </shape>
+    </item>
+    <item custom:usd_offline="true" custom:usd_has_border="true">
+        <shape
+            android:shape="oval">
+            <solid android:color="@color/userStatusOffline"/>
+            <stroke android:color="@color/white" android:width="2dp"/>
+        </shape>
+    </item>
+    <item custom:usd_disapproved="true" custom:usd_has_border="true">
+        <shape
+            android:shape="oval">
+            <solid android:color="@color/userStatusDisapproved"/>
+            <stroke android:color="@color/white" android:width="2dp"/>
+        </shape>
+    </item>
+    <item custom:usd_blocked="true" custom:usd_has_border="true">
+        <shape
+            android:shape="oval">
+            <solid android:color="@color/red"/>
+            <stroke android:color="@color/white" android:width="2dp"/>
+        </shape>
+    </item>
+    <item custom:usd_riding="true" custom:usd_has_border="true">
+        <shape
+            android:shape="oval">
+            <solid android:color="@color/yellowLight"/>
+            <stroke android:color="@color/white" android:width="2dp"/>
+        </shape>
+    </item>
+
+    <item custom:usd_online="true" custom:usd_has_border="false">
+        <shape
+            android:shape="oval">
+            <solid android:color="@color/userStatusOnline"/>
+            <stroke android:color="@color/transparent" android:width="2dp"/>
+        </shape>
+    </item>
+    <item custom:usd_offline="true" custom:usd_has_border="false">
+        <shape
+            android:shape="oval">
+            <solid android:color="@color/userStatusOffline"/>
+            <stroke android:color="@color/transparent" android:width="2dp"/>
+        </shape>
+    </item>
+    <item custom:usd_disapproved="true" custom:usd_has_border="false">
+        <shape
+            android:shape="oval">
+            <solid android:color="@color/userStatusDisapproved"/>
+            <stroke android:color="@color/transparent" android:width="2dp"/>
+        </shape>
+    </item>
+    <item custom:usd_blocked="true" custom:usd_has_border="false">
+        <shape
+            android:shape="oval">
+            <solid android:color="@color/red"/>
+            <stroke android:color="@color/transparent" android:width="2dp"/>
+        </shape>
+    </item>
+    <item custom:usd_riding="true" custom:usd_has_border="false">
+        <shape
+            android:shape="oval">
+            <solid android:color="@color/yellowLight"/>
+            <stroke android:color="@color/transparent" android:width="2dp"/>
+        </shape>
+    </item>
+
+</selector>

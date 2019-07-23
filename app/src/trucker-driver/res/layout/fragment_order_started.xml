@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/themePrimary"
+    android:paddingStart="15dp"
+    android:paddingEnd="15dp"
+    android:paddingBottom="5dp">
+
+    <ImageView
+        android:id="@+id/of_marker"
+        android:padding="5dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+
+        android:src="@drawable/vec_marker_white"
+
+        app:layout_constraintTop_toTopOf="@id/of_address"
+        app:layout_constraintBottom_toBottomOf="@id/of_address"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/of_address"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Some very very very very very very very very very very very very long address"
+        android:fontFamily="@font/montserrat"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="10dp"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/of_marker"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/of_client_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@id/of_address"
+        >
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/of_client_avatar"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/img_avatar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/of_client_avatar"
+            android:paddingStart="8dp">
+            <TextView
+                android:id="@+id/of_client_name"
+                style="@style/TextAppearance.Bold.of"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+
+                android:text="Abstract Human"
+
+                />
+            <TextView
+                android:id="@+id/of_order_goods"
+                style="@style/TextAppearance.Bold.of"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="0dp"
+                android:paddingBottom="5dp"
+
+                android:text="Some stuff"
+
+                />
+            <TextView
+                android:id="@+id/of_order_weight"
+                style="@style/TextAppearance.Bold.of"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:text="12ton"
+
+                />
+            <TextView
+                android:id="@+id/of_order_id"
+                style="@style/TextAppearance.Bold.of"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="0dp"
+                android:paddingBottom="5dp"
+                android:text="28u4ndf67c"
+
+                />
+
+        </LinearLayout>
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/of_button_navigate_caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Navigate"
+        android:fontFamily="@font/montserrat"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="13dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/of_button_submit_caption"
+        />
+
+    <ImageView
+        android:id="@+id/of_button_navigate"
+        android:padding="5dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="10dp"
+
+        android:layout_marginBottom="5dp"
+        android:src="@drawable/vec_navigation_blue"
+        android:background="@drawable/shape_yellow_circle"
+
+        app:layout_constraintBottom_toTopOf="@id/of_button_navigate_caption"
+        app:layout_constraintEnd_toEndOf="@id/of_button_navigate_caption"
+        app:layout_constraintStart_toStartOf="@id/of_button_navigate_caption"
+        app:layout_constraintTop_toBottomOf="@+id/of_client_info" />
+
+    <TextView
+        android:id="@+id/of_button_submit_caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Arrived"
+        android:fontFamily="@font/montserrat"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="13dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <ImageView
+        android:id="@+id/of_button_submit"
+        android:padding="1dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="10dp"
+
+        android:layout_marginBottom="5dp"
+        android:src="@drawable/vec_person_blue"
+        android:background="@drawable/shape_yellow_circle"
+        app:layout_constraintBottom_toTopOf="@id/of_button_submit_caption"
+        app:layout_constraintEnd_toEndOf="@id/of_button_submit_caption"
+        app:layout_constraintStart_toStartOf="@id/of_button_submit_caption"
+        app:layout_constraintTop_toBottomOf="@+id/of_client_info" />
+
+    <TextView
+        android:id="@+id/of_button_call_caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Call"
+        android:fontFamily="@font/montserrat"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="13dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="28dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/of_button_navigate_caption"
+        />
+
+    <ImageView
+        android:id="@+id/of_button_call"
+        android:padding="4dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="10dp"
+
+        android:layout_marginBottom="5dp"
+        android:src="@drawable/vec_phone_blue"
+        android:background="@drawable/shape_yellow_circle"
+        app:layout_constraintBottom_toTopOf="@id/of_button_call_caption"
+        app:layout_constraintEnd_toEndOf="@id/of_button_call_caption"
+        app:layout_constraintStart_toStartOf="@id/of_button_call_caption"
+        app:layout_constraintTop_toBottomOf="@+id/of_client_info" />
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

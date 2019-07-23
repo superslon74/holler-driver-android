@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="das_header">Upload document</string>
+    <string name="das_submit_button">Submit</string>
+    <string name="das_document_state_required">Document required</string>
+    <string name="das_document_state_uploaded">Document uploaded</string>
+    <string name="das_document_state_ready">Ready to upload</string>
+    <string name="das_document_state_info">Tap icon to select file</string>
+
+    <string name="error_all_documents_exists">All documents exists</string>
+    <string name="error_documents_required">Documents required</string>
+    <string name="das_image_chooser">Select image</string>
+    <string name="das_image_required">Document required. Tap icon to select file..</string>
+    <string name="das_image_uploaded">Uploaded</string>
+    <string name="das_image_ready">Ready to upload</string>
+
+    <string name="was_approval">waiting\nfor\napproval</string>
+
+</resources>

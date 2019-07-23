@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/themePrimary"
+    android:paddingStart="15dp"
+    android:paddingTop="25dp"
+    android:paddingEnd="15dp"
+    android:paddingBottom="5dp">
+
+    <TextView
+        android:id="@+id/of_message"
+        style="@style/TextAppearance.Bold.of.otp"
+        android:fontFamily="@font/montserrat_bold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="OTP password"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <LinearLayout
+        android:id="@+id/of_inputs"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/of_message"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <EditText
+            android:id="@+id/of_otp1"
+            style="@style/Input.of"
+            android:text=""
+            android:layout_height="wrap_content"
+            />
+        <EditText
+            android:id="@+id/of_otp2"
+            style="@style/Input.of"
+
+            android:text=""
+            android:layout_height="wrap_content"
+            />
+        <EditText
+            android:id="@+id/of_otp3"
+            style="@style/Input.of"
+
+            android:text=""
+            android:layout_height="wrap_content"
+            />
+        <EditText
+            android:id="@+id/of_otp4"
+            style="@style/Input.of"
+            android:text=""
+            android:layout_height="wrap_content"
+
+            />
+
+
+    </LinearLayout>
+
+
+
+    <TextView
+        android:id="@+id/of_submit_button"
+        style="@style/Button.of"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="15dp"
+        android:text="Done"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/of_inputs" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,53 @@
+<resources
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+
+        <item name="colorPrimary">@color/themePrimary</item>
+        <item name="colorPrimaryDark">@color/themePrimaryDark</item>
+        <item name="colorAccent">@color/themeAccent</item>
+
+        <item name="listPreferredItemHeightSmall">35dp</item>
+        <item name="listPreferredItemPaddingLeft">35dp</item>
+        <item name="listPreferredItemPaddingRight">35dp</item>
+        <item name="android:expandableListPreferredItemPaddingLeft">35dp</item>
+
+        <item name="colorControlNormal">@color/themeAccent</item>
+        <item name="colorControlActivated">@color/themeAccent</item>
+        <item name="colorControlHighlight">@color/themeAccent</item>
+    </style>
+
+    <style name="EditText" parent="Theme.AppCompat.Light.DarkActionBar">
+
+        <item name="colorControlNormal">@color/white</item>
+        <item name="colorControlActivated">@color/white</item>
+        <item name="colorControlHighlight">@color/white</item>
+    </style>
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="lollipop">true</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/themePrimaryDark</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="NavigationDrawerStyle">
+        <item name="android:textSize">@dimen/_14sdp</item>
+        <item name="android:listPreferredItemHeightSmall">@dimen/_40sdp</item>
+        <item name="android:fontFamily">@font/montserrat</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+</resources>

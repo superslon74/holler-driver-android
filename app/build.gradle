@@ -2,7 +2,7 @@
 apply plugin: 'com.android.application'
 //apply plugin: 'com.google.gms.google-services'
 apply plugin: 'idea'
-apply plugin: 'io.fabric'
+//apply plugin: 'io.fabric'
 //apply plugin: 'com.android.library'
 //apply plugin: 'com.jakewharton.butterknife'
 

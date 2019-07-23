@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="mas_nav_payment">Payment</string>
+    <string name="mas_nav_trips">Your trips</string>
+    <string name="mas_nav_earnings">Earnings</string>
+    <string name="mas_nav_coupon">Coupon</string>
+    <string name="mas_nav_wallet">Wallet</string>
+    <string name="mas_nav_passbook">Passbook</string>
+    <string name="mas_nav_settings">Settings</string>
+    <string name="mas_nav_help">Help</string>
+    <string name="mas_nav_share">Share</string>
+    <string name="mas_nav_documents">Upload Documents</string>
+    <string name="mas_nav_logout">Logout</string>
+    <string name="mas_nav_crash">Crash to report</string>
+
+    <string name="mas_offline_header">Go Online!</string>
+    <string name="mas_offline_header_success">:)</string>
+    <string name="mas_offline_later">Maybe later</string>
+
+
+    <string name="ma_logout_alert_title">Logout</string>
+    <string name="ma_logout_alert_message">Would you like to logout?</string>
+    <string name="ma_logout_alert_button_confirm">Yes</string>
+    <string name="ma_logout_alert_button_cancel">No</string>
+
+    <string name="ma_map_pas_it_on">pass\nit on</string>
+
+    <string name="ma_help_title">HOLLER</string>
+    <string name="ma_help_team">Our team person will contact you soon</string>
+
+</resources>

@@ -9,17 +9,16 @@
 
     <fragment
         android:id="@+id/header"
-        android:name="com.pnrhunter.utils.FragmentHeaderBig"
+        android:name="com.pnrhunter.mvp.utils.activity.FragmentHeaderBig"
         android:layout_width="match_parent"
         android:layout_height="170dp"
         app:hb_title="@string/las_header"
         tools:ignore="MissingConstraints" />
 
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        style="@style/LA_Page_Padding"
+        style="@style/Container.ls"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,7 +28,7 @@
             android:id="@+id/la_email"
             android:inputType="textEmailAddress"
             android:paddingEnd="20dp"
-            style="@style/LA_Input"
+            style="@style/Input.ls"
             android:textAlignment="viewStart"
             android:textDirection="ltr"
             android:layout_width="match_parent"
@@ -52,7 +51,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/las_sign_up_link"
-            style="@style/Link.la"
+            style="@style/Link.ls"
             app:layout_constraintEnd_toStartOf="@+id/la_button_next_ghost"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +59,7 @@
 
         <ImageButton
             android:id="@+id/la_button_next_ghost"
-            style="@style/LA_Round_Button"
+            style="@style/RoundButton"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -74,7 +73,7 @@
         android:id="@+id/la_button_next"
         android:text="@string/las_next_caption"
 
-        style="@style/LA_Round_Button"
+        style="@style/RoundButton"
 
         tools:ignore="MissingConstraints"
         android:layout_marginBottom="16dp"
@@ -96,11 +95,11 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.pnrhunter.utils.LoadingView
+    <com.pnrhunter.mvp.utils.activity.LoadingView
         android:id="@+id/loading_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </com.pnrhunter.utils.LoadingView>
+    </com.pnrhunter.mvp.utils.activity.LoadingView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

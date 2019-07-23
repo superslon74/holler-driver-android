@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="las_header">Welcome Back</string>
+    <string name="las_email_placeholder">Email</string>
+    <string name="las_password_placeholder">Password</string>
+    <string name="las_sign_in_button">SIGN IN</string>
+
+    <string name="las_sign_up_link">I need to create an account</string>
+    <string name="las_forgot_password">I forgot my password</string>
+
+    <string name="las_next_caption">Next</string>
+    <string name="las_back_caption">Last</string>
+
+</resources>
