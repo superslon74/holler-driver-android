@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent"
+    android:background="@color/background_color"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        style="@style/Container.ws"
+        style="@style/MA_Page_Padding"
         android:orientation="vertical"
         android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/ma_text_layout"
@@ -22,6 +22,7 @@
             android:id="@+id/ma_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:src="@drawable/welcome_sample"
             />
 
     </LinearLayout>
@@ -36,18 +37,19 @@
 
         <TextView
             android:id="@+id/ma_header"
-            style="@style/TextAppearance.Bold.ws"
+            style="@style/MA_Header_Text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat"/>
+            android:fontFamily="@font/montserrat"
+            android:text="@string/was_header_welcome" />
 
         <TextView
             android:id="@+id/ma_description"
-            style="@style/TextAppearance.Medium.ws"
+            style="@style/MA_Description_Text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/was_description_welcome"
             android:textAlignment="center" />
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

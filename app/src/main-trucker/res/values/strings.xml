@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string translatable="false" name="was_version">Powered by Andar Solutions\nversion %1$s.%2$s</string>
+</resources>

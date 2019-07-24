@@ -2,17 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/ma_nav_trips"
+            android:id="@+id/ma_nav_payment"
             android:checkable="false"
-            android:title="@string/mas_nav_trips" />
-        <item
-            android:id="@+id/ma_nav_earnings"
-            android:checkable="false"
-            android:title="@string/mas_nav_earnings" />
-        <item
-            android:id="@+id/ma_nav_settings"
-            android:checkable="false"
-            android:title="@string/mas_nav_settings" />
+            android:enabled="false"
+            android:title="@string/mas_nav_payment" />
+        <!--<item-->
+            <!--android:id="@+id/ma_nav_trips"-->
+            <!--android:checkable="false"-->
+            <!--android:title="@string/mas_nav_trips" />-->
+        <!--<item-->
+            <!--android:id="@+id/ma_nav_coupon"-->
+            <!--android:checkable="false"-->
+            <!--android:title="@string/mas_nav_coupon" />-->
+        <!--<item-->
+            <!--android:id="@+id/ma_nav_wallet"-->
+            <!--android:checkable="false"-->
+            <!--android:title="@string/mas_nav_wallet" />-->
         <item
             android:id="@+id/ma_nav_help"
             android:checkable="false"
@@ -22,8 +27,16 @@
             android:checkable="false"
             android:title="@string/mas_nav_share" />
         <item
+            android:id="@+id/ma_nav_documents"
+            android:checkable="false"
+            android:title="@string/mas_nav_documents" />
+        <item
             android:id="@+id/ma_nav_logout"
             android:checkable="false"
             android:title="@string/mas_nav_logout" />
+        <!--<item-->
+            <!--android:id="@+id/ma_nav_crash"-->
+            <!--android:checkable="false"-->
+            <!--android:title="@string/mas_nav_crash" />-->
     </group>
 </menu>

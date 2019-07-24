@@ -4,8 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/shape_border_bottom"
-    style="@style/Container.menu"
+    android:background="@drawable/insert_border_bottom"
+    style="@style/MENU_Header"
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,7 +26,7 @@
             app:civ_border="true"
             app:civ_border_width="2dp"
             app:civ_border_color="@color/white"
-            android:layout_marginTop="15dp"
+            style="@style/MENU_Header_User_Photo"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             />
@@ -47,7 +47,7 @@
 
         <TextView
             android:id="@+id/ma_nav_user_name"
-            style="@style/TextAppearance.Regular.menu.un"
+            style="@style/MENU_Header_User_Name"
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -71,16 +71,15 @@
             android:id="@+id/ma_nav_button_close"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginRight="0dp"
-            android:src="@drawable/vec_chevron_left_accent"
+            style="@style/MENU_Header_Button_Close"
+            android:src="@drawable/ic_button_back_accent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             />
 
         <com.pnrhunter.mvp.main.UserStatusToggle
             android:id="@+id/ma_nav_user_state_toggle"
-            android:layout_marginRight="25dp"
-            android:layout_marginLeft="25dp"
+            style="@style/MENU_Header_Toggle"
             app:ust_disapproved="true"
             android:background="@drawable/selector_status_toggle"
             android:layout_width="75dp"

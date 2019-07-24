@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--color values-->
+    <color name="red">#FF0000</color>
+    <color name="green">#00FF00</color>
+    <color name="blue">#0000FF</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="semiTransparentBlack">#7f000000</color>
+    <color name="semiTransparentBlueLight">#7f37b3ba</color>
+    <!--<color name="semiTransparentBlack">#80000000</color>-->
+
+
+    <color name="yellowDark">#faa507</color>
+    <color name="yellowLight">#f9d107</color>
+    <color name="darkBlue">#2776a8</color>
+    <color name="lightGreen">#3bd0a0</color>
+    <color name="darkYellow">#fad900</color>
+    <color name="greyGreen">#cee5e4</color>
+    <color name="energizedOrange">#f28400</color>
+    <color name="energizedGreen">#4af4bc</color>
+
+    <!--color definition-->
+    <color name="themePrimary">@color/darkBlue</color>
+    <color name="themePrimaryDark">@color/black</color>
+    <color name="themeAccent">@color/lightGreen</color>
+    <color name="themeSecondaryAccent">@color/darkYellow</color>
+
+    <color name="userStatusOnline">@color/energizedGreen</color>
+    <color name="userStatusOffline">@color/energizedOrange</color>
+    <color name="userStatusDisapproved">@color/greyGreen</color>
+
+</resources>

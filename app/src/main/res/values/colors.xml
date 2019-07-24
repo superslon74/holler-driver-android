@@ -1,34 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--color values-->
-    <color name="red">#FF0000</color>
-    <color name="green">#00FF00</color>
-    <color name="blue">#0000FF</color>
-    <color name="white">#FFFFFF</color>
-    <color name="black">#000000</color>
-    <color name="transparent">#00FFFFFF</color>
-    <color name="semiTransparentBlack">#7f000000</color>
-    <color name="semiTransparentBlueLight">#7f37b3ba</color>
-    <!--<color name="semiTransparentBlack">#80000000</color>-->
-
-
     <color name="yellowDark">#faa507</color>
     <color name="yellowLight">#f9d107</color>
-    <color name="darkBlue">#2776a8</color>
-    <color name="lightGreen">#3bd0a0</color>
-    <color name="darkYellow">#fad900</color>
+
+    <color name="blueDark">#2770b5</color>
+    <color name="blueLight">#37b3ba</color>
+
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+
     <color name="greyGreen">#cee5e4</color>
+
     <color name="energizedOrange">#f28400</color>
     <color name="energizedGreen">#4af4bc</color>
 
+    <color name="black_tint">#80000000</color>
+
+    <color name="transparent">#00FFFFFF</color>
+    <color name="semiTransparentWhite">#99FFFFFF</color>
+    <color name="semiTransparentBlack">#7f000000</color>
+    <color name="semiTransparentBlueLight">#7f37b3ba</color>
+
     <!--color definition-->
-    <color name="themePrimary">@color/darkBlue</color>
-    <color name="themePrimaryDark">@color/black</color>
-    <color name="themeAccent">@color/lightGreen</color>
-    <color name="themeSecondaryAccent">@color/darkYellow</color>
+    <color name="colorPrimary">@color/blueDark</color>
+    <color name="colorPrimaryDark">@color/black</color>
+    <color name="colorAccent">@color/blueLight</color>
+
+    <color name="menuOverflowTint">@color/black</color>
 
     <color name="userStatusOnline">@color/energizedGreen</color>
     <color name="userStatusOffline">@color/energizedOrange</color>
     <color name="userStatusDisapproved">@color/greyGreen</color>
+
+
+
+
+
+
+    <!-- App customization -->
+    <color name="theme">#000000</color>
+
+    <!-- Button Customization -->
+    <color name="button_text_color">#ffffff</color>
+    <color name="calendar_selected_date_text">#ffd1d2d4</color>
+
+    <!-- Navigation drawer Customization-->
+    <color name="nav_header">#000000</color>
+    <color name="nav_body">#ffffff</color>
+    <color name="content_background">#ffffff</color>
+    <color name="view">#9374D1</color>
+    <color name="menu_color">#000000</color>
+    <color name="timer_text_color">#ffffff</color>
+    <color name="view_light">#808080</color>
+    <color name="black_text_color">#df000000</color>
+    <color name="light_black">#2F2F2F</color>
+    <color name="text_color_white">#ffffff</color>
+    <color name="cancel_ride_color">#B0B0B0</color>
+    <color name="rippel_color">#6DCFF6</color>
+    <color name="progress_bg">#efefef</color>
+    <color name="red">#f44236</color>
+    <color name="blue">#3e70c9</color>
+    <color name="green">#43b968</color>
+    <color name="orange">#f59345</color>
+    <color name="status_bg">#F1EEF7</color>
+    <color name="view_bg">#D8D7D8</color>
+    <color name="transparent_black">#7f000000</color>
+    <color name="background_color">#f5f5f5</color>
+    <color name="grey">#a4a4a4</color>
+    <color name="light_grey">#dcdcdc</color>
+    <color name="edittext_solid">#EBEBEB</color>
+    <color name="edittext_border">#B7B7B7</color>
+
+    <array name="array_dot_active">
+        <item>@color/blueLight</item>
+        <item>@color/blueLight</item>
+        <item>@color/blueLight</item>
+    </array>
+
+    <array name="array_dot_inactive">
+        <item>@color/greyGreen</item>
+        <item>@color/greyGreen</item>
+        <item>@color/greyGreen</item>
+    </array>
 
 </resources>
