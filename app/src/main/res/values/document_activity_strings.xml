@@ -8,10 +8,12 @@
     <string name="das_document_state_info">Tap icon to select file</string>
 
     <string name="error_all_documents_exists">All documents exists</string>
-    <string name="error_documents_required">Documents required</string>
+    <string name="error_documents_required">The missing document mark in Red , please add it to continues with the registration process.</string>
     <string name="das_image_chooser">Select image</string>
     <string name="das_image_required">Document required. Tap icon to select file..</string>
     <string name="das_image_uploaded">Uploaded</string>
     <string name="das_image_ready">Ready to upload</string>
+    <string name="was_approval">The documents are verified a process which takes several minutes, you will get notified to your phone as soon as you can start using Holler</string>
+
 
 </resources>

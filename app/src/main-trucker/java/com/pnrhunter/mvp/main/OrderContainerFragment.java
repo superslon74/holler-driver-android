@@ -35,7 +35,7 @@ public class OrderContainerFragment extends DaggerFragment {
     public void setOrderRequest(RequestedOrderResponse order) {
         //TODO: switch by status
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        Fragment requestOrderFragment = StartedOrderFragment.newInstance(order);
+        Fragment requestOrderFragment = RateOrderFragment.newInstance(order);
 
         fragmentManager
                 .beginTransaction()

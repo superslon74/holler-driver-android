@@ -8,6 +8,7 @@ import com.pnrhunter.activity.WaitingForApproval;
 import com.pnrhunter.mvp.details.DetailsView;
 import com.pnrhunter.mvp.details.TripsView;
 import com.pnrhunter.mvp.documents.DocumentsView;
+import com.pnrhunter.mvp.documents.WaitingForApprovalView;
 import com.pnrhunter.mvp.login.EmailView;
 import com.pnrhunter.mvp.login.PasswordView;
 import com.pnrhunter.mvp.main.MainView;
@@ -134,7 +135,7 @@ public class RouterModule {
 
 
         public void goToWaitingForApprovalScreen() {
-            Intent i = new Intent(context, WaitingForApproval.class);
+            Intent i = new Intent(context, WaitingForApprovalView.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             saveToHistory(i);
             context.startActivity(i);

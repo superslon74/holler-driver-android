@@ -205,6 +205,8 @@ public class DocumentsListItem extends Fragment {
             imageView.setImageResource(R.drawable.photo);
             imageView.setBackgroundColor(getResources().getColor(R.color.transparent,getActivity().getTheme()));
             fileNameView.setText(getString(R.string.das_image_required));
+            fileNameView.setBackgroundColor(getActivity().getResources().getColor(R.color.semiTransparentRed));
+            fileNameView.setPadding(5,5,5,5);
         } else if (document.remoteUrl != null) {
             Glide
                     .with(getActivity())
@@ -212,6 +214,9 @@ public class DocumentsListItem extends Fragment {
                     .centerCrop()
                     .into(imageView);
             fileNameView.setText(getString(R.string.das_image_uploaded));
+            fileNameView.setBackgroundColor(getActivity().getResources().getColor(R.color.transparent));
+            fileNameView.setPadding(0,0,0,0);
+
 
             imageView.setMaxHeight(200);
             imageView.setPadding(0, 0, 0, 0);
@@ -224,6 +229,8 @@ public class DocumentsListItem extends Fragment {
                     .into(imageView);
 
             fileNameView.setText(getString(R.string.das_image_ready));
+            fileNameView.setBackgroundColor(getActivity().getResources().getColor(R.color.transparent));
+            fileNameView.setPadding(0,0,0,0);
             imageView.setMaxHeight(200);
             imageView.setPadding(0, 0, 0, 0);
         }

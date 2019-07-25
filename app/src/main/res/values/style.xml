@@ -452,4 +452,15 @@
     <style name="AppTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="Container.as">
+        <item name="android:paddingBottom">45dp</item>
+        <item name="android:paddingStart">45dp</item>
+        <item name="android:paddingEnd">45dp</item>
+
+    </style>
+    <style name="TextAppearance.Regular.as">
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">17dp</item>
+    </style>
+
 </resources>

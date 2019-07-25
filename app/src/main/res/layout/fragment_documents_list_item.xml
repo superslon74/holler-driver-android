@@ -46,13 +46,14 @@
 
         <TextView
             android:id="@+id/file_name_text"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Document required. \nTap icon to select file."
             android:fontFamily="@font/montserrat"
             android:textSize="14dp"
             android:textAlignment="viewStart"
-
+            android:background="@color/semiTransparentRed"
+            android:padding="5dp"
             />
     </LinearLayout>
 

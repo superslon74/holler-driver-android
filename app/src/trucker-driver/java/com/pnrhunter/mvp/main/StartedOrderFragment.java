@@ -32,7 +32,7 @@ import io.reactivex.disposables.Disposable;
 
 public class StartedOrderFragment extends Fragment{
 
-    private static enum Mode {CONFIRMED, STARTED, LOADED, COMPLETED};
+    private enum Mode {CONFIRMED, STARTED, LOADED, COMPLETED};
 
     @BindView(R.id.of_address) protected View addressView;
     @BindView(R.id.of_marker) protected View markerView;
@@ -61,23 +61,11 @@ public class StartedOrderFragment extends Fragment{
     }
 
 
-    private static final String ARG_ADDRESS_FROM = "address_from";
-    private static final String ARG_ADDRESS_TO = "address_to";
-    private static final String ARG_WEIGHT = "weight";
-    private static final String ARG_DATE = "date";
-    private static final String ARG_PAYMENT = "payment";
-    private static final String ARG_TIME = "time";
 
     public static StartedOrderFragment newInstance(RequestedOrderResponse order) {
         StartedOrderFragment fragment = new StartedOrderFragment();
         Bundle args = new Bundle();
 
-        args.putString(ARG_ADDRESS_FROM, order.order.sAddress);
-        args.putString(ARG_ADDRESS_TO, order.order.dAddress);
-        args.putInt(ARG_WEIGHT, order.order.weight);
-        args.putString(ARG_DATE, order.order.startedAt);
-        args.putString(ARG_PAYMENT, order.order.paymentMode);
-        args.putInt(ARG_TIME, order.timeToRespond);
         fragment.setArguments(args);
         return fragment;
     }
@@ -91,12 +79,7 @@ public class StartedOrderFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            addressFrom = getArguments().getString(ARG_ADDRESS_FROM);
-            addressTo = getArguments().getString(ARG_ADDRESS_TO);
-            weight = getArguments().getInt(ARG_WEIGHT) + "";
-            date = getArguments().getString(ARG_DATE);
-            payment = getArguments().getString(ARG_PAYMENT);
-            time = getArguments().getInt(ARG_TIME);
+
         }
     }
 
@@ -105,14 +88,8 @@ public class StartedOrderFragment extends Fragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_order_started, container, false);
         ButterKnife.bind(this,view);
-//        fromAddressView.setText(addressFrom);
-//        toAddressView.setText(addressTo);
-//        weightView.setText(weight);
-//        dateView.setText(date);
-//        paymentView.setText(payment);
-//        timer = createTimer(time).subscribe();
-//        stage.setStage(2);
-        setupView(Mode.STARTED);
+
+        setupView(Mode.COMPLETED);
         view.setOnTouchListener((v, event) -> true);
         return view;
     }

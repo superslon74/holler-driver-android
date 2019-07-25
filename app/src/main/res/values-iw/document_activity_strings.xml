@@ -10,7 +10,9 @@
     <string name="error_all_documents_exists">כל המסמכים קיימים</string>
     <string name="error_documents_required">מסמכים דרושים</string>
     <string name="das_image_chooser">בחר תמונה</string>
-    <string name="das_image_required">נדרש מסמך. הקש על הסמל כדי לבחור קובץ ..</string>
+    <string name="das_image_required">המסמך החסר מסומן באדום, נא להוסיף אותו על מנת להמשיך בהליך ההרשמה.</string>
     <string name="das_image_uploaded">הועלה</string>
     <string name="das_image_ready">מוכן להעלאה</string>
+    <string name="was_approval">המסמכים עוברים בדיקת תקינות, והתהליך לוקח מספר דקות, תקבלו הודעה לטלפון שלכם ברגע שתוכלו להתחיל להשתמש ב-Holler</string>
+
 </resources>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/da_rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    style="@style/Container.as">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="waiting_for_approval.json"
+        app:lottie_loop="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/ac_waiting_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/ac_waiting_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.Regular.as"
+        android:text="@string/was_approval"
+        android:layout_marginBottom="25dp"
+        app:layout_constraintBottom_toTopOf="@+id/logoutBtn"
+        />
+
+    <Button
+        android:id="@+id/logoutBtn"
+        style="@style/Button"
+        android:layout_margin="@dimen/button_margin"
+        android:padding="@dimen/button_padding"
+        android:text="@string/logout"
+        android:textColor="@color/button_text_color"
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_height"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
